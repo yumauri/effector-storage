@@ -1,0 +1,69 @@
+{
+  "name": "effector-storage",
+  "description": "Module for Effector to sync stores with localStorage or sessionStorage",
+  "version": "0.0.0",
+  "author": "Victor Didenko <yumaa.verdin@gmail.com> (https://yumaa.name)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yumauri/effector-storage"
+  },
+  "bugs": {
+    "url": "https://github.com/yumauri/effector-storage/issues"
+  },
+  "homepage": "https://github.com/yumauri/effector-storage#readme",
+  "keywords": [
+    "effector",
+    "persist",
+    "localstorage",
+    "local storage",
+    "sessionstorage",
+    "session storage"
+  ],
+  "main": "index.js",
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "sync.js",
+    "sync.d.ts"
+  ],
+  "scripts": {
+    "build": "tsc && yarn size",
+    "size": "size-limit",
+    "//minify": "terser index.js -o index.min.js -c -m && terser sync.js -o sync.min.js -c -m",
+    "//test": "jest --config jestconfig.json",
+    "format": "prettier --write \"*.ts\"",
+    "lint": "tslint -p tsconfig.json",
+    "clean": "rm -f index.js index.d.ts sync.js sync.d.ts",
+    "release": "np --yolo --no-release-draft",
+    "version": "yarn build"
+  },
+  "size-limit": [
+    {
+      "limit": "131 B",
+      "path": "index.js"
+    },
+    {
+      "limit": "218 B",
+      "path": "sync.js"
+    }
+  ],
+  "devDependencies": {
+    "@size-limit/preset-small-lib": "^2.2.0",
+    "@types/jest": "^24.0.23",
+    "@types/node": "^12.12.7",
+    "effector": "^20.6.1",
+    "jest": "^24.9.0",
+    "np": "^5.1.3",
+    "prettier": "^1.19.1",
+    "ts-jest": "^24.1.0",
+    "tslint": "^5.20.1",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-config-security": "^1.16.0",
+    "tslint-config-standard-plus": "^2.3.0",
+    "typescript": "^3.7.2"
+  },
+  "peerDependencies": {
+    "effector": "^20.6.1"
+  }
+}

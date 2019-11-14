@@ -1,0 +1,30 @@
+name: build
+
+on: ['push', 'pull_request']
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+
+    strategy:
+      matrix:
+        node: ['10', '12']
+
+    name: Node ${{ matrix.node }}
+
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Setup Node ${{ matrix.node }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Linting
+        run: yarn lint
+
+      - name: Build package
+        run: yarn build

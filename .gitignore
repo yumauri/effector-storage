@@ -1,0 +1,15 @@
+node_modules/
+coverage/
+pkg/
+yarn-error.log
+.DS_Store
+.vscode
+*.log
+
+# build files
+index.js
+index.d.ts
+index.min.js
+sync.js
+sync.d.ts
+sync.min.js
