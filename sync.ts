@@ -69,7 +69,7 @@ export = function(
     // add 'storage' event listener
     // https://www.w3schools.com/jsref/event_storage_url.asp
     addEventListener('storage', function(e) {
-      e.key === config.key && e.storageArea === storage && change(store.get())
+      e.key === config.key && change(store.get())
     })
 
     // return modified effector store
