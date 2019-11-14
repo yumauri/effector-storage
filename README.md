@@ -66,7 +66,8 @@ const resetCounter = createEvent('reset counter')
 // ↓ create wrapper, uses localStorage by default
 const createStorageStore = withStorage(createStore, createEvent)
 
-// you can use it with sessionStorage, but this makes no sense, because different tabs/windows doesn't share same session storage
+// you can use it with sessionStorage, but this makes no sense,
+// because different tabs/windows doesn't share same session storage
 
 const counter = createStorageStore(0, { key: 'counter' }) // ← use wrapper
   .catch(err => console.log(err)) // ← setup error handling
