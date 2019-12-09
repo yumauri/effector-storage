@@ -14,7 +14,7 @@ interface StorageStore<State> extends effector.Store<State> {
    * (when storage value was changed from another window).
    * This method is used in ./sync to back-update store value
    */
-  get<State>(value?: State): State
+  get<State>(value?: State): State | null
 
   /**
    * Set error handler
@@ -58,7 +58,7 @@ export = function(
     config: { key: string; name?: string; sid?: string }
   ): StorageStore<State | null> => {
     // create change event
-    const change = createEvent<State>()
+    const change = createEvent<State | null>()
 
     // create storage store
     const store = withStorage(createStore, storage)<State>(

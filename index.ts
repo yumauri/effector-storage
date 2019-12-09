@@ -13,7 +13,7 @@ interface StorageStore<State> extends effector.Store<State> {
    * (when storage value was changed from another window).
    * This method is used in ./sync to back-update store value
    */
-  get<State>(value?: State): State
+  get<State>(value?: State): State | null
 
   /**
    * Set error handler
@@ -58,11 +58,11 @@ export = function(createStore: typeof effector.createStore, storage?: Storage) {
     // value getter
     function get<State>(value?: State) {
       try {
-        value = JSON.parse(storage!.getItem(config.key))
+        value = JSON.parse(storage!.getItem(config.key) as string) // JSON.parse could handle nulls
       } catch (err) {
         errorHandler && errorHandler(err)
       }
-      return value == null ? null : value
+      return value == null ? null : value // tslint:disable-line strict-type-predicates
     }
 
     // value setter
