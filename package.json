@@ -1,7 +1,7 @@
 {
   "name": "effector-storage",
   "description": "Module for Effector to sync stores with localStorage or sessionStorage",
-  "version": "0.1.3",
+  "version": "1.0.0",
   "author": "Victor Didenko <yumaa.verdin@gmail.com> (https://yumaa.name)",
   "license": "MIT",
   "repository": {
