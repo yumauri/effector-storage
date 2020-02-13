@@ -58,11 +58,14 @@ export = function(createStore: typeof effector.createStore, storage?: Storage) {
     // value getter
     function get<State>(value?: State) {
       try {
-        value = JSON.parse(storage!.getItem(config.key) as string) // JSON.parse could handle nulls
+        const item = storage!.getItem(config.key)
+        return item === null
+          ? value // item doesn't exist in storage -> return default state
+          : JSON.parse(item)
       } catch (err) {
         errorHandler && errorHandler(err)
       }
-      return value == null ? null : value // tslint:disable-line strict-type-predicates
+      return value // in case of error -> return default state
     }
 
     // value setter
