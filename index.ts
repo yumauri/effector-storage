@@ -45,7 +45,7 @@ interface StorageStore<State> extends effector.Store<State> {
  *     .on(decrement, state => state - 1)
  *     .reset(resetCounter)
  */
-export = function(createStore: typeof effector.createStore, storage?: Storage) {
+export = (createStore: typeof effector.createStore, storage?: Storage) => {
   storage = storage || localStorage
 
   // return `createStore` wrapper
@@ -56,7 +56,7 @@ export = function(createStore: typeof effector.createStore, storage?: Storage) {
     let errorHandler: ErrorHandler
 
     // value getter
-    function get<State>(value?: State) {
+    const get = <State>(value?: State) => {
       try {
         const item = storage!.getItem(config.key)
         return item === null
@@ -69,7 +69,7 @@ export = function(createStore: typeof effector.createStore, storage?: Storage) {
     }
 
     // value setter
-    function set<State>(value: State) {
+    const set = <State>(value: State) => {
       try {
         storage!.setItem(config.key, JSON.stringify(value))
       } catch (err) {
@@ -90,7 +90,7 @@ export = function(createStore: typeof effector.createStore, storage?: Storage) {
     store.get = get
 
     // add error handler
-    store.catch = function(handler: ErrorHandler) {
+    store.catch = (handler: ErrorHandler) => {
       errorHandler = handler
       return store
     }

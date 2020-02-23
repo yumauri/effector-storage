@@ -47,29 +47,29 @@ interface StorageStore<State> extends effector.Store<State> {
  *     .on(decrement, state => state - 1)
  *     .reset(resetCounter)
  */
-export = function(
+export = (
   createStore: typeof effector.createStore,
   createEvent: typeof effector.createEvent,
   storage?: Storage
-) {
+) => {
   // return `createStore` wrapper
   return <State>(
     defaultState: State,
     config: { key: string; name?: string; sid?: string }
   ): StorageStore<State | null> => {
     // create change event
-    const change = createEvent<State | null>()
+    const updated = createEvent<State | null>()
 
     // create storage store
     const store = withStorage(createStore, storage)<State>(
       defaultState,
       config
-    ).on(change, (_, value) => value)
+    ).on(updated, (_, value) => value)
 
     // add 'storage' event listener
     // https://www.w3schools.com/jsref/event_storage_url.asp
-    addEventListener('storage', function(e) {
-      e.key === config.key && change(store.get())
+    addEventListener('storage', e => {
+      e.key === config.key && updated(store.get())
     })
 
     // return modified effector store

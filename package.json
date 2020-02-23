@@ -40,11 +40,11 @@
   },
   "size-limit": [
     {
-      "limit": "149 B",
+      "limit": "144 B",
       "path": "index.js"
     },
     {
-      "limit": "225 B",
+      "limit": "223 B",
       "path": "sync.js"
     }
   ],
