@@ -83,6 +83,9 @@ export = function(createStore: typeof effector.createStore, storage?: Storage) {
       config
     ) as StorageStore<State | null>
 
+    // manually set `defaultState` to have .reset method working correct
+    store.defaultState = defaultState
+
     // add getter
     store.get = get
 
