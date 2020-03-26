@@ -48,6 +48,19 @@
       "path": "sync.js"
     }
   ],
+  "prettier": {
+    "printWidth": 80,
+    "tabWidth": 2,
+    "useTabs": false,
+    "semi": false,
+    "singleQuote": true,
+    "quoteProps": "as-needed",
+    "jsxSingleQuote": true,
+    "trailingComma": "es5",
+    "bracketSpacing": true,
+    "jsxBracketSameLine": false,
+    "arrowParens": "avoid"
+  },
   "devDependencies": {
     "@size-limit/preset-small-lib": "^4.4.0",
     "@types/jest": "^25.1.4",
