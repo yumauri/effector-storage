@@ -21,21 +21,16 @@
     "session storage"
   ],
   "main": "index.js",
-  "files": [
-    "index.js",
-    "index.d.ts",
-    "sync.js",
-    "sync.d.ts"
-  ],
   "scripts": {
     "build": "tsc && yarn size",
     "size": "size-limit",
-    "//minify": "terser index.js -o index.min.js -c -m && terser sync.js -o sync.min.js -c -m",
+    "//minify": "terser index.js -o index.min.js -c -m && terser sync/index.js -o sync/index.min.js -c -m",
     "//test": "jest --config jestconfig.json",
-    "format": "prettier --write \"*.ts\"",
+    "format": "prettier --write \"**/*.ts\"",
     "lint": "tslint -p tsconfig.json",
-    "clean": "rm -f index.js index.d.ts sync.js sync.d.ts",
-    "release": "np --yolo --no-release-draft",
+    "clean": "rm -rf index.js index.d.ts sync/index.js sync/index.d.ts dual-publish-tmp",
+    "dual-publish": "dual-publish --check && rm dual-publish-tmp/sync/index.ts",
+    "release": "np --yolo --no-release-draft --contents ./dual-publish-tmp",
     "version": "yarn build"
   },
   "size-limit": [
@@ -45,9 +40,23 @@
     },
     {
       "limit": "223 B",
-      "path": "sync.js"
+      "path": "sync/index.js"
     }
   ],
+  "clean-publish": {
+    "files": [
+      "index.ts",
+      "sync/index.ts",
+      ".gitignore",
+      "jestconfig.json",
+      "tsconfig.json",
+      "tslint.json"
+    ],
+    "fields": [
+      "scripts"
+    ],
+    "packageManager": "yarn"
+  },
   "prettier": {
     "printWidth": 80,
     "tabWidth": 2,
@@ -65,6 +74,7 @@
     "@size-limit/preset-small-lib": "^4.4.1",
     "@types/jest": "^25.1.4",
     "@types/node": "^13.9.1",
+    "dual-publish": "^0.8.6",
     "effector": "^20.13.4",
     "jest": "^25.2.1",
     "np": "^6.2.0",

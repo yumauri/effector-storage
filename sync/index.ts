@@ -1,5 +1,5 @@
 import effector = require('effector') // tslint:disable-line no-require-imports
-import withStorage = require('./') // tslint:disable-line no-require-imports
+import withStorage = require('..') // tslint:disable-line no-require-imports
 
 // error handler interface
 interface ErrorHandler {

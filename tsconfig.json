@@ -11,6 +11,6 @@
     "removeComments": true,
     "declaration": true
   },
-  "include": ["*.ts"],
+  "include": ["index.ts", "sync/index.ts"],
   "exclude": ["*.d.ts", "*.spec.ts"]
 }

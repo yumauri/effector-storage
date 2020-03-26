@@ -76,6 +76,10 @@ const counter = createStorageStore(0, { key: 'counter' }) // ← use wrapper
   .reset(resetCounter)
 ```
 
+## ES modules
+
+`effector-storage` provides ES modules out of the box. You do not need to do anything to use it as ES module in Webpack, Parcel, or Node.js.
+
 ## Sponsored
 
 [<img src="https://setplex.com/img/logo.png" alt="Setplex" width="236">](https://setplex.com)

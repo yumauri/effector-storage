@@ -10,6 +10,7 @@ yarn-error.log
 index.js
 index.d.ts
 index.min.js
-sync.js
-sync.d.ts
-sync.min.js
+sync/index.js
+sync/index.d.ts
+sync/index.min.js
+dual-publish-tmp/
