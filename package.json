@@ -24,10 +24,9 @@
   "scripts": {
     "build": "yarn size && dual-publish --check",
     "size": "size-limit",
-    "//minify": "terser index.js -o index.min.js -c -m && terser sync/index.js -o sync/index.min.js -c -m",
     "test": "nyc ava",
     "format": "prettier --write \"**/*.js\"",
-    "lint": "xo index.js sync/index.js",
+    "lint": "xo index.js sync/index.js unit/index.js",
     "clean": "rm -rf dual-publish-tmp .nyc_output coverage",
     "release": "np --yolo --no-release-draft --contents ./dual-publish-tmp",
     "version": "yarn build"

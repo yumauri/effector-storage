@@ -1,6 +1,7 @@
 # effector-storage
 
 [![Build Status](https://github.com/yumauri/effector-storage/workflows/build/badge.svg)](https://github.com/yumauri/effector-storage/actions?workflow=build)
+[![Coverage Status](https://coveralls.io/repos/github/yumauri/effector-storage/badge.svg)](https://coveralls.io/github/yumauri/effector-storage)
 [![License](https://img.shields.io/github/license/yumauri/effector-storage.svg?color=yellow)](./LICENSE)
 [![NPM](https://img.shields.io/npm/v/effector-storage.svg)](https://www.npmjs.com/package/effector-storage)
 ![Made with Love](https://img.shields.io/badge/made%20with-❤-red.svg)
