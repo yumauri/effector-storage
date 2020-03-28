@@ -22,38 +22,43 @@
   ],
   "main": "index.js",
   "scripts": {
-    "build": "tsc && yarn size",
+    "build": "yarn size && dual-publish --check",
     "size": "size-limit",
     "//minify": "terser index.js -o index.min.js -c -m && terser sync/index.js -o sync/index.min.js -c -m",
-    "//test": "jest --config jestconfig.json",
-    "format": "prettier --write \"**/*.ts\"",
-    "lint": "tslint -p tsconfig.json",
-    "clean": "rm -rf index.js index.d.ts sync/index.js sync/index.d.ts dual-publish-tmp",
-    "dual-publish": "dual-publish --check && rm dual-publish-tmp/sync/index.ts",
+    "test": "nyc ava",
+    "format": "prettier --write \"**/*.js\"",
+    "lint": "xo index.js sync/index.js",
+    "clean": "rm -rf dual-publish-tmp .nyc_output coverage",
     "release": "np --yolo --no-release-draft --contents ./dual-publish-tmp",
     "version": "yarn build"
   },
   "size-limit": [
     {
-      "limit": "144 B",
+      "limit": "142 B",
       "path": "index.js"
     },
     {
-      "limit": "223 B",
+      "limit": "213 B",
       "path": "sync/index.js"
+    },
+    {
+      "limit": "280 B",
+      "path": "unit/index.js"
     }
   ],
   "clean-publish": {
     "files": [
-      "index.ts",
-      "sync/index.ts",
+      "images",
       ".gitignore",
       "jestconfig.json",
       "tsconfig.json",
       "tslint.json"
     ],
     "fields": [
-      "scripts"
+      "scripts",
+      "xo",
+      "ava",
+      "nyc"
     ],
     "packageManager": "yarn"
   },
@@ -70,22 +75,42 @@
     "jsxBracketSameLine": false,
     "arrowParens": "avoid"
   },
+  "xo": {
+    "prettier": true,
+    "envs": [
+      "browser"
+    ],
+    "rules": {
+      "no-var": "off",
+      "no-unused-expressions": "off",
+      "no-multi-assign": "off",
+      "no-return-assign": "off"
+    }
+  },
+  "ava": {
+    "verbose": true,
+    "files": [
+      "test/**/*",
+      "!test/**/*.mock.js"
+    ]
+  },
+  "nyc": {
+    "reporter": [
+      "text",
+      "lcov"
+    ]
+  },
   "devDependencies": {
-    "@size-limit/preset-small-lib": "^4.4.1",
-    "@types/jest": "^25.1.4",
-    "@types/node": "^13.9.1",
+    "@size-limit/preset-small-lib": "^4.4.2",
+    "ava": "^3.5.1",
     "dual-publish": "^0.8.6",
     "effector": "^20.13.4",
-    "jest": "^25.2.1",
+    "ninos": "^3.0.0",
     "np": "^6.2.0",
-    "prettier": "^2.0.2",
-    "size-limit": "^4.4.1",
-    "ts-jest": "^25.2.1",
-    "tslint": "^6.1.0",
-    "tslint-config-prettier": "^1.18.0",
-    "tslint-config-security": "^1.16.0",
-    "tslint-config-standard-plus": "^2.3.0",
-    "typescript": "^3.8.3"
+    "nyc": "^15.0.0",
+    "prettier": "^1.19.1",
+    "size-limit": "^4.4.2",
+    "xo": "^0.28.1"
   },
   "peerDependencies": {
     "effector": "^20.13.4"

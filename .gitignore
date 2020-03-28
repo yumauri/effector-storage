@@ -2,15 +2,10 @@ node_modules/
 coverage/
 pkg/
 yarn-error.log
+.nyc_output
 .DS_Store
 .vscode
 *.log
 
 # build files
-index.js
-index.d.ts
-index.min.js
-sync/index.js
-sync/index.d.ts
-sync/index.min.js
 dual-publish-tmp/
