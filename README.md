@@ -5,7 +5,7 @@
 [![NPM](https://img.shields.io/npm/v/effector-storage.svg)](https://www.npmjs.com/package/effector-storage)
 ![Made with Love](https://img.shields.io/badge/made%20with-❤-red.svg)
 
-Small module for [Effector](https://github.com/zerobias/effector) ☄️ to sync stores with `localStorage` (or `sessionStorage`).<br>
+Small module for [Effector](https://github.com/zerobias/effector) ☄️ to sync stores with the `localStorage` (or `sessionStorage`).<br>
 Heavily inspired by [effector-localstorage](https://github.com/lessmess-dev/effector-localstorage).
 
 ## Install
@@ -45,7 +45,7 @@ const counter = createStorageStore(0, { key: 'counter' }) // ← use wrapper
 
 ## Options
 
-While creating store, function, enchanced with `withStorage`, accepts same arguments, as usual `createStore`, with one difference - it is mandatory to set `key` in options. This key will be used for storage key.
+While creating a store, function, enchanced with `withStorage`, accepts same arguments, as usual `createStore`, with one difference - it is mandatory to set `key` in options. This key will be used as storage key.
 
 ## Synchronize store between different tabs/windows
 
@@ -82,7 +82,7 @@ const counter = createStorageStore(0, { key: 'counter' }) // ← use wrapper
 
 ## Experimental
 
-This library provides an experimental Starage unit — this is Effector node, like event, which can set value to localStorage or dispatch value from localStorage.
+This library provides an experimental Starage unit — this is an Effector node, like an event, which can set value to the localStorage or dispatch value from the localStorage.
 
 ```javascript
 import { createStore, forward } from 'effector'
@@ -126,7 +126,7 @@ $store.setState(recursive)
 
 Functions `storage.set` and `storage.get` are using caches for created events. You can call this functions many times — extra events will not be created.
 
-<img width="630" alt="unit" src="https://github.com/yumauri/effector-storage/blob/master/images/node.png?raw=true">
+<img width="630" alt="unit" src="https://github.com/yumauri/effector-storage/blob/master/images/unit.png?raw=true">
 
 ## Sponsored
 
