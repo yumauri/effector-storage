@@ -13,7 +13,7 @@ interface StorageStore<State> extends effector.Store<State> {
    * (when storage value was changed from another window).
    * This method is used in ./sync to back-update store value
    */
-  get<State>(value?: State): State | null
+  get<State>(value: State): State
 
   /**
    * Set error handler
@@ -52,11 +52,11 @@ export = (createStore: typeof effector.createStore, storage?: Storage) => {
   return <State>(
     defaultState: State,
     config: { key: string; name?: string; sid?: string }
-  ): StorageStore<State | null> => {
+  ): StorageStore<State> => {
     let errorHandler: ErrorHandler
 
     // value getter
-    const get = <State>(value?: State) => {
+    const get = <State>(value: State): State => {
       try {
         const item = storage!.getItem(config.key)
         return item === null
@@ -78,10 +78,9 @@ export = (createStore: typeof effector.createStore, storage?: Storage) => {
     }
 
     // create effector store, with rehydrated value
-    const store = createStore<State | null>(
-      get(defaultState),
-      config
-    ) as StorageStore<State | null>
+    const store = createStore<State>(get(defaultState), config) as StorageStore<
+      State
+    >
 
     // manually set `defaultState` to have .reset method working correct
     store.defaultState = defaultState

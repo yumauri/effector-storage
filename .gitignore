@@ -4,6 +4,7 @@ pkg/
 yarn-error.log
 .DS_Store
 .vscode
+.idea
 *.log
 
 # build files

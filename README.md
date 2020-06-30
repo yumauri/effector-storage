@@ -55,6 +55,8 @@ This way it is possible to synchronise counter on two tabs of a browser. Or, clo
 
 To make store synchronizable, just use `effector-storage/sync` instead of `effector-storage`. Also it will need specifying of `createEvent` function (to create event internally).
 
+Note, that synchronized store could contain `null` in case when different tab put something but JSON in the local storage. Hence its type is always `<State | null>`.
+
 ```javascript
 import { createEvent, createStore } from 'effector'
 import withStorage from 'effector-storage/sync'
