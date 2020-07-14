@@ -1,23 +1,10 @@
 import effector = require('effector') // tslint:disable-line no-require-imports
 
-// error handler interface
 interface ErrorHandler {
   (error: any): void // tslint:disable-line no-any
 }
 
-// storage store interface
 interface StorageStore<State> extends effector.Store<State> {
-  /**
-   * Get value from local/session storage,
-   * SIC! In rare cases could be different, than value in store
-   * (when storage value was changed from another window).
-   * This method is used in ./sync to back-update store value
-   */
-  get<State>(value: State): State
-
-  /**
-   * Set error handler
-   */
   catch(handler: ErrorHandler): StorageStore<State>
 }
 
@@ -86,7 +73,7 @@ export = (createStore: typeof effector.createStore, storage?: Storage) => {
     store.defaultState = defaultState
 
     // add getter
-    store.get = get
+    ;(store as any).get = get // tslint:disable-line no-any
 
     // add error handler
     store.catch = (handler: ErrorHandler) => {

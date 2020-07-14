@@ -1,24 +1,11 @@
 import effector = require('effector') // tslint:disable-line no-require-imports
 import withStorage = require('..') // tslint:disable-line no-require-imports
 
-// error handler interface
 interface ErrorHandler {
   (error: any): void // tslint:disable-line no-any
 }
 
-// storage store interface
 interface StorageStore<State> extends effector.Store<State> {
-  /**
-   * Get value from local/session storage,
-   * SIC! In rare cases could be different, than value in store
-   * (when storage value was changed from another window).
-   * This method is used in ./sync to back-update store value
-   */
-  get<State>(value: State): State | null
-
-  /**
-   * Set error handler
-   */
   catch(handler: ErrorHandler): StorageStore<State>
 }
 
@@ -69,7 +56,7 @@ export = (
     // add 'storage' event listener
     // https://www.w3schools.com/jsref/event_storage_url.asp
     addEventListener('storage', e => {
-      e.key === config.key && updated(store.get(null))
+      e.key === config.key && updated((store as any).get(null)) // tslint:disable-line no-any
     })
 
     // return modified effector store
