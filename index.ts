@@ -8,6 +8,12 @@ interface StorageStore<State> extends effector.Store<State> {
   catch(handler: ErrorHandler): StorageStore<State>
 }
 
+interface CreateStorageStoreOptions {
+  storage?: Storage
+  parse?: Function
+  serialize?: Function
+}
+
 /**
  * Wrapper factory for Effector's `createStore` function,
  * creates store and "attaches" it to local/session storage
@@ -32,9 +38,11 @@ interface StorageStore<State> extends effector.Store<State> {
  *     .on(decrement, state => state - 1)
  *     .reset(resetCounter)
  */
-export = (createStore: typeof effector.createStore, storage?: Storage) => {
-  storage = storage || localStorage
-
+export = (createStore: typeof effector.createStore, {
+  storage = localStorage,
+  parse = JSON.parse,
+  serialize = JSON.stringify,
+}: CreateStorageStoreOptions = {}) => {
   // return `createStore` wrapper
   return <State>(
     defaultState: State,
@@ -48,7 +56,7 @@ export = (createStore: typeof effector.createStore, storage?: Storage) => {
         const item = storage!.getItem(config.key)
         return item === null
           ? value // item doesn't exist in storage -> return default state
-          : JSON.parse(item)
+          : parse(item)
       } catch (err) {
         errorHandler && errorHandler(err)
       }
@@ -58,7 +66,7 @@ export = (createStore: typeof effector.createStore, storage?: Storage) => {
     // value setter
     const set = <State>(value: State) => {
       try {
-        storage!.setItem(config.key, JSON.stringify(value))
+        storage!.setItem(config.key, serialize(value))
       } catch (err) {
         errorHandler && errorHandler(err)
       }
