@@ -10,8 +10,8 @@ interface StorageStore<State> extends effector.Store<State> {
 
 interface CreateStorageStoreOptions {
   storage?: Storage
-  parse?: Function
-  serialize?: Function
+  parse?: (value: any) => any
+  serialize?: (value: any) => any
 }
 
 /**
@@ -53,7 +53,7 @@ export = (createStore: typeof effector.createStore, {
     // value getter
     const get = <State>(value: State): State => {
       try {
-        const item = storage!.getItem(config.key)
+        const item = storage.getItem(config.key)
         return item === null
           ? value // item doesn't exist in storage -> return default state
           : parse(item)
@@ -66,7 +66,7 @@ export = (createStore: typeof effector.createStore, {
     // value setter
     const set = <State>(value: State) => {
       try {
-        storage!.setItem(config.key, serialize(value))
+        storage.setItem(config.key, serialize(value))
       } catch (err) {
         errorHandler && errorHandler(err)
       }
