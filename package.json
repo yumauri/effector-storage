@@ -71,23 +71,23 @@
     "arrowParens": "avoid"
   },
   "devDependencies": {
-    "@size-limit/preset-small-lib": "^4.4.1",
-    "@types/jest": "^25.1.4",
-    "@types/node": "^13.9.1",
-    "dual-publish": "^0.8.6",
-    "effector": "^20.13.4",
-    "jest": "^25.2.1",
-    "np": "^6.2.0",
-    "prettier": "^2.0.2",
-    "size-limit": "^4.4.1",
-    "ts-jest": "^25.2.1",
-    "tslint": "^6.1.0",
+    "@size-limit/preset-small-lib": "^4.5.4",
+    "@types/jest": "^26.0.4",
+    "@types/node": "^14.0.23",
+    "dual-publish": "^0.11.0",
+    "effector": "^21.0.3",
+    "jest": "^26.1.0",
+    "np": "^6.3.2",
+    "prettier": "^2.0.5",
+    "size-limit": "^4.5.4",
+    "ts-jest": "^26.1.2",
+    "tslint": "^6.1.2",
     "tslint-config-prettier": "^1.18.0",
     "tslint-config-security": "^1.16.0",
     "tslint-config-standard-plus": "^2.3.0",
-    "typescript": "^3.8.3"
+    "typescript": "^3.9.6"
   },
   "peerDependencies": {
-    "effector": "^20.13.4"
+    "effector": "^20.0.0 || ^21.0.0"
   }
 }
