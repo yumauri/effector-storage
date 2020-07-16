@@ -48,7 +48,7 @@ export = (
     const updated = createEvent<State | null>()
 
     // create storage store
-    const store = withStorage(createStore, storage)<State | null>(
+    const store = withStorage(createStore, { storage })<State | null>(
       defaultState,
       config
     ).on(updated, (_, value) => value)
