@@ -1,5 +1,10 @@
+//
+// Type definitions
+//
+
 import { createStore, createEvent, Store, Event } from 'effector'
 
+// there are no exported types for `createStore` and `createEvent`, so, infer it
 type TStoreCreator = typeof createStore
 type TEventCreator = typeof createEvent
 
@@ -10,6 +15,9 @@ type TEventCreator = typeof createEvent
 export interface StoreCreator extends TStoreCreator {} // eslint-disable-line @typescript-eslint/no-empty-interface
 export interface EventCreator extends TEventCreator {} // eslint-disable-line @typescript-eslint/no-empty-interface
 
+// there is no exported type for `createStore` config object, so, infer it
+type StoreCreatorConfig = NonNullable<Parameters<StoreCreator>[1]>
+
 export interface ErrorHandler {
   (error: any): void
 }
@@ -18,10 +26,14 @@ export interface UpdateHandler {
   <State>(value: State): void
 }
 
-export interface StorageAdapter {
+export interface StorageAdapterConfig {
+  key: string
+}
+
+export interface StorageAdapter<AdapterConfig = StorageAdapterConfig> {
   <State>(
     defaultValue: State,
-    config: { [key: string]: any },
+    config: AdapterConfig,
     on: {
       error: ErrorHandler
       update: UpdateHandler
@@ -36,21 +48,22 @@ export interface StorageStore<State> extends Store<State> {
   catch(handler: ErrorHandler): StorageStore<State>
 }
 
-export interface TiedStoreCreator {
-  <State>(defaultState: State, config: { [key: string]: any }): StorageStore<State>
+export interface TiedStoreCreator<AdapterConfig = StorageAdapterConfig> {
+  <State>(defaultState: State, config: StoreCreatorConfig & AdapterConfig): StorageStore<
+    State
+  >
 }
 
-export interface Config {
-  with: StorageAdapter
+export interface Config<AdapterConfig = StorageAdapterConfig> {
+  with: StorageAdapter<AdapterConfig>
   using?: EventCreator | Event<any>
   [key: string]: any
 }
 
-export interface ConfigEx extends Config {
-  key: string
-}
+export type ConfigEx<AdapterConfig = StorageAdapterConfig> = Config<AdapterConfig> &
+  AdapterConfig
 
-const isConfig = (x: unknown): x is Config =>
+const isConfig = <T>(x: unknown): x is Config<T> =>
   typeof x === 'object' && x !== null && typeof (x as any).with === 'function'
 
 function assert(x: unknown, message: string): asserts x {
@@ -63,65 +76,74 @@ function assert(x: unknown, message: string): asserts x {
 // Tie overloads
 //
 
-export function tie<State>(
+export function tie<State, AdapterConfig = StorageAdapterConfig>(
   store: Store<State>,
-  config: ConfigEx,
+  config: ConfigEx<AdapterConfig>,
   using?: EventCreator | Event<any>
 ): StorageStore<State>
 
-export function tie<State>(
-  config: ConfigEx,
+export function tie<State, AdapterConfig = StorageAdapterConfig>(
+  config: ConfigEx<AdapterConfig>,
   store: Store<State>,
   using?: EventCreator | Event<any>
 ): StorageStore<State>
 
 export function tie<State>(
   store: Store<State>
-): (config: ConfigEx, using?: EventCreator | Event<any>) => StorageStore<State>
+): <AdapterConfig = StorageAdapterConfig>(
+  config: ConfigEx<AdapterConfig>,
+  using?: EventCreator | Event<any>
+) => StorageStore<State>
 
-export function tie(
-  config: ConfigEx
+export function tie<AdapterConfig = StorageAdapterConfig>(
+  config: ConfigEx<AdapterConfig>
 ): <State>(store: Store<State>, using?: EventCreator | Event<any>) => StorageStore<State>
 
-export function tie(
+export function tie<AdapterConfig = StorageAdapterConfig>(
   createStore: StoreCreator,
-  config: Config,
+  config: Config<AdapterConfig>,
   using?: EventCreator | Event<any>
-): TiedStoreCreator
+): TiedStoreCreator<AdapterConfig>
 
-export function tie(
-  config: Config,
+export function tie<AdapterConfig = StorageAdapterConfig>(
+  config: Config<AdapterConfig>,
   createStore: StoreCreator,
   using?: EventCreator | Event<any>
-): TiedStoreCreator
+): TiedStoreCreator<AdapterConfig>
 
 export function tie(
   createStore: StoreCreator
-): (config: Config, using?: EventCreator | Event<any>) => TiedStoreCreator
+): <AdapterConfig = StorageAdapterConfig>(
+  config: Config<AdapterConfig>,
+  using?: EventCreator | Event<any>
+) => TiedStoreCreator<AdapterConfig>
 
-export function tie(
-  config: Config
-): (createStore: StoreCreator, using?: EventCreator | Event<any>) => TiedStoreCreator
+export function tie<AdapterConfig = StorageAdapterConfig>(
+  config: Config<AdapterConfig>
+): (
+  createStore: StoreCreator,
+  using?: EventCreator | Event<any>
+) => TiedStoreCreator<AdapterConfig>
 
 //
 // Tie implementation
 //
 
-export function tie<State = void>(
-  arg1: StoreCreator | Store<State> | Config,
-  arg2?: StoreCreator | Store<State> | Config,
+export function tie<State = void, AdapterConfig = StorageAdapterConfig>(
+  arg1: StoreCreator | Store<State> | Config<AdapterConfig>,
+  arg2?: StoreCreator | Store<State> | Config<AdapterConfig>,
   using?: EventCreator | Event<any>
 ): any {
   const curried = (
-    arg2: StoreCreator | Store<State> | Config,
+    arg2: StoreCreator | Store<State> | Config<AdapterConfig>,
     using?: EventCreator | Event<any>
   ) => {
     let creatorOrStore: StoreCreator | Store<State> | undefined
-    let config: Config | undefined
+    let config: Config<AdapterConfig> | undefined
     let event: Event<any> | undefined
 
-    isConfig(arg1) ? (config = arg1) : (creatorOrStore = arg1)
-    isConfig(arg2) ? (config = arg2) : (creatorOrStore = arg2)
+    isConfig<AdapterConfig>(arg1) ? (config = arg1) : (creatorOrStore = arg1)
+    isConfig<AdapterConfig>(arg2) ? (config = arg2) : (creatorOrStore = arg2)
 
     assert(creatorOrStore, 'Store creator or store is not defined')
     assert(config, 'Config is not defined')
@@ -133,7 +155,7 @@ export function tie<State = void>(
 
     return typeof creatorOrStore === 'function'
       ? creator(creatorOrStore, config, event)
-      : store(creatorOrStore, config as ConfigEx, event)
+      : store(creatorOrStore, config as ConfigEx<AdapterConfig>, event)
   }
 
   return arg2 !== undefined ? curried(arg2, using) : curried
@@ -143,14 +165,14 @@ export function tie<State = void>(
 //
 //
 
-function creator(
+function creator<AdapterConfig>(
   createStore: StoreCreator,
-  cfg: Config,
+  cfg: Config<AdapterConfig>,
   event?: Event<any>
-): TiedStoreCreator {
+): TiedStoreCreator<AdapterConfig> {
   return <State>(
     defaultState: State,
-    config: { [key: string]: any }
+    config: StoreCreatorConfig & AdapterConfig
   ): StorageStore<State> => {
     const on = {
       error: (() => undefined) as ErrorHandler,
@@ -158,7 +180,7 @@ function creator(
     }
 
     // initialize adapter
-    const value = cfg.with(defaultState, config, on)
+    const value = cfg.with(defaultState, Object.assign({}, cfg, config), on)
 
     // storage value
     const from = value()
@@ -193,9 +215,9 @@ function creator(
 //
 //
 
-function store<State>(
+function store<State, AdapterConfig>(
   store: Store<State>,
-  cfg: ConfigEx,
+  cfg: ConfigEx<AdapterConfig>,
   event?: Event<any>
 ): StorageStore<State> {
   const on = {

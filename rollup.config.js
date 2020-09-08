@@ -95,8 +95,8 @@ const src = (name) => ({
           }
     ),
 
-    // copy license
-    name === '' && command(`cp ./{LICENSE,README.md} ${BUILD}/`),
+    // copy license and readme
+    name === '' && command([`cp LICENSE ${BUILD}/`, `cp README.md ${BUILD}/`]),
   ],
 })
 

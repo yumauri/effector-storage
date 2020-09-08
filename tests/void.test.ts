@@ -5,59 +5,54 @@ import { createStore, createEvent } from 'effector'
 import { tie, ErrorHandler, UpdateHandler, StorageAdapter } from '../src'
 
 //
-// Memory adapter
+// Void adapter
 //
 
-const memoryAdapter: StorageAdapter = <State>(
-  defaultValue: State,
-  config: { [key: string]: any },
+interface VoidAdapterConfig {
+  key: string
+  updateAfter: number
+}
+
+const voidAdapter: StorageAdapter<VoidAdapterConfig> = <State>(
+  _defaultValue: State,
+  config: VoidAdapterConfig,
   on: {
     error: ErrorHandler
     update: UpdateHandler
   }
 ) => {
-  let current = defaultValue
-
   if (config.updateAfter !== undefined) {
-    setTimeout(() => on.update(config.updateValue ?? defaultValue), config.updateAfter)
+    setTimeout(() => on.update(undefined), config.updateAfter)
   }
 
-  return (value?: State) => (value === undefined ? current : (current = value))
+  return () => undefined
 }
 
-const withMemory = tie({ with: memoryAdapter })
+const withVoid = tie({ with: voidAdapter })
 
 //
 // Tests
 //
 
-test('should update created tied store with new event', async () => {
-  const createMemoryStore = withMemory(createStore, createEvent)
-  const store$ = createMemoryStore(0, {
-    key: 'test',
-    updateAfter: 0,
-    updateValue: 2,
-  })
+test('should ignore undefined on created store with created event', async () => {
+  const createVoidStore = withVoid(createStore, createEvent)
+  const store$ = createVoidStore(0, { key: 'test', updateAfter: 0 })
 
   assert.is(store$.getState(), 0)
   ;(store$ as any).setState(1)
   assert.is(store$.getState(), 1)
 
   await new Promise((resolve) => setTimeout(resolve, 1))
-  assert.is(store$.getState(), 2)
+  assert.is(store$.getState(), 1)
 })
 
-test('should update created tied store with existing event', async () => {
+test('should ignore undefined on created store with existing event', async () => {
   const updated = createEvent()
   const watch = snoop(() => undefined)
   updated.watch(watch.fn)
 
-  const createMemoryStore = withMemory(createStore, updated)
-  const store$ = createMemoryStore(0, {
-    key: 'test',
-    updateAfter: 0,
-    updateValue: 2,
-  })
+  const createVoidStore = withVoid(createStore, updated)
+  const store$ = createVoidStore(0, { key: 'test', updateAfter: 0 })
 
   assert.is(store$.getState(), 0)
   assert.is(watch.callCount, 0)
@@ -66,16 +61,16 @@ test('should update created tied store with existing event', async () => {
   assert.is(watch.callCount, 0)
 
   await new Promise((resolve) => setTimeout(resolve, 1))
-  assert.is(store$.getState(), 2)
+  assert.is(store$.getState(), 1)
   assert.is(watch.callCount, 1)
-  assert.equal(watch.calls[0].arguments, [2])
+  assert.equal(watch.calls[0].arguments, [undefined])
 })
 
-test('should update existing tied store with new event', async () => {
+test('should ignore undefined on existing store with new event', async () => {
   const store$ = createStore(0)
   const tied$ = tie(
     store$,
-    { with: memoryAdapter, key: 'test', updateAfter: 0, updateValue: 2 },
+    { with: voidAdapter, key: 'test', updateAfter: 0 },
     createEvent
   )
 
@@ -86,22 +81,21 @@ test('should update existing tied store with new event', async () => {
   assert.is(tied$.getState(), 1)
 
   await new Promise((resolve) => setTimeout(resolve, 1))
-  assert.is(store$.getState(), 2)
-  assert.is(tied$.getState(), 2)
+  assert.is(store$.getState(), 1)
+  assert.is(tied$.getState(), 1)
 })
 
-test('should update existing tied store with existing event', async () => {
+test('should ignore undefined on existing store with existing event', async () => {
   const updated = createEvent()
   const watch = snoop(() => undefined)
   updated.watch(watch.fn)
 
   const store$ = createStore(0)
   const tied$ = tie(store$, {
-    with: memoryAdapter,
+    with: voidAdapter,
     using: updated,
     key: 'test',
     updateAfter: 0,
-    updateValue: 2,
   })
 
   assert.is(store$.getState(), 0)
@@ -113,10 +107,10 @@ test('should update existing tied store with existing event', async () => {
   assert.is(watch.callCount, 0)
 
   await new Promise((resolve) => setTimeout(resolve, 1))
-  assert.is(store$.getState(), 2)
-  assert.is(tied$.getState(), 2)
+  assert.is(store$.getState(), 1)
+  assert.is(tied$.getState(), 1)
   assert.is(watch.callCount, 1)
-  assert.equal(watch.calls[0].arguments, [2])
+  assert.equal(watch.calls[0].arguments, [undefined])
 })
 
 test.run()

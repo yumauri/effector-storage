@@ -8,9 +8,14 @@ import { tie, ErrorHandler, UpdateHandler, StorageAdapter } from '../src'
 // Error adapter
 //
 
-const errorAdapter: StorageAdapter = <State>(
+interface ErrorAdapterConfig {
+  key: string
+  errorAfter: number
+}
+
+const errorAdapter: StorageAdapter<ErrorAdapterConfig> = <State>(
   defaultValue: State,
-  config: { [key: string]: any },
+  config: ErrorAdapterConfig,
   on: {
     error: ErrorHandler
     update: UpdateHandler

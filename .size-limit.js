@@ -1,11 +1,11 @@
 module.exports = [
   {
     path: 'build/index.js',
-    limit: '347 B',
+    limit: '358 B',
   },
   {
     path: 'build/index.cjs',
-    limit: '339 B',
+    limit: '350 B',
   },
   {
     path: 'build/storage/index.js',
@@ -17,18 +17,18 @@ module.exports = [
   },
   {
     path: 'build/local/index.js',
-    limit: '545 B',
+    limit: '556 B',
   },
   {
     path: 'build/local/index.cjs',
-    limit: '582 B',
+    limit: '593 B',
   },
   {
     path: 'build/session/index.js',
-    limit: '548 B',
+    limit: '558 B',
   },
   {
     path: 'build/session/index.cjs',
-    limit: '584 B',
+    limit: '596 B',
   },
 ]

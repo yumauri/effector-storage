@@ -1,8 +1,11 @@
-import { ErrorHandler, UpdateHandler, StorageAdapter } from '..'
+import { ErrorHandler, UpdateHandler, StorageAdapter, StorageAdapterConfig } from '..'
 
-export const storage = (storage: Storage, sync: boolean): StorageAdapter => <State>(
+export const storage = (
+  storage: Storage,
+  sync: boolean
+): StorageAdapter<StorageAdapterConfig> => <State>(
   defaultValue: State,
-  config: { [key: string]: any },
+  config: StorageAdapterConfig,
   on: {
     error: ErrorHandler
     update: UpdateHandler
