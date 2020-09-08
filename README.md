@@ -5,82 +5,25 @@
 [![NPM](https://img.shields.io/npm/v/effector-storage.svg)](https://www.npmjs.com/package/effector-storage)
 ![Made with Love](https://img.shields.io/badge/made%20with-❤-red.svg)
 
-Small module for [Effector](https://github.com/zerobias/effector) ☄️ to sync stores with `localStorage` (or `sessionStorage`).<br>
-Heavily inspired by [effector-localstorage](https://github.com/lessmess-dev/effector-localstorage).
+Small module for [Effector](https://github.com/zerobias/effector) ☄️ to sync stores with different storages (local storage, session storage, async storage, IndexedDB, cookies, server side storage, etc).
 
 ## Install
 
 ```bash
-$ yarn add effector-storage
+$ yarn add effector-storage@next
 ```
 
 Or using `npm`
 
 ```bash
-$ npm install --save effector-storage
+$ npm install --save effector-storage@next
 ```
 
 ## Usage
 
 ```javascript
-import { createEvent, createStore } from 'effector'
-import withStorage from 'effector-storage'
-
-const increment = createEvent('increment')
-const decrement = createEvent('decrement')
-const resetCounter = createEvent('reset counter')
-
-// ↓ create wrapper, uses localStorage by default
-const createStorageStore = withStorage(createStore)
-
-// ↓ or create wrapper, which uses sessionStorage
-// const createStorageStore = withStorage(createStore, sessionStorage)
-
-const counter = createStorageStore(0, { key: 'counter' }) // ← use wrapper
-  .catch(err => console.log(err)) // ← setup error handling
-  .on(increment, state => state + 1)
-  .on(decrement, state => state - 1)
-  .reset(resetCounter)
+// TODO
 ```
-
-## Options
-
-While creating store, function, enchanced with `withStorage`, accepts same arguments, as usual `createStore`, with one difference - it is mandatory to set `key` in options. This key will be used for storage key.
-
-## Synchronize store between different tabs/windows
-
-Local storage has one awesome feature — it can be synced between two (or more) widows/tabs. Window has [storage](https://www.w3schools.com/jsref/event_storage_url.asp) event, which is only triggered when a window **other than itself** makes the changes.
-
-This way it is possible to synchronise counter on two tabs of a browser. Or, closer to reality, abstract flag `authenticated`, when user performs logout on one tab — that triggers logout on all other opened tabs with the same application.
-
-To make store synchronizable, just use `effector-storage/sync` instead of `effector-storage`. Also it will need specifying of `createEvent` function (to create event internally).
-
-Note, that synchronized store could contain `null` in case when different tab put something but JSON in the local storage. Hence its type is always `<State | null>`.
-
-```javascript
-import { createEvent, createStore } from 'effector'
-import withStorage from 'effector-storage/sync'
-
-const increment = createEvent('increment')
-const decrement = createEvent('decrement')
-const resetCounter = createEvent('reset counter')
-
-// ↓ create wrapper, uses localStorage by default
-const createStorageStore = withStorage(createStore, createEvent)
-
-// you can use it with sessionStorage, but this makes no sense,
-// because different tabs/windows doesn't share same session storage
-
-const counter = createStorageStore(0, { key: 'counter' }) // ← use wrapper
-  .catch(err => console.log(err)) // ← setup error handling
-  .on(increment, state => state + 1)
-  .on(decrement, state => state - 1)
-  .reset(resetCounter)
-```
-
-## ES modules
-
-`effector-storage` provides ES modules out of the box. You do not need to do anything to use it as ES module in Webpack, Parcel, or Node.js.
 
 ## Sponsored
 

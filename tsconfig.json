@@ -1,16 +1,16 @@
 {
   "compilerOptions": {
     "strict": true,
-    "target": "es5",
+    "target": "es2017",
     "module": "commonjs",
     "moduleResolution": "node",
-    "lib": ["es2015", "dom"],
-    "noImplicitAny": false,
+    "lib": ["es2017", "dom"],
+    "skipLibCheck": true,
+    "noImplicitAny": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "removeComments": true,
-    "declaration": true
+    "noEmit": true
   },
-  "include": ["index.ts", "sync/index.ts"],
-  "exclude": ["*.d.ts", "*.spec.ts"]
+  "include": ["src/**/*", "tests/**/*"],
+  "exclude": ["node_modules/**/*"]
 }
