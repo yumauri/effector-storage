@@ -8,9 +8,16 @@ import { tie, StorageAdapter } from '../src'
 // Dumb fake adapter
 //
 
-const dumbAdapter: StorageAdapter = (init) => <T>(value?: T) => value ?? init
-const nullAdapter: StorageAdapter = () => <T>(value?: T) =>
-  value === undefined ? (null as any) : undefined
+const dumbAdapter: StorageAdapter = <T>(init: T) => ({
+  get: () => init,
+  set: (value: T) => value,
+})
+
+const nullAdapter: StorageAdapter = () => ({
+  get: () => null as any,
+  set: () => undefined,
+})
+
 const cfg = { with: dumbAdapter }
 
 //

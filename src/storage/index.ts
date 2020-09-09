@@ -45,5 +45,8 @@ export const storage = (
     })
   }
 
-  return (value?: State) => (value === undefined ? get(defaultValue) : set(value))
+  return {
+    get: () => get(defaultValue),
+    set,
+  }
 }

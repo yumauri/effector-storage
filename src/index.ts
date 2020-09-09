@@ -27,9 +27,8 @@ export interface StorageAdapterConfig {
 }
 
 export interface StorageAdapterValue<State> {
-  // TODO: redo to methods
-  (): State | undefined // get value
-  (value: State): void // set value
+  get(): State | undefined | void
+  set(value: State): void
 }
 
 export interface StorageAdapter<
@@ -199,7 +198,7 @@ function creator<AdapterConfig extends StorageAdapterConfig>(
     const value = cfg.with(defaultState, Object.assign({}, cfg, config), on)
 
     // storage value
-    const initial = value()
+    const initial = value.get()
 
     // create effector store, with rehydrated value
     const store = createStore<State>(
@@ -223,7 +222,7 @@ function creator<AdapterConfig extends StorageAdapterConfig>(
     }
 
     // watch store changes, and save to storage
-    store.watch(value)
+    store.watch(value.set)
 
     // return modified effector store
     return store as StorageStore<State>
@@ -248,7 +247,7 @@ function store<State, AdapterConfig extends StorageAdapterConfig>(
   const value = cfg.with(current, cfg, on)
 
   // storage value
-  const initial = value()
+  const initial = value.get()
 
   // add update event listener and update handler
   if (event) {
@@ -267,7 +266,7 @@ function store<State, AdapterConfig extends StorageAdapterConfig>(
   }
 
   // watch store changes, and save to storage
-  store.watch(value)
+  store.watch(value.set)
 
   // return modified effector store
   return store as StorageStore<State>

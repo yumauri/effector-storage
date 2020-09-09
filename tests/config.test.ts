@@ -16,7 +16,10 @@ interface GreetAdapterConfig {
 const greetAdapter: StorageAdapter<GreetAdapterConfig> = <State>(
   _defaultValue: State,
   config: GreetAdapterConfig
-) => () => `${config.first} ${config.last}` as any
+) => ({
+  get: () => `${config.first} ${config.last}` as any,
+  set: () => undefined,
+})
 
 //
 // Tests

@@ -25,7 +25,10 @@ const voidAdapter: StorageAdapter<VoidAdapterConfig> = <State>(
     setTimeout(() => on.update(undefined), config.updateAfter)
   }
 
-  return () => undefined
+  return {
+    get: () => undefined,
+    set: () => undefined,
+  }
 }
 
 const withVoid = tie({ with: voidAdapter })

@@ -28,7 +28,10 @@ const memoryAdapter: StorageAdapter<MemoryAdapterConfig> = <State>(
     setTimeout(() => on.update(config.updateValue ?? defaultValue), config.updateAfter)
   }
 
-  return (value?: State) => (value === undefined ? current : (current = value))
+  return {
+    get: () => current,
+    set: (value: State) => (current = value),
+  }
 }
 
 const withMemory = tie({ with: memoryAdapter })

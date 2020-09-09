@@ -28,10 +28,10 @@ const errorAdapter: StorageAdapter<ErrorAdapterConfig> = <State>(
     }, config.errorAfter)
   }
 
-  return (value?: State) =>
-    value === undefined
-      ? (on.error('Get value from error adapter'), defaultValue as any)
-      : on.error('Set value to error adapter')
+  return {
+    get: () => on.error('Get value from error adapter'),
+    set: () => on.error('Set value to error adapter'),
+  }
 }
 
 const withError = tie({ with: errorAdapter })
