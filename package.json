@@ -31,7 +31,7 @@
     "test:node": "nyc --reporter=lcov --reporter=text uvu -r ts-node/register -i mock tests",
     "clean": "rm -rf build coverage .nyc_output",
     "size": "size-limit",
-    "release": "np --yolo --no-release-draft --contents ./build",
+    "release": "np --yolo --no-release-draft --no-2fa --contents ./build --tag next",
     "version": "yarn build"
   },
   "devDependencies": {
