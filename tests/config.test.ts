@@ -7,27 +7,29 @@ import { tie, StorageAdapter } from '../src'
 // Config test adapter
 //
 
-interface ConfigAdapterConfig {
+interface GreetAdapterConfig {
   key: string
-  set?: number
-  multiply?: number
+  first?: string
+  last?: string
 }
 
-const configAdapter: StorageAdapter<ConfigAdapterConfig> = <State>(
+const greetAdapter: StorageAdapter<GreetAdapterConfig> = <State>(
   _defaultValue: State,
-  config: ConfigAdapterConfig
-) => () => (config.set! * config.multiply!) as any // eslint-disable-line @typescript-eslint/no-non-null-assertion
+  config: GreetAdapterConfig
+) => () => `${config.first} ${config.last}` as any
 
 //
 // Tests
 //
 
 test('should pass config options to adapter', async () => {
-  const createConfigStore = tie(createStore, { with: configAdapter, set: 100 })
-  const store1$ = createConfigStore(0, { key: 'test', multiply: 2.5 })
-  const store2$ = createConfigStore(0, { key: 'test', multiply: 5 })
-  assert.is(store1$.getState(), 250)
-  assert.is(store2$.getState(), 500)
+  const createConfigStore = tie(createStore, { with: greetAdapter, first: 'Hello' })
+  const store1$ = createConfigStore('', { key: 'test', last: 'world' })
+  const store2$ = createConfigStore('', { key: 'test', last: 'you' })
+  const store3$ = createConfigStore('', { key: 'test', first: 'Goodbye', last: 'world' })
+  assert.is(store1$.getState(), 'Hello world')
+  assert.is(store2$.getState(), 'Hello you')
+  assert.is(store3$.getState(), 'Goodbye world')
 })
 
 test.run()

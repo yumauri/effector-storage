@@ -1,8 +1,8 @@
 import { test } from 'uvu'
 import * as assert from 'uvu/assert'
 import { snoop } from 'snoop'
-import { createStore } from 'effector'
-import { tie, ErrorHandler, UpdateHandler, StorageAdapter } from '../src'
+import { createStore, Event } from 'effector'
+import { tie, ErrorHandler, StorageAdapter } from '../src'
 
 //
 // Error adapter
@@ -18,7 +18,7 @@ const errorAdapter: StorageAdapter<ErrorAdapterConfig> = <State>(
   config: ErrorAdapterConfig,
   on: {
     error: ErrorHandler
-    update: UpdateHandler
+    update: Event<State | undefined>
   }
 ) => {
   if (config.errorAfter !== undefined) {

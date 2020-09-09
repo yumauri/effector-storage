@@ -1,25 +1,25 @@
 import { test } from 'uvu'
 import * as assert from 'uvu/assert'
 import { snoop } from 'snoop'
-import { createStore, createEvent } from 'effector'
-import { tie, ErrorHandler, UpdateHandler, StorageAdapter } from '../src'
+import { createStore, createEvent, Event } from 'effector'
+import { tie, ErrorHandler, StorageAdapter } from '../src'
 
 //
 // Memory adapter
 //
 
-interface MemoryAdapterConfig {
+interface MemoryAdapterConfig<State = any> {
   key: string
   updateAfter: number
-  updateValue: number
+  updateValue: State
 }
 
 const memoryAdapter: StorageAdapter<MemoryAdapterConfig> = <State>(
   defaultValue: State,
-  config: MemoryAdapterConfig,
+  config: MemoryAdapterConfig<State>,
   on: {
     error: ErrorHandler
-    update: UpdateHandler
+    update: Event<State | undefined>
   }
 ) => {
   let current = defaultValue

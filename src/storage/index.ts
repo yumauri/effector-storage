@@ -1,4 +1,5 @@
-import { ErrorHandler, UpdateHandler, StorageAdapter, StorageAdapterConfig } from '..'
+import { Event } from 'effector'
+import { ErrorHandler, StorageAdapter, StorageAdapterConfig } from '..'
 
 export const storage = (
   storage: Storage,
@@ -8,7 +9,7 @@ export const storage = (
   config: StorageAdapterConfig,
   on: {
     error: ErrorHandler
-    update: UpdateHandler
+    update: Event<State | undefined>
   }
 ) => {
   const key = config.key
@@ -39,7 +40,7 @@ export const storage = (
         if (e.key === key) on.update(get(null as any, e.newValue))
 
         // `key` attribute is `null` when the change is caused by the storage `clear()` method
-        if (e.key === null) on.update(null)
+        if (e.key === null) on.update(null as any)
       }
     })
   }

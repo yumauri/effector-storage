@@ -1,8 +1,8 @@
 import { test } from 'uvu'
 import * as assert from 'uvu/assert'
 import { snoop } from 'snoop'
-import { createStore, createEvent } from 'effector'
-import { tie, ErrorHandler, UpdateHandler, StorageAdapter } from '../src'
+import { createStore, createEvent, Event } from 'effector'
+import { tie, ErrorHandler, StorageAdapter } from '../src'
 
 //
 // Void adapter
@@ -18,7 +18,7 @@ const voidAdapter: StorageAdapter<VoidAdapterConfig> = <State>(
   config: VoidAdapterConfig,
   on: {
     error: ErrorHandler
-    update: UpdateHandler
+    update: Event<State | undefined>
   }
 ) => {
   if (config.updateAfter !== undefined) {
