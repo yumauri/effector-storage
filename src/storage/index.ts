@@ -1,12 +1,12 @@
 import { Event } from 'effector'
-import { ErrorHandler, StorageAdapter, StorageAdapterConfig } from '..'
+import { ErrorHandler, StorageAdapter, MandatoryAdapterConfig } from '..'
 
 export const storage = (
   storage: Storage,
   sync: boolean
-): StorageAdapter<StorageAdapterConfig> => <State>(
+): StorageAdapter<MandatoryAdapterConfig> => <State>(
   defaultValue: State,
-  config: StorageAdapterConfig,
+  config: MandatoryAdapterConfig,
   on: {
     error: ErrorHandler
     update: Event<State | undefined>

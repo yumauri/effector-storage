@@ -22,7 +22,7 @@ export interface ErrorHandler {
   (error: any): void
 }
 
-export interface StorageAdapterConfig {
+export interface MandatoryAdapterConfig {
   readonly key: string
 }
 
@@ -32,7 +32,7 @@ export interface StorageAdapterValue<State> {
 }
 
 export interface StorageAdapter<
-  AdapterConfig extends StorageAdapterConfig = StorageAdapterConfig
+  AdapterConfig extends MandatoryAdapterConfig = MandatoryAdapterConfig
 > {
   <State>(
     defaultValue: State,
@@ -54,16 +54,18 @@ export interface TiedStoreCreator<AdapterConfig> {
   >
 }
 
-export interface Config<AdapterConfig extends StorageAdapterConfig> {
+export interface Config<AdapterConfig extends MandatoryAdapterConfig> {
   readonly with: StorageAdapter<AdapterConfig>
   readonly using?: EventCreator | Event<any>
   readonly [key: string]: any
 }
 
-export type ConfigEx<AdapterConfig extends StorageAdapterConfig> = Config<AdapterConfig> &
+export type ConfigEx<AdapterConfig extends MandatoryAdapterConfig> = Config<
+  AdapterConfig
+> &
   AdapterConfig
 
-const isConfig = <T extends StorageAdapterConfig>(x: unknown): x is Config<T> =>
+const isConfig = <T extends MandatoryAdapterConfig>(x: unknown): x is Config<T> =>
   typeof x === 'object' && x !== null && typeof (x as any).with === 'function'
 
 function assert(x: unknown, message: string): asserts x {
@@ -78,7 +80,7 @@ function assert(x: unknown, message: string): asserts x {
 
 export function tie<
   State,
-  AdapterConfig extends StorageAdapterConfig = StorageAdapterConfig
+  AdapterConfig extends MandatoryAdapterConfig = MandatoryAdapterConfig
 >(
   store: Store<State>,
   config: ConfigEx<AdapterConfig>,
@@ -87,7 +89,7 @@ export function tie<
 
 export function tie<
   State,
-  AdapterConfig extends StorageAdapterConfig = StorageAdapterConfig
+  AdapterConfig extends MandatoryAdapterConfig = MandatoryAdapterConfig
 >(
   config: ConfigEx<AdapterConfig>,
   store: Store<State>,
@@ -96,25 +98,31 @@ export function tie<
 
 export function tie<State>(
   store: Store<State>
-): <AdapterConfig extends StorageAdapterConfig = StorageAdapterConfig>(
+): <AdapterConfig extends MandatoryAdapterConfig = MandatoryAdapterConfig>(
   config: ConfigEx<AdapterConfig>,
   using?: EventCreator | Event<State | undefined>
 ) => StorageStore<State>
 
-export function tie<AdapterConfig extends StorageAdapterConfig = StorageAdapterConfig>(
+export function tie<
+  AdapterConfig extends MandatoryAdapterConfig = MandatoryAdapterConfig
+>(
   config: ConfigEx<AdapterConfig>
 ): <State>(
   store: Store<State>,
   using?: EventCreator | Event<State | undefined>
 ) => StorageStore<State>
 
-export function tie<AdapterConfig extends StorageAdapterConfig = StorageAdapterConfig>(
+export function tie<
+  AdapterConfig extends MandatoryAdapterConfig = MandatoryAdapterConfig
+>(
   createStore: StoreCreator,
   config: Config<AdapterConfig>,
   using?: EventCreator | Event<any>
 ): TiedStoreCreator<AdapterConfig>
 
-export function tie<AdapterConfig extends StorageAdapterConfig = StorageAdapterConfig>(
+export function tie<
+  AdapterConfig extends MandatoryAdapterConfig = MandatoryAdapterConfig
+>(
   config: Config<AdapterConfig>,
   createStore: StoreCreator,
   using?: EventCreator | Event<any>
@@ -122,12 +130,14 @@ export function tie<AdapterConfig extends StorageAdapterConfig = StorageAdapterC
 
 export function tie(
   createStore: StoreCreator
-): <AdapterConfig extends StorageAdapterConfig = StorageAdapterConfig>(
+): <AdapterConfig extends MandatoryAdapterConfig = MandatoryAdapterConfig>(
   config: Config<AdapterConfig>,
   using?: EventCreator | Event<any>
 ) => TiedStoreCreator<AdapterConfig>
 
-export function tie<AdapterConfig extends StorageAdapterConfig = StorageAdapterConfig>(
+export function tie<
+  AdapterConfig extends MandatoryAdapterConfig = MandatoryAdapterConfig
+>(
   config: Config<AdapterConfig>
 ): (
   createStore: StoreCreator,
@@ -140,7 +150,7 @@ export function tie<AdapterConfig extends StorageAdapterConfig = StorageAdapterC
 
 export function tie<
   State = void,
-  AdapterConfig extends StorageAdapterConfig = StorageAdapterConfig
+  AdapterConfig extends MandatoryAdapterConfig = MandatoryAdapterConfig
 >(
   arg1: StoreCreator | Store<State> | Config<AdapterConfig>,
   arg2?: StoreCreator | Store<State> | Config<AdapterConfig>,
@@ -183,7 +193,7 @@ const _on = <State>() => ({
   update: ((() => undefined) as any) as Event<State | undefined>,
 })
 
-function creator<AdapterConfig extends StorageAdapterConfig>(
+function creator<AdapterConfig extends MandatoryAdapterConfig>(
   createStore: StoreCreator,
   cfg: Config<AdapterConfig>,
   event?: Event<any>
@@ -233,7 +243,7 @@ function creator<AdapterConfig extends StorageAdapterConfig>(
 //
 //
 
-function store<State, AdapterConfig extends StorageAdapterConfig>(
+function store<State, AdapterConfig extends MandatoryAdapterConfig>(
   store: Store<State>,
   cfg: ConfigEx<AdapterConfig>,
   event?: Event<State | undefined>
