@@ -2,27 +2,26 @@ import { test } from 'uvu'
 import * as assert from 'uvu/assert'
 import { snoop } from 'snoop'
 import { createStore, createEvent, Event } from 'effector'
-import { tie, ErrorHandler, StorageAdapter } from '../src'
+import { tie, ErrorHandler, StorageAdapter, MandatoryAdapterConfig } from '../src'
 
 //
 // Void adapter
 //
 
 interface VoidAdapterConfig {
-  key: string
   updateAfter: number
 }
 
 const voidAdapter: StorageAdapter<VoidAdapterConfig> = <State>(
   _defaultValue: State,
-  config: VoidAdapterConfig,
+  config: MandatoryAdapterConfig & VoidAdapterConfig,
   on: {
     error: ErrorHandler
-    update: Event<State | undefined>
+    update: Event<State>
   }
 ) => {
   if (config.updateAfter !== undefined) {
-    setTimeout(() => on.update(undefined), config.updateAfter)
+    setTimeout(() => on.update(undefined as any), config.updateAfter)
   }
 
   return {
@@ -38,7 +37,7 @@ const withVoid = tie({ with: voidAdapter })
 //
 
 test('should ignore undefined on created store with created event', async () => {
-  const createVoidStore = withVoid(createStore, createEvent)
+  const createVoidStore = withVoid(createStore)
   const store$ = createVoidStore(0, { key: 'test', updateAfter: 0 })
 
   assert.is(store$.getState(), 0)
@@ -54,7 +53,7 @@ test('should ignore undefined on created store with existing event', async () =>
   const watch = snoop(() => undefined)
   updated.watch(watch.fn)
 
-  const createVoidStore = withVoid(createStore, updated)
+  const createVoidStore = withVoid({ using: updated })(createStore)
   const store$ = createVoidStore(0, { key: 'test', updateAfter: 0 })
 
   assert.is(store$.getState(), 0)
@@ -71,11 +70,7 @@ test('should ignore undefined on created store with existing event', async () =>
 
 test('should ignore undefined on existing store with new event', async () => {
   const store$ = createStore(0)
-  const tied$ = tie(
-    store$,
-    { with: voidAdapter, key: 'test', updateAfter: 0 },
-    createEvent
-  )
+  const tied$ = tie({ store: store$, with: voidAdapter, key: 'test', updateAfter: 0 })
 
   assert.is(store$.getState(), 0)
   assert.is(tied$.getState(), 0)
@@ -89,12 +84,13 @@ test('should ignore undefined on existing store with new event', async () => {
 })
 
 test('should ignore undefined on existing store with existing event', async () => {
-  const updated = createEvent()
+  const updated = createEvent<number>()
   const watch = snoop(() => undefined)
   updated.watch(watch.fn)
 
   const store$ = createStore(0)
-  const tied$ = tie(store$, {
+  const tied$ = tie({
+    store: store$,
     with: voidAdapter,
     using: updated,
     key: 'test',

@@ -26,7 +26,7 @@ const greetAdapter: StorageAdapter<GreetAdapterConfig> = <State>(
 //
 
 test('should pass config options to adapter', async () => {
-  const createConfigStore = tie(createStore, { with: greetAdapter, first: 'Hello' })
+  const createConfigStore = tie({ with: greetAdapter, first: 'Hello' })(createStore)
   const store1$ = createConfigStore('', { key: 'test', last: 'world' })
   const store2$ = createConfigStore('', { key: 'test', last: 'you' })
   const store3$ = createConfigStore('', { key: 'test', first: 'Goodbye', last: 'world' })

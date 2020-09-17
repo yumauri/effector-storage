@@ -1,8 +1,41 @@
-//
-// Type definitions
-//
+import type { Store, Event, Domain } from 'effector'
+import { createStore, createEvent, is } from 'effector'
 
-import { createStore, createEvent, Store, Event } from 'effector'
+/*
+ * Helper utility types
+ */
+
+// https://stackoverflow.com/questions/52984808/is-there-a-way-to-get-all-required-properties-of-a-typescript-object
+type RequiredKeys<T> = {
+  [K in keyof T]-?: {} extends Pick<T, K> ? never : K // eslint-disable-line @typescript-eslint/ban-types
+}[keyof T]
+
+// this type detector is from 'conditional-type-checks' library
+// https://github.com/dsherret/conditional-type-checks/blob/01215056e8b97a28c5b0311b42ed48c70c8723fe/index.ts#L55
+type IsAny<T> = 0 extends 1 & T ? true : false
+
+// this type detector is from 'conditional-type-checks' library
+// https://github.com/dsherret/conditional-type-checks/blob/01215056e8b97a28c5b0311b42ed48c70c8723fe/index.ts#L60
+type IsNever<T> = [T] extends [never] ? true : false
+
+// this type detector is from 'conditional-type-checks' library
+// https://github.com/dsherret/conditional-type-checks/blob/01215056e8b97a28c5b0311b42ed48c70c8723fe/index.ts#L65
+type IsUnknown<T> = IsNever<T> extends false
+  ? T extends unknown
+    ? unknown extends T
+      ? IsAny<T> extends false
+        ? true
+        : false
+      : false
+    : false
+  : false
+
+// returns New type in case it is not <unknown>, otherwise returns Prev type
+type Collect<Prev, New> = IsUnknown<New> extends true ? Prev : New
+
+/*
+ * Effector types
+ */
 
 // there are no exported types for `createStore` and `createEvent`, so, infer it
 type TStoreCreator = typeof createStore
@@ -18,6 +51,10 @@ export interface EventCreator extends TEventCreator {} // eslint-disable-line @t
 // there is no exported type for `createStore` config object, so, infer it
 type StoreCreatorConfig = NonNullable<Parameters<StoreCreator>[1]>
 
+/*
+ * Library types
+ */
+
 export interface ErrorHandler {
   (error: any): void
 }
@@ -26,186 +63,163 @@ export interface MandatoryAdapterConfig {
   readonly key: string
 }
 
-export interface StorageAdapterValue<State> {
-  get(): State | undefined | void
-  set(value: State): void
-}
-
-export interface StorageAdapter<
-  AdapterConfig extends MandatoryAdapterConfig = MandatoryAdapterConfig
-> {
+export interface StorageAdapter<AdapterConfig = void> {
   <State>(
     defaultValue: State,
-    config: AdapterConfig,
+    config: AdapterConfig & MandatoryAdapterConfig,
     on: {
       error: ErrorHandler
-      update: Event<State | undefined>
+      update: Event<State>
     }
-  ): StorageAdapterValue<State>
+  ): {
+    get(): State | undefined | void
+    set(value: State): void
+  }
+}
+
+export interface Config<AdapterConfig, State = any> extends MandatoryAdapterConfig {
+  readonly with: StorageAdapter<AdapterConfig>
+  readonly store?: Store<State>
+  readonly using?: Event<State>
+  readonly domain?: Domain
 }
 
 export interface StorageStore<State> extends Store<State> {
   catch(handler: ErrorHandler): StorageStore<State>
 }
 
-export interface TiedStoreCreator<AdapterConfig> {
-  <State>(defaultState: State, config: StoreCreatorConfig & AdapterConfig): StorageStore<
-    State
-  >
+export interface TiedStoreCreator<
+  AdapterConfig,
+  Passed extends string | number | symbol = never,
+  MergedCfg = AdapterConfig & MandatoryAdapterConfig,
+  DefaultCfg = Pick<MergedCfg, keyof Omit<MergedCfg, Passed>> & Partial<MergedCfg>,
+  Cfg extends DefaultCfg = DefaultCfg
+> {
+  <State>(defaultState: State, config: StoreCreatorConfig & Cfg): StorageStore<State>
 }
 
-export interface Config<AdapterConfig extends MandatoryAdapterConfig> {
-  readonly with: StorageAdapter<AdapterConfig>
-  readonly using?: EventCreator | Event<any>
-  readonly [key: string]: any
+/*
+ * Tie public interface
+ */
+
+// prettier-ignore
+export interface Tie<A = unknown, S = unknown, K extends string | number | symbol = never> {
+  // single argument - store
+  <State>(state: Store<State>)
+    : IsUnknown<A> extends true
+      ? Tie<A, State, K | 'store'>
+      : RequiredKeys<Config<A, State>> extends K | 'store'
+        ? StorageStore<State>
+        : Tie<A, State, K | 'store'>
+
+  // single argument - store creator
+  (createStore: StoreCreator)
+    : IsUnknown<A> extends false
+      ? 'with' extends K
+        ? TiedStoreCreator<A, K>
+        : never
+      : never
+
+  // single argument - domain
+  (domain: Domain)
+    : IsUnknown<A> extends false
+      ? 'with' extends K
+        ? TiedStoreCreator<A, K>
+        : never
+      : never
+
+  // single argument - config
+  <C = Partial<Config<A, S> & A>>(config: C)
+    : C extends Partial<Config<infer AdapterConfig, infer State>>
+      ? IsUnknown<Collect<A, AdapterConfig>> extends true
+        ? Tie<unknown, Collect<S, State>, K | keyof C>
+        : IsUnknown<Collect<S, State>> extends true
+          ? Tie<Collect<A, AdapterConfig>, unknown, K | keyof C>
+          : RequiredKeys<Config<Collect<A, AdapterConfig>, Collect<S, State>>> extends K | keyof C
+            ? StorageStore<Collect<S, State>>
+            : Tie<Collect<A, AdapterConfig>, Collect<S, State>, K | keyof C>
+      : never
 }
 
-export type ConfigEx<AdapterConfig extends MandatoryAdapterConfig> = Config<
-  AdapterConfig
-> &
-  AdapterConfig
+/*
+ * Tie implementation
+ */
 
-const isConfig = <T extends MandatoryAdapterConfig>(x: unknown): x is Config<T> =>
-  typeof x === 'object' && x !== null && typeof (x as any).with === 'function'
+export const tie: Tie = ((
+  arg: Store<any> | StoreCreator | Domain | Partial<Config<any>>
+) =>
+  (function curry(
+    _config: Partial<Config<any>> = {},
+    _adapter?: StorageAdapter<any>,
+    _store?: Store<any>,
+    _create?: StoreCreator
+  ) {
+    return (arg: any) => {
+      let config = _config
+      let adapter = _adapter
+      let store = _store
+      let create = _create
 
-function assert(x: unknown, message: string): asserts x {
-  if (x === undefined) {
-    throw new Error(message)
-  }
-}
+      // single argument - store creator
+      if (typeof arg === 'function') {
+        create = arg as StoreCreator
+      }
 
-//
-// Tie overloads
-//
+      // single argument - store
+      else if (is.store(arg)) {
+        store = arg as Store<any>
+      }
 
-export function tie<
-  State,
-  AdapterConfig extends MandatoryAdapterConfig = MandatoryAdapterConfig
->(
-  store: Store<State>,
-  config: ConfigEx<AdapterConfig>,
-  using?: EventCreator | Event<State | undefined>
-): StorageStore<State>
+      // single argument - domain
+      else if (is.domain(arg)) {
+        create = arg.store
+        config = Object.assign({}, config, { domain: arg })
+      }
 
-export function tie<
-  State,
-  AdapterConfig extends MandatoryAdapterConfig = MandatoryAdapterConfig
->(
-  config: ConfigEx<AdapterConfig>,
-  store: Store<State>,
-  using?: EventCreator | Event<State | undefined>
-): StorageStore<State>
+      // single argument - config
+      else {
+        if (arg.with) {
+          adapter = arg.with as StorageAdapter<any>
+        }
+        if (arg.store /* && is.store(arg.store) */) {
+          store = arg.store as Store<any>
+        }
+        config = Object.assign({}, config, arg)
+      }
 
-export function tie<State>(
-  store: Store<State>
-): <AdapterConfig extends MandatoryAdapterConfig = MandatoryAdapterConfig>(
-  config: ConfigEx<AdapterConfig>,
-  using?: EventCreator | Event<State | undefined>
-) => StorageStore<State>
+      if (create !== undefined) {
+        if (adapter === undefined) {
+          throw new Error('Storage adapter is not defined')
+        }
+        return wrapCreator(create, adapter, config as Config<any>)
+      }
 
-export function tie<
-  AdapterConfig extends MandatoryAdapterConfig = MandatoryAdapterConfig
->(
-  config: ConfigEx<AdapterConfig>
-): <State>(
-  store: Store<State>,
-  using?: EventCreator | Event<State | undefined>
-) => StorageStore<State>
-
-export function tie<
-  AdapterConfig extends MandatoryAdapterConfig = MandatoryAdapterConfig
->(
-  createStore: StoreCreator,
-  config: Config<AdapterConfig>,
-  using?: EventCreator | Event<any>
-): TiedStoreCreator<AdapterConfig>
-
-export function tie<
-  AdapterConfig extends MandatoryAdapterConfig = MandatoryAdapterConfig
->(
-  config: Config<AdapterConfig>,
-  createStore: StoreCreator,
-  using?: EventCreator | Event<any>
-): TiedStoreCreator<AdapterConfig>
-
-export function tie(
-  createStore: StoreCreator
-): <AdapterConfig extends MandatoryAdapterConfig = MandatoryAdapterConfig>(
-  config: Config<AdapterConfig>,
-  using?: EventCreator | Event<any>
-) => TiedStoreCreator<AdapterConfig>
-
-export function tie<
-  AdapterConfig extends MandatoryAdapterConfig = MandatoryAdapterConfig
->(
-  config: Config<AdapterConfig>
-): (
-  createStore: StoreCreator,
-  using?: EventCreator | Event<any>
-) => TiedStoreCreator<AdapterConfig>
-
-//
-// Tie implementation
-//
-
-export function tie<
-  State = void,
-  AdapterConfig extends MandatoryAdapterConfig = MandatoryAdapterConfig
->(
-  arg1: StoreCreator | Store<State> | Config<AdapterConfig>,
-  arg2?: StoreCreator | Store<State> | Config<AdapterConfig>,
-  using?: EventCreator | Event<State | undefined>
-): any {
-  const curried = (
-    arg2: StoreCreator | Store<State> | Config<AdapterConfig>,
-    using?: EventCreator | Event<State | undefined>
-  ) => {
-    let creatorOrStore: StoreCreator | Store<State> | undefined
-    let config: Config<AdapterConfig> | undefined
-    let event: Event<State | undefined> | undefined
-
-    isConfig<AdapterConfig>(arg1) ? (config = arg1) : (creatorOrStore = arg1)
-    isConfig<AdapterConfig>(arg2) ? (config = arg2) : (creatorOrStore = arg2)
-
-    assert(creatorOrStore, 'Store creator or store is not defined')
-    assert(config, 'Config is not defined')
-
-    using = using || config.using
-    if (typeof using === 'function') {
-      event = 'kind' in using ? using : using()
+      return store === undefined || adapter === undefined || config.key === undefined
+        ? curry(config, adapter, store, create)
+        : wrapStore(store, config as Config<any>)
     }
-
-    return typeof creatorOrStore === 'function'
-      ? creator(creatorOrStore, config, event)
-      : store(creatorOrStore, config as ConfigEx<AdapterConfig>, event)
-  }
-
-  return arg2 !== undefined ? curried(arg2, using) : curried
-}
+  })()(arg)) as any
 
 //
 //
 //
 
-// TODO: make optional?
-const _on = <State>() => ({
-  error: (() => undefined) as ErrorHandler,
-  update: ((() => undefined) as any) as Event<State | undefined>,
-})
-
-function creator<AdapterConfig extends MandatoryAdapterConfig>(
+function wrapCreator<AdapterConfig>(
   createStore: StoreCreator,
-  cfg: Config<AdapterConfig>,
-  event?: Event<any>
+  adapter: StorageAdapter<AdapterConfig>,
+  cfg: Config<AdapterConfig>
 ): TiedStoreCreator<AdapterConfig> {
   return <State>(
     defaultState: State,
     config: StoreCreatorConfig & AdapterConfig
   ): StorageStore<State> => {
-    const on = _on<State>()
+    const on = {
+      error: (() => undefined) as ErrorHandler,
+      update: cfg.using || (cfg.domain ? cfg.domain.event : createEvent)<State>(),
+    }
 
     // initialize adapter
-    const value = cfg.with(defaultState, Object.assign({}, cfg, config), on)
+    const value = adapter(defaultState, Object.assign({}, cfg, config), on)
 
     // storage value
     const initial = value.get()
@@ -219,11 +233,8 @@ function creator<AdapterConfig extends MandatoryAdapterConfig>(
     // manually set `defaultState` to have .reset method working correct
     store.defaultState = defaultState
 
-    // add update event listener and update handler
-    if (event) {
-      store.on(event, (_, value) => value)
-      on.update = event
-    }
+    // add update event listener
+    store.on(on.update, (_, value) => value)
 
     // add error handler
     ;(store as any).catch = (handler: ErrorHandler) => {
@@ -243,12 +254,14 @@ function creator<AdapterConfig extends MandatoryAdapterConfig>(
 //
 //
 
-function store<State, AdapterConfig extends MandatoryAdapterConfig>(
+function wrapStore<AdapterConfig, State>(
   store: Store<State>,
-  cfg: ConfigEx<AdapterConfig>,
-  event?: Event<State | undefined>
+  cfg: Config<AdapterConfig, State> & AdapterConfig
 ): StorageStore<State> {
-  const on = _on<State>()
+  const on = {
+    error: (() => undefined) as ErrorHandler,
+    update: cfg.using || (cfg.domain ? cfg.domain.event : createEvent)<State>(),
+  }
 
   // current store value
   const current = store.getState()
@@ -256,17 +269,13 @@ function store<State, AdapterConfig extends MandatoryAdapterConfig>(
   // initialize adapter
   const value = cfg.with(current, cfg, on)
 
-  // storage value
+  // add update event listener
+  store.on(on.update, (_, value) => value)
+
+  // update storage value
   const initial = value.get()
-
-  // add update event listener and update handler
-  if (event) {
-    store.on(event, (_, value) => value)
-    on.update = event
-
-    if (initial !== undefined && initial !== current) {
-      event(initial) // push restored value to store
-    }
+  if (initial !== undefined && initial !== current) {
+    on.update(initial) // push restored value to store
   }
 
   // add error handler

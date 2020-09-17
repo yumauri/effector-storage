@@ -1,15 +1,12 @@
 import { Event } from 'effector'
 import { ErrorHandler, StorageAdapter, MandatoryAdapterConfig } from '..'
 
-export const storage = (
-  storage: Storage,
-  sync: boolean
-): StorageAdapter<MandatoryAdapterConfig> => <State>(
+export const storage = (storage: Storage, sync: boolean): StorageAdapter => <State>(
   defaultValue: State,
   config: MandatoryAdapterConfig,
   on: {
     error: ErrorHandler
-    update: Event<State | undefined>
+    update: Event<State>
   }
 ) => {
   const key = config.key

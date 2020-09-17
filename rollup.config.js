@@ -52,8 +52,7 @@ const src = (name) => ({
               bugs: pkg.bugs,
               homepage: pkg.homepage,
               keywords: pkg.keywords,
-              peerDependencies: pkg.peerDependencies,
-              // sideEffects: false,
+              dependencies: pkg.dependencies,
 
               // cjs + esm magic
               type: 'module',
@@ -113,8 +112,10 @@ const dts = (name) => ({
     generateDts({ respectExternal: true }),
     command(
       [
-        `yarn flowgen ${BUILD}/${name}index.d.ts --add-flow-header --no-jsdoc --output-file ${BUILD}/${name}index.js.flow`,
-        `yarn prettier --write ${BUILD}/${name}index.d.ts ${BUILD}/${name}index.js.flow`,
+        // Flow doesn't support conditional types, so, no auto conversion :(
+        // `yarn flowgen ${BUILD}/${name}index.d.ts --add-flow-header --no-jsdoc --output-file ${BUILD}/${name}index.js.flow`,
+        // `yarn prettier --write ${BUILD}/${name}index.d.ts ${BUILD}/${name}index.js.flow`,
+        `yarn prettier --write ${BUILD}/${name}index.d.ts`,
       ],
       { wait: true }
     ),

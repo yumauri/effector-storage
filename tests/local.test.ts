@@ -21,9 +21,10 @@ global.window.localStorage = localStorageMock
 //
 
 test('should export adapter and store creator', async () => {
-  const { localStorage, withStorage } = await import('../src/local')
+  const { localStorage, withStorage, tie } = await import('../src/local')
   assert.type(localStorage, 'function')
   assert.type(withStorage, 'function')
+  assert.type(tie, 'function')
 })
 
 test.run()

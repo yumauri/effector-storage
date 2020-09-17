@@ -1,7 +1,7 @@
 import { test } from 'uvu'
 import * as assert from 'uvu/assert'
 import { snoop } from 'snoop'
-import { createStore, createEvent } from 'effector'
+import { createStore } from 'effector'
 import { createStorageMock } from './mocks/storage.mock'
 import { createEventsMock } from './mocks/events.mock'
 import { tie } from '../src'
@@ -18,10 +18,7 @@ global.addEventListener = events.addEventListener
 
 const mockStorage = createStorageMock()
 const mockStorageAdapter = storage(mockStorage, true)
-const createSyncStorageStore = tie(createStore, {
-  with: mockStorageAdapter,
-  using: createEvent,
-})
+const createSyncStorageStore = tie({ with: mockStorageAdapter })(createStore)
 
 //
 // Tests
@@ -83,10 +80,7 @@ test('sync store should ignore updates from different storage', async () => {
 test('sync store should be erased on storage.clear()', async () => {
   const mockStorage = createStorageMock()
   const mockStorageAdapter = storage(mockStorage, true)
-  const createSyncStorageStore = tie(createStore, {
-    with: mockStorageAdapter,
-    using: createEvent,
-  })
+  const createSyncStorageStore = tie({ with: mockStorageAdapter })(createStore)
 
   const counter$ = createSyncStorageStore(0, { key: 'counter5' })
   assert.is(counter$.getState(), 0)

@@ -17,9 +17,10 @@ global.window.sessionStorage = sessionStorageMock
 //
 
 test('should export adapter and store creator', async () => {
-  const { sessionStorage, withStorage } = await import('../src/session')
+  const { sessionStorage, withStorage, tie } = await import('../src/session')
   assert.type(sessionStorage, 'function')
   assert.type(withStorage, 'function')
+  assert.type(tie, 'function')
 })
 
 test.run()
