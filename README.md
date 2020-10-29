@@ -30,12 +30,12 @@ import { persist } from 'effector-storage/local'
 persist({ store: $counter, key: 'counter' })
 
 // if your storage has a name
-// (set manually of using `effector/babel-plugin`)
+// (which was set manually or using `effector/babel-plugin`)
 // you can omit `key` field - name will be used instead
 persist({ store: $counter })
 ```
 
-Stores, persisted to `localStorage`, are automatically synced between two (or more) windows/tabs. Also, they are synced between instances, so if you will persist two stores in the same key — each store will receive updates from another one.
+Stores, persisted in `localStorage`, are automatically synced between two (or more) windows/tabs. Also, they are synced between instances, so if you will persist two stores with the same key — each store will receive updates from another one.
 
 ### with [sessionStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage)
 
@@ -49,7 +49,7 @@ Stores, persisted in `sessionStorage`, are synced between instances, but not bet
 
 ## Usage with domains
 
-You can use `persist` inside domain's `onCreateStore` hook:
+You can use `persist` inside Domain's `onCreateStore` hook:
 
 ```javascript
 import { createDomain } from 'effector'
@@ -66,7 +66,7 @@ const $store = app.createStore(0, { name: 'store' })
 
 ## FP helpers
 
-There are `persist` forms to use with functional programming style. You can use them, if you like, with domain hook or `.thru()` store method:
+There are special `persist` forms to use with functional programming style. You can use them, if you like, with Domain hook or `.thru()` store method:
 
 ```javascript
 import { createDomain } from 'effector'
@@ -139,11 +139,11 @@ persist({ key?, fail? }?): (store) => Store
 
 ### Returns
 
-- (Store): Same given store. You cannot unsubscribe store using that firm.
+- (Store): Same given store. _You cannot unsubscribe store from storage when using fp forms of `persist`._
 
 ## Sink
 
-If you don't specify `fail` parameter in `persist` function — all errors are forwarded to the special single event `sink`. You can import it and get error from it.
+If you don't specify `fail` parameter in `persist` function — all unhandled errors are forwarded to the special single event `sink`. You can import it and get error from it.
 
 ```javascript
 import { persist, sink } from 'effector-storage/local'
@@ -186,13 +186,19 @@ Since core module _ties_ units with storage adapter — it exports single functi
 import { tie } from 'effector-storage'
 ```
 
-Function `tie` accepts same parameters, as `persist` function, plus new one:
+Function `tie` accepts all the same parameters, as `persist` function, plus new one:
 
 - `with` (_StorageAdapter_): Storage adapter to use.
 
+There is also _fp_ form:
+
+```javascript
+import { tie } from 'effector-storage/fp'
+```
+
 ## Storage adapters
 
-Adapter is a function, which is called by `tie` function, and has following signature:
+Adapter is a function, which is called by `tie` function, and has following interface:
 
 ```typescript
 export interface StorageAdapter {
@@ -206,16 +212,16 @@ export interface StorageAdapter {
 ### Arguments
 
 - `key` (_string_): Unique key to distinguish values in storage
-- `update` (_Function_): Function, which could be called to get value from storage. In fact this is `Effect`, but for adapter this is not important.
+- `update` (_Function_): Function, which could be called to get value from storage. In fact this is `Effect`, but for adapter this is not important, really.
 
 ### Returns
 
 - `{ set, get }` (_{ Function, Function }_): Setter to storage and getter from storage. These functions are used as Effects handlers, and could be sync or async. Also, you don't have to catch exceptions and errors inside those functions — Effects will do that for you.
 
-For example, simplified _localStorage_ adapter could look like this:
+For example, simplified _localStorage_ adapter might looks like this:
 
 ```javascript
-// This is oversimplified example, don't do that in real code :)
+// This is over-simplified example, don't do that in real code :)
 // There is no serialization and deserialization
 // No checks for edge cases
 // But to show an idea - this should fit
@@ -235,7 +241,7 @@ const store = createStore('', { name: 'store' })
 tie({ store, with: localStorageAdapter }) // <- use adapter
 ```
 
-Using that approach, it is possible to implement adapters to any "storage": local storage (already), session storage (already), async storage, IndexedDB, cookies, server side storage, you name it.
+Using that approach, it is possible to implement adapters to any "storage": local storage (_already_), session storage (_already_), async storage, IndexedDB, cookies, server side storage, you name it.
 
 ## TODO
 

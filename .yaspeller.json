@@ -11,6 +11,7 @@
     "Payload",
     "sessionStorage",
     "StorageAdapter",
+    "unhandled",
     "unsubscribe"
   ],
   "ignoreText": [],
