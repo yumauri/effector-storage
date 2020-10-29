@@ -1,0 +1,21 @@
+{
+  "excludeFiles": [".git", ".idea", ".vscode", "node_modules", "build", "coverage", ".nyc_output"],
+  "lang": "en",
+  "fileExtensions": [".md"],
+  "dictionary": [
+    "async",
+    "asynchronously",
+    "fp",
+    "IndexedDB",
+    "localStorage",
+    "Payload",
+    "sessionStorage",
+    "StorageAdapter",
+    "unsubscribe"
+  ],
+  "ignoreText": [],
+  "ignoreUrls": true,
+  "ignoreUppercase": true,
+  "findRepeatWords": false,
+  "maxRequests": 5
+}

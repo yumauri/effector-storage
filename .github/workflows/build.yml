@@ -13,5 +13,6 @@ jobs:
           node-version: 14.x
       - run: yarn
       - run: yarn lint
-      - run: yarn test:node
-      - run: yarn build:dev
+      - run: yarn test
+      - run: yarn build
+      - run: yarn size

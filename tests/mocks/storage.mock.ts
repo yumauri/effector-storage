@@ -1,5 +1,4 @@
-const has = (object: any, key: string) =>
-  Object.prototype.hasOwnProperty.call(object, key)
+const has = (object: any, key: string) => Object.prototype.hasOwnProperty.call(object, key)
 
 export function createStorageMock(): Storage {
   const storage = Object.create(null)

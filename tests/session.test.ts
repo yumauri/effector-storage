@@ -1,5 +1,6 @@
 import { test } from 'uvu'
 import * as assert from 'uvu/assert'
+import { createStore } from 'effector'
 import { createStorageMock } from './mocks/storage.mock'
 
 //
@@ -7,20 +8,30 @@ import { createStorageMock } from './mocks/storage.mock'
 //
 
 declare let global: any
+global.window = global.window || {}
 
-const sessionStorageMock = createStorageMock()
-global.window = {}
-global.window.sessionStorage = sessionStorageMock
+const sessionStorageMock = global.window.sessionStorage || createStorageMock()
+global.sessionStorage = global.window.sessionStorage = sessionStorageMock
 
 //
 // Tests
 //
 
-test('should export adapter and store creator', async () => {
-  const { sessionStorage, withStorage, tie } = await import('../src/session')
+test('should export adapter and `persist` function', async () => {
+  const { sessionStorage, persist, sink } = await import('../src/session')
   assert.type(sessionStorage, 'function')
-  assert.type(withStorage, 'function')
-  assert.type(tie, 'function')
+  assert.type(persist, 'function')
+  assert.type(sink, 'function')
 })
+
+test('should be ok on good parameters', async () => {
+  const { persist } = await import('../src/session')
+  const store$ = createStore(0)
+  assert.not.throws(() => persist({ store: store$ }))
+})
+
+//
+// Launch tests
+//
 
 test.run()

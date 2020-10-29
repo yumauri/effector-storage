@@ -5,7 +5,7 @@
 [![NPM](https://img.shields.io/npm/v/effector-storage.svg)](https://www.npmjs.com/package/effector-storage)
 ![Made with Love](https://img.shields.io/badge/made%20with-❤-red.svg)
 
-Small module for [Effector](https://github.com/zerobias/effector) ☄️ to sync stores with different storages (local storage, session storage, async storage, IndexedDB, cookies, server side storage, etc).
+Small module for [Effector](https://github.com/effector/effector) ☄️ to sync stores with different storages (local storage, session storage, async storage, IndexedDB, cookies, server side storage, etc).
 
 ## Install
 
@@ -21,164 +21,225 @@ $ npm install --save effector-storage@next
 
 ## Simple usage
 
+### with [localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
+
 ```javascript
-import { createEvent, createStore } from 'effector'
-import { withStorage } from 'effector-storage/local'
+import { persist } from 'effector-storage/local'
 
-const increment = createEvent('increment')
-const decrement = createEvent('decrement')
-const resetCounter = createEvent('reset counter')
+// persist store `$counter` in `localStorage` with key 'counter'
+persist({ store: $counter, key: 'counter' })
 
-// ↓ create wrapper
-const createStorageStore = withStorage(createStore)
+// if your storage has a name
+// (set manually of using `effector/babel-plugin`)
+// you can omit `key` field - name will be used instead
+persist({ store: $counter })
+```
 
-const counter = createStorageStore(0, { key: 'counter' }) // ← use wrapper
-  .catch((err) => console.log(err)) // ← setup error handling
+Stores, persisted to `localStorage`, are automatically synced between two (or more) windows/tabs. Also, they are synced between instances, so if you will persist two stores in the same key — each store will receive updates from another one.
+
+### with [sessionStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage)
+
+Same as above, just import `persist` from `'effector-storage/session'`:
+
+```javascript
+import { persist } from 'effector-storage/session'
+```
+
+Stores, persisted in `sessionStorage`, are synced between instances, but not between different windows/tabs.
+
+## Usage with domains
+
+You can use `persist` inside domain's `onCreateStore` hook:
+
+```javascript
+import { createDomain } from 'effector'
+import { persist } from 'effector-storage/local'
+
+const app = createDomain('app')
+
+// this hook will persist every store, created in domain,
+// in `localStorage`, using stores' names as keys
+app.onCreateStore((store) => persist({ store }))
+
+const $store = app.createStore(0, { name: 'store' })
+```
+
+## FP helpers
+
+There are `persist` forms to use with functional programming style. You can use them, if you like, with domain hook or `.thru()` store method:
+
+```javascript
+import { createDomain } from 'effector'
+import { persist } from 'effector-storage/local/fp'
+
+const app = createDomain('app')
+
+// this hook will persist every store, created in domain,
+// in `localStorage`, using stores' names as keys
+app.onCreateStore(persist())
+
+const $store = app.createStore(0, { name: 'store' })
+
+// or persist single store in `localStorage` via .thru
+const $counter = createStore(0)
   .on(increment, (state) => state + 1)
   .on(decrement, (state) => state - 1)
   .reset(resetCounter)
+  .thru(persist({ key: 'counter' }))
+```
+
+## Options
+
+Both
+
+```javascript
+import { persist } from 'effector-storage/local'
+import { persist } from 'effector-storage/session'
+```
+
+has two forms:
+
+```javascript
+persist({ store, key?, fail? }): Subscription
+persist({ source, target, key?, fail? }): Subscription
+```
+
+### Arguments
+
+- `store` (_Store_): Store to synchronize with local/session storage.
+- `source` (_Event_ | _Effect_ | _Store_): Source unit, which updates will be sent to local/session storage.
+- `target` (_Event_ | _Effect_ | _Store_): Target unit, which will receive updates from local/session storage (as well as initial value). Must be different than `source` to avoid circular updates — `source` updates are forwarded directly to `target`.
+- `key`? (_string_): Key for local/session storage, to store value in. If omitted — `store`/`source` name is used. You can use `'effector/babel-plugin'` to have those names automatically.
+- `fail`? (_Event_ | _Effect_ | _Store_): Unit, which will be triggered in case of any error (serialization/deserialization error, storage is full and so on). Payload structure:
+  - `key` (_string_): Same `key` as above.
+  - `operation` (_'set'_ | _'get'_): Did error occurs during setting value to storage or getting value from storage.
+  - `error` (_Error_): Error instance
+  - `value`? (_any_): In case of _'set'_ operation — value from `store`/`source`. In case of _'get'_ operation could contain raw value from storage or could be empty.
+
+### Returns
+
+- (Subscription): You can use this subscription to remove store/source/target association with local/session storage, if you don't need them to be synced anymore.
+
+Both _fp_
+
+```javascript
+import { persist } from 'effector-storage/local/fp'
+import { persist } from 'effector-storage/session/fp'
+```
+
+has one form:
+
+```javascript
+persist({ key?, fail? }?): (store) => Store
+```
+
+### Arguments
+
+- Same as above, also `persist` could be called without arguments at all.
+
+### Returns
+
+- (Store): Same given store. You cannot unsubscribe store using that firm.
+
+## Sink
+
+If you don't specify `fail` parameter in `persist` function — all errors are forwarded to the special single event `sink`. You can import it and get error from it.
+
+```javascript
+import { persist, sink } from 'effector-storage/local'
+
+// add watcher to `sink` event
+sink.watch((payload) => console.log(payload))
+
+const store = createStore({})
+persist({ store, key: 'test' })
+
+// this object will cause JSON.stringify to fail
+const recursive = {}
+recursive.recursive = recursive
+
+// set value to store (just for demo purposes, don't do that)
+store.setState(recursive)
+
+// {
+//   key: 'test',
+//   operation: 'set',
+//   error: TypeError: Converting circular structure to JSON
+//       --> starting at object with constructor 'Object'
+//       --- property 'recursive' closes the circle
+//       at JSON.stringify (<anonymous>) ...
+//   value: <ref *1> { recursive: [Circular *1] }
+// }
 ```
 
 ## Advanced usage
 
 `effector-storage` consists of a _core_ module and _adapter_ modules.
 
-The core module itself does nothing with actual storage, it just _ties_ a `createStore` function (or an existing store instance) to the storage adapter.
+The core module itself does nothing with actual storage, it just _ties_ effector units to the storage adapter, using two _Effects_ and bunch of _forwards_.
 
-The storage adapter gets and sets store values, and also can asynchronously update store value on storage updates.
+The storage adapter _gets_ and _sets_ values, and also can asynchronously emit values on storage updates.
 
-Since core module _ties_ `createStore` (or store instance) with storage adapter — it exports single function `tie`:
+Since core module _ties_ units with storage adapter — it exports single function `tie`:
 
 ```javascript
 import { tie } from 'effector-storage'
 ```
 
-Function `tie` accepts two (optionally three) arguments:
+Function `tie` accepts same parameters, as `persist` function, plus new one:
 
-- `createStore` function or store instance
-- config with mandatory storage adapter in field `with`
-- and optionally `createEvent` function or event instance, which will be used to update store asynchronously
+- `with` (_StorageAdapter_): Storage adapter to use.
 
-You can pass two first arguments in any order. Also function `tie` is curried, so you can partially apply it to use later.
+## Storage adapters
 
-```javascript
-import { createEvent, createStore } from 'effector'
-import { tie } from 'effector-storage'
-import { localStorage } from 'effector-storage/local'
+Adapter is a function, which is called by `tie` function, and has following signature:
 
-// tie store creator with local storage adapter
-const createStorageStore = tie(createStore, { with: localStorage })
-
-// or you can switch parameters, this will do the same as above
-const createStorageStore = tie({ with: localStorage }, createStore)
-
-// you can partially apply `tie`,
-// to use it with different `createStore` functions
-// `withStorage` exported from 'effector-storage/local' does this exactly
-const withStorage = tie({ with: localStorage })
-const createStorageStore = withStorage(createStore)
-
-// or you can partly apply other way around,
-// to tie `createStore` to different storage adapters later
-const withAdapter = tie(createStore)
-const createStorageStore = withAdapter({ with: localStorage })
+```typescript
+export interface StorageAdapter {
+  <State>(key: string, update: (raw?: any) => any): {
+    set(value: State): void
+    get(value?: any): State | Promise<State>
+  }
+}
 ```
 
-### Asynchronous updates
+### Arguments
 
-If storage adapter supports asynchronous updates from third side — you can pass `createEvent` function or event instance to `tie` function. Tied store will be subscribed to this new (or existing) event.
+- `key` (_string_): Unique key to distinguish values in storage
+- `update` (_Function_): Function, which could be called to get value from storage. In fact this is `Effect`, but for adapter this is not important.
 
-You can use field `using` for that, or third optional argument:
+### Returns
 
-```javascript
-import { createEvent, createStore } from 'effector'
-import { tie } from 'effector-storage'
-import { localStorage } from 'effector-storage/local'
+- `{ set, get }` (_{ Function, Function }_): Setter to storage and getter from storage. These functions are used as Effects handlers, and could be sync or async. Also, you don't have to catch exceptions and errors inside those functions — Effects will do that for you.
 
-// with `using` field
-const createStorageStore = tie(createStore, { with: localStorage, using: createEvent })
-
-// using third argument
-const createStorageStore = tie(createStore, { with: localStorage }, createEvent)
-
-// with partially application
-const withStorage = tie({ with: localStorage })
-const createStorageStore = withStorage(createStore, createEvent)
-```
-
-Note, that if you are using third argument, you can't curry it — it is impossible to curry optional argument.
-
-### Using with existing stores
-
-You can tie existing storage. There are few requirements, though:
-
-- it is mandatory to use `key` in config (alongside other adapter options, if any)
-- it is mandatory to use `createEvent` function (or existing event) to update store value from storage (otherwise tie will be useless)
+For example, simplified _localStorage_ adapter could look like this:
 
 ```javascript
-import { createEvent, createStore } from 'effector'
-import { tie } from 'effector-storage'
-import { localStorage } from 'effector-storage/local'
-
-const counter = createStore(0)
-tie(counter, { with: localStorage, using: createEvent, key: 'counter' })
-
-// `tie` modifies and return same instance:
-const tied = tie(counter, { with: localStorage, using: createEvent, key: 'counter' })
-assert(counter === tied) // <- true
-// but you can use this to get types:
-// -> counter: Store<number>
-// -> tied: StorageStore<number>
-```
-
-You can use existing event, to get notified about store updates:
-
-```javascript
-import { createEvent, createStore } from 'effector'
-import { tie } from 'effector-storage'
-import { localStorage } from 'effector-storage/local'
-
-const updated = createEvent<number>()
-updated.watch((value) => {
-  console.log('store was updated with value', value)
+// This is oversimplified example, don't do that in real code :)
+// There is no serialization and deserialization
+// No checks for edge cases
+// But to show an idea - this should fit
+const localStorageAdapter = (key) => ({
+  get: () => localStorage.getItem(key),
+  set: (value) => localStorage.setItem(key, value),
 })
-
-const counter = createStore(0)
-tie(counter, { with: localStorage, using: updated, key: 'counter' })
-
-// if `localStorage.getItem('counter')` !== '0', you will see message
-// > store was updated with value ...
 ```
 
-## Migration from versions prior to 4.0.0
+and later you could use this adapter with `tie` function:
 
-If you use localStorage:
+```javascript
+import { createStore } from 'effector'
+import { tie } from 'effector-storage'
 
-```diff
-- import withStorage from 'effector-storage'
-+ import { withStorage } from 'effector-storage/local'
+const store = createStore('', { name: 'store' })
+tie({ store, with: localStorageAdapter }) // <- use adapter
 ```
 
-If you use sessionStorage:
+Using that approach, it is possible to implement adapters to any "storage": local storage (already), session storage (already), async storage, IndexedDB, cookies, server side storage, you name it.
 
-```diff
-- import withStorage from 'effector-storage'
-+ import { withStorage } from 'effector-storage/session'
+## TODO
 
-- const createStorageStore = withStorage(createStore, sessionStorage)
-+ const createStorageStore = withStorage(createStore)
-```
-
-If you use sync version (new `localStorage` adapter is sync by default):
-
-```diff
-- import withStorage from 'effector-storage/sync'
-+ import { withStorage } from 'effector-storage/local'
-```
-
-## Storage adapter
-
-// TODO: add description
+// TODO: add road-map
 
 ## Sponsored
 

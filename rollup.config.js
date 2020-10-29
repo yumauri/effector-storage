@@ -1,4 +1,5 @@
-import esbuild from 'rollup-plugin-esbuild'
+import { terser } from 'rollup-plugin-terser'
+import babel from '@rollup/plugin-babel'
 import command from 'rollup-plugin-command'
 import generateDts from 'rollup-plugin-dts'
 import generatePackageJson from 'rollup-plugin-generate-package-json'
@@ -13,29 +14,38 @@ const src = (name) => ({
       file: `${BUILD}/${name}index.cjs`,
       format: 'cjs',
       sourcemap: process.env.NODE_ENV === 'production',
+      externalLiveBindings: false,
+      esModule: false,
+      exports: 'named',
     },
     {
       file: `${BUILD}/${name}index.js`,
-      format: 'es',
+      format: 'esm',
       sourcemap: process.env.NODE_ENV === 'production',
+      exports: 'named',
     },
   ],
   external: ['effector', '..', '../storage'],
   plugins: [
-    esbuild({
-      target: 'es2017',
-
-      // looks like fail build sometimes, should I add terser instead?
-      minify: process.env.NODE_ENV === 'production',
-
-      // looks like broken?
-      // https://github.com/egoist/rollup-plugin-esbuild/issues/76
-      // sourceMap: process.env.NODE_ENV === 'production',
-
-      // define: {
-      //   __VERSION__: '"x.y.z"'
-      // },
+    babel({
+      extensions: ['.ts'],
+      babelHelpers: 'bundled',
+      presets: ['@babel/preset-typescript'],
+      plugins: ['@babel/plugin-transform-block-scoping'],
     }),
+
+    process.env.NODE_ENV === 'production' &&
+      terser({
+        compress: {
+          ecma: 2017,
+          drop_console: true,
+          keep_fargs: false,
+          passes: 2,
+        },
+        format: {
+          comments: false,
+        },
+      }),
 
     // generate package.json files
     generatePackageJson(
@@ -65,15 +75,30 @@ const src = (name) => ({
                   require: './index.cjs',
                   import: './index.js',
                 },
+                './fp/package.json': './fp/package.json',
+                './fp': {
+                  require: './fp/index.cjs',
+                  import: './fp/index.js',
+                },
                 './local/package.json': './local/package.json',
                 './local': {
                   require: './local/index.cjs',
                   import: './local/index.js',
                 },
+                './local/fp/package.json': './local/fp/package.json',
+                './local/fp': {
+                  require: './local/fp/index.cjs',
+                  import: './local/fp/index.js',
+                },
                 './session/package.json': './session/package.json',
                 './session': {
                   require: './session/index.cjs',
                   import: './session/index.js',
+                },
+                './session/fp/package.json': './session/fp/package.json',
+                './session/fp': {
+                  require: './session/fp/index.cjs',
+                  import: './session/fp/index.js',
                 },
                 './storage/package.json': './storage/package.json',
                 './storage': {
@@ -112,10 +137,8 @@ const dts = (name) => ({
     generateDts({ respectExternal: true }),
     command(
       [
-        // Flow doesn't support conditional types, so, no auto conversion :(
-        // `yarn flowgen ${BUILD}/${name}index.d.ts --add-flow-header --no-jsdoc --output-file ${BUILD}/${name}index.js.flow`,
-        // `yarn prettier --write ${BUILD}/${name}index.d.ts ${BUILD}/${name}index.js.flow`,
-        `yarn prettier --write ${BUILD}/${name}index.d.ts`,
+        `yarn flowgen ${BUILD}/${name}index.d.ts --add-flow-header --no-jsdoc --output-file ${BUILD}/${name}index.js.flow`,
+        `yarn prettier --write ${BUILD}/${name}index.d.ts ${BUILD}/${name}index.js.flow`,
       ],
       { wait: true }
     ),
@@ -126,7 +149,10 @@ const entry = (name) => [src(name), dts(name)]
 
 export default [
   ...entry(''),
+  ...entry('fp/'),
   ...entry('storage/'),
   ...entry('local/'),
+  ...entry('local/fp/'),
   ...entry('session/'),
+  ...entry('session/fp/'),
 ]

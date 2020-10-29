@@ -1,5 +1,4 @@
-const has = (object: any, key: string) =>
-  Object.prototype.hasOwnProperty.call(object, key)
+const has = (object: any, key: string) => Object.prototype.hasOwnProperty.call(object, key)
 
 interface EventListener {
   (event: any): void
@@ -20,8 +19,7 @@ export function createEventsMock(): Events {
       if (has(listeners, name) && listeners[name].length > 0) {
         return Promise.all(
           listeners[name].map(
-            (listener) =>
-              new Promise((resolve) => setTimeout(() => resolve(listener(event)), 0))
+            (listener) => new Promise((resolve) => setTimeout(() => resolve(listener(event)), 0))
           )
         )
       }
