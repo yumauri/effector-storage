@@ -167,6 +167,26 @@ test('broken store value should launch `sink` event', () => {
   assert.instance(error, TypeError)
 })
 
+test('should be possible to use custom serialization', () => {
+  const mockStorage = createStorageMock()
+  const storageDateAdapter = storage(
+    mockStorage,
+    false,
+    (date: Date) => String(date.getTime()),
+    (timestamp: string) => new Date(Number(timestamp))
+  )
+
+  mockStorage.setItem('date', '473684400000')
+
+  const date$ = createStore(new Date())
+  tie({ store: date$, with: storageDateAdapter, key: 'date' })
+
+  assert.is(mockStorage.getItem('date'), '473684400000')
+  assert.is(date$.getState().toISOString(), '1985-01-04T11:00:00.000Z')
+  ;(date$ as any).setState(new Date('1999-02-04T10:00:00.000Z'))
+  assert.is(mockStorage.getItem('date'), '918122400000')
+})
+
 //
 // Launch tests
 //
