@@ -13,8 +13,8 @@ Small module for [Effector](https://github.com/effector/effector) ☄️ to sync
 
 - [Install](#install)
 - [Simple usage](#simple-usage)
-  - [with `localStorage`](#with-localstoragehttpsdevelopermozillaorgen-usdocswebapiwindowlocalstorage)
-  - [with `sessionStorage`](#with-sessionstoragehttpsdevelopermozillaorgen-usdocswebapiwindowsessionstorage)
+  - [with `localStorage`](#with-localstorage)
+  - [with `sessionStorage`](#with-sessionstorage)
 - [Usage with domains](#usage-with-domains)
 - [FP helpers](#fp-helpers)
 - [Options](#options)
