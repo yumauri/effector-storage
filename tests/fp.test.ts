@@ -3,7 +3,7 @@ import * as assert from 'uvu/assert'
 import { snoop } from 'snoop'
 import { createStore, createDomain, is } from 'effector'
 import { StorageAdapter } from '../src'
-import { tie, sink } from '../src/fp'
+import { tie } from '../src/fp'
 
 //
 // Dumb fake adapter
@@ -23,7 +23,6 @@ const dumbAdapter: StorageAdapter = <T>() => {
 
 test('should export `tie` function', () => {
   assert.type(tie, 'function')
-  assert.type(sink, 'function')
 })
 
 test('should return Store', () => {

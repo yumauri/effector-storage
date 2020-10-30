@@ -1,7 +1,7 @@
 import type { Unit, Store } from 'effector'
 import type { Exception } from '../..'
 import { persist as parent } from '..'
-export { localStorage, sink } from '..'
+export { localStorage } from '..'
 
 export type Config<Fail = Error> = {
   readonly fail?: Unit<Exception<Fail>>

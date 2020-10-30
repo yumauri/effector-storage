@@ -1,8 +1,8 @@
 import { test } from 'uvu'
 import * as assert from 'uvu/assert'
 import { snoop } from 'snoop'
-import { createStore, createEvent, forward } from 'effector'
-import { tie, sink } from '../src'
+import { createStore, createEvent } from 'effector'
+import { tie } from '../src'
 import { storage } from '../src/storage'
 import { createStorageMock } from './mocks/storage.mock'
 
@@ -64,11 +64,22 @@ test('reset store should reset it to given initial value', () => {
 })
 
 test('broken storage value should be ignored', () => {
-  mockStorage.setItem('counter5', 'broken')
-  const counter5$ = createStore(13, { name: 'counter5' })
-  tie({ store: counter5$, with: storageAdapter })
-  assert.is(mockStorage.getItem('counter5'), 'broken')
-  assert.is(counter5$.getState(), 13)
+  const error = snoop(() => undefined)
+  const consoleError = console.error
+  console.error = error.fn
+
+  try {
+    mockStorage.setItem('counter5', 'broken')
+    const counter5$ = createStore(13, { name: 'counter5' })
+    tie({ store: counter5$, with: storageAdapter })
+    assert.is(mockStorage.getItem('counter5'), 'broken')
+    assert.is(counter5$.getState(), 13)
+
+    assert.is(error.callCount, 1)
+    assert.instance(error.calls[0].arguments[0 as any], SyntaxError)
+  } finally {
+    console.error = consoleError
+  }
 })
 
 test('broken storage value should launch `catch` handler', () => {
@@ -92,17 +103,28 @@ test('broken storage value should launch `catch` handler', () => {
 })
 
 test('should not fail if error handler is absent', () => {
-  const store0$ = createStore({ test: 1 }, { name: 'store0' })
-  tie({ store: store0$, with: storageAdapter })
+  const error = snoop(() => undefined)
+  const consoleError = console.error
+  console.error = error.fn
 
-  assert.is(mockStorage.getItem('store0'), null)
+  try {
+    const store0$ = createStore({ test: 1 }, { name: 'store0' })
+    tie({ store: store0$, with: storageAdapter })
 
-  const recursive = {}
-  ;(recursive as any).recursive = recursive
-  ;(store0$ as any).setState(recursive)
+    assert.is(mockStorage.getItem('store0'), null)
 
-  assert.is(mockStorage.getItem('store0'), null)
-  assert.is(store0$.getState(), recursive)
+    const recursive = {}
+    ;(recursive as any).recursive = recursive
+    ;(store0$ as any).setState(recursive)
+
+    assert.is(mockStorage.getItem('store0'), null)
+    assert.is(store0$.getState(), recursive)
+
+    assert.is(error.callCount, 1)
+    assert.instance(error.calls[0].arguments[0 as any], TypeError)
+  } finally {
+    console.error = consoleError
+  }
 })
 
 test('broken store value should launch `catch` handler', () => {
@@ -157,24 +179,6 @@ test('different storage instances should not interfere', () => {
   assert.is(mockStorage1.getItem('custom'), '333')
   assert.is(mockStorage2.getItem('custom'), '444')
   assert.is(counter2$.getState(), JSON.parse(mockStorage2.getItem('custom') as any))
-})
-
-test('broken store value should launch `sink` event', () => {
-  const handler = createEvent<any>()
-  const watch = snoop(() => undefined)
-  handler.watch(watch.fn)
-  forward({ from: sink, to: handler })
-
-  const store2$ = createStore({})
-  tie({ store: store2$, with: storageAdapter, key: 'store2' })
-
-  const recursive = {}
-  ;(recursive as any).recursive = recursive
-  ;(store2$ as any).setState(recursive)
-
-  const { error, ...args } = watch.calls[0].arguments[0 as any] as any
-  assert.equal(args, { key: 'store2', operation: 'set', value: recursive })
-  assert.instance(error, TypeError)
 })
 
 test('should be possible to use custom serialization', () => {

@@ -23,10 +23,9 @@ global.localStorage = global.window.localStorage = localStorageMock
 //
 
 test('should export adapter and `persist` function', async () => {
-  const { localStorage, persist, sink } = await import('../src/local/fp')
+  const { localStorage, persist } = await import('../src/local/fp')
   assert.type(localStorage, 'function')
   assert.type(persist, 'function')
-  assert.type(sink, 'function')
 })
 
 test('should be ok on good parameters', async () => {

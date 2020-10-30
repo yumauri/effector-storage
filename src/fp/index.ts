@@ -1,7 +1,6 @@
 import type { Unit, Store } from 'effector'
 import type { StorageAdapter, Exception } from '..'
 import { tie as general } from '..'
-export { sink } from '..'
 
 type Config<Fail = Error> = {
   readonly with: StorageAdapter

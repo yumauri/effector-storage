@@ -81,7 +81,8 @@ function createEffects<State, Fail = Error>(
 }
 
 // default sink for unhandled errors
-export const sink = createEvent<Exception<any>>()
+const sink = createEvent<Exception<any>>()
+sink.watch((payload) => console.error(payload.error))
 
 export function tie<State, Fail = Error>(config: ConfigStore<State, Fail>): Subscription
 export function tie<State, Fail = Error>(config: ConfigSourceTarget<State, Fail>): Subscription

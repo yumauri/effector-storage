@@ -1,8 +1,8 @@
 import { test } from 'uvu'
 import * as assert from 'uvu/assert'
 import { snoop } from 'snoop'
-import { createEvent, createStore, forward } from 'effector'
-import { tie, StorageAdapter, sink } from '../src'
+import { createEvent, createStore } from 'effector'
+import { tie, StorageAdapter } from '../src'
 
 //
 // Error fake adapters
@@ -101,27 +101,25 @@ test('should not fire error handler on untied store', async () => {
   assert.is(watch.callCount, 0) // <- still zero
 })
 
-test('should use `sink` for unhandled error', () => {
-  const watch = snoop(() => undefined)
+test('unhandled error should be printed to console.error', () => {
+  const error = snoop(() => undefined)
+  const consoleError = console.error
+  console.error = error.fn
 
-  const error = createEvent<any>()
-  error.watch(watch.fn)
-  forward({ from: sink, to: error })
+  try {
+    const store$ = createStore(0)
+    tie({ store: store$, with: syncErrorAdapter, key: 'key-1' })
 
-  const store$ = createStore(0)
-  tie({ store: store$, with: syncErrorAdapter, key: 'key-1' })
+    assert.is(error.callCount, 1)
+    assert.equal(error.calls[0].arguments, ['get'])
 
-  assert.is(watch.callCount, 1)
-  assert.equal(watch.calls[0].arguments, [
-    { key: 'key-1', operation: 'get', error: 'get', value: undefined },
-  ])
-
-  //
-  ;(store$ as any).setState(1)
-  assert.is(watch.callCount, 2)
-  assert.equal(watch.calls[1].arguments, [
-    { key: 'key-1', operation: 'set', error: 'set', value: 1 },
-  ])
+    //
+    ;(store$ as any).setState(1)
+    assert.is(error.callCount, 2)
+    assert.equal(error.calls[1].arguments, ['set'])
+  } finally {
+    console.error = consoleError
+  }
 })
 
 //

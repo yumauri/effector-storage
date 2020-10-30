@@ -19,10 +19,9 @@ global.sessionStorage = global.window.sessionStorage = sessionStorageMock
 //
 
 test('should export adapter and `persist` function', async () => {
-  const { sessionStorage, persist, sink } = await import('../src/session/fp')
+  const { sessionStorage, persist } = await import('../src/session/fp')
   assert.type(sessionStorage, 'function')
   assert.type(persist, 'function')
-  assert.type(sink, 'function')
 })
 
 test('should be ok on good parameters', async () => {

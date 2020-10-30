@@ -2,7 +2,6 @@ import type { Event, Effect, Store, Unit, Subscription } from 'effector'
 import type { Exception } from '..'
 import { tie } from '..'
 import { storage } from '../storage'
-export { sink } from '..'
 
 export type ConfigStore<State, Fail = Error> = {
   readonly store: Store<State>

@@ -38,7 +38,6 @@ const src = (name) => ({
       terser({
         compress: {
           ecma: 2017,
-          drop_console: true,
           keep_fargs: false,
           passes: 2,
         },
