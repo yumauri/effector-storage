@@ -23,6 +23,7 @@ Small module for [Effector](https://github.com/effector/effector) ☄️ to sync
 - [FAQ](#faq)
   - [Can I use custom serialization / deserialization?](#can-i-use-custom-serialization--deserialization)
   - [Can I persist part of the store?](#can-i-persist-part-of-the-store)
+  - [Can I debounce updates, `localStorage` is too slow?](#can-i-debounce-updates-localstorage-is-too-slow)
 - [TODO](#todo)
 - [Sponsored](#sponsored)
 
@@ -287,7 +288,38 @@ persist({
 ```
 
 ⚠️ **BIG WARNING!**<br>
-Use this approach with caution, beware of infinite circular updates. To avoid them, persist _only plain values_ in storage. So, mapped store in `source` will not trigger update, if object on original store has changed.
+Use this approach with caution, beware of infinite circular updates. To avoid them, persist _only plain values_ in storage. So, mapped store in `source` will not trigger update, if object in original store has changed.
+
+### Can I debounce updates, `localStorage` is too slow?
+
+You can use `source`/`target` form of `persist` and `debounce` from [patronum](https://github.com/effector/patronum#debounce), to reach that goal:
+
+```javascript
+import { debounce } from 'patronum/debounce'
+import { persist } from 'effector-storage/local'
+
+const setWidth = createEvent()
+const setWidthDebounced = debounce({
+  source: setWidth,
+  timeout: 100,
+})
+
+const windowWidth$ = createStore(window.innerWidth) //
+  .on(setWidth, (_, width) => width)
+
+persist({
+  source: setWidthDebounced,
+  target: windowWidth$,
+  key: 'width',
+})
+
+// `setWidth` event will be called on every 'resize' event,
+// `windowWidth$` store will be updated accordingly
+// but `localStorage` will be updated only on debounced event
+window.addEventListener('resize', () => {
+  setWidth(window.innerWidth)
+})
+```
 
 ## TODO
 
