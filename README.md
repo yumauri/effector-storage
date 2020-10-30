@@ -20,6 +20,7 @@ Small module for [Effector](https://github.com/effector/effector) ☄️ to sync
 - [Options](#options)
 - [Advanced usage](#advanced-usage)
 - [Storage adapters](#storage-adapters)
+- [Custom `Storage` adapter](#custom-storage-adapter)
 - [FAQ](#faq)
   - [Can I use custom serialization / deserialization?](#can-i-use-custom-serialization--deserialization)
   - [Can I persist part of the store?](#can-i-persist-part-of-the-store)
@@ -231,35 +232,51 @@ persist({ store, with: lsAdapter }) // <- use adapter
 
 Using that approach, it is possible to implement adapters to any "storage": local storage (_already_), session storage (_already_), async storage, IndexedDB, cookies, server side storage, and so on.
 
+## Custom `Storage` adapter
+
+Both `'effector-storage/local'` and `'effector-storage/session'` are using common `storage` adapter factory. If you want to use _localStorage_ or _sessionStorage_, but slightly different, that default modules — for example, you want to switch off synchronization between windows/tabs — you can use this factory.
+
+```javascript
+import { storage } from 'effector-storage/storage'
+```
+
+You can also use this factory with any storage with interface [`Storage`](https://developer.mozilla.org/en-US/docs/Web/API/Storage) (in fact, synchronous `getItem` and `setItem` methods are enough).
+
+```javascript
+storage({ storage, sync?, serialize?, deserialize? }): StorageAdapter
+```
+
+### Arguments
+
+- `storage` (_Storage_): Storage to communicate with.
+- `sync`? (_boolean_, default = `false`): Add [`'storage'`](https://developer.mozilla.org/en-US/docs/Web/API/StorageEvent) event listener or no.
+- `serialize`? (_(value: any) => string_, default = `JSON.stringify`): Custom serialize function.
+- `deserialize`? (_(value: string) => any_, default = `JSON.parse`): Custom deserialize function.
+
+### Returns
+
+- (StorageAdapter): Storage adapter, which can be used with the core `persist` function.
+
 ## FAQ
 
 ### Can I use custom serialization / deserialization?
 
-Out of the box, `persist` function from `effector-storage/local` and `effector-storage/session` doesn't support custom serialization (as well as both _fp_ forms). But fear not! You can use _internal_ `storage` adapter factory, which has this functionality:
+Out of the box, `persist` function from `effector-storage/local` and `effector-storage/session` doesn't support custom serialization (as well as both _fp_ forms). But fear not! You can use `storage` adapter factory, mentioned above:
 
 ```javascript
 import { persist } from 'effector-storage'
 import { storage } from 'effector-storage/storage'
 
-const adapter = storage(
-  // first argument stands for `Storage` instance
-  localStorage,
-
-  // second argument stands for synchronization between windows/tabs
-  true,
-
-  // serialization function (by default `JSON.stringify`)
-  (date) => String(date.getTime()),
-
-  // deserialization function (by default `JSON.parse`)
-  (timestamp) => new Date(Number(timestamp))
-)
+const adapter = storage({
+  storage: localStorage,
+  sync: true,
+  serialize: (date) => String(date.getTime()),
+  deserialize: (timestamp) => new Date(Number(timestamp)),
+})
 
 const $date = createStore(new Date(), { name: 'date' })
 persist({ store: $date, with: adapter })
 ```
-
-In fact, this factory is used by `effector-storage/local` and `effector-storage/session` both. Of course, you can also make your own adapter from scratch with any logic you want.
 
 ### Can I persist part of the store?
 

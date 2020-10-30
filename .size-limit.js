@@ -31,52 +31,52 @@ module.exports = [
   },
   {
     path: 'build/storage/index.js',
-    limit: '174 B',
+    limit: '198 B',
     ignore: ['effector'],
   },
   {
     path: 'build/storage/index.cjs',
-    limit: '162 B',
+    limit: '184 B',
     ignore: ['effector'],
   },
   {
     path: 'build/local/index.js',
-    limit: '644 B',
+    limit: '671 B',
     ignore: ['effector'],
   },
   {
     path: 'build/local/index.cjs',
-    limit: '692 B',
+    limit: '718 B',
     ignore: ['effector'],
   },
   {
     path: 'build/local/fp/index.js',
-    limit: '666 B',
+    limit: '693 B',
     ignore: ['effector'],
   },
   {
     path: 'build/local/fp/index.cjs',
-    limit: '685 B',
+    limit: '712 B',
     ignore: ['effector'],
   },
   {
     path: 'build/session/index.js',
-    limit: '644 B',
+    limit: '668 B',
     ignore: ['effector'],
   },
   {
     path: 'build/session/index.cjs',
-    limit: '694 B',
+    limit: '718 B',
     ignore: ['effector'],
   },
   {
     path: 'build/session/fp/index.js',
-    limit: '666 B',
+    limit: '689 B',
     ignore: ['effector'],
   },
   {
     path: 'build/session/fp/index.cjs',
-    limit: '687 B',
+    limit: '713 B',
     ignore: ['effector'],
   },
 ]

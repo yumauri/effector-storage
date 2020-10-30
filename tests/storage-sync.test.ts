@@ -20,7 +20,7 @@ let events: ReturnType<typeof createEventsMock>
 test.before(() => {
   events = createEventsMock()
   global.addEventListener = events.addEventListener
-  storageAdapter = storage(mockStorage, true)
+  storageAdapter = storage({ storage: mockStorage, sync: true })
 })
 
 test.after(() => {
@@ -98,7 +98,7 @@ test('persisted store should ignore updates from different storage', async () =>
 
 test('persisted store should be erased on storage.clear()', async () => {
   const mockStorage = createStorageMock()
-  const storageAdapter = storage(mockStorage, true)
+  const storageAdapter = storage({ storage: mockStorage, sync: true })
 
   const $counter4 = createStore(0, { name: 'counter4' })
   persist({ store: $counter4, with: storageAdapter })

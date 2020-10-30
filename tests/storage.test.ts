@@ -11,7 +11,7 @@ import { createStorageMock } from './mocks/storage.mock'
 //
 
 const mockStorage = createStorageMock()
-const storageAdapter = storage(mockStorage, false)
+const storageAdapter = storage({ storage: mockStorage })
 
 //
 // Tests
@@ -155,9 +155,9 @@ test('broken store value should launch `catch` handler', () => {
 
 test('different storage instances should not interfere', () => {
   const mockStorage1 = createStorageMock()
-  const storageAdapter1 = storage(mockStorage1, false)
+  const storageAdapter1 = storage({ storage: mockStorage1 })
   const mockStorage2 = createStorageMock()
-  const storageAdapter2 = storage(mockStorage2, false)
+  const storageAdapter2 = storage({ storage: mockStorage2 })
 
   mockStorage1.setItem('custom', '111')
   mockStorage2.setItem('custom', '222')
@@ -183,12 +183,12 @@ test('different storage instances should not interfere', () => {
 
 test('should be possible to use custom serialization', () => {
   const mockStorage = createStorageMock()
-  const storageDateAdapter = storage(
-    mockStorage,
-    false,
-    (date: Date) => String(date.getTime()),
-    (timestamp: string) => new Date(Number(timestamp))
-  )
+  const storageDateAdapter = storage({
+    storage: mockStorage,
+    sync: false,
+    serialize: (date: Date) => String(date.getTime()),
+    deserialize: (timestamp: string) => new Date(Number(timestamp)),
+  })
 
   mockStorage.setItem('date', '473684400000')
 

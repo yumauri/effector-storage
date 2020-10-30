@@ -20,7 +20,8 @@ export type ConfigSourceTarget<State, Fail = Error> = {
 /**
  * `localStorage` adapter
  */
-const adapter = typeof localStorage !== 'undefined' ? storage(localStorage, true) : nil
+const adapter =
+  typeof localStorage !== 'undefined' ? storage({ storage: localStorage, sync: true }) : nil
 export { adapter as localStorage }
 
 /**

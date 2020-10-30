@@ -20,7 +20,7 @@ export type ConfigSourceTarget<State, Fail = Error> = {
 /**
  * `sessionStorage` adapter
  */
-const adapter = typeof sessionStorage !== 'undefined' ? storage(sessionStorage, false) : nil
+const adapter = typeof sessionStorage !== 'undefined' ? storage({ storage: sessionStorage }) : nil
 export { adapter as sessionStorage }
 
 /**

@@ -1,14 +1,21 @@
 import type { StorageAdapter } from '..'
 
+export type StorageConfig = {
+  readonly storage: Storage
+  readonly sync?: boolean
+  readonly serialize?: (value: any) => string
+  readonly deserialize?: (value: string) => any
+}
+
 /**
  * Generic `Storage` adapter factory
  */
-export function storage(
-  storage: Storage,
-  sync: boolean,
-  serialize: (value: any) => string = JSON.stringify,
-  deserialize: (value: string) => any = JSON.parse
-): StorageAdapter {
+export function storage({
+  storage,
+  sync = false,
+  serialize = JSON.stringify,
+  deserialize = JSON.parse,
+}: StorageConfig): StorageAdapter {
   return <State>(key: string, update: (raw?: any) => any) => {
     if (sync && typeof addEventListener !== 'undefined') {
       addEventListener('storage', (e) => {
