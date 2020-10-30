@@ -27,7 +27,7 @@ test('should export `tie` function', () => {
 })
 
 test('should return Store', () => {
-  const store0$ = createStore(0)
+  const store0$ = createStore(0, { name: 'fp::store0' })
   const store1$ = tie({ with: dumbAdapter })(store0$)
   assert.ok(is.store(store1$))
   assert.ok(store1$ === store0$)
@@ -36,7 +36,7 @@ test('should return Store', () => {
 test('should call watcher once', () => {
   const watch = snoop(() => undefined)
 
-  const store$ = createStore(1).thru(tie({ with: dumbAdapter }))
+  const store$ = createStore(1).thru(tie({ with: dumbAdapter, key: 'fp::store1' }))
   store$.watch(watch.fn)
 
   assert.is(store$.getState(), 0)
@@ -50,9 +50,9 @@ test('should call watcher once', () => {
 test('should call watcher twice', () => {
   const watch = snoop(() => undefined)
 
-  const store$ = createStore(1)
+  const store$ = createStore(1, { name: 'fp::store2name' })
   store$.watch(watch.fn)
-  store$.thru(tie({ with: dumbAdapter }))
+  store$.thru(tie({ with: dumbAdapter, key: 'fp::store2key' }))
 
   assert.is(store$.getState(), 0)
   assert.is(store$.defaultState, 1)
@@ -69,7 +69,7 @@ test('should call watcher once if tied in domain hook', () => {
 
   root.onCreateStore(tie({ with: dumbAdapter }))
 
-  const store$ = root.createStore(1)
+  const store$ = root.createStore(1, { name: 'fp::store3' })
   store$.watch(watch.fn)
 
   assert.is(store$.getState(), 0)

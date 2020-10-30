@@ -26,7 +26,7 @@ test('should call watcher twice', () => {
   const store$ = createStore(1)
   store$.watch(watch.fn)
 
-  tie({ store: store$, with: dumbAdapter })
+  tie({ store: store$, with: dumbAdapter, key: 'domain::store0' })
 
   assert.is(store$.getState(), 0)
   assert.is(store$.defaultState, 1)
@@ -45,7 +45,7 @@ test('should call watcher once if tied in domain hook', () => {
     tie({ store, with: dumbAdapter })
   })
 
-  const store$ = root.createStore(1)
+  const store$ = root.createStore(1, { name: 'domain::store1' })
   store$.watch(watch.fn)
 
   assert.is(store$.getState(), 0)
@@ -54,6 +54,35 @@ test('should call watcher once if tied in domain hook', () => {
   // call watcher once
   assert.is(watch.callCount, 1)
   assert.equal(watch.calls[0].arguments, [0])
+})
+
+test('should throw error in case of missing name in named domain', async () => {
+  const root = createDomain('root')
+
+  let rs: any, rj: any
+  const defer = new Promise((resolve, reject) => {
+    rs = resolve
+    rj = reject
+  })
+
+  root.onCreateStore((store) => {
+    try {
+      tie({ store, with: dumbAdapter })
+      rs()
+    } catch (err) {
+      rj(err)
+    }
+  })
+
+  root.createStore(1)
+
+  try {
+    await defer
+    assert.unreachable()
+  } catch (err) {
+    assert.instance(err, Error)
+    assert.match(err, /Key or name is not defined/)
+  }
 })
 
 //

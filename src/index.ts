@@ -102,6 +102,9 @@ export function tie<State, Fail = Error>({
   if (!target) {
     throw Error('Target is not defined')
   }
+  if (!key && source.shortName === (source as any).id) {
+    throw Error('Key or name is not defined')
+  }
   if (source === target && !is.store(source)) {
     throw Error('Source must be different from target')
   }

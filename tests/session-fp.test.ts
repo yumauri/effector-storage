@@ -27,14 +27,14 @@ test('should export adapter and `persist` function', async () => {
 
 test('should be ok on good parameters', async () => {
   const { persist } = await import('../src/session/fp')
-  const store$ = createStore(0)
+  const store$ = createStore(0, { name: 'session-fp::store' })
   assert.not.throws(() => persist()(store$))
 })
 
 test('should return Store', async () => {
   const { persist } = await import('../src/session/fp')
   const store0$ = createStore(0)
-  const store1$ = persist()(store0$)
+  const store1$ = persist({ key: 'session-fp::store0' })(store0$)
   assert.ok(is.store(store1$))
   assert.ok(store1$ === store0$)
 })

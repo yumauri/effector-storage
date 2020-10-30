@@ -27,12 +27,19 @@ test('should exports function', () => {
 test('should be ok on good parameters', () => {
   const store0$ = createStore(0)
   const store1$ = createStore(0)
-  assert.not.throws(() => tie({ with: dumbAdapter, store: store0$ }))
-  assert.not.throws(() => tie({ with: dumbAdapter, source: store1$, target: store1$ }))
+  const store0named$ = createStore(0, { name: '_store0named_' })
+  const store1named$ = createStore(0, { name: '_store1named_' })
+  assert.not.throws(() => tie({ with: dumbAdapter, store: store0$, key: '_store0_' }))
+  assert.not.throws(() =>
+    tie({ with: dumbAdapter, source: store1$, target: store1$, key: '_store1_' })
+  )
+  assert.not.throws(() => tie({ with: dumbAdapter, store: store0named$ }))
+  assert.not.throws(() => tie({ with: dumbAdapter, source: store1named$, target: store1named$ }))
 })
 
 test('should handle wrong parameters', () => {
   const event = createEvent<number>()
+  const store$ = createStore(0)
   assert.throws(() => tie({} as any), /Adapter is not defined/)
   assert.throws(() => tie({ with: dumbAdapter } as any), /Store or source is not defined/)
   assert.throws(() => tie({ with: dumbAdapter, source: event } as any), /Target is not defined/)
@@ -40,8 +47,13 @@ test('should handle wrong parameters', () => {
     () => tie({ with: dumbAdapter, target: event } as any),
     /Store or source is not defined/
   )
+  assert.throws(() => tie({ with: dumbAdapter, store: store$ }), /Key or name is not defined/)
   assert.throws(
-    () => tie({ with: dumbAdapter, source: event, target: event }),
+    () => tie({ with: dumbAdapter, source: event, target: store$ }),
+    /Key or name is not defined/
+  )
+  assert.throws(
+    () => tie({ with: dumbAdapter, source: event, target: event, key: 'asdasd' }),
     /Source must be different from target/
   )
 })

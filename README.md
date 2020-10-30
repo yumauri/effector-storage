@@ -109,7 +109,7 @@ persist({ source, target, key?, fail? }): Subscription
 - `store` (_Store_): Store to synchronize with local/session storage.
 - `source` (_Event_ | _Effect_ | _Store_): Source unit, which updates will be sent to local/session storage.
 - `target` (_Event_ | _Effect_ | _Store_): Target unit, which will receive updates from local/session storage (as well as initial value). Must be different than `source` to avoid circular updates — `source` updates are forwarded directly to `target`.
-- `key`? (_string_): Key for local/session storage, to store value in. If omitted — `store`/`source` name is used. You can use `'effector/babel-plugin'` to have those names automatically.
+- `key`? (_string_): Key for local/session storage, to store value in. If omitted — `store`/`source` name is used. **Note!** If you omit `key`, store _must_ have a `name`! You can use `'effector/babel-plugin'` to have those names automatically.
 - `fail`? (_Event_ | _Effect_ | _Store_): Unit, which will be triggered in case of any error (serialization/deserialization error, storage is full and so on). Payload structure:
   - `key` (_string_): Same `key` as above.
   - `operation` (_'set'_ | _'get'_): Did error occurs during setting value to storage or getting value from storage.

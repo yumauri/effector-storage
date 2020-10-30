@@ -33,6 +33,16 @@ test('store new value should be saved to storage', () => {
   assert.is(counter2$.getState(), JSON.parse(mockStorage.getItem('counter2') as any))
 })
 
+test('key should have precedence over name', () => {
+  const namekey$ = createStore(0, { name: 'precedence::name' })
+  tie({ store: namekey$, with: storageAdapter, key: 'precedence::key' })
+  assert.is(mockStorage.getItem('precedence::name'), null)
+  assert.is(mockStorage.getItem('precedence::key'), null)
+  ;(namekey$ as any).setState(42)
+  assert.is(mockStorage.getItem('precedence::name'), null)
+  assert.is(mockStorage.getItem('precedence::key'), '42')
+})
+
 test('store should be initialized from storage value', () => {
   mockStorage.setItem('counter3', '42')
   const counter3$ = createStore(0, { name: 'counter3' })

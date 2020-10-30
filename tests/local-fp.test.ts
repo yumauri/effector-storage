@@ -31,14 +31,14 @@ test('should export adapter and `persist` function', async () => {
 
 test('should be ok on good parameters', async () => {
   const { persist } = await import('../src/local/fp')
-  const store$ = createStore(0)
+  const store$ = createStore(0, { name: 'local-fp::store' })
   assert.not.throws(() => persist()(store$))
 })
 
 test('should return Store', async () => {
   const { persist } = await import('../src/local/fp')
   const store0$ = createStore(0)
-  const store1$ = persist()(store0$)
+  const store1$ = persist({ key: 'local-fp::store0' })(store0$)
   assert.ok(is.store(store1$))
   assert.ok(store1$ === store0$)
 })
