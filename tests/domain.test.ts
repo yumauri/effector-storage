@@ -2,7 +2,7 @@ import { test } from 'uvu'
 import * as assert from 'uvu/assert'
 import { snoop } from 'snoop'
 import { createStore, createDomain } from 'effector'
-import { tie, StorageAdapter } from '../src'
+import { persist, StorageAdapter } from '../src'
 
 //
 // Dumb fake adapter
@@ -26,7 +26,7 @@ test('should call watcher twice', () => {
   const store$ = createStore(1)
   store$.watch(watch.fn)
 
-  tie({ store: store$, with: dumbAdapter, key: 'domain::store0' })
+  persist({ store: store$, with: dumbAdapter, key: 'domain::store0' })
 
   assert.is(store$.getState(), 0)
   assert.is(store$.defaultState, 1)
@@ -37,12 +37,12 @@ test('should call watcher twice', () => {
   assert.equal(watch.calls[1].arguments, [0])
 })
 
-test('should call watcher once if tied in domain hook', () => {
+test('should call watcher once if persisted in domain hook', () => {
   const watch = snoop(() => undefined)
   const root = createDomain()
 
   root.onCreateStore((store) => {
-    tie({ store, with: dumbAdapter })
+    persist({ store, with: dumbAdapter })
   })
 
   const store$ = root.createStore(1, { name: 'domain::store1' })
@@ -67,7 +67,7 @@ test('should throw error in case of missing name in named domain', async () => {
 
   root.onCreateStore((store) => {
     try {
-      tie({ store, with: dumbAdapter })
+      persist({ store, with: dumbAdapter })
       rs()
     } catch (err) {
       rj(err)

@@ -7,30 +7,30 @@ import { StorageAdapter } from '../src'
 // Tests
 //
 
-test('General `tie` should handle wrong arguments', async () => {
-  const { tie } = await import('../src')
+test('General `persist` should handle wrong arguments', async () => {
+  const { persist } = await import('../src')
 
   const fakeAdapter: StorageAdapter = 0 as any
   const store: Store<number> = 0 as any
 
   // @ts-expect-error should fail on wrong arguments
-  tie()
+  persist()
 
   // @ts-expect-error should fail on wrong arguments
-  tie({})
+  persist({})
 
   // @ts-expect-error should fail on wrong arguments
-  tie({ with: fakeAdapter })
+  persist({ with: fakeAdapter })
 
   // @ts-expect-error should fail on wrong arguments
-  tie({ with: fakeAdapter, source: store })
+  persist({ with: fakeAdapter, source: store })
 
   // @ts-expect-error should fail on wrong arguments
-  tie({ with: fakeAdapter, target: store })
+  persist({ with: fakeAdapter, target: store })
 })
 
-test('General `tie` should return Subscription', async () => {
-  const { tie } = await import('../src')
+test('General `persist` should return Subscription', async () => {
+  const { persist } = await import('../src')
 
   const fakeAdapter: StorageAdapter = 0 as any
   const store: Store<number> = 0 as any
@@ -39,42 +39,46 @@ test('General `tie` should return Subscription', async () => {
   const handler: Event<any> = 0 as any
   const key = ''
 
-  expectType<Subscription>(tie({ with: fakeAdapter, store }))
-  expectType<Subscription>(tie({ with: fakeAdapter, store, key }))
-  expectType<Subscription>(tie({ with: fakeAdapter, store, fail: handler }))
-  expectType<Subscription>(tie({ with: fakeAdapter, store, key, fail: handler }))
-  expectType<Subscription>(tie({ with: fakeAdapter, source: store, target: store }))
-  expectType<Subscription>(tie({ with: fakeAdapter, source: store, target: store, key }))
-  expectType<Subscription>(tie({ with: fakeAdapter, source: store, target: store, fail: handler }))
+  expectType<Subscription>(persist({ with: fakeAdapter, store }))
+  expectType<Subscription>(persist({ with: fakeAdapter, store, key }))
+  expectType<Subscription>(persist({ with: fakeAdapter, store, fail: handler }))
+  expectType<Subscription>(persist({ with: fakeAdapter, store, key, fail: handler }))
+  expectType<Subscription>(persist({ with: fakeAdapter, source: store, target: store }))
+  expectType<Subscription>(persist({ with: fakeAdapter, source: store, target: store, key }))
   expectType<Subscription>(
-    tie({ with: fakeAdapter, source: store, target: store, key, fail: handler })
+    persist({ with: fakeAdapter, source: store, target: store, fail: handler })
   )
-  expectType<Subscription>(tie({ with: fakeAdapter, source: ev1, target: ev2 }))
-  expectType<Subscription>(tie({ with: fakeAdapter, source: ev1, target: ev2, key }))
-  expectType<Subscription>(tie({ with: fakeAdapter, source: ev1, target: ev2, fail: handler }))
-  expectType<Subscription>(tie({ with: fakeAdapter, source: ev1, target: ev2, key, fail: handler }))
+  expectType<Subscription>(
+    persist({ with: fakeAdapter, source: store, target: store, key, fail: handler })
+  )
+  expectType<Subscription>(persist({ with: fakeAdapter, source: ev1, target: ev2 }))
+  expectType<Subscription>(persist({ with: fakeAdapter, source: ev1, target: ev2, key }))
+  expectType<Subscription>(persist({ with: fakeAdapter, source: ev1, target: ev2, fail: handler }))
+  expectType<Subscription>(
+    persist({ with: fakeAdapter, source: ev1, target: ev2, key, fail: handler })
+  )
 })
 
-test('Partially applied `tie` should return Function', async () => {
-  const { tie } = await import('../src/fp')
+test('Partially applied `persist` should return Function', async () => {
+  const { persist } = await import('../src/fp')
 
   const fakeAdapter: StorageAdapter = 0 as any
   const store: Store<number> = 0 as any
   const handler: Event<any> = 0 as any
   const key = ''
 
-  expectType<<State>(store: Store<State>) => Store<State>>(tie({ with: fakeAdapter }))
-  expectType<<State>(store: Store<State>) => Store<State>>(tie({ with: fakeAdapter, key }))
+  expectType<<State>(store: Store<State>) => Store<State>>(persist({ with: fakeAdapter }))
+  expectType<<State>(store: Store<State>) => Store<State>>(persist({ with: fakeAdapter, key }))
   expectType<<State>(store: Store<State>) => Store<State>>(
-    tie({ with: fakeAdapter, fail: handler })
+    persist({ with: fakeAdapter, fail: handler })
   )
   expectType<<State>(store: Store<State>) => Store<State>>(
-    tie({ with: fakeAdapter, key, fail: handler })
+    persist({ with: fakeAdapter, key, fail: handler })
   )
-  expectType<Store<number>>(tie({ with: fakeAdapter })(store))
-  expectType<Store<number>>(tie({ with: fakeAdapter, key })(store))
-  expectType<Store<number>>(tie({ with: fakeAdapter, fail: handler })(store))
-  expectType<Store<number>>(tie({ with: fakeAdapter, key, fail: handler })(store))
+  expectType<Store<number>>(persist({ with: fakeAdapter })(store))
+  expectType<Store<number>>(persist({ with: fakeAdapter, key })(store))
+  expectType<Store<number>>(persist({ with: fakeAdapter, fail: handler })(store))
+  expectType<Store<number>>(persist({ with: fakeAdapter, key, fail: handler })(store))
 })
 
 test('Local `persist` should return Subscription', async () => {

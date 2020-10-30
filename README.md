@@ -29,9 +29,7 @@ import { persist } from 'effector-storage/local'
 // persist store `$counter` in `localStorage` with key 'counter'
 persist({ store: $counter, key: 'counter' })
 
-// if your storage has a name
-// (which was set manually or using `effector/babel-plugin`)
-// you can omit `key` field - name will be used instead
+// if your storage has a name, you can omit `key` field
 persist({ store: $counter })
 ```
 
@@ -146,29 +144,27 @@ persist({ key?, fail? }?): (store) => Store
 
 `effector-storage` consists of a _core_ module and _adapter_ modules.
 
-The core module itself does nothing with actual storage, it just _ties_ effector units to the storage adapter, using two _Effects_ and bunch of _forwards_.
+The core module itself does nothing with actual storage, it just connects effector units to the storage adapter, using two _Effects_ and bunch of _forwards_.
 
 The storage adapter _gets_ and _sets_ values, and also can asynchronously emit values on storage updates.
 
-Since core module _ties_ units with storage adapter — it exports single function `tie`:
-
 ```javascript
-import { tie } from 'effector-storage'
+import { persist } from 'effector-storage'
 ```
 
-Function `tie` accepts all the same parameters, as `persist` function, plus new one:
+Core function `persist` accepts all the same parameters, as `persist` functions from sub-modules, plus additional one:
 
 - `with` (_StorageAdapter_): Storage adapter to use.
 
 There is also _fp_ form:
 
 ```javascript
-import { tie } from 'effector-storage/fp'
+import { persist } from 'effector-storage/fp'
 ```
 
 ## Storage adapters
 
-Adapter is a function, which is called by `tie` function, and has following interface:
+Adapter is a function, which is called by core `persist` function, and has following interface:
 
 ```typescript
 export interface StorageAdapter {
@@ -201,14 +197,14 @@ const localStorageAdapter = (key) => ({
 })
 ```
 
-and later you could use this adapter with `tie` function:
+and later you could use this adapter with core `persist` function:
 
 ```javascript
 import { createStore } from 'effector'
-import { tie } from 'effector-storage'
+import { persist } from 'effector-storage'
 
 const store = createStore('', { name: 'store' })
-tie({ store, with: localStorageAdapter }) // <- use adapter
+persist({ store, with: localStorageAdapter }) // <- use adapter
 ```
 
 Using that approach, it is possible to implement adapters to any "storage": local storage (_already_), session storage (_already_), async storage, IndexedDB, cookies, server side storage, you name it.

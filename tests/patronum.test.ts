@@ -3,7 +3,7 @@ import { test } from 'uvu'
 import * as assert from 'uvu/assert'
 import { snoop, Snoop } from 'snoop'
 import { createEvent, createStore, sample } from 'effector'
-import { tie, StorageAdapter } from '../src'
+import { persist, StorageAdapter } from '../src'
 
 //
 // Fake adapter
@@ -47,13 +47,13 @@ test('storage updates should be debounced', async () => {
   store.watch(storeWatch.fn)
 
   const { set, get, adapter } = createAdapter()
-  tie({
+  persist({
     with: adapter,
     source: sample(store, debounced, (value) => value),
     target: store,
   })
 
-  // after `tie`
+  // after `persist`
   assert.is(set.callCount, 0)
   assert.is(get.callCount, 1) // <- get undefined value from storage
   assert.is(incrementWatch.callCount, 0)

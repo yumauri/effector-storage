@@ -1,22 +1,22 @@
 module.exports = [
   {
     path: 'build/index.js',
-    limit: '441 B',
+    limit: '443 B',
     ignore: ['effector'],
   },
   {
     path: 'build/index.cjs',
-    limit: '425 B',
+    limit: '427 B',
     ignore: ['effector'],
   },
   {
     path: 'build/fp/index.js',
-    limit: '465 B',
+    limit: '467 B',
     ignore: ['effector'],
   },
   {
     path: 'build/fp/index.cjs',
-    limit: '477 B',
+    limit: '480 B',
     ignore: ['effector'],
   },
   {
@@ -66,7 +66,7 @@ module.exports = [
   },
   {
     path: 'build/session/index.cjs',
-    limit: '693 B',
+    limit: '694 B',
     ignore: ['effector'],
   },
   {

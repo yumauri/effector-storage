@@ -1,6 +1,6 @@
 import type { Unit, Store } from 'effector'
 import type { StorageAdapter, Exception } from '..'
-import { tie as general } from '..'
+import { persist as parent } from '..'
 
 type Config<Fail = Error> = {
   readonly with: StorageAdapter
@@ -9,11 +9,11 @@ type Config<Fail = Error> = {
 }
 
 /**
- * `tie` with curried `store`
+ * `persist` with curried `store`
  */
-export function tie<Fail = Error>(config: Config<Fail>) {
+export function persist<Fail = Error>(config: Config<Fail>) {
   return <State>(store: Store<State>): Store<State> => {
-    general(Object.assign({ store }, config))
+    parent(Object.assign({ store }, config))
     return store
   }
 }

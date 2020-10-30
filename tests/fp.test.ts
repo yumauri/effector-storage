@@ -3,7 +3,7 @@ import * as assert from 'uvu/assert'
 import { snoop } from 'snoop'
 import { createStore, createDomain, is } from 'effector'
 import { StorageAdapter } from '../src'
-import { tie } from '../src/fp'
+import { persist } from '../src/fp'
 
 //
 // Dumb fake adapter
@@ -21,13 +21,13 @@ const dumbAdapter: StorageAdapter = <T>() => {
 // Tests
 //
 
-test('should export `tie` function', () => {
-  assert.type(tie, 'function')
+test('should export `persist` function', () => {
+  assert.type(persist, 'function')
 })
 
 test('should return Store', () => {
   const store0$ = createStore(0, { name: 'fp::store0' })
-  const store1$ = tie({ with: dumbAdapter })(store0$)
+  const store1$ = persist({ with: dumbAdapter })(store0$)
   assert.ok(is.store(store1$))
   assert.ok(store1$ === store0$)
 })
@@ -35,7 +35,7 @@ test('should return Store', () => {
 test('should call watcher once', () => {
   const watch = snoop(() => undefined)
 
-  const store$ = createStore(1).thru(tie({ with: dumbAdapter, key: 'fp::store1' }))
+  const store$ = createStore(1).thru(persist({ with: dumbAdapter, key: 'fp::store1' }))
   store$.watch(watch.fn)
 
   assert.is(store$.getState(), 0)
@@ -51,7 +51,7 @@ test('should call watcher twice', () => {
 
   const store$ = createStore(1, { name: 'fp::store2name' })
   store$.watch(watch.fn)
-  store$.thru(tie({ with: dumbAdapter, key: 'fp::store2key' }))
+  store$.thru(persist({ with: dumbAdapter, key: 'fp::store2key' }))
 
   assert.is(store$.getState(), 0)
   assert.is(store$.defaultState, 1)
@@ -62,11 +62,11 @@ test('should call watcher twice', () => {
   assert.equal(watch.calls[1].arguments, [0])
 })
 
-test('should call watcher once if tied in domain hook', () => {
+test('should call watcher once if persisted in domain hook', () => {
   const watch = snoop(() => undefined)
   const root = createDomain()
 
-  root.onCreateStore(tie({ with: dumbAdapter }))
+  root.onCreateStore(persist({ with: dumbAdapter }))
 
   const store$ = root.createStore(1, { name: 'fp::store3' })
   store$.watch(watch.fn)

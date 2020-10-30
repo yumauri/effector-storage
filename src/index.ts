@@ -84,9 +84,9 @@ function createEffects<State, Fail = Error>(
 const sink = createEvent<Exception<any>>()
 sink.watch((payload) => console.error(payload.error))
 
-export function tie<State, Fail = Error>(config: ConfigStore<State, Fail>): Subscription
-export function tie<State, Fail = Error>(config: ConfigSourceTarget<State, Fail>): Subscription
-export function tie<State, Fail = Error>({
+export function persist<State, Fail = Error>(config: ConfigStore<State, Fail>): Subscription
+export function persist<State, Fail = Error>(config: ConfigSourceTarget<State, Fail>): Subscription
+export function persist<State, Fail = Error>({
   with: adapter,
   store,
   source = store,
@@ -112,14 +112,14 @@ export function tie<State, Fail = Error>({
 
   const [set, get, err] = createEffects<State, Fail>(adapter, key || source.shortName)
 
-  const ties = [
+  const subscriptions = [
     forward({ from: source, to: set }),
     forward({ from: [set, get.doneData], to: target }),
     forward({ from: err, to: fail }),
   ]
 
   const result = () => {
-    ties.map((fn) => fn())
+    subscriptions.map((fn) => fn())
   }
 
   // kick getter to get initial state from storage

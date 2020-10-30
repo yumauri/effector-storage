@@ -9,7 +9,7 @@ export type Config<Fail = Error> = {
 }
 
 /**
- * Partially applied `tie` with predefined `sessionStorage` adapter and curried `store`
+ * Partially applied `persist` with predefined `sessionStorage` adapter and curried `store`
  */
 export function persist<Fail = Error>(config: Config<Fail> = {}) {
   return <State>(store: Store<State>): Store<State> => {

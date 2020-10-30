@@ -1,6 +1,6 @@
 import type { Event, Effect, Store, Unit, Subscription } from 'effector'
 import type { Exception } from '..'
-import { tie } from '..'
+import { persist as parent } from '..'
 import { nil } from '../nil'
 import { storage } from '../storage'
 
@@ -24,10 +24,10 @@ const adapter = typeof localStorage !== 'undefined' ? storage(localStorage, true
 export { adapter as localStorage }
 
 /**
- * Partially applied `tie` with predefined `localStorage` adapter
+ * Partially applied `persist` with predefined `localStorage` adapter
  */
 export function persist<State, Fail = Error>(config: ConfigStore<State, Fail>): Subscription
 export function persist<State, Fail = Error>(config: ConfigSourceTarget<State, Fail>): Subscription
 export function persist(config: any): Subscription {
-  return tie(Object.assign({ with: adapter }, config))
+  return parent(Object.assign({ with: adapter }, config))
 }

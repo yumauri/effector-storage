@@ -4,7 +4,7 @@ import { snoop } from 'snoop'
 import { createStore, createEvent } from 'effector'
 import { createStorageMock } from './mocks/storage.mock'
 import { createEventsMock } from './mocks/events.mock'
-import { StorageAdapter, tie } from '../src'
+import { StorageAdapter, persist } from '../src'
 import { storage } from '../src/storage'
 
 //
@@ -37,9 +37,9 @@ test.after(() => {
 // Tests
 //
 
-test('tied store should be updated from storage', async () => {
+test('persisted store should be updated from storage', async () => {
   const counter1$ = createStore(0, { name: 'counter1' })
-  tie({ store: counter1$, with: storageAdapter })
+  persist({ store: counter1$, with: storageAdapter })
   assert.is(counter1$.getState(), 0)
 
   mockStorage.setItem('counter1', '1')
@@ -59,7 +59,7 @@ test('broken storage value should launch `catch` handler', async () => {
   handler.watch(watch.fn)
 
   const counter2$ = createStore(0, { name: 'counter2' })
-  tie({ store: counter2$, with: storageAdapter, fail: handler })
+  persist({ store: counter2$, with: storageAdapter, fail: handler })
   assert.is(counter2$.getState(), 0)
 
   mockStorage.setItem('counter2', 'broken')
@@ -81,9 +81,9 @@ test('broken storage value should launch `catch` handler', async () => {
   assert.is(counter2$.getState(), 0)
 })
 
-test('tied store should ignore updates from different storage', async () => {
+test('persisted store should ignore updates from different storage', async () => {
   const counter3$ = createStore(0, { name: 'counter3' })
-  tie({ store: counter3$, with: storageAdapter })
+  persist({ store: counter3$, with: storageAdapter })
   assert.is(counter3$.getState(), 0)
 
   await events.dispatchEvent('storage', {
@@ -96,12 +96,12 @@ test('tied store should ignore updates from different storage', async () => {
   assert.is(counter3$.getState(), 0)
 })
 
-test('tied store should be erased on storage.clear()', async () => {
+test('persisted store should be erased on storage.clear()', async () => {
   const mockStorage = createStorageMock()
   const storageAdapter = storage(mockStorage, true)
 
   const counter4$ = createStore(0, { name: 'counter4' })
-  tie({ store: counter4$, with: storageAdapter })
+  persist({ store: counter4$, with: storageAdapter })
   assert.is(counter4$.getState(), 0)
 
   mockStorage.clear()
