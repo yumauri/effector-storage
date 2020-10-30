@@ -33,8 +33,8 @@ test('should export adapter and `persist` function', async () => {
 
 test('should be ok on good parameters', async () => {
   const { persist } = await import('../src/session')
-  const store$ = createStore(0, { name: 'session::store' })
-  assert.not.throws(() => persist({ store: store$ }))
+  const $store = createStore(0, { name: 'session::store' })
+  assert.not.throws(() => persist({ store: $store }))
 })
 
 //

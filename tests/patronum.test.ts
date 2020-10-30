@@ -43,14 +43,14 @@ test('storage updates should be debounced', async () => {
   const debounced = debounce({ source: increment, timeout: 10 })
   debounced.watch(debouncedWatch.fn)
 
-  const store = createStore(0).on(increment, (state) => state + 1)
-  store.watch(storeWatch.fn)
+  const $store = createStore(0).on(increment, (state) => state + 1)
+  $store.watch(storeWatch.fn)
 
   const { set, get, adapter } = createAdapter()
   persist({
     with: adapter,
-    source: sample(store, debounced, (value) => value),
-    target: store,
+    source: sample($store, debounced, (value) => value),
+    target: $store,
   })
 
   // after `persist`

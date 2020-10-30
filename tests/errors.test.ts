@@ -35,8 +35,8 @@ test('should fire error handler on sync errors', () => {
   const error = createEvent<any>()
   error.watch(watch.fn)
 
-  const store$ = createStore(0)
-  persist({ store: store$, with: syncErrorAdapter, key: 'key-1', fail: error })
+  const $store = createStore(0)
+  persist({ store: $store, with: syncErrorAdapter, key: 'key-1', fail: error })
 
   assert.is(watch.callCount, 1)
   assert.equal(watch.calls[0].arguments, [
@@ -44,7 +44,7 @@ test('should fire error handler on sync errors', () => {
   ])
 
   //
-  ;(store$ as any).setState(1)
+  ;($store as any).setState(1)
   assert.is(watch.callCount, 2)
   assert.equal(watch.calls[1].arguments, [
     { key: 'key-1', operation: 'set', error: 'set', value: 1 },
@@ -57,8 +57,8 @@ test('should fire error handler on async errors', async () => {
   const error = createEvent<any>()
   error.watch(watch.fn)
 
-  const store$ = createStore(0)
-  persist({ store: store$, with: asyncErrorAdapter, key: 'key-2', fail: error })
+  const $store = createStore(0)
+  persist({ store: $store, with: asyncErrorAdapter, key: 'key-2', fail: error })
   assert.is(watch.callCount, 0)
 
   await Promise.resolve()
@@ -68,7 +68,7 @@ test('should fire error handler on async errors', async () => {
   ])
 
   //
-  ;(store$ as any).setState(1)
+  ;($store as any).setState(1)
   assert.is(watch.callCount, 1)
 
   await Promise.resolve()
@@ -91,8 +91,8 @@ test('should not fire error handler on unsubscribed store', async () => {
   const error = createEvent<any>()
   error.watch(watch.fn)
 
-  const store$ = createStore(0)
-  const unsubscribe = persist({ store: store$, with: asyncErrorAdapter, key: 'key-3', fail: error })
+  const $store = createStore(0)
+  const unsubscribe = persist({ store: $store, with: asyncErrorAdapter, key: 'key-3', fail: error })
   assert.is(watch.callCount, 0)
 
   unsubscribe()
@@ -107,14 +107,14 @@ test('unhandled error should be printed to console.error', () => {
   console.error = error.fn
 
   try {
-    const store$ = createStore(0)
-    persist({ store: store$, with: syncErrorAdapter, key: 'key-1' })
+    const $store = createStore(0)
+    persist({ store: $store, with: syncErrorAdapter, key: 'key-1' })
 
     assert.is(error.callCount, 1)
     assert.equal(error.calls[0].arguments, ['get'])
 
     //
-    ;(store$ as any).setState(1)
+    ;($store as any).setState(1)
     assert.is(error.callCount, 2)
     assert.equal(error.calls[1].arguments, ['set'])
   } finally {

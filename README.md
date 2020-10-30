@@ -255,8 +255,8 @@ const adapter = storage(
   (timestamp) => new Date(Number(timestamp))
 )
 
-const date$ = createStore(new Date(), { name: 'date' })
-persist({ store: date$, with: adapter })
+const $date = createStore(new Date(), { name: 'date' })
+persist({ store: $date, with: adapter })
 ```
 
 In fact, this factory is used by `effector-storage/local` and `effector-storage/session` both. Of course, you can also make your own adapter from scratch with any logic you want.
@@ -270,20 +270,20 @@ import { persist } from 'effector-storage/local'
 
 const setX = createEvent()
 const setY = createEvent()
-const coords$ = createStore({ x: 123, y: 321 })
+const $coords = createStore({ x: 123, y: 321 })
   .on(setX, ({ y }, x) => ({ x, y }))
   .on(setY, ({ x }, y) => ({ x, y }))
 
 // persist X coordinate in `localStorage` with key 'x'
 persist({
-  source: coords$.map(({ x }) => x),
+  source: $coords.map(({ x }) => x),
   target: setX,
   key: 'x',
 })
 
 // persist Y coordinate in `localStorage` with key 'y'
 persist({
-  source: coords$.map(({ y }) => y),
+  source: $coords.map(({ y }) => y),
   target: setY,
   key: 'y',
 })
@@ -306,17 +306,17 @@ const setWidthDebounced = debounce({
   timeout: 100,
 })
 
-const windowWidth$ = createStore(window.innerWidth) //
+const $windowWidth = createStore(window.innerWidth) //
   .on(setWidth, (_, width) => width)
 
 persist({
   source: setWidthDebounced,
-  target: windowWidth$,
+  target: $windowWidth,
   key: 'width',
 })
 
 // `setWidth` event will be called on every 'resize' event,
-// `windowWidth$` store will be updated accordingly
+// `$windowWidth` store will be updated accordingly
 // but `localStorage` will be updated only on debounced event
 window.addEventListener('resize', () => {
   setWidth(window.innerWidth)

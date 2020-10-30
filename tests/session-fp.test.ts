@@ -34,16 +34,16 @@ test('should export adapter and `persist` function', async () => {
 
 test('should be ok on good parameters', async () => {
   const { persist } = await import('../src/session/fp')
-  const store$ = createStore(0, { name: 'session-fp::store' })
-  assert.not.throws(() => persist()(store$))
+  const $store = createStore(0, { name: 'session-fp::store' })
+  assert.not.throws(() => persist()($store))
 })
 
 test('should return Store', async () => {
   const { persist } = await import('../src/session/fp')
-  const store0$ = createStore(0)
-  const store1$ = persist({ key: 'session-fp::store0' })(store0$)
-  assert.ok(is.store(store1$))
-  assert.ok(store1$ === store0$)
+  const $store0 = createStore(0)
+  const $store1 = persist({ key: 'session-fp::store0' })($store0)
+  assert.ok(is.store($store1))
+  assert.ok($store1 === $store0)
 })
 
 test('should be possible to use with .thru()', async () => {
@@ -53,11 +53,11 @@ test('should be possible to use with .thru()', async () => {
   const watch = snoop(() => undefined)
 
   assert.is(sessionStorage.getItem('store-key-1'), '111')
-  const store$ = createStore(1).thru(persist({ key: 'store-key-1' }))
-  store$.watch(watch.fn)
+  const $store = createStore(1).thru(persist({ key: 'store-key-1' }))
+  $store.watch(watch.fn)
 
-  assert.is(store$.getState(), 111)
-  assert.is(store$.defaultState, 1)
+  assert.is($store.getState(), 111)
+  assert.is($store.defaultState, 1)
 
   // call watcher once
   assert.is(watch.callCount, 1)
@@ -75,11 +75,11 @@ test('should be possible to use with domain hook', async () => {
   root.onCreateStore(persist())
 
   assert.is(sessionStorage.getItem('store-key-2'), '222')
-  const store$ = root.createStore(1, { name: 'store-key-2' })
-  store$.watch(watch.fn)
+  const $store = root.createStore(1, { name: 'store-key-2' })
+  $store.watch(watch.fn)
 
-  assert.is(store$.getState(), 222)
-  assert.is(store$.defaultState, 1)
+  assert.is($store.getState(), 222)
+  assert.is($store.defaultState, 1)
 
   // call watcher once
   assert.is(watch.callCount, 1)

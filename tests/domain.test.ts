@@ -23,13 +23,13 @@ const dumbAdapter: StorageAdapter = <T>() => {
 test('should call watcher twice', () => {
   const watch = snoop(() => undefined)
 
-  const store$ = createStore(1)
-  store$.watch(watch.fn)
+  const $store = createStore(1)
+  $store.watch(watch.fn)
 
-  persist({ store: store$, with: dumbAdapter, key: 'domain::store0' })
+  persist({ store: $store, with: dumbAdapter, key: 'domain::store0' })
 
-  assert.is(store$.getState(), 0)
-  assert.is(store$.defaultState, 1)
+  assert.is($store.getState(), 0)
+  assert.is($store.defaultState, 1)
 
   // call watcher twice
   assert.is(watch.callCount, 2)
@@ -45,11 +45,11 @@ test('should call watcher once if persisted in domain hook', () => {
     persist({ store, with: dumbAdapter })
   })
 
-  const store$ = root.createStore(1, { name: 'domain::store1' })
-  store$.watch(watch.fn)
+  const $store = root.createStore(1, { name: 'domain::store1' })
+  $store.watch(watch.fn)
 
-  assert.is(store$.getState(), 0)
-  assert.is(store$.defaultState, 1)
+  assert.is($store.getState(), 0)
+  assert.is($store.defaultState, 1)
 
   // call watcher once
   assert.is(watch.callCount, 1)
