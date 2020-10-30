@@ -201,6 +201,37 @@ test('should be possible to use custom serialization', () => {
   assert.is(mockStorage.getItem('date'), '918122400000')
 })
 
+test('should be possible to persist part of the store', () => {
+  mockStorage.setItem('part::x', '42')
+  mockStorage.setItem('part::y', '24')
+
+  const setX = createEvent<number>()
+  const setY = createEvent<number>()
+  const coords$ = createStore<{ x: number; y: number }>({ x: 0, y: 0 })
+    .on(setX, ({ y }, x) => ({ x, y }))
+    .on(setY, ({ x }, y) => ({ x, y }))
+
+  persist({
+    with: storageAdapter,
+    source: coords$.map(({ x }) => x),
+    target: setX,
+    key: 'part::x',
+  })
+
+  persist({
+    with: storageAdapter,
+    source: coords$.map(({ y }) => y),
+    target: setY,
+    key: 'part::y',
+  })
+
+  assert.equal(coords$.getState(), { x: 42, y: 24 })
+  setX(25)
+  assert.equal(coords$.getState(), { x: 25, y: 24 })
+  assert.is(mockStorage.getItem('part::x'), '25')
+  assert.is(mockStorage.getItem('part::y'), '24')
+})
+
 //
 // Launch tests
 //

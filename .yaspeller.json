@@ -5,6 +5,7 @@
   "dictionary": [
     "async",
     "asynchronously",
+    "AsyncStorage",
     "fp",
     "IndexedDB",
     "localStorage",

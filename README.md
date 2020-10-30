@@ -7,6 +7,25 @@
 
 Small module for [Effector](https://github.com/effector/effector) ☄️ to sync stores with different storages (local storage, session storage, async storage, IndexedDB, cookies, server side storage, etc).
 
+## Table of Contents
+
+<!-- npx markdown-toc README.md -->
+
+- [Install](#install)
+- [Simple usage](#simple-usage)
+  - [with `localStorage`](#with-localstoragehttpsdevelopermozillaorgen-usdocswebapiwindowlocalstorage)
+  - [with `sessionStorage`](#with-sessionstoragehttpsdevelopermozillaorgen-usdocswebapiwindowsessionstorage)
+- [Usage with domains](#usage-with-domains)
+- [FP helpers](#fp-helpers)
+- [Options](#options)
+- [Advanced usage](#advanced-usage)
+- [Storage adapters](#storage-adapters)
+- [FAQ](#faq)
+  - [Can I use custom serialization / deserialization?](#can-i-use-custom-serialization--deserialization)
+  - [Can I persist part of the store?](#can-i-persist-part-of-the-store)
+- [TODO](#todo)
+- [Sponsored](#sponsored)
+
 ## Install
 
 ```bash
@@ -209,9 +228,75 @@ persist({ store, with: localStorageAdapter }) // <- use adapter
 
 Using that approach, it is possible to implement adapters to any "storage": local storage (_already_), session storage (_already_), async storage, IndexedDB, cookies, server side storage, you name it.
 
+## FAQ
+
+### Can I use custom serialization / deserialization?
+
+Out of the box, `persist` function from `effector-storage/local` and `effector-storage/session` doesn't support custom serialization (as well as both _fp_ forms). But fear not! You can use _internal_ `storage` adapter factory, which has this functionality:
+
+```javascript
+import { persist } from 'effector-storage'
+import { storage } from 'effector-storage/storage'
+
+const adapter = storage(
+  // first argument stands for `Storage` instance
+  localStorage,
+
+  // second argument stands for synchronization between windows/tabs
+  true,
+
+  // serialization function (by default `JSON.stringify`)
+  (date) => String(date.getTime()),
+
+  // deserialization function (by default `JSON.parse`)
+  (timestamp) => new Date(Number(timestamp))
+)
+
+const date$ = createStore(new Date(), { name: 'date' })
+persist({ store: date$, with: adapter })
+```
+
+In fact, this factory is used by `effector-storage/local` and `effector-storage/session` both. Of course, you can also make your own adapter from scratch with any logic you want.
+
+### Can I persist part of the store?
+
+The issue here is that it is hardly possible to create universal mapping to/from storage to the part of the store within the library implementation. But with `persist` form with `source`/`target`, and little help of Effector API you can make it:
+
+```javascript
+import { persist } from 'effector-storage/local'
+
+const setX = createEvent()
+const setY = createEvent()
+const coords$ = createStore({ x: 123, y: 321 })
+  .on(setX, ({ y }, x) => ({ x, y }))
+  .on(setY, ({ x }, y) => ({ x, y }))
+
+// persist X coordinate in `localStorage` with key 'x'
+persist({
+  source: coords$.map(({ x }) => x),
+  target: setX,
+  key: 'x',
+})
+
+// persist Y coordinate in `localStorage` with key 'y'
+persist({
+  source: coords$.map(({ y }) => y),
+  target: setY,
+  key: 'y',
+})
+```
+
+⚠️ **BIG WARNING!**<br>
+Use this approach with caution, beware of infinite circular updates. To avoid them, persist _only plain values_ in storage. So, mapped store in `source` will not trigger update, if object on original store has changed.
+
 ## TODO
 
-// TODO: add road-map
+- [x] [localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) support
+- [x] [sessionStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage) support
+- [ ] [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API) support
+- [ ] [AsyncStorage](https://react-native-async-storage.github.io/async-storage/) support
+- [ ] [Cookies](https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie) support
+- [ ] you name it support
 
 ## Sponsored
 
