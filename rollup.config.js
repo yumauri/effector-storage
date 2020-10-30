@@ -25,7 +25,7 @@ const src = (name) => ({
       exports: 'named',
     },
   ],
-  external: ['effector', '..', '../storage'],
+  external: ['effector', '..', '../storage', '../nil'],
   plugins: [
     babel({
       extensions: ['.ts'],
@@ -78,6 +78,11 @@ const src = (name) => ({
                 './fp': {
                   require: './fp/index.cjs',
                   import: './fp/index.js',
+                },
+                './nil/package.json': './nil/package.json',
+                './nil': {
+                  require: './nil/index.cjs',
+                  import: './nil/index.js',
                 },
                 './local/package.json': './local/package.json',
                 './local': {
@@ -149,6 +154,7 @@ const entry = (name) => [src(name), dts(name)]
 export default [
   ...entry(''),
   ...entry('fp/'),
+  ...entry('nil/'),
   ...entry('storage/'),
   ...entry('local/'),
   ...entry('local/fp/'),

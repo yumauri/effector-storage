@@ -9,13 +9,20 @@ import { createEventsMock } from './mocks/events.mock'
 //
 
 declare let global: any
-global.window = global.window || {}
 
-const events = global.events || createEventsMock()
-global.addEventListener = global.window.addEventListener = events.addEventListener
+test.before(() => {
+  // I'm pretty sure this is the bad hack
+  // but I need module to be imported and executed anew
+  delete require.cache[require.resolve('../src/local')]
 
-const localStorageMock = global.window.localStorage || createStorageMock()
-global.localStorage = global.window.localStorage = localStorageMock
+  global.localStorage = createStorageMock()
+  global.addEventListener = createEventsMock().addEventListener
+})
+
+test.after(() => {
+  delete global.localStorage
+  delete global.addEventListener
+})
 
 //
 // Tests

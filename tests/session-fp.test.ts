@@ -9,10 +9,18 @@ import { createStorageMock } from './mocks/storage.mock'
 //
 
 declare let global: any
-global.window = global.window || {}
 
-const sessionStorageMock = global.window.sessionStorage || createStorageMock()
-global.sessionStorage = global.window.sessionStorage = sessionStorageMock
+test.before(() => {
+  // I'm pretty sure this is the bad hack
+  // but I need module to be imported and executed anew
+  delete require.cache[require.resolve('../src/session')]
+
+  global.sessionStorage = createStorageMock()
+})
+
+test.after(() => {
+  delete global.sessionStorage
+})
 
 //
 // Tests
@@ -39,12 +47,12 @@ test('should return Store', async () => {
 })
 
 test('should be possible to use with .thru()', async () => {
-  sessionStorageMock.setItem('store-key-1', '111')
+  sessionStorage.setItem('store-key-1', '111')
 
   const { persist } = await import('../src/session/fp')
   const watch = snoop(() => undefined)
 
-  assert.is(global.window.sessionStorage.getItem('store-key-1'), '111')
+  assert.is(sessionStorage.getItem('store-key-1'), '111')
   const store$ = createStore(1).thru(persist({ key: 'store-key-1' }))
   store$.watch(watch.fn)
 
@@ -57,7 +65,7 @@ test('should be possible to use with .thru()', async () => {
 })
 
 test('should be possible to use with domain hook', async () => {
-  sessionStorageMock.setItem('store-key-2', '222')
+  sessionStorage.setItem('store-key-2', '222')
 
   const { persist } = await import('../src/session/fp')
 
@@ -66,7 +74,7 @@ test('should be possible to use with domain hook', async () => {
 
   root.onCreateStore(persist())
 
-  assert.is(global.window.sessionStorage.getItem('store-key-2'), '222')
+  assert.is(sessionStorage.getItem('store-key-2'), '222')
   const store$ = root.createStore(1, { name: 'store-key-2' })
   store$.watch(watch.fn)
 

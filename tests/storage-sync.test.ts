@@ -4,7 +4,7 @@ import { snoop } from 'snoop'
 import { createStore, createEvent } from 'effector'
 import { createStorageMock } from './mocks/storage.mock'
 import { createEventsMock } from './mocks/events.mock'
-import { tie } from '../src'
+import { StorageAdapter, tie } from '../src'
 import { storage } from '../src/storage'
 
 //
@@ -12,13 +12,26 @@ import { storage } from '../src/storage'
 //
 
 declare let global: any
-global.window = global.window || {}
-
-const events = global.events || createEventsMock()
-global.addEventListener = global.window.addEventListener = events.addEventListener
 
 const mockStorage = createStorageMock()
-const storageAdapter = storage(mockStorage, true)
+let storageAdapter: StorageAdapter
+let events: ReturnType<typeof createEventsMock>
+
+test.before(() => {
+  events = createEventsMock()
+  global.addEventListener = events.addEventListener
+  storageAdapter = storage(mockStorage, true)
+})
+
+test.after(() => {
+  delete global.addEventListener
+})
+
+// declare let global: any
+// global.window = global.window || {}
+
+// const events = global.events || createEventsMock()
+// global.addEventListener = global.window.addEventListener = events.addEventListener
 
 //
 // Tests

@@ -10,8 +10,8 @@ export function storage(
   deserialize: (value: string) => any = JSON.parse
 ): StorageAdapter {
   return <State>(key: string, update: (raw?: any) => any) => {
-    if (sync) {
-      window.addEventListener('storage', (e) => {
+    if (sync && typeof addEventListener !== 'undefined') {
+      addEventListener('storage', (e) => {
         if (e.storageArea === storage) {
           if (e.key === key) update(e.newValue)
 

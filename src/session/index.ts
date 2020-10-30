@@ -1,6 +1,7 @@
 import type { Event, Effect, Store, Unit, Subscription } from 'effector'
 import type { Exception } from '..'
 import { tie } from '..'
+import { nil } from '../nil'
 import { storage } from '../storage'
 
 export type ConfigStore<State, Fail = Error> = {
@@ -19,7 +20,8 @@ export type ConfigSourceTarget<State, Fail = Error> = {
 /**
  * `sessionStorage` adapter
  */
-export const sessionStorage = storage(window.sessionStorage, false)
+const adapter = typeof sessionStorage !== 'undefined' ? storage(sessionStorage, false) : nil
+export { adapter as sessionStorage }
 
 /**
  * Partially applied `tie` with predefined `sessionStorage` adapter
@@ -27,5 +29,5 @@ export const sessionStorage = storage(window.sessionStorage, false)
 export function persist<State, Fail = Error>(config: ConfigStore<State, Fail>): Subscription
 export function persist<State, Fail = Error>(config: ConfigSourceTarget<State, Fail>): Subscription
 export function persist(config: any): Subscription {
-  return tie(Object.assign({ with: sessionStorage }, config))
+  return tie(Object.assign({ with: adapter }, config))
 }

@@ -10,13 +10,20 @@ import { createEventsMock } from './mocks/events.mock'
 //
 
 declare let global: any
-global.window = global.window || {}
 
-const events = global.events || createEventsMock()
-global.addEventListener = global.window.addEventListener = events.addEventListener
+test.before(() => {
+  // I'm pretty sure this is the bad hack
+  // but I need module to be imported and executed anew
+  delete require.cache[require.resolve('../src/local')]
 
-const localStorageMock = global.window.localStorage || createStorageMock()
-global.localStorage = global.window.localStorage = localStorageMock
+  global.localStorage = createStorageMock()
+  global.addEventListener = createEventsMock().addEventListener
+})
+
+test.after(() => {
+  delete global.localStorage
+  delete global.addEventListener
+})
 
 //
 // Tests
@@ -43,12 +50,12 @@ test('should return Store', async () => {
 })
 
 test('should be possible to use with .thru()', async () => {
-  localStorageMock.setItem('store-key-1', '111')
+  localStorage.setItem('store-key-1', '111')
 
   const { persist } = await import('../src/local/fp')
   const watch = snoop(() => undefined)
 
-  assert.is(global.window.localStorage.getItem('store-key-1'), '111')
+  assert.is(localStorage.getItem('store-key-1'), '111')
   const store$ = createStore(1).thru(persist({ key: 'store-key-1' }))
   store$.watch(watch.fn)
 
@@ -61,7 +68,7 @@ test('should be possible to use with .thru()', async () => {
 })
 
 test('should be possible to use with domain hook', async () => {
-  localStorageMock.setItem('store-key-2', '222')
+  localStorage.setItem('store-key-2', '222')
 
   const { persist } = await import('../src/local/fp')
 
@@ -70,7 +77,7 @@ test('should be possible to use with domain hook', async () => {
 
   root.onCreateStore(persist())
 
-  assert.is(global.window.localStorage.getItem('store-key-2'), '222')
+  assert.is(localStorage.getItem('store-key-2'), '222')
   const store$ = root.createStore(1, { name: 'store-key-2' })
   store$.watch(watch.fn)
 

@@ -8,10 +8,18 @@ import { createStorageMock } from './mocks/storage.mock'
 //
 
 declare let global: any
-global.window = global.window || {}
 
-const sessionStorageMock = global.window.sessionStorage || createStorageMock()
-global.sessionStorage = global.window.sessionStorage = sessionStorageMock
+test.before(() => {
+  // I'm pretty sure this is the bad hack
+  // but I need module to be imported and executed anew
+  delete require.cache[require.resolve('../src/session')]
+
+  global.sessionStorage = createStorageMock()
+})
+
+test.after(() => {
+  delete global.sessionStorage
+})
 
 //
 // Tests
