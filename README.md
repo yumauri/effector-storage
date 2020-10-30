@@ -102,7 +102,6 @@ const $store = app.createStore(0, { name: 'store' })
 const $counter = createStore(0)
   .on(increment, (state) => state + 1)
   .on(decrement, (state) => state - 1)
-  .reset(resetCounter)
   .thru(persist({ key: 'counter' }))
 ```
 
@@ -152,13 +151,16 @@ has one form:
 persist({ key?, fail? }?): (store) => Store
 ```
 
-### Arguments
+### Arguments (optional)
 
-- Same as above, also `persist` could be called without arguments at all.
+- `key`? (_string_): Same as [above](#arguments).
+- `fail`? (_Event_ | _Effect_ | _Store_): Same as [above](#arguments)
 
 ### Returns
 
-- (Store): Same given store. _You cannot unsubscribe store from storage when using fp forms of `persist`._
+- `(store) => Store` (_Function_): Function, which accepts store to synchronize with local/session storage, and returns:
+  - (Store): Same given store.<br>
+    _You cannot unsubscribe store from storage when using fp forms of `persist`._
 
 ## Advanced usage
 
@@ -172,11 +174,11 @@ The storage adapter _gets_ and _sets_ values, and also can asynchronously emit v
 import { persist } from 'effector-storage'
 ```
 
-Core function `persist` accepts all the same parameters, as `persist` functions from sub-modules, plus additional one:
+Core function `persist` accepts all the same arguments, as `persist` functions from sub-modules, plus additional one:
 
 - `with` (_StorageAdapter_): Storage adapter to use.
 
-There is also _fp_ form:
+There is also _fp_ form too:
 
 ```javascript
 import { persist } from 'effector-storage/fp'
@@ -184,7 +186,7 @@ import { persist } from 'effector-storage/fp'
 
 ## Storage adapters
 
-Adapter is a function, which is called by core `persist` function, and has following interface:
+Adapter is a function, which is called by the core `persist` function, and has following interface:
 
 ```typescript
 export interface StorageAdapter {
@@ -197,7 +199,7 @@ export interface StorageAdapter {
 
 ### Arguments
 
-- `key` (_string_): Unique key to distinguish values in storage
+- `key` (_string_): Unique key to distinguish values in storage.
 - `update` (_Function_): Function, which could be called to get value from storage. In fact this is `Effect`, but for adapter this is not important, really.
 
 ### Returns
@@ -211,23 +213,23 @@ For example, simplified _localStorage_ adapter might looks like this:
 // There is no serialization and deserialization
 // No checks for edge cases
 // But to show an idea - this should fit
-const localStorageAdapter = (key) => ({
+const lsAdapter = (key) => ({
   get: () => localStorage.getItem(key),
   set: (value) => localStorage.setItem(key, value),
 })
 ```
 
-and later you could use this adapter with core `persist` function:
+and later you could use this adapter with the core `persist` function:
 
 ```javascript
 import { createStore } from 'effector'
 import { persist } from 'effector-storage'
 
 const store = createStore('', { name: 'store' })
-persist({ store, with: localStorageAdapter }) // <- use adapter
+persist({ store, with: lsAdapter }) // <- use adapter
 ```
 
-Using that approach, it is possible to implement adapters to any "storage": local storage (_already_), session storage (_already_), async storage, IndexedDB, cookies, server side storage, you name it.
+Using that approach, it is possible to implement adapters to any "storage": local storage (_already_), session storage (_already_), async storage, IndexedDB, cookies, server side storage, and so on.
 
 ## FAQ
 
