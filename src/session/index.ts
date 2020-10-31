@@ -36,5 +36,5 @@ export function persist<State, Fail = Error>(
   config: ConfigSourceTarget<State, Fail>
 ): Subscription
 export function persist(config: any): Subscription {
-  return parent(Object.assign({ with: adapter }, config))
+  return parent(Object.assign({ adapter }, config))
 }

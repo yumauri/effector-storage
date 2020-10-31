@@ -36,7 +36,12 @@ test('should fire error handler on sync errors', () => {
   error.watch(watch.fn)
 
   const $store = createStore(0)
-  persist({ store: $store, with: syncErrorAdapter, key: 'key-1', fail: error })
+  persist({
+    store: $store,
+    adapter: syncErrorAdapter,
+    key: 'key-1',
+    fail: error,
+  })
 
   assert.is(watch.callCount, 1)
   assert.equal(watch.calls[0].arguments, [
@@ -58,7 +63,12 @@ test('should fire error handler on async errors', async () => {
   error.watch(watch.fn)
 
   const $store = createStore(0)
-  persist({ store: $store, with: asyncErrorAdapter, key: 'key-2', fail: error })
+  persist({
+    store: $store,
+    adapter: asyncErrorAdapter,
+    key: 'key-2',
+    fail: error,
+  })
   assert.is(watch.callCount, 0)
 
   await Promise.resolve()
@@ -94,7 +104,7 @@ test('should not fire error handler on unsubscribed store', async () => {
   const $store = createStore(0)
   const unsubscribe = persist({
     store: $store,
-    with: asyncErrorAdapter,
+    adapter: asyncErrorAdapter,
     key: 'key-3',
     fail: error,
   })
@@ -113,7 +123,7 @@ test('unhandled error should be printed to console.error', () => {
 
   try {
     const $store = createStore(0)
-    persist({ store: $store, with: syncErrorAdapter, key: 'key-1' })
+    persist({ store: $store, adapter: syncErrorAdapter, key: 'key-1' })
 
     assert.is(error.callCount, 1)
     assert.equal(error.calls[0].arguments, ['get'])

@@ -48,7 +48,7 @@ test('storage updates should be debounced', async () => {
 
   const { set, get, adapter } = createAdapter()
   persist({
-    with: adapter,
+    adapter,
     source: sample($store, debounced, (value) => value),
     target: $store,
   })

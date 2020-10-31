@@ -27,7 +27,7 @@ test('should export `persist` function', () => {
 
 test('should return Store', () => {
   const $store0 = createStore(0, { name: 'fp::store0' })
-  const $store1 = persist({ with: dumbAdapter })($store0)
+  const $store1 = persist({ adapter: dumbAdapter })($store0)
   assert.ok(is.store($store1))
   assert.ok($store1 === $store0)
 })
@@ -36,7 +36,7 @@ test('should call watcher once', () => {
   const watch = snoop(() => undefined)
 
   const $store = createStore(1).thru(
-    persist({ with: dumbAdapter, key: 'fp::store1' })
+    persist({ adapter: dumbAdapter, key: 'fp::store1' })
   )
   $store.watch(watch.fn)
 
@@ -53,7 +53,7 @@ test('should call watcher twice', () => {
 
   const $store = createStore(1, { name: 'fp::store2name' })
   $store.watch(watch.fn)
-  $store.thru(persist({ with: dumbAdapter, key: 'fp::store2key' }))
+  $store.thru(persist({ adapter: dumbAdapter, key: 'fp::store2key' }))
 
   assert.is($store.getState(), 0)
   assert.is($store.defaultState, 1)
@@ -68,7 +68,7 @@ test('should call watcher once if persisted in domain hook', () => {
   const watch = snoop(() => undefined)
   const root = createDomain()
 
-  root.onCreateStore(persist({ with: dumbAdapter }))
+  root.onCreateStore(persist({ adapter: dumbAdapter }))
 
   const $store = root.createStore(1, { name: 'fp::store3' })
   $store.watch(watch.fn)

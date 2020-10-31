@@ -3,7 +3,7 @@ import type { StorageAdapter, Exception } from '..'
 import { persist as parent } from '..'
 
 type Config<Fail = Error> = {
-  with: StorageAdapter
+  adapter: StorageAdapter
   fail?: Unit<Exception<Fail>>
   key?: string
 }

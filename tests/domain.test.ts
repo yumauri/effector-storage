@@ -26,7 +26,7 @@ test('should call watcher twice', () => {
   const $store = createStore(1)
   $store.watch(watch.fn)
 
-  persist({ store: $store, with: dumbAdapter, key: 'domain::store0' })
+  persist({ store: $store, adapter: dumbAdapter, key: 'domain::store0' })
 
   assert.is($store.getState(), 0)
   assert.is($store.defaultState, 1)
@@ -42,7 +42,7 @@ test('should call watcher once if persisted in domain hook', () => {
   const root = createDomain()
 
   root.onCreateStore((store) => {
-    persist({ store, with: dumbAdapter })
+    persist({ store, adapter: dumbAdapter })
   })
 
   const $store = root.createStore(1, { name: 'domain::store1' })
@@ -67,7 +67,7 @@ test('should throw error in case of missing name in named domain', async () => {
 
   root.onCreateStore((store) => {
     try {
-      persist({ store, with: dumbAdapter })
+      persist({ store, adapter: dumbAdapter })
       rs()
     } catch (err) {
       rj(err)

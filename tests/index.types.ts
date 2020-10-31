@@ -20,13 +20,13 @@ test('General `persist` should handle wrong arguments', async () => {
   persist({})
 
   // @ts-expect-error should fail on wrong arguments
-  persist({ with: fakeAdapter })
+  persist({ adapter: fakeAdapter })
 
   // @ts-expect-error should fail on wrong arguments
-  persist({ with: fakeAdapter, source: store })
+  persist({ adapter: fakeAdapter, source: store })
 
   // @ts-expect-error should fail on wrong arguments
-  persist({ with: fakeAdapter, target: store })
+  persist({ adapter: fakeAdapter, target: store })
 })
 
 test('General `persist` should return Subscription', async () => {
@@ -39,24 +39,31 @@ test('General `persist` should return Subscription', async () => {
   const handler: Event<any> = 0 as any
   const key = ''
 
-  expectType<Subscription>(persist({ with: fakeAdapter, store }))
-  expectType<Subscription>(persist({ with: fakeAdapter, store, key }))
-  expectType<Subscription>(persist({ with: fakeAdapter, store, fail: handler }))
+  expectType<Subscription>(persist({ adapter: fakeAdapter, store }))
+  expectType<Subscription>(persist({ adapter: fakeAdapter, store, key }))
   expectType<Subscription>(
-    persist({ with: fakeAdapter, store, key, fail: handler })
+    persist({ adapter: fakeAdapter, store, fail: handler })
   )
   expectType<Subscription>(
-    persist({ with: fakeAdapter, source: store, target: store })
+    persist({ adapter: fakeAdapter, store, key, fail: handler })
   )
   expectType<Subscription>(
-    persist({ with: fakeAdapter, source: store, target: store, key })
+    persist({ adapter: fakeAdapter, source: store, target: store })
   )
   expectType<Subscription>(
-    persist({ with: fakeAdapter, source: store, target: store, fail: handler })
+    persist({ adapter: fakeAdapter, source: store, target: store, key })
   )
   expectType<Subscription>(
     persist({
-      with: fakeAdapter,
+      adapter: fakeAdapter,
+      source: store,
+      target: store,
+      fail: handler,
+    })
+  )
+  expectType<Subscription>(
+    persist({
+      adapter: fakeAdapter,
       source: store,
       target: store,
       key,
@@ -64,16 +71,22 @@ test('General `persist` should return Subscription', async () => {
     })
   )
   expectType<Subscription>(
-    persist({ with: fakeAdapter, source: ev1, target: ev2 })
+    persist({ adapter: fakeAdapter, source: ev1, target: ev2 })
   )
   expectType<Subscription>(
-    persist({ with: fakeAdapter, source: ev1, target: ev2, key })
+    persist({ adapter: fakeAdapter, source: ev1, target: ev2, key })
   )
   expectType<Subscription>(
-    persist({ with: fakeAdapter, source: ev1, target: ev2, fail: handler })
+    persist({ adapter: fakeAdapter, source: ev1, target: ev2, fail: handler })
   )
   expectType<Subscription>(
-    persist({ with: fakeAdapter, source: ev1, target: ev2, key, fail: handler })
+    persist({
+      adapter: fakeAdapter,
+      source: ev1,
+      target: ev2,
+      key,
+      fail: handler,
+    })
   )
 })
 
@@ -86,24 +99,24 @@ test('Partially applied `persist` should return Function', async () => {
   const key = ''
 
   expectType<<State>(store: Store<State>) => Store<State>>(
-    persist({ with: fakeAdapter })
+    persist({ adapter: fakeAdapter })
   )
   expectType<<State>(store: Store<State>) => Store<State>>(
-    persist({ with: fakeAdapter, key })
+    persist({ adapter: fakeAdapter, key })
   )
   expectType<<State>(store: Store<State>) => Store<State>>(
-    persist({ with: fakeAdapter, fail: handler })
+    persist({ adapter: fakeAdapter, fail: handler })
   )
   expectType<<State>(store: Store<State>) => Store<State>>(
-    persist({ with: fakeAdapter, key, fail: handler })
+    persist({ adapter: fakeAdapter, key, fail: handler })
   )
-  expectType<Store<number>>(persist({ with: fakeAdapter })(store))
-  expectType<Store<number>>(persist({ with: fakeAdapter, key })(store))
+  expectType<Store<number>>(persist({ adapter: fakeAdapter })(store))
+  expectType<Store<number>>(persist({ adapter: fakeAdapter, key })(store))
   expectType<Store<number>>(
-    persist({ with: fakeAdapter, fail: handler })(store)
+    persist({ adapter: fakeAdapter, fail: handler })(store)
   )
   expectType<Store<number>>(
-    persist({ with: fakeAdapter, key, fail: handler })(store)
+    persist({ adapter: fakeAdapter, key, fail: handler })(store)
   )
 })
 

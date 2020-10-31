@@ -19,14 +19,14 @@ const storageAdapter = storage({ storage: mockStorage })
 
 test('store initial value should NOT be saved to storage', () => {
   const $counter1 = createStore(0, { name: 'counter1' })
-  persist({ store: $counter1, with: storageAdapter })
+  persist({ store: $counter1, adapter: storageAdapter })
   assert.is(mockStorage.getItem('counter1'), null)
   assert.is($counter1.getState(), 0)
 })
 
 test('store new value should be saved to storage', () => {
   const $counter2 = createStore(0, { name: 'counter2' })
-  persist({ store: $counter2, with: storageAdapter })
+  persist({ store: $counter2, adapter: storageAdapter })
   assert.is(mockStorage.getItem('counter2'), null)
   ;($counter2 as any).setState(3)
   assert.is(mockStorage.getItem('counter2'), '3')
@@ -38,7 +38,7 @@ test('store new value should be saved to storage', () => {
 
 test('key should have precedence over name', () => {
   const $namekey = createStore(0, { name: 'precedence::name' })
-  persist({ store: $namekey, with: storageAdapter, key: 'precedence::key' })
+  persist({ store: $namekey, adapter: storageAdapter, key: 'precedence::key' })
   assert.is(mockStorage.getItem('precedence::name'), null)
   assert.is(mockStorage.getItem('precedence::key'), null)
   ;($namekey as any).setState(42)
@@ -49,7 +49,7 @@ test('key should have precedence over name', () => {
 test('store should be initialized from storage value', () => {
   mockStorage.setItem('counter3', '42')
   const $counter3 = createStore(0, { name: 'counter3' })
-  persist({ store: $counter3, with: storageAdapter })
+  persist({ store: $counter3, adapter: storageAdapter })
   assert.is(mockStorage.getItem('counter3'), '42')
   assert.is($counter3.getState(), 42)
 })
@@ -58,7 +58,7 @@ test('reset store should reset it to given initial value', () => {
   mockStorage.setItem('counter4', '42')
   const reset = createEvent()
   const $counter4 = createStore(0, { name: 'counter4' }).reset(reset)
-  persist({ store: $counter4, with: storageAdapter })
+  persist({ store: $counter4, adapter: storageAdapter })
   assert.is(mockStorage.getItem('counter4'), '42')
   assert.is($counter4.getState(), 42)
   reset()
@@ -74,7 +74,7 @@ test('broken storage value should be ignored', () => {
   try {
     mockStorage.setItem('counter5', 'broken')
     const $counter5 = createStore(13, { name: 'counter5' })
-    persist({ store: $counter5, with: storageAdapter })
+    persist({ store: $counter5, adapter: storageAdapter })
     assert.is(mockStorage.getItem('counter5'), 'broken')
     assert.is($counter5.getState(), 13)
 
@@ -92,7 +92,7 @@ test('broken storage value should launch `catch` handler', () => {
 
   mockStorage.setItem('counter6', 'broken')
   const $counter6 = createStore(13, { name: 'counter6' })
-  persist({ store: $counter6, with: storageAdapter, fail: handler })
+  persist({ store: $counter6, adapter: storageAdapter, fail: handler })
 
   assert.is(watch.callCount, 1)
   assert.is(watch.calls[0].arguments.length, 1)
@@ -112,7 +112,7 @@ test('should not fail if error handler is absent', () => {
 
   try {
     const $store0 = createStore({ test: 1 }, { name: 'store0' })
-    persist({ store: $store0, with: storageAdapter })
+    persist({ store: $store0, adapter: storageAdapter })
 
     assert.is(mockStorage.getItem('store0'), null)
 
@@ -136,7 +136,7 @@ test('broken store value should launch `catch` handler', () => {
   handler.watch(watch.fn)
 
   const $store1 = createStore({ test: 1 }, { name: 'store1' })
-  persist({ store: $store1, with: storageAdapter, fail: handler })
+  persist({ store: $store1, adapter: storageAdapter, fail: handler })
 
   assert.is(mockStorage.getItem('store1'), null)
   assert.equal($store1.getState(), { test: 1 })
@@ -166,10 +166,10 @@ test('different storage instances should not interfere', () => {
   mockStorage2.setItem('custom', '222')
 
   const $counter1 = createStore(0)
-  persist({ store: $counter1, with: storageAdapter1, key: 'custom' })
+  persist({ store: $counter1, adapter: storageAdapter1, key: 'custom' })
 
   const $counter2 = createStore(0)
-  persist({ store: $counter2, with: storageAdapter2, key: 'custom' })
+  persist({ store: $counter2, adapter: storageAdapter2, key: 'custom' })
 
   assert.is(mockStorage1.getItem('custom'), '111')
   assert.is(mockStorage2.getItem('custom'), '222')
@@ -202,7 +202,7 @@ test('should be possible to use custom serialization', () => {
   mockStorage.setItem('date', '473684400000')
 
   const $date = createStore(new Date())
-  persist({ store: $date, with: storageDateAdapter, key: 'date' })
+  persist({ store: $date, adapter: storageDateAdapter, key: 'date' })
 
   assert.is(mockStorage.getItem('date'), '473684400000')
   assert.is($date.getState().toISOString(), '1985-01-04T11:00:00.000Z')
@@ -221,14 +221,14 @@ test('should be possible to persist part of the store', () => {
     .on(setY, ({ x }, y) => ({ x, y }))
 
   persist({
-    with: storageAdapter,
+    adapter: storageAdapter,
     source: $coords.map(({ x }) => x),
     target: setX,
     key: 'part::x',
   })
 
   persist({
-    with: storageAdapter,
+    adapter: storageAdapter,
     source: $coords.map(({ y }) => y),
     target: setY,
     key: 'part::y',

@@ -39,7 +39,7 @@ test.after(() => {
 
 test('persisted store should be updated from storage', async () => {
   const $counter1 = createStore(0, { name: 'counter1' })
-  persist({ store: $counter1, with: storageAdapter })
+  persist({ store: $counter1, adapter: storageAdapter })
   assert.is($counter1.getState(), 0)
 
   mockStorage.setItem('counter1', '1')
@@ -59,7 +59,7 @@ test('broken storage value should launch `catch` handler', async () => {
   handler.watch(watch.fn)
 
   const $counter2 = createStore(0, { name: 'counter2' })
-  persist({ store: $counter2, with: storageAdapter, fail: handler })
+  persist({ store: $counter2, adapter: storageAdapter, fail: handler })
   assert.is($counter2.getState(), 0)
 
   mockStorage.setItem('counter2', 'broken')
@@ -83,7 +83,7 @@ test('broken storage value should launch `catch` handler', async () => {
 
 test('persisted store should ignore updates from different storage', async () => {
   const $counter3 = createStore(0, { name: 'counter3' })
-  persist({ store: $counter3, with: storageAdapter })
+  persist({ store: $counter3, adapter: storageAdapter })
   assert.is($counter3.getState(), 0)
 
   await events.dispatchEvent('storage', {
@@ -101,7 +101,7 @@ test('persisted store should be erased on storage.clear()', async () => {
   const storageAdapter = storage({ storage: mockStorage, sync: true })
 
   const $counter4 = createStore(0, { name: 'counter4' })
-  persist({ store: $counter4, with: storageAdapter })
+  persist({ store: $counter4, adapter: storageAdapter })
   assert.is($counter4.getState(), 0)
 
   mockStorage.clear()

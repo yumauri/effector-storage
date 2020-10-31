@@ -16,14 +16,14 @@ export type Exception<Fail = Error> = {
 }
 
 export type ConfigStore<State, Fail = Error> = {
-  with: StorageAdapter
+  adapter: StorageAdapter
   store: Store<State>
   fail?: Unit<Exception<Fail>>
   key?: string
 }
 
 export type ConfigSourceTarget<State, Fail = Error> = {
-  with: StorageAdapter
+  adapter: StorageAdapter
   source: Store<State> | Event<State> | Effect<State, any, any>
   target: Store<State> | Event<State> | Effect<State, any, any>
   fail?: Unit<Exception<Fail>>
@@ -91,7 +91,7 @@ export function persist<State, Fail = Error>(
   config: ConfigSourceTarget<State, Fail>
 ): Subscription
 export function persist<State, Fail = Error>({
-  with: adapter,
+  adapter,
   store,
   source = store,
   target = store,

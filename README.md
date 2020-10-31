@@ -11,35 +11,34 @@ Small module for [Effector](https://github.com/effector/effector) ☄️ to sync
 
 <!-- npx markdown-toc --maxdepth 3 README.md -->
 
-- [effector-storage](#effector-storage)
-  * [Table of Contents](#table-of-contents)
-  * [Install](#install)
-  * [Simple usage](#simple-usage)
-    + [with `localStorage`](#with-localstorage)
-    + [with `sessionStorage`](#with-sessionstorage)
-  * [Usage with domains](#usage-with-domains)
-  * [FP helpers](#fp-helpers)
-  * [API](#api)
-    + [`effector-storage/local`](#effector-storagelocal)
-    + [`effector-storage/session`](#effector-storagesession)
-    + [`persist({ store, key?, fail? })`](#persist-store-key-fail-)
-    + [`persist({ source, target, key?, fail? })`](#persist-source-target-key-fail-)
-    + [`effector-storage/local/fp`](#effector-storagelocalfp)
-    + [`effector-storage/session/fp`](#effector-storagesessionfp)
-    + [`persist({ key?, fail? }?)`](#persist-key-fail-)
-  * [Advanced usage](#advanced-usage)
-  * [Storage adapters](#storage-adapters)
-    + [Arguments](#arguments-3)
-    + [Returns](#returns-3)
-  * [Custom `Storage` adapter](#custom-storage-adapter)
-    + [Arguments](#arguments-4)
-    + [Returns](#returns-4)
-  * [FAQ](#faq)
-    + [Can I use custom serialization / deserialization?](#can-i-use-custom-serialization--deserialization)
-    + [Can I persist part of the store?](#can-i-persist-part-of-the-store)
-    + [Can I debounce updates, `localStorage` is too slow?](#can-i-debounce-updates-localstorage-is-too-slow)
-  * [TODO](#todo)
-  * [Sponsored](#sponsored)
+- [Table of Contents](#table-of-contents)
+- [Install](#install)
+- [Simple usage](#simple-usage)
+  - [with `localStorage`](#with-localstorage)
+  - [with `sessionStorage`](#with-sessionstorage)
+- [Usage with domains](#usage-with-domains)
+- [FP helpers](#fp-helpers)
+- [API](#api)
+  - [`effector-storage/local`](#effector-storagelocal)
+  - [`effector-storage/session`](#effector-storagesession)
+  - [`persist({ store, key?, fail? })`](#persist-store-key-fail-)
+  - [`persist({ source, target, key?, fail? })`](#persist-source-target-key-fail-)
+  - [`effector-storage/local/fp`](#effector-storagelocalfp)
+  - [`effector-storage/session/fp`](#effector-storagesessionfp)
+  - [`persist({ key?, fail? }?)`](#persist-key-fail-)
+- [Advanced usage](#advanced-usage)
+- [Storage adapters](#storage-adapters)
+  - [Arguments](#arguments-3)
+  - [Returns](#returns-3)
+- [Custom `Storage` adapter](#custom-storage-adapter)
+  - [Arguments](#arguments-4)
+  - [Returns](#returns-4)
+- [FAQ](#faq)
+  - [Can I use custom serialization / deserialization?](#can-i-use-custom-serialization--deserialization)
+  - [Can I persist part of the store?](#can-i-persist-part-of-the-store)
+  - [Can I debounce updates, `localStorage` is too slow?](#can-i-debounce-updates-localstorage-is-too-slow)
+- [TODO](#todo)
+- [Sponsored](#sponsored)
 
 ## Install
 
@@ -134,6 +133,7 @@ import { persist } from 'effector-storage/local'
 Stores, persisted in [`localStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage), are automatically synced between two (or more) windows/tabs. Also, they are synced between instances, so if you will persist two stores with the same key — each store will receive updates from another one.
 
 Has two overrides:
+
 - [`persist({ store, key?, fail? })`](#persist-store-key-fail-)
 - [`persist({ source, target, key?, fail? })`](#persist-source-target-key-fail-)
 
@@ -146,6 +146,7 @@ import { persist } from 'effector-storage/session'
 Stores, persisted in [`sessionStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage), are synced between instances, but not between different windows/tabs.
 
 Has two overrides:
+
 - [`persist({ store, key?, fail? })`](#persist-store-key-fail-)
 - [`persist({ source, target, key?, fail? })`](#persist-source-target-key-fail-)
 
@@ -171,7 +172,6 @@ subscription = persist({ store, key, fail })
 #### Returns
 
 - (`Subscription`): You can use this subscription to remove store association with local/session storage, if you don't need them to be synced anymore. It is a function.
-
 
 ### `persist({ source, target, key?, fail? })`
 
@@ -207,7 +207,6 @@ import { persist } from 'effector-storage/local/fp'
 
 Signature: [`persist({ key?, fail? }?)`](#persist-key-fail-)
 
-
 ### `effector-storage/session/fp`
 
 Same as [`effector-storage/session`](#effector-storagesession), but returns function that receive store.
@@ -237,12 +236,12 @@ All arguments are optional and can be omitted. `fn = persist()`
   - ([_Store_]): Same given store.<br>
     _You cannot unsubscribe store from storage when using fp forms of `persist`._
 
-[_Effect_]: https://effector.dev/docs/api/effector/effect
-[_Event_]: https://effector.dev/docs/api/effector/event
-[_Store_]: https://effector.dev/docs/api/effector/store
+[_effect_]: https://effector.dev/docs/api/effector/effect
+[_event_]: https://effector.dev/docs/api/effector/event
+[_store_]: https://effector.dev/docs/api/effector/store
 [_string_]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String
-[_Function_]: https://developer.mozilla.org/en-US/docs/Glossary/Function
-[_Error_]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error
+[_function_]: https://developer.mozilla.org/en-US/docs/Glossary/Function
+[_error_]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error
 
 ## Advanced usage
 
@@ -258,7 +257,7 @@ import { persist } from 'effector-storage'
 
 Core function `persist` accepts all the same arguments, as `persist` functions from sub-modules, plus additional one:
 
-- `with` (_StorageAdapter_): Storage adapter to use.
+- `adapter` (_StorageAdapter_): Storage adapter to use.
 
 There is also _fp_ form too:
 
@@ -308,7 +307,7 @@ import { createStore } from 'effector'
 import { persist } from 'effector-storage'
 
 const store = createStore('', { name: 'store' })
-persist({ store, with: lsAdapter }) // <- use adapter
+persist({ store, adapter: lsAdapter }) // <- use adapter
 ```
 
 Using that approach, it is possible to implement adapters to any "storage": local storage (_already_), session storage (_already_), async storage, IndexedDB, cookies, server side storage, and so on.
@@ -356,7 +355,7 @@ const adapter = storage({
 })
 
 const $date = createStore(new Date(), { name: 'date' })
-persist({ store: $date, with: adapter })
+persist({ store: $date, adapter })
 ```
 
 ### Can I persist part of the store?
