@@ -130,8 +130,8 @@ Stores, persisted in [`localStorage`](https://developer.mozilla.org/en-US/docs/W
 
 Has two overrides:
 
-- [`persist({ store })`](#persist-store)
-- [`persist({ source, target })`](#persist-source-target)
+- [`persist({ store })`](#persist-store-)
+- [`persist({ source, target })`](#persist-source-target-)
 
 ### `effector-storage/session`
 
@@ -143,8 +143,8 @@ Stores, persisted in [`sessionStorage`](https://developer.mozilla.org/en-US/docs
 
 Has two overrides:
 
-- [`persist({ store })`](#persist-store)
-- [`persist({ source, target })`](#persist-source-target)
+- [`persist({ store })`](#persist-store-)
+- [`persist({ source, target })`](#persist-source-target-)
 
 ### `persist({ store })`
 
