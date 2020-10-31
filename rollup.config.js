@@ -61,8 +61,8 @@ const src = (name) => ({
               bugs: pkg.bugs,
               homepage: pkg.homepage,
               keywords: pkg.keywords,
-              dependencies: {
-                effector: '>21.0.0',
+              peerDependencies: {
+                effector: '^21.0.0',
               },
 
               // cjs + esm magic
