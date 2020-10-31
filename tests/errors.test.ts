@@ -92,7 +92,12 @@ test('should not fire error handler on unsubscribed store', async () => {
   error.watch(watch.fn)
 
   const $store = createStore(0)
-  const unsubscribe = persist({ store: $store, with: asyncErrorAdapter, key: 'key-3', fail: error })
+  const unsubscribe = persist({
+    store: $store,
+    with: asyncErrorAdapter,
+    key: 'key-3',
+    fail: error,
+  })
   assert.is(watch.callCount, 0)
 
   unsubscribe()

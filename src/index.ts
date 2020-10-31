@@ -84,8 +84,12 @@ function createEffects<State, Fail = Error>(
 const sink = createEvent<Exception<any>>()
 sink.watch((payload) => console.error(payload.error))
 
-export function persist<State, Fail = Error>(config: ConfigStore<State, Fail>): Subscription
-export function persist<State, Fail = Error>(config: ConfigSourceTarget<State, Fail>): Subscription
+export function persist<State, Fail = Error>(
+  config: ConfigStore<State, Fail>
+): Subscription
+export function persist<State, Fail = Error>(
+  config: ConfigSourceTarget<State, Fail>
+): Subscription
 export function persist<State, Fail = Error>({
   with: adapter,
   store,
@@ -93,7 +97,9 @@ export function persist<State, Fail = Error>({
   target = store,
   fail = sink,
   key,
-}: Partial<ConfigStore<State, Fail> & ConfigSourceTarget<State, Fail>>): Subscription {
+}: Partial<
+  ConfigStore<State, Fail> & ConfigSourceTarget<State, Fail>
+>): Subscription {
   if (!adapter) {
     throw Error('Adapter is not defined')
   }
@@ -110,7 +116,10 @@ export function persist<State, Fail = Error>({
     throw Error('Source must be different from target')
   }
 
-  const [set, get, err] = createEffects<State, Fail>(adapter, key || source.shortName)
+  const [set, get, err] = createEffects<State, Fail>(
+    adapter,
+    key || source.shortName
+  )
 
   const subscriptions = [
     forward({ from: source, to: set }),

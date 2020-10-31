@@ -30,7 +30,10 @@ test('store new value should be saved to storage', () => {
   assert.is(mockStorage.getItem('counter2'), null)
   ;($counter2 as any).setState(3)
   assert.is(mockStorage.getItem('counter2'), '3')
-  assert.is($counter2.getState(), JSON.parse(mockStorage.getItem('counter2') as any))
+  assert.is(
+    $counter2.getState(),
+    JSON.parse(mockStorage.getItem('counter2') as any)
+  )
 })
 
 test('key should have precedence over name', () => {
@@ -174,11 +177,17 @@ test('different storage instances should not interfere', () => {
   ;($counter1 as any).setState(333)
   assert.is(mockStorage1.getItem('custom'), '333')
   assert.is(mockStorage2.getItem('custom'), '222')
-  assert.is($counter1.getState(), JSON.parse(mockStorage1.getItem('custom') as any))
+  assert.is(
+    $counter1.getState(),
+    JSON.parse(mockStorage1.getItem('custom') as any)
+  )
   ;($counter2 as any).setState(444)
   assert.is(mockStorage1.getItem('custom'), '333')
   assert.is(mockStorage2.getItem('custom'), '444')
-  assert.is($counter2.getState(), JSON.parse(mockStorage2.getItem('custom') as any))
+  assert.is(
+    $counter2.getState(),
+    JSON.parse(mockStorage2.getItem('custom') as any)
+  )
 })
 
 test('should be possible to use custom serialization', () => {

@@ -31,7 +31,9 @@ export function storage({
     return {
       get(value?: string | null) {
         const item = value !== undefined ? value : storage.getItem(key)
-        return value === undefined && item === null ? undefined : deserialize(item as any)
+        return value === undefined && item === null
+          ? undefined
+          : deserialize(item as any)
       },
 
       set(value: State) {

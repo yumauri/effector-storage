@@ -35,7 +35,9 @@ test('should return Store', () => {
 test('should call watcher once', () => {
   const watch = snoop(() => undefined)
 
-  const $store = createStore(1).thru(persist({ with: dumbAdapter, key: 'fp::store1' }))
+  const $store = createStore(1).thru(
+    persist({ with: dumbAdapter, key: 'fp::store1' })
+  )
   $store.watch(watch.fn)
 
   assert.is($store.getState(), 0)

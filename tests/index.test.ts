@@ -29,9 +29,16 @@ test('should be ok on good parameters', () => {
   const $store1 = createStore(0)
   const $store0named = createStore(0, { name: '_store0named_' })
   const $store1named = createStore(0, { name: '_store1named_' })
-  assert.not.throws(() => persist({ with: dumbAdapter, store: $store0, key: '_store0_' }))
   assert.not.throws(() =>
-    persist({ with: dumbAdapter, source: $store1, target: $store1, key: '_store1_' })
+    persist({ with: dumbAdapter, store: $store0, key: '_store0_' })
+  )
+  assert.not.throws(() =>
+    persist({
+      with: dumbAdapter,
+      source: $store1,
+      target: $store1,
+      key: '_store1_',
+    })
   )
   assert.not.throws(() => persist({ with: dumbAdapter, store: $store0named }))
   assert.not.throws(() =>
@@ -43,19 +50,34 @@ test('should handle wrong parameters', () => {
   const event = createEvent<number>()
   const $store = createStore(0)
   assert.throws(() => persist({} as any), /Adapter is not defined/)
-  assert.throws(() => persist({ with: dumbAdapter } as any), /Store or source is not defined/)
-  assert.throws(() => persist({ with: dumbAdapter, source: event } as any), /Target is not defined/)
+  assert.throws(
+    () => persist({ with: dumbAdapter } as any),
+    /Store or source is not defined/
+  )
+  assert.throws(
+    () => persist({ with: dumbAdapter, source: event } as any),
+    /Target is not defined/
+  )
   assert.throws(
     () => persist({ with: dumbAdapter, target: event } as any),
     /Store or source is not defined/
   )
-  assert.throws(() => persist({ with: dumbAdapter, store: $store }), /Key or name is not defined/)
+  assert.throws(
+    () => persist({ with: dumbAdapter, store: $store }),
+    /Key or name is not defined/
+  )
   assert.throws(
     () => persist({ with: dumbAdapter, source: event, target: $store }),
     /Key or name is not defined/
   )
   assert.throws(
-    () => persist({ with: dumbAdapter, source: event, target: event, key: 'asdasd' }),
+    () =>
+      persist({
+        with: dumbAdapter,
+        source: event,
+        target: event,
+        key: 'asdasd',
+      }),
     /Source must be different from target/
   )
 })
@@ -132,7 +154,11 @@ test('should unsubscribe stores', () => {
   assert.equal(watch.calls[1].arguments, [2])
 
   persist({ store: $store0, with: dumbAdapter, key: 'same-key-2' })
-  const unsubscribe = persist({ store: $store1, with: dumbAdapter, key: 'same-key-2' })
+  const unsubscribe = persist({
+    store: $store1,
+    with: dumbAdapter,
+    key: 'same-key-2',
+  })
 
   assert.is($store0.getState(), 0)
   assert.is($store1.getState(), 0)

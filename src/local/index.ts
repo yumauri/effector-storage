@@ -21,14 +21,20 @@ export type ConfigSourceTarget<State, Fail = Error> = {
  * `localStorage` adapter
  */
 const adapter =
-  typeof localStorage !== 'undefined' ? storage({ storage: localStorage, sync: true }) : nil
+  typeof localStorage !== 'undefined'
+    ? storage({ storage: localStorage, sync: true })
+    : nil
 export { adapter as localStorage }
 
 /**
  * Partially applied `persist` with predefined `localStorage` adapter
  */
-export function persist<State, Fail = Error>(config: ConfigStore<State, Fail>): Subscription
-export function persist<State, Fail = Error>(config: ConfigSourceTarget<State, Fail>): Subscription
+export function persist<State, Fail = Error>(
+  config: ConfigStore<State, Fail>
+): Subscription
+export function persist<State, Fail = Error>(
+  config: ConfigSourceTarget<State, Fail>
+): Subscription
 export function persist(config: any): Subscription {
   return parent(Object.assign({ with: adapter }, config))
 }
