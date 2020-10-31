@@ -1,6 +1,7 @@
 import { test } from 'uvu'
 import * as assert from 'uvu/assert'
-import { nil } from '../src/nil'
+import { createStore } from 'effector'
+import { persist } from '../src/local'
 
 //
 // Tests
@@ -11,10 +12,6 @@ declare let global: any
 let storage: Storage
 
 test.before(() => {
-  // I'm pretty sure this is the bad hack
-  // but I need module to be imported and executed anew
-  delete require.cache[require.resolve('../src/local')]
-
   storage = global.localStorage
   delete global.localStorage
 })
@@ -23,11 +20,17 @@ test.after(() => {
   global.localStorage = storage
 })
 
-test("should not fail if localStorage does't exists", async () => {
-  const { localStorage, persist } = await import('../src/local')
-  assert.type(localStorage, 'function')
-  assert.type(persist, 'function')
-  assert.ok(localStorage === nil)
+test('store should ignore initial value if localStorage is not exists', () => {
+  const $counter0 = createStore(42, { name: 'local-node::counter0' })
+  persist({ store: $counter0 })
+  assert.is($counter0.getState(), 42)
+})
+
+test('store new value should be ignored by storage', () => {
+  const $counter1 = createStore(0, { name: 'local-node::counter1' })
+  persist({ store: $counter1 })
+  ;($counter1 as any).setState(42)
+  assert.is($counter1.getState(), 42)
 })
 
 //

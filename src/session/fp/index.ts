@@ -1,11 +1,13 @@
 import type { Unit, Store } from 'effector'
 import type { Exception } from '../..'
 import { persist as parent } from '..'
-export { sessionStorage } from '..'
 
 export type Config<Fail = Error> = {
   fail?: Unit<Exception<Fail>>
   key?: string
+  sync?: boolean
+  serialize?: (value: any) => string
+  deserialize?: (value: string) => any
 }
 
 /**

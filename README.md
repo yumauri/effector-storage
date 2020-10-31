@@ -21,20 +21,16 @@ Small module for [Effector](https://github.com/effector/effector) ☄️ to sync
 - [API](#api)
   - [`effector-storage/local`](#effector-storagelocal)
   - [`effector-storage/session`](#effector-storagesession)
-  - [`persist({ store, key?, fail? })`](#persist-store-key-fail-)
-  - [`persist({ source, target, key?, fail? })`](#persist-source-target-key-fail-)
+  - [`persist({ store })`](#persist-store-)
+  - [`persist({ source, target })`](#persist-source-target-)
   - [`effector-storage/local/fp`](#effector-storagelocalfp)
   - [`effector-storage/session/fp`](#effector-storagesessionfp)
-  - [`persist({ key?, fail? }?)`](#persist-key-fail-)
+  - [`persist()`](#persist)
 - [Advanced usage](#advanced-usage)
 - [Storage adapters](#storage-adapters)
-  - [Arguments](#arguments-3)
-  - [Returns](#returns-3)
 - [Custom `Storage` adapter](#custom-storage-adapter)
-  - [Arguments](#arguments-4)
-  - [Returns](#returns-4)
 - [FAQ](#faq)
-  - [Can I use custom serialization / deserialization?](#can-i-use-custom-serialization--deserialization)
+  - [How do I use custom serialization / deserialization?](#how-do-i-use-custom-serialization--deserialization)
   - [Can I persist part of the store?](#can-i-persist-part-of-the-store)
   - [Can I debounce updates, `localStorage` is too slow?](#can-i-debounce-updates-localstorage-is-too-slow)
 - [TODO](#todo)
@@ -56,7 +52,7 @@ $ npm install --save effector-storage@next
 
 ### with `localStorage`
 
-Docs: [localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
+Docs: [localStorage]
 
 ```javascript
 import { persist } from 'effector-storage/local'
@@ -72,7 +68,7 @@ Stores, persisted in `localStorage`, are automatically synced between two (or mo
 
 ### with `sessionStorage`
 
-Docs: [sessionStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage)
+Docs: [sessionStorage]
 
 Same as above, just import `persist` from `'effector-storage/session'`:
 
@@ -134,8 +130,8 @@ Stores, persisted in [`localStorage`](https://developer.mozilla.org/en-US/docs/W
 
 Has two overrides:
 
-- [`persist({ store, key?, fail? })`](#persist-store-key-fail-)
-- [`persist({ source, target, key?, fail? })`](#persist-source-target-key-fail-)
+- [`persist({ store })`](#persist-store)
+- [`persist({ source, target })`](#persist-source-target)
 
 ### `effector-storage/session`
 
@@ -147,18 +143,18 @@ Stores, persisted in [`sessionStorage`](https://developer.mozilla.org/en-US/docs
 
 Has two overrides:
 
-- [`persist({ store, key?, fail? })`](#persist-store-key-fail-)
-- [`persist({ source, target, key?, fail? })`](#persist-source-target-key-fail-)
+- [`persist({ store })`](#persist-store)
+- [`persist({ source, target })`](#persist-source-target)
 
-### `persist({ store, key?, fail? })`
+### `persist({ store })`
 
 Synchronizes store with specified storage.
 
 ```ts
-subscription = persist({ store, key, fail })
+subscription = persist(options)
 ```
 
-#### Arguments
+#### Common options
 
 - `store` ([_Store_]): Store to synchronize with local/session storage.
 - `key`? ([_string_]): Key for local/session storage, to store value in. If omitted — `store` name is used. **Note!** If `key` is not specified, `store` _must_ have a `name`! You can use `'effector/babel-plugin'` to have those names automatically.
@@ -169,19 +165,25 @@ subscription = persist({ store, key, fail })
   - `error` ([_Error_]): Error instance
   - `value`? (_any_): In case of _'set'_ operation — value from `store`. In case of _'get'_ operation could contain raw value from storage or could be empty.
 
+#### Storage specific options
+
+- `sync`? ([_boolean_], default = `false`): Add [`'storage'`] event listener or no.
+- `serialize`? (_(value: any) => string_, default = `JSON.stringify`): Custom serialize function.
+- `deserialize`? (_(value: string) => any_, default = `JSON.parse`): Custom deserialize function.
+
 #### Returns
 
 - (`Subscription`): You can use this subscription to remove store association with local/session storage, if you don't need them to be synced anymore. It is a function.
 
-### `persist({ source, target, key?, fail? })`
+### `persist({ source, target })`
 
 Saves updates from source to storage and loads from storage to target.
 
 ```ts
-subscription = persist({ source, target, key, fail })
+subscription = persist(options)
 ```
 
-#### Arguments
+#### Common options
 
 - `source` ([_Event_] | [_Effect_] | [_Store_]): Source unit, which updates will be sent to local/session storage.
 - `target` ([_Event_] | [_Effect_] | [_Store_]): Target unit, which will receive updates from local/session storage (as well as initial value). Must be different than `source` to avoid circular updates — `source` updates are forwarded directly to `target`.
@@ -192,6 +194,12 @@ subscription = persist({ source, target, key, fail })
   - `operation` (_`'set'`_ | _`'get'`_): Did error occurs during setting value to storage or getting value from storage.
   - `error` ([_Error_]): Error instance
   - `value`? (_any_): In case of _'set'_ operation — value from `source`. In case of _'get'_ operation could contain raw value from storage or could be empty.
+
+#### Storage specific options
+
+- `sync`? ([_boolean_], default = `false`): Add [`'storage'`] event listener or no.
+- `serialize`? (_(value: any) => string_, default = `JSON.stringify`): Custom serialize function.
+- `deserialize`? (_(value: string) => any_, default = `JSON.parse`): Custom deserialize function.
 
 #### Returns
 
@@ -205,7 +213,7 @@ Same as [`effector-storage/local`](#effector-storagelocal), but returns function
 import { persist } from 'effector-storage/local/fp'
 ```
 
-Signature: [`persist({ key?, fail? }?)`](#persist-key-fail-)
+Signature: [`persist()`](#persist)
 
 ### `effector-storage/session/fp`
 
@@ -215,33 +223,32 @@ Same as [`effector-storage/session`](#effector-storagesession), but returns func
 import { persist } from 'effector-storage/session/fp'
 ```
 
-Signature: [`persist({ key?, fail? }?)`](#persist-key-fail-)
+Signature: [`persist()`](#persist)
 
-### `persist({ key?, fail? }?)`
+### `persist()`
 
 ```ts
-persist({ key?, fail? }?): (store) => Store
+persist(options?): (store) => Store
 ```
 
-#### Arguments
+#### Common options
 
 - `key`? ([_string_]): Key for local/session storage, to store value in. **Note!** If `key` is not specified, store _must_ have a `name`! You can use `'effector/babel-plugin'` to have those names automatically.
 - `fail`? ([_Event_] | [_Effect_] | [_Store_]): Same as [above](#persist-source-target-key-fail-)
 
-All arguments are optional and can be omitted. `fn = persist()`
+#### Storage specific options
+
+- `sync`? ([_boolean_], default = `false`): Add [`'storage'`] event listener or no.
+- `serialize`? (_(value: any) => string_, default = `JSON.stringify`): Custom serialize function.
+- `deserialize`? (_(value: string) => any_, default = `JSON.parse`): Custom deserialize function.
+
+All options are optional and can be omitted entirely. `fn = persist()`
 
 #### Returns
 
 - `(store) => Store` ([_Function_]): Function, which accepts store to synchronize with local/session storage, and returns:
   - ([_Store_]): Same given store.<br>
     _You cannot unsubscribe store from storage when using fp forms of `persist`._
-
-[_effect_]: https://effector.dev/docs/api/effector/effect
-[_event_]: https://effector.dev/docs/api/effector/event
-[_store_]: https://effector.dev/docs/api/effector/store
-[_string_]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String
-[_function_]: https://developer.mozilla.org/en-US/docs/Glossary/Function
-[_error_]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error
 
 ## Advanced usage
 
@@ -255,7 +262,7 @@ The storage adapter _gets_ and _sets_ values, and also can asynchronously emit v
 import { persist } from 'effector-storage'
 ```
 
-Core function `persist` accepts all the same arguments, as `persist` functions from sub-modules, plus additional one:
+Core function `persist` accepts all **common** options, as `persist` functions from sub-modules, plus additional one:
 
 - `adapter` (_StorageAdapter_): Storage adapter to use.
 
@@ -280,8 +287,8 @@ interface StorageAdapter {
 
 ### Arguments
 
-- `key` (_string_): Unique key to distinguish values in storage.
-- `update` (_Function_): Function, which could be called to get value from storage. In fact this is `Effect`, but for adapter this is not important, really.
+- `key` ([_string_]): Unique key to distinguish values in storage.
+- `update` ([_Function_]): Function, which could be called to get value from storage. In fact this is `Effect`, but for adapter this is not important, really.
 
 ### Returns
 
@@ -314,22 +321,20 @@ Using that approach, it is possible to implement adapters to any "storage": loca
 
 ## Custom `Storage` adapter
 
-Both `'effector-storage/local'` and `'effector-storage/session'` are using common `storage` adapter factory. If you want to use _localStorage_ or _sessionStorage_, but slightly different, than default modules — for example, you want to switch off synchronization between windows/tabs — you can use this factory.
+Both `'effector-storage/local'` and `'effector-storage/session'` are using common `storage` adapter factory. If you want to use _other storage_, which implements [`Storage`](https://developer.mozilla.org/en-US/docs/Web/API/Storage) interface (in fact, synchronous `getItem` and `setItem` methods are enough) — you can use this factory.
 
 ```javascript
 import { storage } from 'effector-storage/storage'
 ```
 
-You can also use this factory with any storage, implementing interface [`Storage`](https://developer.mozilla.org/en-US/docs/Web/API/Storage) (in fact, synchronous `getItem` and `setItem` methods are enough).
-
 ```javascript
-storage({ storage, sync?, serialize?, deserialize? }): StorageAdapter
+adapter = storage(options)
 ```
 
-### Arguments
+### Options
 
 - `storage` (_Storage_): Storage to communicate with.
-- `sync`? (_boolean_, default = `false`): Add [`'storage'`](https://developer.mozilla.org/en-US/docs/Web/API/StorageEvent) event listener or no.
+- `sync`? ([_boolean_], default = `false`): Add [`'storage'`] event listener or no.
 - `serialize`? (_(value: any) => string_, default = `JSON.stringify`): Custom serialize function.
 - `deserialize`? (_(value: string) => any_, default = `JSON.parse`): Custom deserialize function.
 
@@ -339,23 +344,20 @@ storage({ storage, sync?, serialize?, deserialize? }): StorageAdapter
 
 ## FAQ
 
-### Can I use custom serialization / deserialization?
+### How do I use custom serialization / deserialization?
 
-Out of the box, `persist` function from `effector-storage/local` and `effector-storage/session` doesn't support custom serialization (as well as both _fp_ forms). But fear not! You can use `storage` adapter factory, mentioned above:
+You can specify options `serialize` and `deserialize`. But make sure, that serialization is sable, meaning, that `deserialize(serialize(object))` is equal to `object` (or `serialize(deserialize(serialize(object))) === serialize(object)`):
 
 ```javascript
-import { persist } from 'effector-storage'
-import { storage } from 'effector-storage/storage'
+import { persist } from 'effector-storage/local'
 
-const adapter = storage({
-  storage: localStorage,
-  sync: true,
+const $date = createStore(new Date(), { name: 'date' })
+
+persist({
+  store: $date,
   serialize: (date) => String(date.getTime()),
   deserialize: (timestamp) => new Date(Number(timestamp)),
 })
-
-const $date = createStore(new Date(), { name: 'date' })
-persist({ store: $date, adapter })
 ```
 
 ### Can I persist part of the store?
@@ -432,3 +434,14 @@ window.addEventListener('resize', () => {
 ## Sponsored
 
 [<img src="https://setplex.com/img/logo.png" alt="Setplex" width="236">](https://setplex.com)
+
+[localstorage]: https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage
+[sessionstorage]: https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage
+[`'storage'`]: https://developer.mozilla.org/en-US/docs/Web/API/StorageEvent
+[_effect_]: https://effector.dev/docs/api/effector/effect
+[_event_]: https://effector.dev/docs/api/effector/event
+[_store_]: https://effector.dev/docs/api/effector/store
+[_string_]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String
+[_function_]: https://developer.mozilla.org/en-US/docs/Glossary/Function
+[_boolean_]: https://developer.mozilla.org/en-US/docs/Glossary/Boolean
+[_error_]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error

@@ -3,6 +3,7 @@ import * as assert from 'uvu/assert'
 import { snoop } from 'snoop'
 import { createStore, createDomain, is } from 'effector'
 import { createStorageMock } from './mocks/storage.mock'
+import { persist } from '../src/session/fp'
 
 //
 // Mock Storage adapter and events
@@ -11,10 +12,6 @@ import { createStorageMock } from './mocks/storage.mock'
 declare let global: any
 
 test.before(() => {
-  // I'm pretty sure this is the bad hack
-  // but I need module to be imported and executed anew
-  delete require.cache[require.resolve('../src/session')]
-
   global.sessionStorage = createStorageMock()
 })
 
@@ -26,30 +23,25 @@ test.after(() => {
 // Tests
 //
 
-test('should export adapter and `persist` function', async () => {
-  const { sessionStorage, persist } = await import('../src/session/fp')
-  assert.type(sessionStorage, 'function')
+test('should export adapter and `persist` function', () => {
   assert.type(persist, 'function')
 })
 
-test('should be ok on good parameters', async () => {
-  const { persist } = await import('../src/session/fp')
+test('should be ok on good parameters', () => {
   const $store = createStore(0, { name: 'session-fp::store' })
   assert.not.throws(() => persist()($store))
 })
 
-test('should return Store', async () => {
-  const { persist } = await import('../src/session/fp')
+test('should return Store', () => {
   const $store0 = createStore(0)
   const $store1 = persist({ key: 'session-fp::store0' })($store0)
   assert.ok(is.store($store1))
   assert.ok($store1 === $store0)
 })
 
-test('should be possible to use with .thru()', async () => {
+test('should be possible to use with .thru()', () => {
   sessionStorage.setItem('store-key-1', '111')
 
-  const { persist } = await import('../src/session/fp')
   const watch = snoop(() => undefined)
 
   assert.is(sessionStorage.getItem('store-key-1'), '111')
@@ -64,10 +56,8 @@ test('should be possible to use with .thru()', async () => {
   assert.equal(watch.calls[0].arguments, [111])
 })
 
-test('should be possible to use with domain hook', async () => {
+test('should be possible to use with domain hook', () => {
   sessionStorage.setItem('store-key-2', '222')
-
-  const { persist } = await import('../src/session/fp')
 
   const watch = snoop(() => undefined)
   const root = createDomain()

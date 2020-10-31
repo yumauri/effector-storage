@@ -241,6 +241,33 @@ test('should be possible to persist part of the store', () => {
   assert.is(mockStorage.getItem('part::y'), '24')
 })
 
+// prettier-ignore
+test('should return same adapter instance on same arguments', () => {
+  const mockStorage = createStorageMock()
+
+  const serialize = (date: Date) => String(date.getTime())
+  const deserialize = (timestamp: string) => new Date(Number(timestamp))
+
+  const adapter1 = storage({ storage: mockStorage, serialize, deserialize })
+  const adapter2 = storage({ storage: mockStorage, serialize, deserialize })
+  const adapter3 = storage({ storage: mockStorage, sync: true, serialize, deserialize })
+  const adapter4 = storage({ storage: mockStorage, sync: false, serialize })
+  const adapter5 = storage({ storage: mockStorage, sync: false, deserialize })
+  const adapter7 = storage({ storage: mockStorage })
+  const adapter8 = storage({ storage: mockStorage })
+  const adapter9 = storage({ storage: mockStorage, sync: false })
+  const adapter10 = storage({ storage: mockStorage, sync: true })
+
+  assert.is(adapter1, adapter2)
+  assert.is.not(adapter3, adapter4)
+  assert.is.not(adapter4, adapter5)
+  assert.is.not(adapter3, adapter5)
+  assert.is.not(adapter1, adapter7)
+  assert.is(adapter7, adapter8)
+  assert.is(adapter8, adapter9)
+  assert.is.not(adapter9, adapter10)
+})
+
 //
 // Launch tests
 //
