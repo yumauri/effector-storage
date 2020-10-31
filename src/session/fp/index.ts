@@ -4,8 +4,8 @@ import { persist as parent } from '..'
 export { sessionStorage } from '..'
 
 export type Config<Fail = Error> = {
-  readonly fail?: Unit<Exception<Fail>>
-  readonly key?: string
+  fail?: Unit<Exception<Fail>>
+  key?: string
 }
 
 /**

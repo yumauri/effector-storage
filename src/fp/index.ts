@@ -3,9 +3,9 @@ import type { StorageAdapter, Exception } from '..'
 import { persist as parent } from '..'
 
 type Config<Fail = Error> = {
-  readonly with: StorageAdapter
-  readonly fail?: Unit<Exception<Fail>>
-  readonly key?: string
+  with: StorageAdapter
+  fail?: Unit<Exception<Fail>>
+  key?: string
 }
 
 /**

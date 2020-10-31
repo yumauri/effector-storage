@@ -5,16 +5,16 @@ import { nil } from '../nil'
 import { storage } from '../storage'
 
 export type ConfigStore<State, Fail = Error> = {
-  readonly store: Store<State>
-  readonly fail?: Unit<Exception<Fail>>
-  readonly key?: string
+  store: Store<State>
+  fail?: Unit<Exception<Fail>>
+  key?: string
 }
 
 export type ConfigSourceTarget<State, Fail = Error> = {
-  readonly source: Store<State> | Event<State> | Effect<State, any, any>
-  readonly target: Store<State> | Event<State> | Effect<State, any, any>
-  readonly fail?: Unit<Exception<Fail>>
-  readonly key?: string
+  source: Store<State> | Event<State> | Effect<State, any, any>
+  target: Store<State> | Event<State> | Effect<State, any, any>
+  fail?: Unit<Exception<Fail>>
+  key?: string
 }
 
 /**

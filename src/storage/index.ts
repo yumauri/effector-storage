@@ -1,10 +1,10 @@
 import type { StorageAdapter } from '..'
 
 export type StorageConfig = {
-  readonly storage: Storage
-  readonly sync?: boolean
-  readonly serialize?: (value: any) => string
-  readonly deserialize?: (value: string) => any
+  storage: Storage
+  sync?: boolean
+  serialize?: (value: any) => string
+  deserialize?: (value: string) => any
 }
 
 /**

@@ -9,25 +9,25 @@ export interface StorageAdapter {
 }
 
 export type Exception<Fail = Error> = {
-  readonly key: string
-  readonly operation: 'set' | 'get'
-  readonly error: Fail
-  readonly value?: any
+  key: string
+  operation: 'set' | 'get'
+  error: Fail
+  value?: any
 }
 
 export type ConfigStore<State, Fail = Error> = {
-  readonly with: StorageAdapter
-  readonly store: Store<State>
-  readonly fail?: Unit<Exception<Fail>>
-  readonly key?: string
+  with: StorageAdapter
+  store: Store<State>
+  fail?: Unit<Exception<Fail>>
+  key?: string
 }
 
 export type ConfigSourceTarget<State, Fail = Error> = {
-  readonly with: StorageAdapter
-  readonly source: Store<State> | Event<State> | Effect<State, any, any>
-  readonly target: Store<State> | Event<State> | Effect<State, any, any>
-  readonly fail?: Unit<Exception<Fail>>
-  readonly key?: string
+  with: StorageAdapter
+  source: Store<State> | Event<State> | Effect<State, any, any>
+  target: Store<State> | Event<State> | Effect<State, any, any>
+  fail?: Unit<Exception<Fail>>
+  key?: string
 }
 
 const cache = new Map<

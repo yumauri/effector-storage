@@ -190,7 +190,7 @@ import { persist } from 'effector-storage/fp'
 Adapter is a function, which is called by the core `persist` function, and has following interface:
 
 ```typescript
-export interface StorageAdapter {
+interface StorageAdapter {
   <State>(key: string, update: (raw?: any) => any): {
     set(value: State): void
     get(value?: any): State | Promise<State>
@@ -234,13 +234,13 @@ Using that approach, it is possible to implement adapters to any "storage": loca
 
 ## Custom `Storage` adapter
 
-Both `'effector-storage/local'` and `'effector-storage/session'` are using common `storage` adapter factory. If you want to use _localStorage_ or _sessionStorage_, but slightly different, that default modules — for example, you want to switch off synchronization between windows/tabs — you can use this factory.
+Both `'effector-storage/local'` and `'effector-storage/session'` are using common `storage` adapter factory. If you want to use _localStorage_ or _sessionStorage_, but slightly different, than default modules — for example, you want to switch off synchronization between windows/tabs — you can use this factory.
 
 ```javascript
 import { storage } from 'effector-storage/storage'
 ```
 
-You can also use this factory with any storage with interface [`Storage`](https://developer.mozilla.org/en-US/docs/Web/API/Storage) (in fact, synchronous `getItem` and `setItem` methods are enough).
+You can also use this factory with any storage, implementing interface [`Storage`](https://developer.mozilla.org/en-US/docs/Web/API/Storage) (in fact, synchronous `getItem` and `setItem` methods are enough).
 
 ```javascript
 storage({ storage, sync?, serialize?, deserialize? }): StorageAdapter
