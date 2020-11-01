@@ -28,7 +28,10 @@ Small module for [Effector](https://github.com/effector/effector) ☄️ to sync
   - [`persist()`](#persist)
 - [Advanced usage](#advanced-usage)
 - [Storage adapters](#storage-adapters)
-- [Custom `Storage` adapter](#custom-storage-adapter)
+  - [Synchronous storage adapter example](#synchronous-storage-adapter-example)
+  - [Asynchronous storage adapter example](#asynchronous-storage-adapter-example)
+  - [Storage with external updates example](#storage-with-external-updates-example)
+  - [Custom `Storage` adapter](#custom-storage-adapter)
 - [FAQ](#faq)
   - [How do I use custom serialization / deserialization?](#how-do-i-use-custom-serialization--deserialization)
   - [Can I persist part of the store?](#can-i-persist-part-of-the-store)
@@ -122,7 +125,7 @@ const $counter = createStore(0)
 
 ### `effector-storage/local`
 
-```js
+```javascript
 import { persist } from 'effector-storage/local'
 ```
 
@@ -135,7 +138,7 @@ Has two overrides:
 
 ### `effector-storage/session`
 
-```js
+```javascript
 import { persist } from 'effector-storage/session'
 ```
 
@@ -285,41 +288,81 @@ interface StorageAdapter {
 }
 ```
 
-### Arguments
+#### Arguments
 
 - `key` ([_string_]): Unique key to distinguish values in storage.
 - `update` ([_Function_]): Function, which could be called to get value from storage. In fact this is `Effect`, but for adapter this is not important, really.
 
-### Returns
+#### Returns
 
 - `{ set, get }` (_{ Function, Function }_): Setter to storage and getter from storage. These functions are used as Effects handlers, and could be sync or async. Also, you don't have to catch exceptions and errors inside those functions — Effects will do that for you.
 
-For example, simplified _localStorage_ adapter might looks like this:
+### Synchronous storage adapter example
 
-```javascript
-// This is over-simplified example, don't do that in real code :)
-// There is no serialization and deserialization
-// No checks for edge cases
-// But to show an idea - this should fit
-const lsAdapter = (key) => ({
-  get: () => localStorage.getItem(key),
-  set: (value) => localStorage.setItem(key, value),
-})
-```
-
-and later you could use this adapter with the core `persist` function:
+For example, simplified _localStorage_ adapter might looks like this. This is over-simplified example, don't do that in real code, there are no serialization and deserialization, no checks for edge cases. This is just to show an idea.
 
 ```javascript
 import { createStore } from 'effector'
 import { persist } from 'effector-storage'
 
+const adapter = (key) => ({
+  get: () => localStorage.getItem(key),
+  set: (value) => localStorage.setItem(key, value),
+})
+
 const store = createStore('', { name: 'store' })
-persist({ store, adapter: lsAdapter }) // <- use adapter
+persist({ store, adapter }) // <- use adapter
 ```
 
-Using that approach, it is possible to implement adapters to any "storage": local storage (_already_), session storage (_already_), async storage, IndexedDB, cookies, server side storage, and so on.
+### Asynchronous storage adapter example
 
-## Custom `Storage` adapter
+Using asynchronous storage is just as simple. Once again, this is just a bare simple idea, without serialization and edge cases checks.
+
+```javascript
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { createStore } from 'effector'
+import { persist } from 'effector-storage'
+
+const adapter = (key) => ({
+  get: async () => AsyncStorage.getItem(key),
+  set: async (value) => AsyncStorage.setItem(key, value),
+})
+
+const store = createStore('', { name: '@store' })
+persist({ store, adapter }) // <- use adapter
+```
+
+### Storage with external updates example
+
+If your storage can be updated from an _external source_, then adapter needs a way to inform/update connected store. That is where you will need second `update` argument.
+
+```javascript
+import { createStore } from 'effector'
+import { persist } from 'effector-storage'
+
+const adapter = (key, update) => {
+  addEventListener('storage', (event) => {
+    if (event.key === key) {
+      // kick update
+      // this will call `get` function from below ↓
+      // wrapped in Effect, to handle any errors
+      update(event.newValue)
+    }
+  })
+
+  return {
+    // `get` function will receive `newValue` argument
+    // from `update`, called above ↑
+    get: (newValue) => newValue || localStorage.getItem(key),
+    set: (value) => localStorage.setItem(key, value),
+  }
+}
+
+const store = createStore('', { name: 'store' })
+persist({ store, adapter }) // <- use adapter
+```
+
+### Custom `Storage` adapter
 
 Both `'effector-storage/local'` and `'effector-storage/session'` are using common `storage` adapter factory. If you want to use _other storage_, which implements [`Storage`](https://developer.mozilla.org/en-US/docs/Web/API/Storage) interface (in fact, synchronous `getItem` and `setItem` methods are enough) — you can use this factory.
 
@@ -331,14 +374,14 @@ import { storage } from 'effector-storage/storage'
 adapter = storage(options)
 ```
 
-### Options
+#### Options
 
 - `storage` (_Storage_): Storage to communicate with.
 - `sync`? ([_boolean_], default = `false`): Add [`'storage'`] event listener or no.
 - `serialize`? (_(value: any) => string_, default = `JSON.stringify`): Custom serialize function.
 - `deserialize`? (_(value: string) => any_, default = `JSON.parse`): Custom deserialize function.
 
-### Returns
+#### Returns
 
 - (StorageAdapter): Storage adapter, which can be used with the core `persist` function.
 
