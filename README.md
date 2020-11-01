@@ -282,8 +282,8 @@ Adapter is a function, which is called by the core `persist` function, and has f
 ```typescript
 interface StorageAdapter {
   <State>(key: string, update: (raw?: any) => any): {
+    get(raw?: any): State | Promise<State>
     set(value: State): void
-    get(value?: any): State | Promise<State>
   }
 }
 ```
@@ -291,11 +291,12 @@ interface StorageAdapter {
 #### Arguments
 
 - `key` ([_string_]): Unique key to distinguish values in storage.
-- `update` ([_Function_]): Function, which could be called to get value from storage. In fact this is `Effect`, but for adapter this is not important, really.
+- `update` ([_Function_]): Function, which could be called to get value from storage. In fact this is `Effect` with `get` function as a handler. In other words, any argument, passed to `update` function, will end up as argument in `get` function.
 
 #### Returns
 
-- `{ set, get }` (_{ Function, Function }_): Setter to storage and getter from storage. These functions are used as Effects handlers, and could be sync or async. Also, you don't have to catch exceptions and errors inside those functions — Effects will do that for you.
+- `{ get, set }` (_{ Function, Function }_): Getter from and setter to storage. These functions are used as Effects handlers, and could be sync or async. Also, you don't have to catch exceptions and errors inside those functions — Effects will do that for you.<br>
+  As mentioned above, call of `update` function will trigger `get` function with the same argument. So you can handle cases, when `get` function is called during initial `persist` execution (without arguments), or after external update. Check out [example below](#storage-with-external-updates-example).
 
 ### Synchronous storage adapter example
 
