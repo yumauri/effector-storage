@@ -31,6 +31,7 @@ Small module for [Effector](https://github.com/effector/effector) ☄️ to sync
   - [Synchronous storage adapter example](#synchronous-storage-adapter-example)
   - [Asynchronous storage adapter example](#asynchronous-storage-adapter-example)
   - [Storage with external updates example](#storage-with-external-updates-example)
+  - [Update from non-reactive storage](#update-from-non-reactive-storage)
   - [Custom `Storage` adapter](#custom-storage-adapter)
 - [FAQ](#faq)
   - [How do I use custom serialization / deserialization?](#how-do-i-use-custom-serialization--deserialization)
@@ -380,7 +381,7 @@ const adapter = (key, update) => {
   // wrapped in Effect, to handle any errors
   forward({ from: pickup, to: update })
   return {
-    get: (newValue) => newValue || localStorage.getItem(key),
+    get: () => localStorage.getItem(key),
     set: (value) => localStorage.setItem(key, value),
   }
 }
