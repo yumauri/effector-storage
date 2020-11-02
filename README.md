@@ -170,9 +170,9 @@ subscription = persist(options)
 
 #### Storage specific options
 
-- `sync`? ([_boolean_], default = `false`): Add [`'storage'`] event listener or no.
-- `serialize`? (_(value: any) => string_, default = `JSON.stringify`): Custom serialize function.
-- `deserialize`? (_(value: string) => any_, default = `JSON.parse`): Custom deserialize function.
+- `sync`? ([_boolean_]): Add [`'storage'`] event listener or no. Default = `true` for localStorage, `false` for sessionStorage.
+- `serialize`? (_(value: any) => string_): Custom serialize function. Default = `JSON.stringify`
+- `deserialize`? (_(value: string) => any_): Custom deserialize function. Default = `JSON.parse`
 
 #### Returns
 
@@ -200,9 +200,9 @@ subscription = persist(options)
 
 #### Storage specific options
 
-- `sync`? ([_boolean_], default = `false`): Add [`'storage'`] event listener or no.
-- `serialize`? (_(value: any) => string_, default = `JSON.stringify`): Custom serialize function.
-- `deserialize`? (_(value: string) => any_, default = `JSON.parse`): Custom deserialize function.
+- `sync`? ([_boolean_]): Add [`'storage'`] event listener or no. Default = `true` for localStorage, `false` for sessionStorage.
+- `serialize`? (_(value: any) => string_): Custom serialize function. Default = `JSON.stringify`
+- `deserialize`? (_(value: string) => any_): Custom deserialize function. Default = `JSON.parse`
 
 #### Returns
 
@@ -241,9 +241,9 @@ persist(options?): (store) => Store
 
 #### Storage specific options
 
-- `sync`? ([_boolean_], default = `false`): Add [`'storage'`] event listener or no.
-- `serialize`? (_(value: any) => string_, default = `JSON.stringify`): Custom serialize function.
-- `deserialize`? (_(value: string) => any_, default = `JSON.parse`): Custom deserialize function.
+- `sync`? ([_boolean_]): Add [`'storage'`] event listener or no. Default = `true` for localStorage, `false` for sessionStorage.
+- `serialize`? (_(value: any) => string_): Custom serialize function. Default = `JSON.stringify`
+- `deserialize`? (_(value: string) => any_): Custom deserialize function. Default = `JSON.parse`
 
 All options are optional and can be omitted entirely. `fn = persist()`
 
@@ -363,6 +363,38 @@ const store = createStore('', { name: 'store' })
 persist({ store, adapter }) // <- use adapter
 ```
 
+### Update from non-reactive storage
+
+If your storage can be updated from _external source_, and doesn't have any events to react to, but you are able to know about it somehow.
+
+```javascript
+import { createEvent, createStore, forward } from 'effector'
+import { persist } from 'effector-storage'
+
+// event, which will be used in adapter to react to
+const pickup = createEvent()
+
+const adapter = (key, update) => {
+  // if `pickup` event was triggered -> trigger `update`
+  // this will call `get` function from below ↓
+  // wrapped in Effect, to handle any errors
+  forward({ from: pickup, to: update })
+  return {
+    get: (newValue) => newValue || localStorage.getItem(key),
+    set: (value) => localStorage.setItem(key, value),
+  }
+}
+
+const store = createStore('', { name: 'store' })
+persist({ store, adapter }) // <- use adapter
+
+// --8<--
+
+// when you are sure, that storage was updated,
+// and you need to update `store` from storage with new value
+pickup()
+```
+
 ### Custom `Storage` adapter
 
 Both `'effector-storage/local'` and `'effector-storage/session'` are using common `storage` adapter factory. If you want to use _other storage_, which implements [`Storage`](https://developer.mozilla.org/en-US/docs/Web/API/Storage) interface (in fact, synchronous `getItem` and `setItem` methods are enough) — you can use this factory.
@@ -378,9 +410,9 @@ adapter = storage(options)
 #### Options
 
 - `storage` (_Storage_): Storage to communicate with.
-- `sync`? ([_boolean_], default = `false`): Add [`'storage'`] event listener or no.
-- `serialize`? (_(value: any) => string_, default = `JSON.stringify`): Custom serialize function.
-- `deserialize`? (_(value: string) => any_, default = `JSON.parse`): Custom deserialize function.
+- `sync`? ([_boolean_]): Add [`'storage'`] event listener or no. Default = `false`.
+- `serialize`? (_(value: any) => string_): Custom serialize function. Default = `JSON.stringify`
+- `deserialize`? (_(value: string) => any_): Custom deserialize function. Default = `JSON.parse`
 
 #### Returns
 
