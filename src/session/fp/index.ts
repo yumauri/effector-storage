@@ -1,11 +1,11 @@
 import type { Unit, Store } from 'effector'
-import type { Done, Failure, Finally } from '../..'
+import type { Done, Fail, Finally } from '../..'
 import { persist as parent } from '..'
 
-export type Config<State, Fail = Error> = {
+export type Config<State, Err = Error> = {
   done?: Unit<Done<State>>
-  fail?: Unit<Failure<Fail>>
-  finally?: Unit<Finally<State, Fail>>
+  fail?: Unit<Fail<Err>>
+  finally?: Unit<Finally<State, Err>>
   pickup?: Unit<any>
   key?: string
   sync?: boolean
@@ -17,7 +17,7 @@ export type Config<State, Fail = Error> = {
  * Partially applied `persist` with predefined `sessionStorage` adapter and curried `store`
  */
 // FIXME: how to infer state backwards?
-export function persist<Fail = Error>(config: Config<any, Fail> = {}) {
+export function persist<Err = Error>(config: Config<any, Err> = {}) {
   return <State>(store: Store<State>): Store<State> => {
     parent(Object.assign({ store }, config))
     return store

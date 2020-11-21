@@ -25,34 +25,34 @@ export type Done<State> = {
   value: State
 }
 
-export type Failure<Fail> = {
+export type Fail<Err> = {
   key: string
   operation: 'set' | 'get'
-  error: Fail
+  error: Err
   value?: any
 }
 
-export type Finally<State, Fail> =
+export type Finally<State, Err> =
   | (Done<State> & { status: 'done' })
-  | (Failure<Fail> & { status: 'fail' })
+  | (Fail<Err> & { status: 'fail' })
 
-export type ConfigStore<State, Fail = Error> = {
+export type ConfigStore<State, Err = Error> = {
   adapter: StorageAdapter
   store: Store<State>
   done?: Unit<Done<State>>
-  fail?: Unit<Failure<Fail>>
-  finally?: Unit<Finally<State, Fail>>
+  fail?: Unit<Fail<Err>>
+  finally?: Unit<Finally<State, Err>>
   pickup?: Unit<any>
   key?: string
 }
 
-export type ConfigSourceTarget<State, Fail = Error> = {
+export type ConfigSourceTarget<State, Err = Error> = {
   adapter: StorageAdapter
   source: Store<State> | Event<State> | Effect<State, any, any>
   target: Store<State> | Event<State> | Effect<State, any, any>
   done?: Unit<Done<State>>
-  fail?: Unit<Failure<Fail>>
-  finally?: Unit<Finally<State, Fail>>
+  fail?: Unit<Fail<Err>>
+  finally?: Unit<Finally<State, Err>>
   pickup?: Unit<any>
   key?: string
 }
@@ -78,16 +78,16 @@ function getStorageArea<State>(keyArea: any, key: string): Store<State> {
 }
 
 // default sink for unhandled errors
-const sink = createEvent<Failure<any>>()
+const sink = createEvent<Fail<any>>()
 sink.watch((payload) => console.error(payload.error))
 
-export function persist<State, Fail = Error>(
-  config: ConfigStore<State, Fail>
+export function persist<State, Err = Error>(
+  config: ConfigStore<State, Err>
 ): Subscription
-export function persist<State, Fail = Error>(
-  config: ConfigSourceTarget<State, Fail>
+export function persist<State, Err = Error>(
+  config: ConfigSourceTarget<State, Err>
 ): Subscription
-export function persist<State, Fail = Error>({
+export function persist<State, Err = Error>({
   adapter,
   store,
   source = store,
@@ -98,7 +98,7 @@ export function persist<State, Fail = Error>({
   pickup,
   key,
 }: Partial<
-  ConfigStore<State, Fail> & ConfigSourceTarget<State, Fail>
+  ConfigStore<State, Err> & ConfigSourceTarget<State, Err>
 >): Subscription {
   if (!adapter) {
     throw Error('Adapter is not defined')
@@ -123,16 +123,16 @@ export function persist<State, Fail = Error>({
   const region = createDomain()
   const desist = () => clearNode(region)
 
-  const getFx = region.effect<void, State, Fail>()
-  const setFx = region.effect<State, void, Fail>()
+  const getFx = region.effect<void, State, Err>()
+  const setFx = region.effect<State, void, Err>()
 
-  const _anyway = region.event<Finally<State, Fail>>()
-  const _done = _anyway.filterMap<Done<State>>(
+  const localAnyway = region.event<Finally<State, Err>>()
+  const localDone = localAnyway.filterMap<Done<State>>(
     ({ status, key, operation, value }) => {
       if (status === 'done') return { key, operation, value }
     }
   )
-  const _fail = _anyway.filterMap<Failure<Fail>>(
+  const localFail = localAnyway.filterMap<Fail<Err>>(
     ({ status, key, operation, error, value }: any) => {
       if (status === 'fail') return { key, operation, error, value }
     }
@@ -164,12 +164,12 @@ export function persist<State, Fail = Error>({
     forward({ from: [getFx.doneData, storageArea], to: target })
     forward({
       from: [getFx.finally.map(op('get')), setFx.finally.map(op('set'))],
-      to: _anyway,
+      to: localAnyway,
     })
 
-    forward({ from: _fail, to: fail })
-    done && forward({ from: _done, to: done })
-    anyway && forward({ from: _anyway, to: anyway })
+    forward({ from: localFail, to: fail })
+    done && forward({ from: localDone, to: done })
+    anyway && forward({ from: localAnyway, to: anyway })
 
     pickup && forward({ from: pickup, to: getFx.prepend(() => undefined) })
   })

@@ -1,14 +1,14 @@
 import type { Event, Effect, Store, Unit, Subscription } from 'effector'
-import type { Done, Failure, Finally } from '..'
+import type { Done, Fail, Finally } from '..'
 import { persist as parent } from '..'
 import { nil } from '../nil'
 import { storage } from '../storage'
 
-export type ConfigStore<State, Fail = Error> = {
+export type ConfigStore<State, Err = Error> = {
   store: Store<State>
   done?: Unit<Done<State>>
-  fail?: Unit<Failure<Fail>>
-  finally?: Unit<Finally<State, Fail>>
+  fail?: Unit<Fail<Err>>
+  finally?: Unit<Finally<State, Err>>
   pickup?: Unit<any>
   key?: string
   sync?: boolean
@@ -16,12 +16,12 @@ export type ConfigStore<State, Fail = Error> = {
   deserialize?: (value: string) => any
 }
 
-export type ConfigSourceTarget<State, Fail = Error> = {
+export type ConfigSourceTarget<State, Err = Error> = {
   source: Store<State> | Event<State> | Effect<State, any, any>
   target: Store<State> | Event<State> | Effect<State, any, any>
   done?: Unit<Done<State>>
-  fail?: Unit<Failure<Fail>>
-  finally?: Unit<Finally<State, Fail>>
+  fail?: Unit<Fail<Err>>
+  finally?: Unit<Finally<State, Err>>
   pickup?: Unit<any>
   key?: string
   sync?: boolean
@@ -32,13 +32,13 @@ export type ConfigSourceTarget<State, Fail = Error> = {
 /**
  * Partially applied `persist` with predefined `sessionStorage` adapter
  */
-export function persist<State, Fail = Error>(
-  config: ConfigStore<State, Fail>
+export function persist<State, Err = Error>(
+  config: ConfigStore<State, Err>
 ): Subscription
-export function persist<State, Fail = Error>(
-  config: ConfigSourceTarget<State, Fail>
+export function persist<State, Err = Error>(
+  config: ConfigSourceTarget<State, Err>
 ): Subscription
-export function persist<State, Fail = Error>({
+export function persist<State, Err = Error>({
   store,
   source,
   target,
@@ -51,9 +51,9 @@ export function persist<State, Fail = Error>({
   serialize,
   deserialize,
 }: Partial<
-  ConfigStore<State, Fail> & ConfigSourceTarget<State, Fail>
+  ConfigStore<State, Err> & ConfigSourceTarget<State, Err>
 >): Subscription {
-  return parent<State, Fail>({
+  return parent<State, Err>({
     adapter:
       typeof sessionStorage !== 'undefined'
         ? storage({ storage: sessionStorage, sync, serialize, deserialize })
