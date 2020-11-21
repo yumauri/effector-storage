@@ -241,31 +241,43 @@ test('should be possible to persist part of the store', () => {
   assert.is(mockStorage.getItem('part::y'), '24')
 })
 
-// prettier-ignore
-test('should return same adapter instance on same arguments', () => {
+test('should sync stores, persisted to the same adapter-key, but different adapters', () => {
+  const watch = snoop(() => undefined)
+
   const mockStorage = createStorageMock()
+  mockStorage.setItem('same-key-1', '0')
 
-  const serialize = (date: Date) => String(date.getTime())
-  const deserialize = (timestamp: string) => new Date(Number(timestamp))
+  const adapter1 = storage({ storage: mockStorage, sync: false })
+  const adapter2 = storage({ storage: mockStorage, sync: true })
 
-  const adapter1 = storage({ storage: mockStorage, serialize, deserialize })
-  const adapter2 = storage({ storage: mockStorage, serialize, deserialize })
-  const adapter3 = storage({ storage: mockStorage, sync: true, serialize, deserialize })
-  const adapter4 = storage({ storage: mockStorage, sync: false, serialize })
-  const adapter5 = storage({ storage: mockStorage, sync: false, deserialize })
-  const adapter7 = storage({ storage: mockStorage })
-  const adapter8 = storage({ storage: mockStorage })
-  const adapter9 = storage({ storage: mockStorage, sync: false })
-  const adapter10 = storage({ storage: mockStorage, sync: true })
+  const $store0 = createStore(1)
+  const $store1 = createStore(2)
+  $store0.watch(watch.fn)
+  $store1.watch(watch.fn)
 
-  assert.is(adapter1, adapter2)
-  assert.is.not(adapter3, adapter4)
-  assert.is.not(adapter4, adapter5)
-  assert.is.not(adapter3, adapter5)
-  assert.is.not(adapter1, adapter7)
-  assert.is(adapter7, adapter8)
-  assert.is(adapter8, adapter9)
-  assert.is.not(adapter9, adapter10)
+  assert.is($store0.getState(), 1)
+  assert.is($store1.getState(), 2)
+  assert.is(watch.callCount, 2)
+  assert.equal(watch.calls[0].arguments, [1])
+  assert.equal(watch.calls[1].arguments, [2])
+
+  persist({ store: $store0, adapter: adapter1, key: 'same-key-1' })
+  persist({ store: $store1, adapter: adapter2, key: 'same-key-1' })
+
+  assert.is($store0.getState(), 0)
+  assert.is($store1.getState(), 0)
+  assert.is(watch.callCount, 4)
+  assert.equal(watch.calls[2].arguments, [0])
+  assert.equal(watch.calls[3].arguments, [0])
+
+  //
+  ;($store0 as any).setState(3)
+
+  assert.is($store0.getState(), 3)
+  assert.is($store1.getState(), 3) // <- also changes
+  assert.is(watch.callCount, 6)
+  assert.equal(watch.calls[4].arguments, [3])
+  assert.equal(watch.calls[5].arguments, [3])
 })
 
 //

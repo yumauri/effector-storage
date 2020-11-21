@@ -1,12 +1,15 @@
 import type { Event, Effect, Store, Unit, Subscription } from 'effector'
-import type { Exception } from '..'
+import type { Done, Failure, Finally } from '..'
 import { persist as parent } from '..'
 import { nil } from '../nil'
 import { storage } from '../storage'
 
 export type ConfigStore<State, Fail = Error> = {
   store: Store<State>
-  fail?: Unit<Exception<Fail>>
+  done?: Unit<Done<State>>
+  fail?: Unit<Failure<Fail>>
+  finally?: Unit<Finally<State, Fail>>
+  pickup?: Unit<any>
   key?: string
   sync?: boolean
   serialize?: (value: any) => string
@@ -16,7 +19,10 @@ export type ConfigStore<State, Fail = Error> = {
 export type ConfigSourceTarget<State, Fail = Error> = {
   source: Store<State> | Event<State> | Effect<State, any, any>
   target: Store<State> | Event<State> | Effect<State, any, any>
-  fail?: Unit<Exception<Fail>>
+  done?: Unit<Done<State>>
+  fail?: Unit<Failure<Fail>>
+  finally?: Unit<Finally<State, Fail>>
+  pickup?: Unit<any>
   key?: string
   sync?: boolean
   serialize?: (value: any) => string
@@ -36,7 +42,10 @@ export function persist<State, Fail = Error>({
   store,
   source,
   target,
+  done,
   fail,
+  finally: anyway,
+  pickup,
   key,
   sync = true,
   serialize,
@@ -52,7 +61,10 @@ export function persist<State, Fail = Error>({
     store,
     source,
     target,
+    done,
     fail,
+    finally: anyway,
+    pickup,
     key,
   } as any)
 }

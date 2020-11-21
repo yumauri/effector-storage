@@ -1,24 +1,48 @@
 import type { Event, Effect, Store, Unit, Subscription } from 'effector'
-import { createEvent, createEffect, forward, is } from 'effector'
+import {
+  clearNode,
+  createDomain,
+  createEvent,
+  createStore,
+  forward,
+  guard,
+  is,
+  sample,
+  withRegion,
+} from 'effector'
 
 export interface StorageAdapter {
   <State>(key: string, update: (raw?: any) => any): {
     set(value: State): void
     get(value?: any): State | Promise<State>
   }
+  keyArea?: any
 }
 
-export type Exception<Fail = Error> = {
+export type Done<State> = {
+  key: string
+  operation: 'set' | 'get'
+  value: State
+}
+
+export type Failure<Fail> = {
   key: string
   operation: 'set' | 'get'
   error: Fail
   value?: any
 }
 
+export type Finally<State, Fail> =
+  | (Done<State> & { status: 'done' })
+  | (Failure<Fail> & { status: 'fail' })
+
 export type ConfigStore<State, Fail = Error> = {
   adapter: StorageAdapter
   store: Store<State>
-  fail?: Unit<Exception<Fail>>
+  done?: Unit<Done<State>>
+  fail?: Unit<Failure<Fail>>
+  finally?: Unit<Finally<State, Fail>>
+  pickup?: Unit<any>
   key?: string
 }
 
@@ -26,62 +50,35 @@ export type ConfigSourceTarget<State, Fail = Error> = {
   adapter: StorageAdapter
   source: Store<State> | Event<State> | Effect<State, any, any>
   target: Store<State> | Event<State> | Effect<State, any, any>
-  fail?: Unit<Exception<Fail>>
+  done?: Unit<Done<State>>
+  fail?: Unit<Failure<Fail>>
+  finally?: Unit<Finally<State, Fail>>
+  pickup?: Unit<any>
   key?: string
 }
 
-const cache = new Map<
-  StorageAdapter,
-  {
-    [key: string]: [
-      /* set */ Effect<any, any, any>,
-      /* get */ Effect<any, any, any>,
-      /* err */ Event<Exception<any>>
-    ]
-  }
->()
+const areas = new Map<any, Map<string, Store<any>>>()
 
-function createEffects<State, Fail = Error>(
-  adapter: StorageAdapter,
-  key: string
-): [
-  /* set */ Effect<State, void, Fail>,
-  /* get */ Effect<void, State, Fail>,
-  /* err */ Event<Exception<Fail>>
-] {
-  let cached = cache.get(adapter)
-  if (cached) {
-    if (cached[key]) {
-      return cached[key]
-    }
-  } else {
-    cache.set(adapter, (cached = {}))
+function getStorageArea<State>(keyArea: any, key: string): Store<State> {
+  let area = areas.get(keyArea)
+  if (area === undefined) {
+    area = new Map()
+    areas.set(keyArea, area)
   }
 
-  const set = createEffect<State, void, Fail>()
-  const get = createEffect<void, State, Fail>()
-  const err = createEvent<Exception<Fail>>()
-  const value = adapter<State>(key, get)
+  let store = area.get(key)
+  if (store !== undefined) {
+    return store
+  }
 
-  const op = (operation: 'set' | 'get') => (payload: any) => ({
-    key,
-    operation,
-    error: payload.error,
-    value: payload.params,
-  })
+  store = createStore(null)
+  area.set(key, store)
 
-  forward({
-    from: [set.fail.map(op('set')), get.fail.map(op('get'))],
-    to: err,
-  })
-
-  set.use(value.set)
-  get.use(value.get)
-  return (cached[key] = [set, get, err])
+  return store
 }
 
 // default sink for unhandled errors
-const sink = createEvent<Exception<any>>()
+const sink = createEvent<Failure<any>>()
 sink.watch((payload) => console.error(payload.error))
 
 export function persist<State, Fail = Error>(
@@ -95,7 +92,10 @@ export function persist<State, Fail = Error>({
   store,
   source = store,
   target = store,
+  done,
   fail = sink,
+  finally: anyway,
+  pickup,
   key,
 }: Partial<
   ConfigStore<State, Fail> & ConfigSourceTarget<State, Fail>
@@ -116,23 +116,69 @@ export function persist<State, Fail = Error>({
     throw Error('Source must be different from target')
   }
 
-  const [set, get, err] = createEffects<State, Fail>(
-    adapter,
-    key || source.shortName
+  key = key || source.shortName
+
+  const storageArea = getStorageArea<State>(adapter.keyArea || adapter, key)
+
+  const region = createDomain()
+  const desist = () => clearNode(region)
+
+  const getFx = region.effect<void, State, Fail>()
+  const setFx = region.effect<State, void, Fail>()
+
+  const _anyway = region.event<Finally<State, Fail>>()
+  const _done = _anyway.filterMap<Done<State>>(
+    ({ status, key, operation, value }) => {
+      if (status === 'done') return { key, operation, value }
+    }
+  )
+  const _fail = _anyway.filterMap<Failure<Fail>>(
+    ({ status, key, operation, error, value }: any) => {
+      if (status === 'fail') return { key, operation, error, value }
+    }
   )
 
-  const subscriptions = [
-    forward({ from: source, to: set }),
-    forward({ from: [set, get.doneData], to: target }),
-    forward({ from: err, to: fail }),
-  ]
+  const value = adapter<State>(key, getFx)
 
-  const result = () => {
-    subscriptions.map((fn) => fn())
-  }
+  const op = (operation: 'get' | 'set') => ({
+    status,
+    params,
+    result,
+    error,
+  }: any): any =>
+    status === 'done'
+      ? { status, key, operation, value: result }
+      : { status, key, operation, value: params, error }
 
-  // kick getter to get initial state from storage
-  get()
+  withRegion(region, () => {
+    guard({
+      source: sample<State, State, [State, State]>(
+        storageArea,
+        source,
+        (current, proposed) => [proposed, current]
+      ),
+      filter: ([proposed, current]) => proposed !== current,
+      target: setFx.prepend<[State, State]>(([proposed]) => proposed),
+    })
+    forward({ from: [getFx.doneData, setFx], to: storageArea })
+    forward({ from: [getFx.doneData, storageArea], to: target })
+    forward({
+      from: [getFx.finally.map(op('get')), setFx.finally.map(op('set'))],
+      to: _anyway,
+    })
 
-  return (result.unsubscribe = result)
+    forward({ from: _fail, to: fail })
+    done && forward({ from: _done, to: done })
+    anyway && forward({ from: _anyway, to: anyway })
+
+    pickup && forward({ from: pickup, to: getFx.prepend(() => undefined) })
+  })
+
+  getFx.use(value.get)
+  setFx.use(value.set)
+
+  // kick getter to pick up initial value from storage
+  getFx()
+
+  return (desist.unsubscribe = desist)
 }

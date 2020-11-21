@@ -162,12 +162,25 @@ subscription = persist(options)
 
 - `store` ([_Store_]): Store to synchronize with local/session storage.
 - `key`? ([_string_]): Key for local/session storage, to store value in. If omitted — `store` name is used. **Note!** If `key` is not specified, `store` _must_ have a `name`! You can use `'effector/babel-plugin'` to have those names automatically.
+- `pickup`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which you can specify to force update `store` value from storage.
+- `done`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which will be triggered on each successful read or write from/to storage.<br>
+  Payload structure:
+  - `key` ([_string_]): Same `key` as above.
+  - `operation` (_`'set'`_ | _`'get'`_): Did error occurs during setting value to storage or getting value from storage.
+  - `value` (_State_): Value set to `store` or got from `store`.
 - `fail`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which will be triggered in case of any error (serialization/deserialization error, storage is full and so on). **Note!** If `fail` unit is not specified, any errors will be printed using `console.error(Error)`.<br>
   Payload structure:
   - `key` ([_string_]): Same `key` as above.
   - `operation` (_`'set'`_ | _`'get'`_): Did error occurs during setting value to storage or getting value from storage.
   - `error` ([_Error_]): Error instance
   - `value`? (_any_): In case of _'set'_ operation — value from `store`. In case of _'get'_ operation could contain raw value from storage or could be empty.
+- `finally`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which will be triggered either in case of success or error.<br>
+  Payload structure:
+  - `key` ([_string_]): Same `key` as above.
+  - `operation` (_`'set'`_ | _`'get'`_): Operation stage.
+  - `status` (_`'done'`_ | _`'fail'`_): Operation status.
+  - `error`? ([_Error_]): Error instance, in case of error.
+  - `value`? (_any_): Value, in case it is exists (look above).
 
 #### Storage specific options
 
@@ -192,12 +205,25 @@ subscription = persist(options)
 - `source` ([_Event_] | [_Effect_] | [_Store_]): Source unit, which updates will be sent to local/session storage.
 - `target` ([_Event_] | [_Effect_] | [_Store_]): Target unit, which will receive updates from local/session storage (as well as initial value). Must be different than `source` to avoid circular updates — `source` updates are forwarded directly to `target`.
 - `key`? ([_string_]): Key for local/session storage, to store value in. If omitted — `source` name is used. **Note!** If `key` is not specified, source _must_ have a `name`! You can use `'effector/babel-plugin'` to have those names automatically.
+- `pickup`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which you can specify to force update `target` value from storage.
+- `done`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which will be triggered on each successful read or write from/to storage.<br>
+  Payload structure:
+  - `key` ([_string_]): Same `key` as above.
+  - `operation` (_`'set'`_ | _`'get'`_): Did error occurs during setting value to storage or getting value from storage.
+  - `value` (_State_): Value set to `store` or got from `store`.
 - `fail`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which will be triggered in case of any error (serialization/deserialization error, storage is full and so on). **Note!** If `fail` unit is not specified, any errors will be printed using `console.error(Error)`.<br>
   Payload structure:
   - `key` ([_string_]): Same `key` as above.
   - `operation` (_`'set'`_ | _`'get'`_): Did error occurs during setting value to storage or getting value from storage.
   - `error` ([_Error_]): Error instance
   - `value`? (_any_): In case of _'set'_ operation — value from `source`. In case of _'get'_ operation could contain raw value from storage or could be empty.
+- `finally`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which will be triggered either in case of success or error.<br>
+  Payload structure:
+  - `key` ([_string_]): Same `key` as above.
+  - `operation` (_`'set'`_ | _`'get'`_): Operation stage.
+  - `status` (_`'done'`_ | _`'fail'`_): Operation status.
+  - `error`? ([_Error_]): Error instance, in case of error.
+  - `value`? (_any_): Value, in case it is exists (look above).
 
 #### Storage specific options
 
@@ -238,7 +264,10 @@ persist(options?): (store) => Store
 #### Common options
 
 - `key`? ([_string_]): Key for local/session storage, to store value in. **Note!** If `key` is not specified, store _must_ have a `name`! You can use `'effector/babel-plugin'` to have those names automatically.
-- `fail`? ([_Event_] | [_Effect_] | [_Store_]): Same as [above](#persist-source-target-key-fail-)
+- `pickup`? ([_Event_] | [_Effect_] | [_Store_]): Same as above.
+- `done`? ([_Event_] | [_Effect_] | [_Store_]): Same as above.
+- `fail`? ([_Event_] | [_Effect_] | [_Store_]): Same as above.
+- `finally`? ([_Event_] | [_Effect_] | [_Store_]): Same as above.
 
 #### Storage specific options
 
@@ -368,6 +397,27 @@ persist({ store, adapter }) // <- use adapter
 
 If your storage can be updated from _external source_, and doesn't have any events to react to, but you are able to know about it somehow.
 
+You can use optional `pickup` parameter to specify unit to trigger force update:
+
+```javascript
+import { createEvent, createStore, forward } from 'effector'
+import { persist } from 'effector-storage/session'
+
+// event, which will be used to trigger force update
+const pickup = createEvent()
+
+const store = createStore('', { name: 'store' })
+persist({ store, pickup }) // <- set `pickup` parameter
+
+// --8<--
+
+// when you are sure, that storage was updated,
+// and you need to force update `store` from storage with new value
+pickup()
+```
+
+Another option, if you have your own adapter, you can add this feature right into it:
+
 ```javascript
 import { createEvent, createStore, forward } from 'effector'
 import { persist } from 'effector-storage'
@@ -387,12 +437,12 @@ const adapter = (key, update) => {
 }
 
 const store = createStore('', { name: 'store' })
-persist({ store, adapter }) // <- use adapter
+persist({ store, adapter }) // <- use your adapter
 
 // --8<--
 
 // when you are sure, that storage was updated,
-// and you need to update `store` from storage with new value
+// and you need to force update `store` from storage with new value
 pickup()
 ```
 
