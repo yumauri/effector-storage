@@ -1,8 +1,9 @@
 import type { Event, Effect, Store, Unit, Subscription } from 'effector'
 import {
   clearNode,
-  createDomain,
+  createEffect,
   createEvent,
+  createNode,
   createStore,
   forward,
   guard,
@@ -65,7 +66,7 @@ const areas = new Map<any, Map<string, Store<any>>>()
 /**
  * Get store, responsible for the key in key area / namespace
  */
-function getStorageArea<State>(keyArea: any, key: string): Store<State> {
+function getAreaStorage<State>(keyArea: any, key: string): Store<State> {
   let area = areas.get(keyArea)
   if (area === undefined) {
     area = new Map()
@@ -107,7 +108,7 @@ export function persist<State, Err = Error>({
   fail = sink,
   finally: anyway,
   pickup,
-  key,
+  key: keyName,
 }: Partial<
   ConfigStore<State, Err> & ConfigSourceTarget<State, Err>
 >): Subscription {
@@ -120,34 +121,17 @@ export function persist<State, Err = Error>({
   if (!target) {
     throw Error('Target is not defined')
   }
-  if (!key && source.shortName === (source as any).id) {
+  if (!keyName && source.shortName === (source as any).id) {
     throw Error('Key or name is not defined')
   }
   if (source === target && !is.store(source)) {
     throw Error('Source must be different from target')
   }
 
-  key = key || source.shortName
-
-  const storageArea = getStorageArea<State>(adapter.keyArea || adapter, key)
-
-  const region = createDomain()
+  const key = keyName || source.shortName
+  const storage = getAreaStorage<State>(adapter.keyArea || adapter, key)
+  const region = createNode()
   const desist = () => clearNode(region)
-
-  const getFx = region.effect<void, State, Err>()
-  const setFx = region.effect<State, void, Err>()
-
-  const localAnyway = region.event<Finally<State, Err>>()
-  const localDone = localAnyway.filterMap<Done<State>>(
-    ({ status, key, operation, value }) =>
-      status === 'done' ? { key, operation, value } : undefined
-  )
-  const localFail = localAnyway.filterMap<Fail<Err>>(
-    ({ status, key, operation, error, value }: any) =>
-      status === 'fail' ? { key, operation, error, value } : undefined
-  )
-
-  const value = adapter<State>(key, getFx)
 
   const op = (operation: 'get' | 'set') => ({
     status,
@@ -159,18 +143,37 @@ export function persist<State, Err = Error>({
       ? { status, key, operation, value: result }
       : { status, key, operation, value: params, error }
 
+  // create all auxiliary units and nodes within the region,
+  // to be able to remove them all at once on unsubscription
   withRegion(region, () => {
+    const getFx = createEffect<void, State, Err>()
+    const setFx = createEffect<State, void, Err>()
+
+    const localAnyway = createEvent<Finally<State, Err>>()
+    const localDone = localAnyway.filterMap<Done<State>>(
+      ({ status, key, operation, value }) =>
+        status === 'done' ? { key, operation, value } : undefined
+    )
+    const localFail = localAnyway.filterMap<Fail<Err>>(
+      ({ status, key, operation, error, value }: any) =>
+        status === 'fail' ? { key, operation, error, value } : undefined
+    )
+
+    const value = adapter<State>(key, getFx)
+    getFx.use(value.get)
+    setFx.use(value.set)
+
     guard({
       source: sample<State, State, [State, State]>(
-        storageArea,
+        storage,
         source,
         (current, proposed) => [proposed, current]
       ),
       filter: ([proposed, current]) => proposed !== current,
       target: setFx.prepend<[State, State]>(([proposed]) => proposed),
     })
-    forward({ from: [getFx.doneData, setFx], to: storageArea })
-    forward({ from: [getFx.doneData, storageArea], to: target })
+    forward({ from: [getFx.doneData, setFx], to: storage })
+    forward({ from: [getFx.doneData, storage], to: target })
     forward({
       from: [getFx.finally.map(op('get')), setFx.finally.map(op('set'))],
       to: localAnyway,
@@ -181,13 +184,10 @@ export function persist<State, Err = Error>({
     anyway && forward({ from: localAnyway, to: anyway })
 
     pickup && forward({ from: pickup, to: getFx.prepend(() => undefined) })
+
+    // kick getter to pick up initial value from storage
+    getFx()
   })
-
-  getFx.use(value.get)
-  setFx.use(value.set)
-
-  // kick getter to pick up initial value from storage
-  getFx()
 
   return (desist.unsubscribe = desist)
 }
