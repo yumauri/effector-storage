@@ -57,8 +57,14 @@ export type ConfigSourceTarget<State, Err = Error> = {
   key?: string
 }
 
+/**
+ * Keys areas / namespaces cache
+ */
 const areas = new Map<any, Map<string, Store<any>>>()
 
+/**
+ * Get store, responsible for the key in key area / namespace
+ */
 function getStorageArea<State>(keyArea: any, key: string): Store<State> {
   let area = areas.get(keyArea)
   if (area === undefined) {
@@ -77,10 +83,15 @@ function getStorageArea<State>(keyArea: any, key: string): Store<State> {
   return store
 }
 
-// default sink for unhandled errors
+/**
+ * Default sink for unhandled errors
+ */
 const sink = createEvent<Fail<any>>()
 sink.watch((payload) => console.error(payload.error))
 
+/**
+ * Main root `persist` function
+ */
 export function persist<State, Err = Error>(
   config: ConfigStore<State, Err>
 ): Subscription
