@@ -32,6 +32,7 @@ Small module for [Effector](https://github.com/effector/effector) ☄️ to sync
   - [Asynchronous storage adapter example](#asynchronous-storage-adapter-example)
   - [Storage with external updates example](#storage-with-external-updates-example)
   - [Update from non-reactive storage](#update-from-non-reactive-storage)
+  - [Local storage adapter with values expiration](#local-storage-adapter-with-values-expiration)
   - [Custom `Storage` adapter](#custom-storage-adapter)
 - [FAQ](#faq)
   - [How do I use custom serialization / deserialization?](#how-do-i-use-custom-serialization--deserialization)
@@ -450,6 +451,36 @@ persist({ store, adapter }) // <- use your adapter
 // when you are sure, that storage was updated,
 // and you need to force update `store` from storage with new value
 pickup()
+```
+
+### Local storage adapter with values expiration
+
+> I want sync my store with `localStorage`, but I need smart synchronization, not dumb. Each storage update should contain last write timestamp. And on read value I need to check if value has been expired, and fill store with default value in that case.
+
+You can implement it with custom adapter, something like this:
+
+```javascript
+import { createStore } from 'effector'
+import { persist } from 'effector-storage'
+
+const adapter = (timeout) => (key) => ({
+  get() {
+    const item = localStorage.getItem(key)
+    if (item === null) return // no value in localStorage
+    const { time, value } = JSON.parse(item)
+    if (time + timeout * 1000 < Date.now()) return // value has expired
+    return value
+  },
+
+  set(value) {
+    localStorage.setItem(key, JSON.stringify({ time: Date.now(), value }))
+  },
+})
+
+const store = createStore('', { name: 'store' })
+
+// use adapter with timeout = 1 hour ↓↓↓
+persist({ store, adapter: adapter(3600) })
 ```
 
 ### Custom `Storage` adapter

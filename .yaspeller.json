@@ -24,7 +24,8 @@
     "StorageAdapter",
     "unhandled",
     "unsubscribe",
-    "keyArea"
+    "keyArea",
+    "timestamp"
   ],
   "ignoreText": [],
   "ignoreUrls": true,
