@@ -44,13 +44,13 @@ Small module for [Effector](https://github.com/effector/effector) ☄️ to sync
 ## Install
 
 ```bash
-$ yarn add effector-storage@next
+$ yarn add effector-storage
 ```
 
 Or using `npm`
 
 ```bash
-$ npm install --save effector-storage@next
+$ npm install --save effector-storage
 ```
 
 ## Simple usage
