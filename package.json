@@ -35,7 +35,7 @@
     "test:types": "uvu -r ts-node/register tests types",
     "clean": "rm -rf build coverage .nyc_output",
     "size": "size-limit --highlight-less",
-    "release": "np --yolo --no-release-draft --no-2fa --contents ./build --tag next",
+    "release": "np --yolo --no-release-draft --no-2fa --contents ./build",
     "version": "yarn build"
   },
   "devDependencies": {
