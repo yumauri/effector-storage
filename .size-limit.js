@@ -41,22 +41,22 @@ module.exports = [
   },
   {
     path: 'build/local/index.js',
-    limit: '878 B',
+    limit: '882 B',
     ignore: ['effector'],
   },
   {
     path: 'build/local/index.cjs',
-    limit: '935 B',
+    limit: '937 B',
     ignore: ['effector'],
   },
   {
     path: 'build/local/fp/index.js',
-    limit: '900 B',
+    limit: '903 B',
     ignore: ['effector'],
   },
   {
     path: 'build/local/fp/index.cjs',
-    limit: '912 B',
+    limit: '916 B',
     ignore: ['effector'],
   },
   {
