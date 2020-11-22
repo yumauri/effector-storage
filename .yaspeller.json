@@ -1,5 +1,13 @@
 {
-  "excludeFiles": [".git", ".idea", ".vscode", "node_modules", "build", "coverage", ".nyc_output"],
+  "excludeFiles": [
+    ".git",
+    ".idea",
+    ".vscode",
+    "node_modules",
+    "build",
+    "coverage",
+    ".nyc_output"
+  ],
   "lang": "en",
   "fileExtensions": [".md"],
   "dictionary": [
@@ -15,7 +23,8 @@
     "sessionStorage",
     "StorageAdapter",
     "unhandled",
-    "unsubscribe"
+    "unsubscribe",
+    "keyArea"
   ],
   "ignoreText": [],
   "ignoreUrls": true,

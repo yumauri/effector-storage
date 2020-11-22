@@ -38,33 +38,10 @@ export function persist<State, Err = Error>(
 export function persist<State, Err = Error>(
   config: ConfigSourceTarget<State, Err>
 ): Subscription
-export function persist<State, Err = Error>({
-  store,
-  source,
-  target,
-  done,
-  fail,
-  finally: anyway,
-  pickup,
-  key,
-  sync = true,
-  serialize,
-  deserialize,
-}: Partial<
-  ConfigStore<State, Err> & ConfigSourceTarget<State, Err>
->): Subscription {
-  return parent<State, Err>({
-    adapter:
-      typeof localStorage !== 'undefined'
-        ? storage({ storage: localStorage, sync, serialize, deserialize })
-        : nil,
-    store,
-    source,
-    target,
-    done,
-    fail,
-    finally: anyway,
-    pickup,
-    key,
-  } as any)
+export function persist<State, Err = Error>(config: any): Subscription {
+  const adapter =
+    typeof localStorage !== 'undefined'
+      ? storage(Object.assign({ storage: localStorage }, config))
+      : nil
+  return parent<State, Err>(Object.assign({ adapter }, config))
 }

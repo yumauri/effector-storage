@@ -1,22 +1,22 @@
 module.exports = [
   {
     path: 'build/index.js',
-    limit: '676 B',
+    limit: '675 B',
     ignore: ['effector'],
   },
   {
     path: 'build/index.cjs',
-    limit: '646 B',
+    limit: '643 B',
     ignore: ['effector'],
   },
   {
     path: 'build/fp/index.js',
-    limit: '699 B',
+    limit: '698 B',
     ignore: ['effector'],
   },
   {
     path: 'build/fp/index.cjs',
-    limit: '711 B',
+    limit: '709 B',
     ignore: ['effector'],
   },
   {
@@ -41,42 +41,42 @@ module.exports = [
   },
   {
     path: 'build/local/index.js',
-    limit: '928 B',
+    limit: '892 B',
     ignore: ['effector'],
   },
   {
     path: 'build/local/index.cjs',
-    limit: '980 B',
+    limit: '945 B',
     ignore: ['effector'],
   },
   {
     path: 'build/local/fp/index.js',
-    limit: '956 B',
+    limit: '913 B',
     ignore: ['effector'],
   },
   {
     path: 'build/local/fp/index.cjs',
-    limit: '962 B',
+    limit: '924 B',
     ignore: ['effector'],
   },
   {
     path: 'build/session/index.js',
-    limit: '927 B',
+    limit: '893 B',
     ignore: ['effector'],
   },
   {
     path: 'build/session/index.cjs',
-    limit: '981 B',
+    limit: '945 B',
     ignore: ['effector'],
   },
   {
     path: 'build/session/fp/index.js',
-    limit: '954 B',
+    limit: '912 B',
     ignore: ['effector'],
   },
   {
     path: 'build/session/fp/index.cjs',
-    limit: '961 B',
+    limit: '924 B',
     ignore: ['effector'],
   },
 ]

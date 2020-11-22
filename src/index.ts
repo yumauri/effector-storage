@@ -128,14 +128,12 @@ export function persist<State, Err = Error>({
 
   const localAnyway = region.event<Finally<State, Err>>()
   const localDone = localAnyway.filterMap<Done<State>>(
-    ({ status, key, operation, value }) => {
-      if (status === 'done') return { key, operation, value }
-    }
+    ({ status, key, operation, value }) =>
+      status === 'done' ? { key, operation, value } : undefined
   )
   const localFail = localAnyway.filterMap<Fail<Err>>(
-    ({ status, key, operation, error, value }: any) => {
-      if (status === 'fail') return { key, operation, error, value }
-    }
+    ({ status, key, operation, error, value }: any) =>
+      status === 'fail' ? { key, operation, error, value } : undefined
   )
 
   const value = adapter<State>(key, getFx)

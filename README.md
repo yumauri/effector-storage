@@ -315,6 +315,7 @@ interface StorageAdapter {
     get(raw?: any): State | Promise<State>
     set(value: State): void
   }
+  keyArea?: any
 }
 ```
 
@@ -327,6 +328,11 @@ interface StorageAdapter {
 
 - `{ get, set }` (_{ Function, Function }_): Getter from and setter to storage. These functions are used as Effects handlers, and could be sync or async. Also, you don't have to catch exceptions and errors inside those functions — Effects will do that for you.<br>
   As mentioned above, call of `update` function will trigger `get` function with the same argument. So you can handle cases, when `get` function is called during initial `persist` execution (without arguments), or after external update. Check out [example below](#storage-with-external-updates-example).
+
+#### keyArea
+
+Adapter function can have static field `keyArea` — this could be any value of any type, which should be unique for _keys namespace_. For example, two local storage adapters could have different settings, but both of them uses same _storage area_ — `localStorage`. So, different stores, persisted in local storage with the same key (but possibly with different adapters), should be synced. That is what `keyArea` is responsible for. Value of that field is used as a key in cache `Map`.<br>
+In case it is omitted — adapter instances is used instead.
 
 ### Synchronous storage adapter example
 
