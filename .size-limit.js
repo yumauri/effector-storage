@@ -16,7 +16,7 @@ module.exports = [
   },
   {
     path: 'build/fp/index.cjs',
-    limit: '700 B',
+    limit: '667 B',
     ignore: ['effector'],
   },
   {
@@ -46,7 +46,7 @@ module.exports = [
   },
   {
     path: 'build/local/index.cjs',
-    limit: '937 B',
+    limit: '893 B',
     ignore: ['effector'],
   },
   {
@@ -56,7 +56,7 @@ module.exports = [
   },
   {
     path: 'build/local/fp/index.cjs',
-    limit: '916 B',
+    limit: '915 B',
     ignore: ['effector'],
   },
   {
@@ -66,7 +66,7 @@ module.exports = [
   },
   {
     path: 'build/session/index.cjs',
-    limit: '936 B',
+    limit: '890 B',
     ignore: ['effector'],
   },
   {

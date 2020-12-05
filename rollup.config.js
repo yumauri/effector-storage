@@ -18,12 +18,14 @@ const src = (name) => ({
       externalLiveBindings: false,
       esModule: false,
       exports: 'named',
+      plugins: [dual('.cjs')],
     },
     {
       file: `${BUILD}/${name}index.js`,
-      format: 'esm',
+      format: 'es',
       sourcemap: process.env.NODE_ENV === 'production',
       exports: 'named',
+      plugins: [dual('.js')],
     },
   ],
   external: ['effector', '..', '../storage', '../nil'],
@@ -168,3 +170,32 @@ export default [
   ...entry('session/'),
   ...entry('session/fp/'),
 ]
+
+function dual(extension) {
+  const index = (str, name) =>
+    str.replace(name, name.slice(0, -1) + '/index' + extension + name[0])
+
+  const es = (code) =>
+    code.replace(
+      /(?:^|\n)import\s+?(?:(?:(?:[\w*\s{},$_]*)\s+from\s+?)|)((?:".*?")|(?:'.*?'))[\s]*?(?:;|$|)/g,
+      (str, name) => (name.indexOf('..') === 1 ? index(str, name) : str)
+    )
+
+  const cjs = (code) =>
+    code.replace(
+      /(?:^|\n)(?:let|const|var)\s+(?:{[^}]+}|\S+)\s*=\s*require\(([^)]+)\)/g,
+      (str, name) => (name.indexOf('..') === 1 ? index(str, name) : str)
+    )
+
+  return {
+    name: 'rollup-plugin-dual',
+    renderChunk(code, _chunk, { format }) {
+      if (format === 'cjs' || format === 'commonjs') {
+        code = cjs(code)
+      } else if (format === 'es' || format === 'esm' || format === 'module') {
+        code = es(code)
+      }
+      return { code, map: null }
+    },
+  }
+}
