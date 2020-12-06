@@ -12,13 +12,13 @@ const src = (name) => ({
   input: `${SRC}/${name}index.ts`,
   output: [
     {
-      file: `${BUILD}/${name}index.cjs`,
+      file: `${BUILD}/${name}index.cjs.js`,
       format: 'cjs',
       sourcemap: process.env.NODE_ENV === 'production',
       externalLiveBindings: false,
       esModule: false,
       exports: 'named',
-      plugins: [dual('.cjs')],
+      plugins: [dual('.cjs.js')],
     },
     {
       file: `${BUILD}/${name}index.js`,
@@ -74,48 +74,48 @@ const src = (name) => ({
 
               // cjs + esm magic
               type: 'module',
-              main: 'index.cjs',
+              main: 'index.cjs.js',
               module: 'index.js',
               'react-native': 'index.js',
               exports: {
                 './package.json': './package.json',
                 '.': {
-                  require: './index.cjs',
+                  require: './index.cjs.js',
                   import: './index.js',
                 },
                 './fp/package.json': './fp/package.json',
                 './fp': {
-                  require: './fp/index.cjs',
+                  require: './fp/index.cjs.js',
                   import: './fp/index.js',
                 },
                 './nil/package.json': './nil/package.json',
                 './nil': {
-                  require: './nil/index.cjs',
+                  require: './nil/index.cjs.js',
                   import: './nil/index.js',
                 },
                 './local/package.json': './local/package.json',
                 './local': {
-                  require: './local/index.cjs',
+                  require: './local/index.cjs.js',
                   import: './local/index.js',
                 },
                 './local/fp/package.json': './local/fp/package.json',
                 './local/fp': {
-                  require: './local/fp/index.cjs',
+                  require: './local/fp/index.cjs.js',
                   import: './local/fp/index.js',
                 },
                 './session/package.json': './session/package.json',
                 './session': {
-                  require: './session/index.cjs',
+                  require: './session/index.cjs.js',
                   import: './session/index.js',
                 },
                 './session/fp/package.json': './session/fp/package.json',
                 './session/fp': {
-                  require: './session/fp/index.cjs',
+                  require: './session/fp/index.cjs.js',
                   import: './session/fp/index.js',
                 },
                 './storage/package.json': './storage/package.json',
                 './storage': {
-                  require: './storage/index.cjs',
+                  require: './storage/index.cjs.js',
                   import: './storage/index.js',
                 },
               },
@@ -125,7 +125,7 @@ const src = (name) => ({
           {
             baseContents: {
               type: 'module',
-              main: 'index.cjs',
+              main: 'index.cjs.js',
               module: 'index.js',
               'react-native': 'index.js',
             },

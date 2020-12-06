@@ -5,7 +5,7 @@ module.exports = [
     ignore: ['effector'],
   },
   {
-    path: 'build/index.cjs',
+    path: 'build/index.cjs.js',
     limit: '636 B',
     ignore: ['effector'],
   },
@@ -15,7 +15,7 @@ module.exports = [
     ignore: ['effector'],
   },
   {
-    path: 'build/fp/index.cjs',
+    path: 'build/fp/index.cjs.js',
     limit: '667 B',
     ignore: ['effector'],
   },
@@ -25,7 +25,7 @@ module.exports = [
     ignore: ['effector'],
   },
   {
-    path: 'build/nil/index.cjs',
+    path: 'build/nil/index.cjs.js',
     limit: '26 B',
     ignore: ['effector'],
   },
@@ -35,7 +35,7 @@ module.exports = [
     ignore: ['effector'],
   },
   {
-    path: 'build/storage/index.cjs',
+    path: 'build/storage/index.cjs.js',
     limit: '192 B',
     ignore: ['effector'],
   },
@@ -45,7 +45,7 @@ module.exports = [
     ignore: ['effector'],
   },
   {
-    path: 'build/local/index.cjs',
+    path: 'build/local/index.cjs.js',
     limit: '893 B',
     ignore: ['effector'],
   },
@@ -55,7 +55,7 @@ module.exports = [
     ignore: ['effector'],
   },
   {
-    path: 'build/local/fp/index.cjs',
+    path: 'build/local/fp/index.cjs.js',
     limit: '915 B',
     ignore: ['effector'],
   },
@@ -65,7 +65,7 @@ module.exports = [
     ignore: ['effector'],
   },
   {
-    path: 'build/session/index.cjs',
+    path: 'build/session/index.cjs.js',
     limit: '890 B',
     ignore: ['effector'],
   },
@@ -75,7 +75,7 @@ module.exports = [
     ignore: ['effector'],
   },
   {
-    path: 'build/session/fp/index.cjs',
+    path: 'build/session/fp/index.cjs.js',
     limit: '913 B',
     ignore: ['effector'],
   },
