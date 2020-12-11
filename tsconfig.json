@@ -5,12 +5,13 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "lib": ["es2017", "dom"],
+    "types": [],
     "skipLibCheck": true,
     "noImplicitAny": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noEmit": true
   },
-  "include": ["src/**/*", "tests/**/*"],
-  "exclude": ["node_modules/**/*"]
+  "include": ["src", "tests"],
+  "exclude": ["**/node_modules", "**/.*/"]
 }
