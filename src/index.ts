@@ -37,7 +37,7 @@ export type Finally<State, Err> =
   | (Done<State> & { status: 'done' })
   | (Fail<Err> & { status: 'fail' })
 
-export type ConfigStore<State, Err = Error> = {
+export interface ConfigStore<State, Err = Error> {
   adapter: StorageAdapter
   store: Store<State>
   done?: Unit<Done<State>>
@@ -47,7 +47,7 @@ export type ConfigStore<State, Err = Error> = {
   key?: string
 }
 
-export type ConfigSourceTarget<State, Err = Error> = {
+export interface ConfigSourceTarget<State, Err = Error> {
   adapter: StorageAdapter
   source: Store<State> | Event<State> | Effect<State, any, any>
   target: Store<State> | Event<State> | Effect<State, any, any>

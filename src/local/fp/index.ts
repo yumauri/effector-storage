@@ -2,7 +2,7 @@ import type { Unit, Store } from 'effector'
 import type { Done, Fail, Finally } from '../..'
 import { persist as parent } from '..'
 
-export type Config<State, Err = Error> = {
+export interface Config<State, Err = Error> {
   done?: Unit<Done<State>>
   fail?: Unit<Fail<Err>>
   finally?: Unit<Finally<State, Err>>

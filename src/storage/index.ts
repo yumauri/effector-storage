@@ -1,6 +1,6 @@
 import type { StorageAdapter } from '..'
 
-export type StorageConfig = {
+export interface StorageConfig {
   storage: Storage
   sync?: boolean
   serialize?: (value: any) => string

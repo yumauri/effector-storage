@@ -4,7 +4,7 @@ import { persist as parent } from '..'
 import { nil } from '../nil'
 import { storage } from '../storage'
 
-export type ConfigStore<State, Err = Error> = {
+export interface ConfigStore<State, Err = Error> {
   store: Store<State>
   done?: Unit<Done<State>>
   fail?: Unit<Fail<Err>>
@@ -16,7 +16,7 @@ export type ConfigStore<State, Err = Error> = {
   deserialize?: (value: string) => any
 }
 
-export type ConfigSourceTarget<State, Err = Error> = {
+export interface ConfigSourceTarget<State, Err = Error> {
   source: Store<State> | Event<State> | Effect<State, any, any>
   target: Store<State> | Event<State> | Effect<State, any, any>
   done?: Unit<Done<State>>
