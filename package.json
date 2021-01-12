@@ -1,7 +1,7 @@
 {
   "name": "effector-storage",
   "description": "Module for Effector to sync stores with different storages",
-  "version": "4.0.3",
+  "version": "4.1.0",
   "author": "Victor Didenko <yumaa.verdin@gmail.com> (https://yumaa.name)",
   "license": "MIT",
   "repository": {
