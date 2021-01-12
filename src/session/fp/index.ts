@@ -8,7 +8,7 @@ export interface Config<State, Err = Error> {
   finally?: Unit<Finally<State, Err>>
   pickup?: Unit<any>
   key?: string
-  sync?: boolean
+  sync?: boolean // DEPRECATED
   serialize?: (value: any) => string
   deserialize?: (value: string) => any
 }

@@ -185,7 +185,7 @@ subscription = persist(options)
 
 #### Storage specific options
 
-- `sync`? ([_boolean_]): Add [`'storage'`] event listener or no. Default = `true` for localStorage, `false` for sessionStorage.
+- `sync`? ([_boolean_], **deprecated**): Add [`'storage'`] event listener or no. Default = `true` for localStorage, `false` for sessionStorage.
 - `serialize`? (_(value: any) => string_): Custom serialize function. Default = `JSON.stringify`
 - `deserialize`? (_(value: string) => any_): Custom deserialize function. Default = `JSON.parse`
 
@@ -228,7 +228,7 @@ subscription = persist(options)
 
 #### Storage specific options
 
-- `sync`? ([_boolean_]): Add [`'storage'`] event listener or no. Default = `true` for localStorage, `false` for sessionStorage.
+- `sync`? ([_boolean_], **deprecated**): Add [`'storage'`] event listener or no. Default = `true` for localStorage, `false` for sessionStorage.
 - `serialize`? (_(value: any) => string_): Custom serialize function. Default = `JSON.stringify`
 - `deserialize`? (_(value: string) => any_): Custom deserialize function. Default = `JSON.parse`
 
@@ -272,7 +272,7 @@ persist(options?): (store) => Store
 
 #### Storage specific options
 
-- `sync`? ([_boolean_]): Add [`'storage'`] event listener or no. Default = `true` for localStorage, `false` for sessionStorage.
+- `sync`? ([_boolean_], **deprecated**): Add [`'storage'`] event listener or no. Default = `true` for localStorage, `false` for sessionStorage.
 - `serialize`? (_(value: any) => string_): Custom serialize function. Default = `JSON.stringify`
 - `deserialize`? (_(value: string) => any_): Custom deserialize function. Default = `JSON.parse`
 
@@ -498,7 +498,7 @@ adapter = storage(options)
 #### Options
 
 - `storage` (_Storage_): Storage to communicate with.
-- `sync`? ([_boolean_]): Add [`'storage'`] event listener or no. Default = `false`.
+- `sync`? ([_boolean_], **deprecated**): Add [`'storage'`] event listener or no. Default = `false`.
 - `serialize`? (_(value: any) => string_): Custom serialize function. Default = `JSON.stringify`
 - `deserialize`? (_(value: string) => any_): Custom deserialize function. Default = `JSON.parse`
 
