@@ -9,23 +9,19 @@ Small module for [Effector](https://github.com/effector/effector) ☄️ to sync
 
 ## Table of Contents
 
-<!-- npx markdown-toc --maxdepth 3 README.md -->
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-- [Table of Contents](#table-of-contents)
 - [Install](#install)
-- [Simple usage](#simple-usage)
+- [Usage](#usage)
   - [with `localStorage`](#with-localstorage)
   - [with `sessionStorage`](#with-sessionstorage)
 - [Usage with domains](#usage-with-domains)
-- [FP helpers](#fp-helpers)
-- [API](#api)
-  - [`effector-storage/local`](#effector-storagelocal)
-  - [`effector-storage/session`](#effector-storagesession)
-  - [`persist({ store })`](#persist-store-)
-  - [`persist({ source, target })`](#persist-source-target-)
-  - [`effector-storage/local/fp`](#effector-storagelocalfp)
-  - [`effector-storage/session/fp`](#effector-storagesessionfp)
-  - [`persist()`](#persist)
+- [Functional helpers](#functional-helpers)
+- [Formulae](#formulae)
+  - [Units](#units)
+  - [Options](#options)
+  - [Returns](#returns)
 - [Advanced usage](#advanced-usage)
 - [Storage adapters](#storage-adapters)
   - [Synchronous storage adapter example](#synchronous-storage-adapter-example)
@@ -35,11 +31,11 @@ Small module for [Effector](https://github.com/effector/effector) ☄️ to sync
   - [Local storage adapter with values expiration](#local-storage-adapter-with-values-expiration)
   - [Custom `Storage` adapter](#custom-storage-adapter)
 - [FAQ](#faq)
-  - [How do I use custom serialization / deserialization?](#how-do-i-use-custom-serialization--deserialization)
   - [Can I persist part of the store?](#can-i-persist-part-of-the-store)
-  - [Can I debounce updates, `localStorage` is too slow?](#can-i-debounce-updates-localstorage-is-too-slow)
 - [TODO](#todo)
 - [Sponsored](#sponsored)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Install
 
@@ -53,11 +49,11 @@ Or using `npm`
 $ npm install --save effector-storage
 ```
 
-## Simple usage
+## Usage
 
 ### with `localStorage`
 
-Docs: [localStorage]
+Docs: [effector-storage/local](https://github.com/yumauri/effector-storage/tree/master/src/local/README.md)
 
 ```javascript
 import { persist } from 'effector-storage/local'
@@ -73,7 +69,7 @@ Stores, persisted in `localStorage`, are automatically synced between two (or mo
 
 ### with `sessionStorage`
 
-Docs: [sessionStorage]
+Docs: [effector-storage/session](https://github.com/yumauri/effector-storage/tree/master/src/session/README.md)
 
 Same as above, just import `persist` from `'effector-storage/session'`:
 
@@ -100,7 +96,7 @@ app.onCreateStore((store) => persist({ store }))
 const $store = app.createStore(0, { name: 'store' })
 ```
 
-## FP helpers
+## Functional helpers
 
 There are special `persist` forms to use with functional programming style. You can use them, if you like, with Domain hook or `.thru()` store method:
 
@@ -123,45 +119,31 @@ const $counter = createStore(0)
   .thru(persist({ key: 'counter' }))
 ```
 
-## API
-
-### `effector-storage/local`
+## Formulae
 
 ```javascript
-import { persist } from 'effector-storage/local'
+import { persist } from 'effector-storage/<adapter>'
 ```
 
-Stores, persisted in [`localStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage), are automatically synced between two (or more) windows/tabs. Also, they are synced between instances, so if you will persist two stores with the same key — each store will receive updates from another one.
-
-Has two overrides:
-
-- [`persist({ store })`](#persist-store-)
-- [`persist({ source, target })`](#persist-source-target-)
-
-### `effector-storage/session`
+- `persist({ store, ...options }): Subscription`
+- `persist({ source, target, ...options }): Subscription`
 
 ```javascript
-import { persist } from 'effector-storage/session'
+import { persist } from 'effector-storage/<adapter>/fp'
 ```
 
-Stores, persisted in [`sessionStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage), are synced between instances, but not between different windows/tabs.
+- `persist({ ...options }?): (store: Store) => Store`
 
-Has two overrides:
+### Units
 
-- [`persist({ store })`](#persist-store-)
-- [`persist({ source, target })`](#persist-source-target-)
-
-### `persist({ store })`
-
-Synchronizes store with specified storage.
-
-```ts
-subscription = persist(options)
-```
-
-#### Common options
+In order to synchronize _something_, you need to specify effector units. Depending on a requirements, you may want to use `store` parameter, or `source` and `target` parameters:
 
 - `store` ([_Store_]): Store to synchronize with local/session storage.
+- `source` ([_Event_] | [_Effect_] | [_Store_]): Source unit, which updates will be sent to local/session storage.
+- `target` ([_Event_] | [_Effect_] | [_Store_]): Target unit, which will receive updates from local/session storage (as well as initial value). Must be different than `source` to avoid circular updates — `source` updates are forwarded directly to `target`.
+
+### Options
+
 - `key`? ([_string_]): Key for local/session storage, to store value in. If omitted — `store` name is used. **Note!** If `key` is not specified, `store` _must_ have a `name`! You can use `'effector/babel-plugin'` to have those names automatically.
 - `pickup`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which you can specify to force update `store` value from storage.
 - `done`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which will be triggered on each successful read or write from/to storage.<br>
@@ -183,106 +165,13 @@ subscription = persist(options)
   - `error`? ([_Error_]): Error instance, in case of error.
   - `value`? (_any_): Value, in case it is exists (look above).
 
-#### Storage specific options
+### Returns
 
-- `sync`? ([_boolean_], **deprecated**): Add [`'storage'`] event listener or no. Default = `true` for localStorage, `false` for sessionStorage.
-- `serialize`? (_(value: any) => string_): Custom serialize function. Default = `JSON.stringify`
-- `deserialize`? (_(value: string) => any_): Custom deserialize function. Default = `JSON.parse`
+- ([_Subscription_]): You can use this subscription to remove store association with storage, if you don't need them to be synced anymore. It is a function.
 
-#### Returns
-
-- (`Subscription`): You can use this subscription to remove store association with local/session storage, if you don't need them to be synced anymore. It is a function.
-
-### `persist({ source, target })`
-
-Saves updates from source to storage and loads from storage to target.
-
-```ts
-subscription = persist(options)
-```
-
-#### Common options
-
-- `source` ([_Event_] | [_Effect_] | [_Store_]): Source unit, which updates will be sent to local/session storage.
-- `target` ([_Event_] | [_Effect_] | [_Store_]): Target unit, which will receive updates from local/session storage (as well as initial value). Must be different than `source` to avoid circular updates — `source` updates are forwarded directly to `target`.
-- `key`? ([_string_]): Key for local/session storage, to store value in. If omitted — `source` name is used. **Note!** If `key` is not specified, source _must_ have a `name`! You can use `'effector/babel-plugin'` to have those names automatically.
-- `pickup`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which you can specify to force update `target` value from storage.
-- `done`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which will be triggered on each successful read or write from/to storage.<br>
-  Payload structure:
-  - `key` ([_string_]): Same `key` as above.
-  - `operation` (_`'set'`_ | _`'get'`_): Did error occurs during setting value to storage or getting value from storage.
-  - `value` (_State_): Value set to `store` or got from `store`.
-- `fail`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which will be triggered in case of any error (serialization/deserialization error, storage is full and so on). **Note!** If `fail` unit is not specified, any errors will be printed using `console.error(Error)`.<br>
-  Payload structure:
-  - `key` ([_string_]): Same `key` as above.
-  - `operation` (_`'set'`_ | _`'get'`_): Did error occurs during setting value to storage or getting value from storage.
-  - `error` ([_Error_]): Error instance
-  - `value`? (_any_): In case of _'set'_ operation — value from `source`. In case of _'get'_ operation could contain raw value from storage or could be empty.
-- `finally`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which will be triggered either in case of success or error.<br>
-  Payload structure:
-  - `key` ([_string_]): Same `key` as above.
-  - `operation` (_`'set'`_ | _`'get'`_): Operation stage.
-  - `status` (_`'done'`_ | _`'fail'`_): Operation status.
-  - `error`? ([_Error_]): Error instance, in case of error.
-  - `value`? (_any_): Value, in case it is exists (look above).
-
-#### Storage specific options
-
-- `sync`? ([_boolean_], **deprecated**): Add [`'storage'`] event listener or no. Default = `true` for localStorage, `false` for sessionStorage.
-- `serialize`? (_(value: any) => string_): Custom serialize function. Default = `JSON.stringify`
-- `deserialize`? (_(value: string) => any_): Custom deserialize function. Default = `JSON.parse`
-
-#### Returns
-
-- (Subscription): You can use this subscription to remove store/source/target association with local/session storage, if you don't need them to be synced anymore. It is a function.
-
-### `effector-storage/local/fp`
-
-Same as [`effector-storage/local`](#effector-storagelocal), but returns function that receive store.
-
-```ts
-import { persist } from 'effector-storage/local/fp'
-```
-
-Signature: [`persist()`](#persist)
-
-### `effector-storage/session/fp`
-
-Same as [`effector-storage/session`](#effector-storagesession), but returns function that receive store.
-
-```ts
-import { persist } from 'effector-storage/session/fp'
-```
-
-Signature: [`persist()`](#persist)
-
-### `persist()`
-
-```ts
-persist(options?): (store) => Store
-```
-
-#### Common options
-
-- `key`? ([_string_]): Key for local/session storage, to store value in. **Note!** If `key` is not specified, store _must_ have a `name`! You can use `'effector/babel-plugin'` to have those names automatically.
-- `pickup`? ([_Event_] | [_Effect_] | [_Store_]): Same as above.
-- `done`? ([_Event_] | [_Effect_] | [_Store_]): Same as above.
-- `fail`? ([_Event_] | [_Effect_] | [_Store_]): Same as above.
-- `finally`? ([_Event_] | [_Effect_] | [_Store_]): Same as above.
-
-#### Storage specific options
-
-- `sync`? ([_boolean_], **deprecated**): Add [`'storage'`] event listener or no. Default = `true` for localStorage, `false` for sessionStorage.
-- `serialize`? (_(value: any) => string_): Custom serialize function. Default = `JSON.stringify`
-- `deserialize`? (_(value: string) => any_): Custom deserialize function. Default = `JSON.parse`
-
-All options are optional and can be omitted entirely. `fn = persist()`
-
-#### Returns
-
-- `(store) => Store` ([_Function_]): Function, which accepts store to synchronize with local/session storage, and returns:
+- `(store) => Store` ([_Function_]): Function, which accepts store to synchronize with storage, and returns:
   - ([_Store_]): Same given store.<br>
-    _You cannot unsubscribe store from storage when using fp forms of `persist`._
+    _You cannot unsubscribe store from storage when using functional form of `persist`._
 
 ## Advanced usage
 
@@ -508,22 +397,6 @@ adapter = storage(options)
 
 ## FAQ
 
-### How do I use custom serialization / deserialization?
-
-You can specify options `serialize` and `deserialize`. But make sure, that serialization is sable, meaning, that `deserialize(serialize(object))` is equal to `object` (or `serialize(deserialize(serialize(object))) === serialize(object)`):
-
-```javascript
-import { persist } from 'effector-storage/local'
-
-const $date = createStore(new Date(), { name: 'date' })
-
-persist({
-  store: $date,
-  serialize: (date) => String(date.getTime()),
-  deserialize: (timestamp) => new Date(Number(timestamp)),
-})
-```
-
 ### Can I persist part of the store?
 
 The issue here is that it is hardly possible to create universal mapping to/from storage to the part of the store within the library implementation. But with `persist` form with `source`/`target`, and little help of Effector API you can make it:
@@ -555,44 +428,13 @@ persist({
 ⚠️ **BIG WARNING!**<br>
 Use this approach with caution, beware of infinite circular updates. To avoid them, persist _only plain values_ in storage. So, mapped store in `source` will not trigger update, if object in original store has changed.
 
-### Can I debounce updates, `localStorage` is too slow?
-
-You can use `source`/`target` form of `persist` and `debounce` from [patronum](https://github.com/effector/patronum#debounce), to reach that goal:
-
-```javascript
-import { debounce } from 'patronum/debounce'
-import { persist } from 'effector-storage/local'
-
-const setWidth = createEvent()
-const setWidthDebounced = debounce({
-  source: setWidth,
-  timeout: 100,
-})
-
-const $windowWidth = createStore(window.innerWidth) //
-  .on(setWidth, (_, width) => width)
-
-persist({
-  source: setWidthDebounced,
-  target: $windowWidth,
-  key: 'width',
-})
-
-// `setWidth` event will be called on every 'resize' event,
-// `$windowWidth` store will be updated accordingly
-// but `localStorage` will be updated only on debounced event
-window.addEventListener('resize', () => {
-  setWidth(window.innerWidth)
-})
-```
-
 ## TODO
 
-- [x] [localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) support
-- [x] [sessionStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage) support
-- [ ] [IndexedDB](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API) support
-- [ ] [AsyncStorage](https://react-native-async-storage.github.io/async-storage/) support
-- [ ] [Cookies](https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie) support
+- [x] [localStorage] support
+- [x] [sessionStorage] support
+- [ ] [IndexedDB] support
+- [ ] [AsyncStorage] support
+- [ ] [Cookies] support
 - [ ] you name it support
 
 ## Sponsored
@@ -602,6 +444,10 @@ window.addEventListener('resize', () => {
 [localstorage]: https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage
 [sessionstorage]: https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage
 [`'storage'`]: https://developer.mozilla.org/en-US/docs/Web/API/StorageEvent
+[indexeddb]: https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API
+[asyncstorage]: https://react-native-async-storage.github.io/async-storage/
+[cookies]: https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie
+[_subscription_]: https://effector.dev/docs/glossary#subscription
 [_effect_]: https://effector.dev/docs/api/effector/effect
 [_event_]: https://effector.dev/docs/api/effector/event
 [_store_]: https://effector.dev/docs/api/effector/store
