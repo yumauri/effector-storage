@@ -118,6 +118,26 @@ const src = (name) => ({
                   require: './storage/index.cjs.js',
                   import: './storage/index.js',
                 },
+                './query/package.json': './query/package.json',
+                './query': {
+                  require: './query/index.cjs.js',
+                  import: './query/index.js',
+                },
+                './query/fp/package.json': './query/fp/package.json',
+                './query/fp': {
+                  require: './query/fp/index.cjs.js',
+                  import: './query/fp/index.js',
+                },
+                './memory/package.json': './memory/package.json',
+                './memory': {
+                  require: './memory/index.cjs.js',
+                  import: './memory/index.js',
+                },
+                './memory/fp/package.json': './memory/fp/package.json',
+                './memory/fp': {
+                  require: './memory/fp/index.cjs.js',
+                  import: './memory/fp/index.js',
+                },
               },
             }),
           }
@@ -169,6 +189,10 @@ export default [
   ...entry('local/fp/'),
   ...entry('session/'),
   ...entry('session/fp/'),
+  ...entry('query/'),
+  ...entry('query/fp/'),
+  ...entry('memory/'),
+  ...entry('memory/fp/'),
 ]
 
 function dual(extension) {

@@ -432,6 +432,7 @@ Use this approach with caution, beware of infinite circular updates. To avoid th
 
 - [x] [localStorage] support
 - [x] [sessionStorage] support
+- [x] [query string](https://developer.mozilla.org/en-US/docs/Web/API/Location/search) support
 - [ ] [IndexedDB] support
 - [ ] [AsyncStorage] support
 - [ ] [Cookies] support

@@ -6,7 +6,7 @@ import { createStorageMock } from './mocks/storage.mock'
 import { persist } from '../src/session/fp'
 
 //
-// Mock Storage adapter and events
+// Mock `sessionStorage`
 //
 
 declare let global: any

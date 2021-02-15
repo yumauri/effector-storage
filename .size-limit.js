@@ -1,4 +1,5 @@
 module.exports = [
+  // core
   {
     path: 'build/index.js',
     limit: '665 B',
@@ -19,6 +20,8 @@ module.exports = [
     limit: '667 B',
     ignore: ['effector'],
   },
+
+  // nil adapter
   {
     path: 'build/nil/index.js',
     limit: '38 B',
@@ -29,6 +32,8 @@ module.exports = [
     limit: '26 B',
     ignore: ['effector'],
   },
+
+  // storage adapter
   {
     path: 'build/storage/index.js',
     limit: '206 B',
@@ -39,6 +44,8 @@ module.exports = [
     limit: '192 B',
     ignore: ['effector'],
   },
+
+  // localStorage
   {
     path: 'build/local/index.js',
     limit: '882 B',
@@ -59,6 +66,8 @@ module.exports = [
     limit: '915 B',
     ignore: ['effector'],
   },
+
+  // sessionStorage
   {
     path: 'build/session/index.js',
     limit: '880 B',
@@ -77,6 +86,50 @@ module.exports = [
   {
     path: 'build/session/fp/index.cjs.js',
     limit: '913 B',
+    ignore: ['effector'],
+  },
+
+  // query string
+  {
+    path: 'build/query/index.js',
+    limit: '1001 B',
+    ignore: ['effector'],
+  },
+  {
+    path: 'build/query/index.cjs.js',
+    limit: '970 B',
+    ignore: ['effector'],
+  },
+  {
+    path: 'build/query/fp/index.js',
+    limit: '1022 B',
+    ignore: ['effector'],
+  },
+  {
+    path: 'build/query/fp/index.cjs.js',
+    limit: '1020 B',
+    ignore: ['effector'],
+  },
+
+  // memory
+  {
+    path: 'build/memory/index.js',
+    limit: '706 B',
+    ignore: ['effector'],
+  },
+  {
+    path: 'build/memory/index.cjs.js',
+    limit: '681 B',
+    ignore: ['effector'],
+  },
+  {
+    path: 'build/memory/fp/index.js',
+    limit: '728 B',
+    ignore: ['effector'],
+  },
+  {
+    path: 'build/memory/fp/index.cjs.js',
+    limit: '700 B',
     ignore: ['effector'],
   },
 ]

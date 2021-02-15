@@ -4,7 +4,7 @@ import { createStore } from 'effector'
 import { persist } from '../src/session'
 
 //
-// Tests
+// Mock `sessionStorage`
 //
 
 declare let global: any
@@ -19,6 +19,10 @@ test.before(() => {
 test.after(() => {
   global.sessionStorage = storage
 })
+
+//
+// Tests
+//
 
 test('store should ignore initial value if sessionStorage is not exists', () => {
   const $counter0 = createStore(42, { name: 'session-node::counter0' })

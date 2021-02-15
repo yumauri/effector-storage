@@ -7,7 +7,7 @@ import { storage } from '../src/storage'
 import { createStorageMock } from './mocks/storage.mock'
 
 //
-// Mock Storage adapter
+// Mock abstract Storage adapter
 //
 
 const mockStorage = createStorageMock()

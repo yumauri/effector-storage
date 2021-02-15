@@ -8,7 +8,7 @@ import { StorageAdapter, persist } from '../src'
 import { storage } from '../src/storage'
 
 //
-// Mock Storage adapter and events
+// Mock abstract Storage and events
 //
 
 declare let global: any
@@ -26,12 +26,6 @@ test.before(() => {
 test.after(() => {
   delete global.addEventListener
 })
-
-// declare let global: any
-// global.window = global.window || {}
-
-// const events = global.events || createEventsMock()
-// global.addEventListener = global.window.addEventListener = events.addEventListener
 
 //
 // Tests

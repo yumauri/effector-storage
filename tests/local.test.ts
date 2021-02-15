@@ -6,7 +6,7 @@ import { createEventsMock } from './mocks/events.mock'
 import { persist } from '../src/local'
 
 //
-// Mock Storage adapter and events
+// Mock `localStorage` and events
 //
 
 declare let global: any

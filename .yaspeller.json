@@ -25,7 +25,9 @@
     "unhandled",
     "unsubscribe",
     "keyArea",
-    "timestamp"
+    "timestamp",
+    "pushState",
+    "replaceState"
   ],
   "ignoreText": [],
   "ignoreUrls": true,

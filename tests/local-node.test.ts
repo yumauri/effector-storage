@@ -4,7 +4,7 @@ import { createStore } from 'effector'
 import { persist } from '../src/local'
 
 //
-// Tests
+// Mock `localStorage`
 //
 
 declare let global: any
@@ -19,6 +19,10 @@ test.before(() => {
 test.after(() => {
   global.localStorage = storage
 })
+
+//
+// Tests
+//
 
 test('store should ignore initial value if localStorage is not exists', () => {
   const $counter0 = createStore(42, { name: 'local-node::counter0' })
