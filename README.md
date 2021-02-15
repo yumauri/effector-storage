@@ -16,6 +16,7 @@ Small module for [Effector](https://github.com/effector/effector) ☄️ to sync
 - [Usage](#usage)
   - [with `localStorage`](#with-localstorage)
   - [with `sessionStorage`](#with-sessionstorage)
+  - [with query string](#with-query-string)
 - [Usage with domains](#usage-with-domains)
 - [Functional helpers](#functional-helpers)
 - [Formulae](#formulae)
@@ -78,6 +79,24 @@ import { persist } from 'effector-storage/session'
 ```
 
 Stores, persisted in `sessionStorage`, are synced between instances, but not between different windows/tabs.
+
+### with query string
+
+Docs: [effector-storage/query](https://github.com/yumauri/effector-storage/tree/master/src/query/README.md)
+
+You can _reflect_ plain string store value in query string parameter, using this adapter. Think of it like about synchronizing store value and query string parameter.
+
+```javascript
+import { persist } from 'effector-storage/query'
+
+// persist store `$id` in query string parameter 'id'
+persist({ store: $id, key: 'id' })
+```
+
+If two (or more) stores are persisted in query string with the same key — they are synced between themselves.
+
+⚠️ **Note**<br>
+Use this only with plain string stores (`Store<string | null>`) to avoid strange unexpected behavior.
 
 ## Usage with domains
 
@@ -430,9 +449,9 @@ Use this approach with caution, beware of infinite circular updates. To avoid th
 
 ## TODO
 
-- [x] [localStorage] support
-- [x] [sessionStorage] support
-- [x] [query string](https://developer.mozilla.org/en-US/docs/Web/API/Location/search) support
+- [x] [localStorage] support (docs: [effector-storage/local](https://github.com/yumauri/effector-storage/tree/master/src/local/README.md))
+- [x] [sessionStorage] support (docs: [effector-storage/session](https://github.com/yumauri/effector-storage/tree/master/src/session/README.md))
+- [x] [query string](https://developer.mozilla.org/en-US/docs/Web/API/Location/search) support (docs: [effector-storage/query](https://github.com/yumauri/effector-storage/tree/master/src/query/README.md))
 - [ ] [IndexedDB] support
 - [ ] [AsyncStorage] support
 - [ ] [Cookies] support

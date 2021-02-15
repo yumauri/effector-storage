@@ -85,7 +85,7 @@ import { persist } from 'effector-storage/query/fp'
 
 ### How do I use custom serialization / deserialization?
 
-You don't. Use this adapter only with plain string stores `Store<string>`.
+You don't. Use this adapter only with plain string stores `Store<string | null>`.
 
 If you need some sort of serialization — you can use `.map` method for that. For deserialization you have to use some snippets with `sample`, for example:
 
