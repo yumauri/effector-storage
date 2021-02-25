@@ -68,6 +68,7 @@ const src = (name) => ({
               bugs: pkg.bugs,
               homepage: pkg.homepage,
               keywords: pkg.keywords,
+              types: 'index.d.ts',
               peerDependencies: {
                 effector: '^21.0.0',
               },
@@ -128,6 +129,7 @@ const src = (name) => ({
               main: 'index.cjs.js',
               module: 'index.js',
               'react-native': 'index.js',
+              types: 'index.d.ts',
             },
           }
     ),
@@ -158,7 +160,24 @@ const dts = (name) => ({
   ],
 })
 
-const entry = (name) => [src(name), dts(name)]
+const cjsdts = (name) => ({
+  input: `${SRC}/${name}index.ts`,
+  output: [
+    {
+      file: `${BUILD}/${name}index.cjs.d.ts`,
+      format: 'es',
+    },
+  ],
+  external: ['effector', '..', '../storage'],
+  plugins: [
+    generateDts({ respectExternal: true }),
+    command([`yarn prettier --write ${BUILD}/${name}index.cjs.d.ts`], {
+      wait: true,
+    }),
+  ],
+})
+
+const entry = (name) => [src(name), dts(name), cjsdts(name)]
 
 export default [
   ...entry(''),
