@@ -167,7 +167,7 @@ export function persist<State, Err = Error>({
       source: sample<State, State, [State, State]>(
         storage,
         source,
-        (current, proposed) => [proposed, current]
+        (current: any, proposed) => [proposed, current]
       ),
       filter: ([proposed, current]) => proposed !== current,
       target: setFx.prepend<[State, State]>(([proposed]) => proposed),
