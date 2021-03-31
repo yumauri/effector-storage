@@ -12,13 +12,13 @@ const src = (name) => ({
   input: `${SRC}/${name}index.ts`,
   output: [
     {
-      file: `${BUILD}/${name}index.cjs.js`,
+      file: `${BUILD}/${name}index.cjs`,
       format: 'cjs',
       sourcemap: process.env.NODE_ENV === 'production',
       externalLiveBindings: false,
       esModule: false,
       exports: 'named',
-      plugins: [dual('.cjs.js')],
+      plugins: [dual('.cjs')],
     },
     {
       file: `${BUILD}/${name}index.js`,
@@ -75,68 +75,68 @@ const src = (name) => ({
 
               // cjs + esm magic
               type: 'module',
-              main: 'index.cjs.js',
+              main: 'index.cjs',
               module: 'index.js',
               'react-native': 'index.js',
               exports: {
                 './package.json': './package.json',
                 '.': {
-                  require: './index.cjs.js',
+                  require: './index.cjs',
                   import: './index.js',
                 },
                 './fp/package.json': './fp/package.json',
                 './fp': {
-                  require: './fp/index.cjs.js',
+                  require: './fp/index.cjs',
                   import: './fp/index.js',
                 },
                 './nil/package.json': './nil/package.json',
                 './nil': {
-                  require: './nil/index.cjs.js',
+                  require: './nil/index.cjs',
                   import: './nil/index.js',
                 },
                 './local/package.json': './local/package.json',
                 './local': {
-                  require: './local/index.cjs.js',
+                  require: './local/index.cjs',
                   import: './local/index.js',
                 },
                 './local/fp/package.json': './local/fp/package.json',
                 './local/fp': {
-                  require: './local/fp/index.cjs.js',
+                  require: './local/fp/index.cjs',
                   import: './local/fp/index.js',
                 },
                 './session/package.json': './session/package.json',
                 './session': {
-                  require: './session/index.cjs.js',
+                  require: './session/index.cjs',
                   import: './session/index.js',
                 },
                 './session/fp/package.json': './session/fp/package.json',
                 './session/fp': {
-                  require: './session/fp/index.cjs.js',
+                  require: './session/fp/index.cjs',
                   import: './session/fp/index.js',
                 },
                 './storage/package.json': './storage/package.json',
                 './storage': {
-                  require: './storage/index.cjs.js',
+                  require: './storage/index.cjs',
                   import: './storage/index.js',
                 },
                 './query/package.json': './query/package.json',
                 './query': {
-                  require: './query/index.cjs.js',
+                  require: './query/index.cjs',
                   import: './query/index.js',
                 },
                 './query/fp/package.json': './query/fp/package.json',
                 './query/fp': {
-                  require: './query/fp/index.cjs.js',
+                  require: './query/fp/index.cjs',
                   import: './query/fp/index.js',
                 },
                 './memory/package.json': './memory/package.json',
                 './memory': {
-                  require: './memory/index.cjs.js',
+                  require: './memory/index.cjs',
                   import: './memory/index.js',
                 },
                 './memory/fp/package.json': './memory/fp/package.json',
                 './memory/fp': {
-                  require: './memory/fp/index.cjs.js',
+                  require: './memory/fp/index.cjs',
                   import: './memory/fp/index.js',
                 },
               },
@@ -146,7 +146,7 @@ const src = (name) => ({
           {
             baseContents: {
               type: 'module',
-              main: 'index.cjs.js',
+              main: 'index.cjs',
               module: 'index.js',
               'react-native': 'index.js',
               types: 'index.d.ts',
