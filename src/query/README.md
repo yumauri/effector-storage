@@ -22,7 +22,7 @@ Two (or more) different stores, persisted with the same key, will be synchronize
 
 There are few ways to change URL query string in modern world, you can use one of these four:
 
-- `pushState` — uses [history.pushState()](https://developer.mozilla.org/en-US/docs/Web/API/History/pushState) call, it doesn't reload page, and adds new history item.
+- `pushState` — uses [history.pushState](https://developer.mozilla.org/en-US/docs/Web/API/History/pushState) call, it doesn't reload page, and adds new history item.
 - `replaceState` — uses [history.replaceState](https://developer.mozilla.org/en-US/docs/Web/API/History/replaceState) call, it doesn't reload page, and _doesn't_ add new history item.
 - `locationAssign` — uses [location.assign](https://developer.mozilla.org/en-US/docs/Web/API/Location/assign) call, it will reload page, and adds new history item.
 - `locationReplace` — uses [location.replace](https://developer.mozilla.org/en-US/docs/Web/API/Location/replace) call, it will reload page, and _doesn't_ add new history item.
@@ -35,6 +35,12 @@ import { persist, replaceState } from 'effector-storage/query'
 // use `history.replaceState` to change query string
 persist({ store: $id, key: 'id', method: replaceState })
 ```
+
+⚠️ **Known issue**<br>
+Several states, persisted in the query string, causes several history updates, even if updates were happen (almost) simultaneously.<br>
+If you have two stores, persisted in query string, and they both updates — you will have two history records (when using default `pushState` method). Thus if you want to go back using "⬅️Back" button — you will have to click it twice, to revert both stores in the original state.<br>
+Sometimes it can lead to nasty cyclic updates, if two stores are dependant from each other. So, be warned.<br>
+PR is appreciated :)
 
 ## Functional helper
 
