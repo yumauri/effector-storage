@@ -133,15 +133,12 @@ export function persist<State, Err = Error>({
   const region = createNode()
   const desist = () => clearNode(region)
 
-  const op = (operation: 'get' | 'set') => ({
-    status,
-    params,
-    result,
-    error,
-  }: any): any =>
-    status === 'done'
-      ? { status, key, operation, value: result }
-      : { status, key, operation, value: params, error }
+  const op =
+    (operation: 'get' | 'set') =>
+    ({ status, params, result, error }: any): any =>
+      status === 'done'
+        ? { status, key, operation, value: result }
+        : { status, key, operation, value: params, error }
 
   // create all auxiliary units and nodes within the region,
   // to be able to remove them all at once on unsubscription
