@@ -92,22 +92,22 @@ module.exports = [
   // query string
   {
     path: 'build/query/index.js',
-    limit: '1001 B',
+    limit: '1017 B',
     ignore: ['effector'],
   },
   {
     path: 'build/query/index.cjs',
-    limit: '970 B',
+    limit: '988 B',
     ignore: ['effector'],
   },
   {
     path: 'build/query/fp/index.js',
-    limit: '1022 B',
+    limit: '1038 B',
     ignore: ['effector'],
   },
   {
     path: 'build/query/fp/index.cjs',
-    limit: '1020 B',
+    limit: '1037 B',
     ignore: ['effector'],
   },
 

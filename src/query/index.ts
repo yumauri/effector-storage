@@ -20,6 +20,7 @@ export interface ConfigStore<State, Err = Error> {
   key?: string
   method?: ChangeMethod
   state?: StateBehavior
+  def?: any
 }
 
 export interface ConfigSourceTarget<State, Err = Error> {
@@ -32,6 +33,7 @@ export interface ConfigSourceTarget<State, Err = Error> {
   key?: string
   method?: ChangeMethod
   state?: StateBehavior
+  def?: any
 }
 
 /**
@@ -44,9 +46,15 @@ export function persist<State, Err = Error>(
   config: ConfigSourceTarget<State, Err>
 ): Subscription
 export function persist<State, Err = Error>(config: any): Subscription {
+  const def =
+    config.def !== undefined
+      ? config.def
+      : config.store
+      ? config.store.defaultState
+      : null
   const adapter =
     typeof history !== 'undefined' && typeof location !== 'undefined'
-      ? query(config, config.store.defaultState)
+      ? query(config, def)
       : nil
   return parent<State, Err>(Object.assign({ adapter }, config))
 }
