@@ -1,7 +1,7 @@
 import { test } from 'uvu'
 import * as assert from 'uvu/assert'
 import { snoop } from 'snoop'
-import { createStore } from 'effector'
+import { createStore, createEvent } from 'effector'
 import { createHistoryMock } from './mocks/history.mock'
 import { createLocationMock } from './mocks/location.mock'
 import { createEventsMock } from './mocks/events.mock'
@@ -384,6 +384,69 @@ test('use of `locationReplace` explicitly', () => {
   assert.is(snoopLocationReplace.callCount, 1)
 
   assert.equal(snoopLocationReplace.calls[0].arguments, ['/?id=555'])
+})
+
+test('should work with source/target (issue #20)', () => {
+  const watchSource = snoop(() => undefined)
+  const watchTarget = snoop(() => undefined)
+
+  global.history = createHistoryMock(null, '', 'http://domain.test?id=20_1_1')
+  global.location = createLocationMock('http://domain.test?id=20_1_1')
+  global.history._location(global.location)
+  global.location._history(global.history)
+
+  const source = createEvent<string>()
+  const target = createEvent<string>()
+  source.watch(watchSource.fn)
+  target.watch(watchTarget.fn)
+
+  persist({
+    source,
+    target,
+    key: 'id',
+  })
+
+  // pass initial query state to target
+  assert.is(global.location.search, '?id=20_1_1')
+  assert.is(watchSource.callCount, 0)
+  assert.is(watchTarget.callCount, 2) // first and second // fix later?
+  assert.equal(watchTarget.calls[0].arguments, ['20_1_1'])
+  assert.equal(watchTarget.calls[1].arguments, ['20_1_1'])
+
+  // set new value to source -> should pass to query state
+  source('20_1_2')
+
+  assert.is(global.location.search, '?id=20_1_2')
+  assert.is(watchSource.callCount, 1)
+  assert.is(watchTarget.callCount, 3)
+  assert.equal(watchSource.calls[0].arguments, ['20_1_2'])
+  assert.equal(watchTarget.calls[2].arguments, ['20_1_2'])
+})
+
+test('should work with source/target with default state (issue #20)', () => {
+  const watchTarget = snoop(() => undefined)
+
+  global.history = createHistoryMock(null, '', 'http://domain.test')
+  global.location = createLocationMock('http://domain.test')
+  global.history._location(global.location)
+  global.location._history(global.history)
+
+  const source = createEvent<string | null>()
+  const target = createEvent<string | null>()
+  target.watch(watchTarget.fn)
+
+  persist({
+    source,
+    target,
+    key: 'id',
+    def: '20_2_0',
+  })
+
+  // pass default value to target
+  assert.is(global.location.search, '')
+  assert.is(watchTarget.callCount, 2) // first and second // fix later?
+  assert.equal(watchTarget.calls[0].arguments, ['20_2_0'])
+  assert.equal(watchTarget.calls[1].arguments, ['20_2_0'])
 })
 
 //
