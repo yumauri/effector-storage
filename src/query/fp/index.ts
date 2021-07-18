@@ -17,6 +17,7 @@ export interface Config<State, Err = Error> {
   key?: string
   method?: ChangeMethod
   state?: StateBehavior
+  def?: any
 }
 
 /**
