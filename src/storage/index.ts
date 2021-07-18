@@ -2,7 +2,7 @@ import type { StorageAdapter } from '..'
 
 export interface StorageConfig {
   storage: Storage
-  sync?: boolean // DEPRECATED
+  sync?: boolean
   serialize?: (value: any) => string
   deserialize?: (value: string) => any
 }

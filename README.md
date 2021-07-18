@@ -406,7 +406,7 @@ adapter = storage(options)
 #### Options
 
 - `storage` (_Storage_): Storage to communicate with.
-- `sync`? ([_boolean_], **deprecated**): Add [`'storage'`] event listener or no. Default = `false`.
+- `sync`? ([_boolean_]): Add [`'storage'`] event listener or no. Default = `false`.
 - `serialize`? (_(value: any) => string_): Custom serialize function. Default = `JSON.stringify`
 - `deserialize`? (_(value: string) => any_): Custom deserialize function. Default = `JSON.parse`
 
@@ -445,7 +445,7 @@ persist({
 ```
 
 ⚠️ **BIG WARNING!**<br>
-Use this approach with caution, beware of infinite circular updates. To avoid them, persist _only plain values_ in storage. So, mapped store in `source` will not trigger update, if object in original store has changed.
+Use this approach with caution, beware of infinite circular updates. To avoid them, persist _only plain values_ in storage. So, mapped store in `source` will not trigger update, if object in original store has changed. Also, you can take a look at [`updateFilter` option](https://effector.dev/docs/api/effector/createStore).
 
 ## TODO
 

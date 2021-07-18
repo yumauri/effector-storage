@@ -63,7 +63,7 @@ import { persist } from 'effector-storage/local/fp'
 ### Options
 
 - ... all the [common options](../../README.md#options) from root `persist` function.
-- `sync`? ([_boolean_], **deprecated**): Add [`'storage'`] event listener or no. Default = `true`.
+- `sync`? ([_boolean_]): Add [`'storage'`] event listener or no. Default = `true`.
 - `serialize`? (_(value: any) => string_): Custom serialize function. Default = `JSON.stringify`.
 - `deserialize`? (_(value: string) => any_): Custom deserialize function. Default = `JSON.parse`.
 
