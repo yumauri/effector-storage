@@ -4,6 +4,7 @@ import { persist as parent } from '..'
 
 export interface Config<State, Err = Error> {
   adapter: StorageAdapter
+  clock?: Unit<any>
   done?: Unit<Done<State>>
   fail?: Unit<Fail<Err>>
   finally?: Unit<Finally<State, Err>>

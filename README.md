@@ -164,6 +164,7 @@ In order to synchronize _something_, you need to specify effector units. Dependi
 ### Options
 
 - `key`? ([_string_]): Key for local/session storage, to store value in. If omitted — `store` name is used. **Note!** If `key` is not specified, `store` _must_ have a `name`! You can use `'effector/babel-plugin'` to have those names automatically.
+- `clock`? ([_Event_] | [_Effect_] | [_Store_]): Unit, if passed – then value from `store`/`source` will be stored in the storage only upon its trigger.
 - `pickup`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which you can specify to force update `store` value from storage.
 - `done`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which will be triggered on each successful read or write from/to storage.<br>
   Payload structure:

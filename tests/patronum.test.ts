@@ -43,7 +43,10 @@ test('storage updates should be debounced', async () => {
   const debounced = debounce({ source: increment, timeout: 10 })
   debounced.watch(debouncedWatch.fn)
 
-  const $store = createStore(0).on(increment, (state) => state + 1)
+  const $store = createStore(0, { name: 'debounced' }).on(
+    increment,
+    (state) => state + 1
+  )
   $store.watch(storeWatch.fn)
 
   const { set, get, adapter } = createAdapter()
@@ -115,6 +118,90 @@ test('storage updates should be debounced', async () => {
     { result: undefined, arguments: [undefined], error: undefined },
   ])
   assert.equal(debouncedWatch.calls, [
+    { result: undefined, arguments: [undefined], error: undefined },
+  ])
+  assert.equal(storeWatch.calls, [
+    { result: undefined, arguments: [0], error: undefined },
+    { result: undefined, arguments: [1], error: undefined },
+    { result: undefined, arguments: [2], error: undefined },
+    { result: undefined, arguments: [3], error: undefined },
+    { result: undefined, arguments: [4], error: undefined },
+  ])
+})
+
+test('storage updates should be debounced, using clock', async () => {
+  const incrementWatch = snoop(() => undefined)
+  const storeWatch = snoop(() => undefined)
+
+  const increment = createEvent()
+  increment.watch(incrementWatch.fn)
+
+  const $store = createStore(0, { name: 'debounced' }).on(
+    increment,
+    (state) => state + 1
+  )
+  $store.watch(storeWatch.fn)
+
+  const { set, get, adapter } = createAdapter()
+  persist({
+    adapter,
+    store: $store,
+    clock: debounce({ source: $store, timeout: 10 }),
+  })
+
+  // after `persist`
+  assert.is(set.callCount, 0)
+  assert.is(get.callCount, 1) // <- get undefined value from storage
+  assert.is(incrementWatch.callCount, 0)
+  assert.is(storeWatch.callCount, 1) // <- first watch on store
+
+  // let's go
+
+  // 1
+  increment()
+  assert.is(set.callCount, 0) // <- did not change
+  assert.is(get.callCount, 1)
+  assert.is(incrementWatch.callCount, 1)
+  assert.is(storeWatch.callCount, 2)
+
+  // 2
+  increment()
+  assert.is(set.callCount, 0) // <- did not change
+  assert.is(get.callCount, 1)
+  assert.is(incrementWatch.callCount, 2)
+  assert.is(storeWatch.callCount, 3)
+
+  // 3
+  increment()
+  assert.is(set.callCount, 0) // <- did not change
+  assert.is(get.callCount, 1)
+  assert.is(incrementWatch.callCount, 3)
+  assert.is(storeWatch.callCount, 4)
+
+  // 4
+  increment()
+  assert.is(set.callCount, 0) // <- did not change
+  assert.is(get.callCount, 1)
+  assert.is(incrementWatch.callCount, 4)
+  assert.is(storeWatch.callCount, 5)
+
+  // wait for debounced
+  await new Promise((resolve) => setTimeout(resolve, 15))
+
+  assert.is(set.callCount, 1) // <- called
+  assert.is(get.callCount, 1)
+  assert.is(incrementWatch.callCount, 4)
+  assert.is(storeWatch.callCount, 5)
+
+  // check all arguments
+  assert.equal(set.calls, [{ result: 4, arguments: [4], error: undefined }])
+  assert.equal(get.calls, [
+    { result: undefined, arguments: [undefined, undefined], error: undefined },
+  ])
+  assert.equal(incrementWatch.calls, [
+    { result: undefined, arguments: [undefined], error: undefined },
+    { result: undefined, arguments: [undefined], error: undefined },
+    { result: undefined, arguments: [undefined], error: undefined },
     { result: undefined, arguments: [undefined], error: undefined },
   ])
   assert.equal(storeWatch.calls, [

@@ -85,7 +85,20 @@ persist({
 
 ### Can I debounce updates, `sessionStorage` is too slow?
 
-You can use `source`/`target` form of `persist` and `debounce` from [patronum](https://github.com/effector/patronum#debounce), to reach that goal:
+Since version **4.3.0**, you can use `clock` option and `debounce` from [patronum](https://github.com/effector/patronum/tree/main/debounce), to reach that goal:
+
+```javascript
+import { debounce } from 'patronum/debounce'
+import { persist } from 'effector-storage/session'
+
+// ---8<---
+persist({
+  store: $store,
+  clock: debounce({ source: $store, timeout: 100 }),
+})
+```
+
+Or you can use `source`/`target` form of `persist` (and also `debounce` from [patronum](https://github.com/effector/patronum/tree/main/debounce)):
 
 ```javascript
 import { debounce } from 'patronum/debounce'

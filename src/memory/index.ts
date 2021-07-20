@@ -4,6 +4,7 @@ import { persist as parent } from '..'
 import { memory } from './adapter'
 
 export interface ConfigStore<State, Err = Error> {
+  clock?: Unit<any>
   store: Store<State>
   done?: Unit<Done<State>>
   fail?: Unit<Fail<Err>>
@@ -13,6 +14,7 @@ export interface ConfigStore<State, Err = Error> {
 }
 
 export interface ConfigSourceTarget<State, Err = Error> {
+  clock?: Unit<any>
   source: Store<State> | Event<State> | Effect<State, any, any>
   target: Store<State> | Event<State> | Effect<State, any, any>
   done?: Unit<Done<State>>

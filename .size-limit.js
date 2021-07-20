@@ -2,22 +2,22 @@ module.exports = [
   // core
   {
     path: 'build/index.js',
-    limit: '665 B',
+    limit: '679 B',
     ignore: ['effector'],
   },
   {
     path: 'build/index.cjs',
-    limit: '636 B',
+    limit: '650 B',
     ignore: ['effector'],
   },
   {
     path: 'build/fp/index.js',
-    limit: '689 B',
+    limit: '702 B',
     ignore: ['effector'],
   },
   {
     path: 'build/fp/index.cjs',
-    limit: '667 B',
+    limit: '682 B',
     ignore: ['effector'],
   },
 
@@ -48,88 +48,88 @@ module.exports = [
   // localStorage
   {
     path: 'build/local/index.js',
-    limit: '882 B',
+    limit: '897 B',
     ignore: ['effector'],
   },
   {
     path: 'build/local/index.cjs',
-    limit: '893 B',
+    limit: '907 B',
     ignore: ['effector'],
   },
   {
     path: 'build/local/fp/index.js',
-    limit: '903 B',
+    limit: '918 B',
     ignore: ['effector'],
   },
   {
     path: 'build/local/fp/index.cjs',
-    limit: '915 B',
+    limit: '931 B',
     ignore: ['effector'],
   },
 
   // sessionStorage
   {
     path: 'build/session/index.js',
-    limit: '880 B',
+    limit: '894 B',
     ignore: ['effector'],
   },
   {
     path: 'build/session/index.cjs',
-    limit: '890 B',
+    limit: '906 B',
     ignore: ['effector'],
   },
   {
     path: 'build/session/fp/index.js',
-    limit: '900 B',
+    limit: '915 B',
     ignore: ['effector'],
   },
   {
     path: 'build/session/fp/index.cjs',
-    limit: '913 B',
+    limit: '929 B',
     ignore: ['effector'],
   },
 
   // query string
   {
     path: 'build/query/index.js',
-    limit: '1017 B',
+    limit: '1026 B',
     ignore: ['effector'],
   },
   {
     path: 'build/query/index.cjs',
-    limit: '988 B',
+    limit: '998 B',
     ignore: ['effector'],
   },
   {
     path: 'build/query/fp/index.js',
-    limit: '1038 B',
+    limit: '1047 B',
     ignore: ['effector'],
   },
   {
     path: 'build/query/fp/index.cjs',
-    limit: '1037 B',
+    limit: '1047 B',
     ignore: ['effector'],
   },
 
   // memory
   {
     path: 'build/memory/index.js',
-    limit: '706 B',
+    limit: '720 B',
     ignore: ['effector'],
   },
   {
     path: 'build/memory/index.cjs',
-    limit: '681 B',
+    limit: '696 B',
     ignore: ['effector'],
   },
   {
     path: 'build/memory/fp/index.js',
-    limit: '728 B',
+    limit: '742 B',
     ignore: ['effector'],
   },
   {
     path: 'build/memory/fp/index.cjs',
-    limit: '700 B',
+    limit: '717 B',
     ignore: ['effector'],
   },
 ]

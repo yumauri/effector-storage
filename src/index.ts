@@ -39,6 +39,7 @@ export type Finally<State, Err> =
 
 export interface ConfigStore<State, Err = Error> {
   adapter: StorageAdapter
+  clock?: Unit<any>
   store: Store<State>
   done?: Unit<Done<State>>
   fail?: Unit<Fail<Err>>
@@ -49,6 +50,7 @@ export interface ConfigStore<State, Err = Error> {
 
 export interface ConfigSourceTarget<State, Err = Error> {
   adapter: StorageAdapter
+  clock?: Unit<any>
   source: Store<State> | Event<State> | Effect<State, any, any>
   target: Store<State> | Event<State> | Effect<State, any, any>
   done?: Unit<Done<State>>
@@ -101,6 +103,7 @@ export function persist<State, Err = Error>(
 ): Subscription
 export function persist<State, Err = Error>({
   adapter,
+  clock,
   store,
   source = store,
   target = store,
@@ -163,7 +166,7 @@ export function persist<State, Err = Error>({
     guard({
       source: sample<State, State, [State, State]>(
         storage,
-        source,
+        sample(source as any, clock as any),
         (current: any, proposed) => [proposed, current]
       ),
       filter: ([proposed, current]) => proposed !== current,
