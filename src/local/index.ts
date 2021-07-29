@@ -44,6 +44,6 @@ export function persist<State, Err = Error>(config: any): Subscription {
   const adapter =
     typeof localStorage !== 'undefined'
       ? storage(Object.assign({ storage: localStorage, sync: true }, config))
-      : nil
+      : nil('local')
   return parent<State, Err>(Object.assign({ adapter }, config))
 }

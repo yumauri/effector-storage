@@ -57,7 +57,7 @@ export function persist<State, Err = Error>(config: any): Subscription {
   const adapter =
     typeof history !== 'undefined' && typeof location !== 'undefined'
       ? query(config, def)
-      : nil
+      : nil('query')
   return parent<State, Err>(Object.assign({ adapter }, config))
 }
 

@@ -24,12 +24,12 @@ module.exports = [
   // nil adapter
   {
     path: 'build/nil/index.js',
-    limit: '38 B',
+    limit: '52 B',
     ignore: ['effector'],
   },
   {
     path: 'build/nil/index.cjs',
-    limit: '26 B',
+    limit: '40 B',
     ignore: ['effector'],
   },
 
@@ -48,66 +48,66 @@ module.exports = [
   // localStorage
   {
     path: 'build/local/index.js',
-    limit: '897 B',
+    limit: '905 B',
     ignore: ['effector'],
   },
   {
     path: 'build/local/index.cjs',
-    limit: '907 B',
+    limit: '915 B',
     ignore: ['effector'],
   },
   {
     path: 'build/local/fp/index.js',
-    limit: '918 B',
+    limit: '926 B',
     ignore: ['effector'],
   },
   {
     path: 'build/local/fp/index.cjs',
-    limit: '931 B',
+    limit: '941 B',
     ignore: ['effector'],
   },
 
   // sessionStorage
   {
     path: 'build/session/index.js',
-    limit: '894 B',
+    limit: '903 B',
     ignore: ['effector'],
   },
   {
     path: 'build/session/index.cjs',
-    limit: '906 B',
+    limit: '913 B',
     ignore: ['effector'],
   },
   {
     path: 'build/session/fp/index.js',
-    limit: '915 B',
+    limit: '923 B',
     ignore: ['effector'],
   },
   {
     path: 'build/session/fp/index.cjs',
-    limit: '929 B',
+    limit: '939 B',
     ignore: ['effector'],
   },
 
   // query string
   {
     path: 'build/query/index.js',
-    limit: '1026 B',
+    limit: '1040 B',
     ignore: ['effector'],
   },
   {
     path: 'build/query/index.cjs',
-    limit: '998 B',
+    limit: '1015 B',
     ignore: ['effector'],
   },
   {
     path: 'build/query/fp/index.js',
-    limit: '1047 B',
+    limit: '1060 B',
     ignore: ['effector'],
   },
   {
     path: 'build/query/fp/index.cjs',
-    limit: '1047 B',
+    limit: '1063 B',
     ignore: ['effector'],
   },
 
