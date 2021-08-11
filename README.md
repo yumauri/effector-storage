@@ -460,7 +460,9 @@ Use this approach with caution, beware of infinite circular updates. To avoid th
 
 ## Sponsored
 
-[<img src="https://setplex.com/img/logo.png" alt="Setplex" width="236">](https://setplex.com)
+[<img src="https://setplex.com/img/logo.png" alt="Setplex OTT Platform" width="236">](https://setplex.com/en/)
+
+[Setplex OTT Platform](https://setplex.com/en/)
 
 [localstorage]: https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage
 [sessionstorage]: https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage
