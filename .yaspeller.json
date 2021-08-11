@@ -27,7 +27,8 @@
     "keyArea",
     "timestamp",
     "pushState",
-    "replaceState"
+    "replaceState",
+    "Setplex"
   ],
   "ignoreText": [],
   "ignoreUrls": true,
