@@ -98,7 +98,12 @@ test('broken storage value should launch `catch` handler', () => {
   assert.is(watch.calls[0].arguments.length, 1)
 
   const { error, ...args } = watch.calls[0].arguments[0 as any] as any
-  assert.equal(args, { key: 'counter6', operation: 'get', value: undefined })
+  assert.equal(args, {
+    key: 'counter6',
+    keyPrefix: '',
+    operation: 'get',
+    value: undefined,
+  })
   assert.instance(error, SyntaxError)
 
   assert.is(mockStorage.getItem('counter6'), 'broken')
@@ -149,7 +154,12 @@ test('broken store value should launch `catch` handler', () => {
   assert.is(watch.calls[0].arguments.length, 1)
 
   const { error, ...args } = watch.calls[0].arguments[0 as any] as any
-  assert.equal(args, { key: 'store1', operation: 'set', value: recursive })
+  assert.equal(args, {
+    key: 'store1',
+    keyPrefix: '',
+    operation: 'set',
+    value: recursive,
+  })
   assert.instance(error, TypeError)
 
   assert.is(mockStorage.getItem('store1'), null)

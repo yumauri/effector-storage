@@ -43,6 +43,7 @@ test('should fire done and finally events', () => {
   assert.equal(watch.calls[0].arguments, [
     {
       key: 'test',
+      keyPrefix: '',
       operation: 'get',
       status: 'done',
       value: 0,
@@ -53,6 +54,7 @@ test('should fire done and finally events', () => {
   assert.equal(watch.calls[1].arguments, [
     {
       key: 'test',
+      keyPrefix: '',
       operation: 'get',
       value: 0,
     },

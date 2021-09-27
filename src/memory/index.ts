@@ -1,38 +1,48 @@
-import type { Event, Effect, Store, Unit, Subscription } from 'effector'
-import type { Done, Fail, Finally } from '..'
-import { persist as parent } from '..'
+import type { Subscription } from 'effector'
+import type {
+  ConfigPersist,
+  ConfigCommon,
+  ConfigJustStore,
+  ConfigJustSourceTarget,
+} from '../types'
+import { persist as base } from '../persist'
 import { memory } from './adapter'
 
-export interface ConfigStore<State, Err = Error> {
-  clock?: Unit<any>
-  store: Store<State>
-  done?: Unit<Done<State>>
-  fail?: Unit<Fail<Err>>
-  finally?: Unit<Finally<State, Err>>
-  pickup?: Unit<any>
-  key?: string
-}
+export type {
+  ConfigPersist,
+  Done,
+  Fail,
+  Finally,
+  StorageAdapter,
+} from '../types'
 
-export interface ConfigSourceTarget<State, Err = Error> {
-  clock?: Unit<any>
-  source: Store<State> | Event<State> | Effect<State, any, any>
-  target: Store<State> | Event<State> | Effect<State, any, any>
-  done?: Unit<Done<State>>
-  fail?: Unit<Fail<Err>>
-  finally?: Unit<Finally<State, Err>>
-  pickup?: Unit<any>
-  key?: string
+export interface ConfigStore<State, Err = Error>
+  extends ConfigCommon<State, Err>,
+    ConfigJustStore<State> {}
+
+export interface ConfigSourceTarget<State, Err = Error>
+  extends ConfigCommon<State, Err>,
+    ConfigJustSourceTarget<State> {}
+
+export interface Persist {
+  <State, Err = Error>(config: ConfigSourceTarget<State, Err>): Subscription
+  <State, Err = Error>(config: ConfigStore<State, Err>): Subscription
 }
 
 /**
- * Partially applied `persist` with predefined `memory` adapter
+ * Creates custom partially applied `persist`
+ * with predefined `memory` adapter
  */
-export function persist<State, Err = Error>(
-  config: ConfigStore<State, Err>
-): Subscription
-export function persist<State, Err = Error>(
-  config: ConfigSourceTarget<State, Err>
-): Subscription
-export function persist<State, Err = Error>(config: any): Subscription {
-  return parent<State, Err>(Object.assign({ adapter: memory }, config))
+export function create(defaults?: ConfigPersist): Persist {
+  return (config) =>
+    base({
+      adapter: memory,
+      ...defaults,
+      ...config,
+    })
 }
+
+/**
+ * Default partially applied `persist`
+ */
+export const persist = create()

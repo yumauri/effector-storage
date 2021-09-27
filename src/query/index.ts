@@ -1,64 +1,74 @@
-import type { Event, Effect, Store, Unit, Subscription } from 'effector'
-import type { Done, Fail, Finally } from '..'
+import type { Subscription } from 'effector'
+import type {
+  ConfigPersist as BaseConfigPersist,
+  ConfigCommon,
+  ConfigJustStore,
+  ConfigJustSourceTarget,
+} from '../types'
 import type { ChangeMethod, StateBehavior } from './adapter'
-import { persist as parent } from '..'
+import { persist as base } from '../persist'
 import { nil } from '../nil'
-import {
+import { query } from './adapter'
+
+export type { Done, Fail, Finally, StorageAdapter } from '../types'
+export {
   pushState,
   replaceState,
   locationAssign,
   locationReplace,
-  query,
 } from './adapter'
 
-export interface ConfigStore<State, Err = Error> {
-  clock?: Unit<any>
-  store: Store<State>
-  done?: Unit<Done<State>>
-  fail?: Unit<Fail<Err>>
-  finally?: Unit<Finally<State, Err>>
-  pickup?: Unit<any>
-  key?: string
+export interface ConfigPersist extends BaseConfigPersist {
+  method?: ChangeMethod
+  state?: StateBehavior
+}
+
+interface AdapterConfig {
   method?: ChangeMethod
   state?: StateBehavior
   def?: any
 }
 
-export interface ConfigSourceTarget<State, Err = Error> {
-  clock?: Unit<any>
-  source: Store<State> | Event<State> | Effect<State, any, any>
-  target: Store<State> | Event<State> | Effect<State, any, any>
-  done?: Unit<Done<State>>
-  fail?: Unit<Fail<Err>>
-  finally?: Unit<Finally<State, Err>>
-  pickup?: Unit<any>
-  key?: string
-  method?: ChangeMethod
-  state?: StateBehavior
-  def?: any
+export interface ConfigStore<State, Err = Error>
+  extends AdapterConfig,
+    ConfigCommon<State, Err>,
+    ConfigJustStore<State> {}
+
+export interface ConfigSourceTarget<State, Err = Error>
+  extends AdapterConfig,
+    ConfigCommon<State, Err>,
+    ConfigJustSourceTarget<State> {}
+
+export interface Persist {
+  <State, Err = Error>(config: ConfigSourceTarget<State, Err>): Subscription
+  <State, Err = Error>(config: ConfigStore<State, Err>): Subscription
 }
 
 /**
- * Partially applied `persist` with predefined `query` adapter
+ * Creates custom partially applied `persist`
+ * with predefined `query` adapter
  */
-export function persist<State, Err = Error>(
-  config: ConfigStore<State, Err>
-): Subscription
-export function persist<State, Err = Error>(
-  config: ConfigSourceTarget<State, Err>
-): Subscription
-export function persist<State, Err = Error>(config: any): Subscription {
-  const def =
-    config.def !== undefined
-      ? config.def
-      : config.store
-      ? config.store.defaultState
-      : null
-  const adapter =
-    typeof history !== 'undefined' && typeof location !== 'undefined'
-      ? query(config, def)
-      : nil('query')
-  return parent<State, Err>(Object.assign({ adapter }, config))
+export function create(defaults?: ConfigPersist): Persist {
+  return (config) => {
+    const def =
+      config.def !== undefined
+        ? config.def
+        : 'store' in config
+        ? config.store.defaultState
+        : null
+
+    return base({
+      adapter:
+        typeof history !== 'undefined' && typeof location !== 'undefined'
+          ? query({ ...defaults, ...config }, def)
+          : nil('query'),
+      ...defaults,
+      ...config,
+    })
+  }
 }
 
-export { pushState, replaceState, locationAssign, locationReplace }
+/**
+ * Default partially applied `persist`
+ */
+export const persist = create()

@@ -45,14 +45,26 @@ test('should fire error handler on sync errors', () => {
 
   assert.is(watch.callCount, 1)
   assert.equal(watch.calls[0].arguments, [
-    { key: 'key-1', operation: 'get', error: 'get', value: undefined },
+    {
+      key: 'key-1',
+      keyPrefix: '',
+      operation: 'get',
+      error: 'get',
+      value: undefined,
+    },
   ])
 
   //
   ;($store as any).setState(1)
   assert.is(watch.callCount, 2)
   assert.equal(watch.calls[1].arguments, [
-    { key: 'key-1', operation: 'set', error: 'set', value: 1 },
+    {
+      key: 'key-1',
+      keyPrefix: '',
+      operation: 'set',
+      error: 'set',
+      value: 1,
+    },
   ])
 })
 
@@ -79,6 +91,7 @@ test('should fire finally handler on sync errors', () => {
       {
         status: 'fail',
         key: 'new-key-1',
+        keyPrefix: '',
         operation: 'get',
         error: 'get',
         value: undefined,
@@ -92,6 +105,7 @@ test('should fire finally handler on sync errors', () => {
       {
         status: 'fail',
         key: 'new-key-1',
+        keyPrefix: '',
         operation: 'set',
         error: 'set',
         value: 2,
@@ -120,7 +134,13 @@ test('should fire error handler on async errors', async () => {
   await Promise.resolve()
   assert.is(watch.callCount, 1)
   assert.equal(watch.calls[0].arguments, [
-    { key: 'key-2', operation: 'get', error: 'get', value: undefined },
+    {
+      key: 'key-2',
+      keyPrefix: '',
+      operation: 'get',
+      error: 'get',
+      value: undefined,
+    },
   ])
 
   //
@@ -131,13 +151,25 @@ test('should fire error handler on async errors', async () => {
 
   assert.is(watch.callCount, 2)
   assert.equal(watch.calls[1].arguments, [
-    { key: 'key-2', operation: 'set', error: 'set', value: 3 },
+    {
+      key: 'key-2',
+      keyPrefix: '',
+      operation: 'set',
+      error: 'set',
+      value: 3,
+    },
   ])
 
   await new Promise((resolve) => setTimeout(resolve, 20))
   assert.is(watch.callCount, 3)
   assert.equal(watch.calls[2].arguments, [
-    { key: 'key-2', operation: 'get', error: 'get', value: undefined },
+    {
+      key: 'key-2',
+      keyPrefix: '',
+      operation: 'get',
+      error: 'get',
+      value: undefined,
+    },
   ])
 })
 
@@ -166,6 +198,7 @@ test('should fire finally handler on async errors', async () => {
       {
         status: 'fail',
         key: 'new-key-2',
+        keyPrefix: '',
         operation: 'get',
         error: 'get',
         value: undefined,
@@ -183,6 +216,7 @@ test('should fire finally handler on async errors', async () => {
       {
         status: 'fail',
         key: 'new-key-2',
+        keyPrefix: '',
         operation: 'set',
         error: 'set',
         value: 4,
@@ -195,6 +229,7 @@ test('should fire finally handler on async errors', async () => {
       {
         status: 'fail',
         key: 'new-key-2',
+        keyPrefix: '',
         operation: 'get',
         error: 'get',
         value: undefined,
