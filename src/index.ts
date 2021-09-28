@@ -11,7 +11,6 @@ export type {
   Persist,
   StorageAdapter,
 } from './types'
-export { fp } from './fp-helper'
 
 /**
  * Creates custom `persist`

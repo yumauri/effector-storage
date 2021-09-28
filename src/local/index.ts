@@ -15,7 +15,7 @@ export interface ConfigPersist extends BaseConfigPersist {
   sync?: boolean
 }
 
-interface AdapterConfig {
+export interface AdapterConfig {
   sync?: boolean
   serialize?: (value: any) => string
   deserialize?: (value: string) => any

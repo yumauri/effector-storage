@@ -23,7 +23,7 @@ export interface ConfigPersist extends BaseConfigPersist {
   state?: StateBehavior
 }
 
-interface AdapterConfig {
+export interface AdapterConfig {
   method?: ChangeMethod
   state?: StateBehavior
   def?: any
