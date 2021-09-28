@@ -117,6 +117,8 @@ const $store = app.createStore(0, { name: 'store' })
 
 ## Functional helpers
 
+⚠️ Due to deprecation of `.thru` method in [effector version 22](https://github.com/effector/effector/releases/tag/effector%4022.0.0), functional helpers become obsolete, so, they are depricated as well.<s>
+
 There are special `persist` forms to use with functional programming style. You can use them, if you like, with Domain hook or `.thru()` store method:
 
 ```javascript
@@ -138,6 +140,8 @@ const $counter = createStore(0)
   .thru(persist({ key: 'counter' }))
 ```
 
+</s>
+
 ## Formulae
 
 ```javascript
@@ -147,11 +151,14 @@ import { persist } from 'effector-storage/<adapter>'
 - `persist({ store, ...options }): Subscription`
 - `persist({ source, target, ...options }): Subscription`
 
+⚠️ Due to deprecation of `.thru` method in [effector version 22](https://github.com/effector/effector/releases/tag/effector%4022.0.0), functional helpers become obsolete, so, they are depricated as well.<s>
+
 ```javascript
 import { persist } from 'effector-storage/<adapter>/fp'
 ```
 
 - `persist({ ...options }?): (store: Store) => Store`
+  </s>
 
 ### Units
 
@@ -189,9 +196,40 @@ In order to synchronize _something_, you need to specify effector units. Dependi
 
 - ([_Subscription_]): You can use this subscription to remove store association with storage, if you don't need them to be synced anymore. It is a function.
 
-- `(store) => Store` ([_Function_]): Function, which accepts store to synchronize with storage, and returns:
+- <s>`(store) => Store` ([_Function_]): Function, which accepts store to synchronize with storage, and returns:
   - ([_Store_]): Same given store.<br>
-    _You cannot unsubscribe store from storage when using functional form of `persist`._
+    _You cannot unsubscribe store from storage when using functional form of `persist`._</s>
+
+## `persist` factory
+
+In rare cases you might want to use `persist` factory. It allows you to specify some adapter options, without need to specify them in each `persist` call.
+
+```javascript
+import { create } from 'effector-storage/local'
+
+const persist = create({
+  keyPrefix: 'app/',
+})
+
+// ---8<---
+
+persist({
+  store: $store1,
+  key: 'store1', // localStorage key will be `app/store1`
+})
+persist({
+  store: $store2,
+  key: 'store2', // localStorage key will be `app/store2`
+})
+```
+
+### Options
+
+- `keyPrefix`? ([_string_]): Key prefix for adapter. It will be concatenated with any `key`, given to returned `persist` function.
+
+### Returns
+
+- Custom `persist` function, with predefined adapter options.
 
 ## Advanced usage
 
