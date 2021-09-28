@@ -48,44 +48,44 @@ module.exports = [
   // localStorage
   {
     path: 'build/local/index.js',
-    limit: '952 B',
+    limit: '971 B',
     ignore: ['effector'],
   },
   {
     path: 'build/local/index.cjs',
-    limit: '947 B',
+    limit: '965 B',
     ignore: ['effector'],
   },
   {
     path: 'build/local/fp/index.js',
-    limit: '990 B',
+    limit: '1008 B',
     ignore: ['effector'],
   },
   {
     path: 'build/local/fp/index.cjs',
-    limit: '1009 B',
+    limit: '1029 B',
     ignore: ['effector'],
   },
 
   // sessionStorage
   {
     path: 'build/session/index.js',
-    limit: '948 B',
+    limit: '967 B',
     ignore: ['effector'],
   },
   {
     path: 'build/session/index.cjs',
-    limit: '945 B',
+    limit: '964 B',
     ignore: ['effector'],
   },
   {
     path: 'build/session/fp/index.js',
-    limit: '987 B',
+    limit: '1005 B',
     ignore: ['effector'],
   },
   {
     path: 'build/session/fp/index.cjs',
-    limit: '1004 B',
+    limit: '1027 B',
     ignore: ['effector'],
   },
 

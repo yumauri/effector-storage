@@ -37,21 +37,31 @@ export interface Persist {
 }
 
 /**
+ * Function, checking if `localStorage` exists and accessible
+ */
+function supports() {
+  try {
+    return typeof localStorage !== 'undefined'
+  } catch (error) {
+    return false // should somehow return error instance?
+  }
+}
+
+/**
  * Creates custom partially applied `persist`
  * with predefined `localStorage` adapter
  */
 export function create(defaults?: ConfigPersist): Persist {
   return (config) =>
     base({
-      adapter:
-        typeof localStorage !== 'undefined'
-          ? storage({
-              storage: localStorage,
-              sync: true,
-              ...defaults,
-              ...config,
-            })
-          : nil('local'),
+      adapter: supports()
+        ? storage({
+            storage: localStorage,
+            sync: true,
+            ...defaults,
+            ...config,
+          })
+        : nil('local'),
       ...defaults,
       ...config,
     })

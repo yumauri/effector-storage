@@ -37,20 +37,30 @@ export interface Persist {
 }
 
 /**
+ * Function, checking if `sessionStorage` exists and accessible
+ */
+function supports() {
+  try {
+    return typeof sessionStorage !== 'undefined'
+  } catch (error) {
+    return false // should somehow return error instance?
+  }
+}
+
+/**
  * Creates custom partially applied `persist`
  * with predefined `sessionStorage` adapter
  */
 export function create(defaults?: ConfigPersist): Persist {
   return (config) =>
     base({
-      adapter:
-        typeof sessionStorage !== 'undefined'
-          ? storage({
-              storage: sessionStorage,
-              ...defaults,
-              ...config,
-            })
-          : nil('session'),
+      adapter: supports()
+        ? storage({
+            storage: sessionStorage,
+            ...defaults,
+            ...config,
+          })
+        : nil('session'),
       ...defaults,
       ...config,
     })
