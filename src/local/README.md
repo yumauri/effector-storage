@@ -22,7 +22,7 @@ Also, by default, stores, persisted in `localStorage`, are automatically synchro
 
 ## Functional helper
 
-⚠️ Due to deprecation of `.thru` method in [effector version 22](https://github.com/effector/effector/releases/tag/effector%4022.0.0), functional helpers become obsolete, so, they are depricated as well.<s>
+⚠️ Due to deprecation of `.thru` method in [effector version 22](https://github.com/effector/effector/releases/tag/effector%4022.0.0), functional helpers become obsolete, so, they are deprecated as well.<s>
 
 There is special `persist` forms to use with functional programming style. You can use it, if you like, with Domain hook or `.thru()` store method.
 
