@@ -70,7 +70,7 @@ const src = (name) => ({
               keywords: pkg.keywords,
               types: 'index.d.ts',
               peerDependencies: {
-                effector: '^21.0.0',
+                effector: '>=21.0.0',
               },
 
               // cjs + esm magic

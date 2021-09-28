@@ -100,7 +100,7 @@ export function persist<State, Err = Error>({
     guard({
       source: sample<State, State, [State, State]>(
         storage,
-        sample(source as any, clock as any),
+        (sample as any)(source, clock),
         (current: any, proposed) => [proposed, current]
       ),
       filter: ([proposed, current]) => proposed !== current,
