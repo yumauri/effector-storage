@@ -51,7 +51,7 @@ function supports() {
  * Creates custom partially applied `persist`
  * with predefined `sessionStorage` adapter
  */
-export function create(defaults?: ConfigPersist): Persist {
+export function createPersist(defaults?: ConfigPersist): Persist {
   return (config) =>
     base({
       adapter: supports()
@@ -69,4 +69,4 @@ export function create(defaults?: ConfigPersist): Persist {
 /**
  * Default partially applied `persist`
  */
-export const persist = create()
+export const persist = createPersist()

@@ -48,7 +48,7 @@ export interface Persist {
  * Creates custom partially applied `persist`
  * with predefined `query` adapter
  */
-export function create(defaults?: ConfigPersist): Persist {
+export function createPersist(defaults?: ConfigPersist): Persist {
   return (config) => {
     const def =
       config.def !== undefined
@@ -71,4 +71,4 @@ export function create(defaults?: ConfigPersist): Persist {
 /**
  * Default partially applied `persist`
  */
-export const persist = create()
+export const persist = createPersist()

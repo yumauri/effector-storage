@@ -23,7 +23,7 @@ Small module for [Effector](https://github.com/effector/effector) ☄️ to sync
   - [Units](#units)
   - [Options](#options)
   - [Returns](#returns)
-- [`persist` factory](#persist-factory)
+- [`createPersist` factory](#createpersist-factory)
   - [Options](#options-1)
   - [Returns](#returns-1)
 - [Advanced usage](#advanced-usage)
@@ -207,14 +207,14 @@ In order to synchronize _something_, you need to specify effector units. Dependi
   - ([_Store_]): Same given store.<br>
     _You cannot unsubscribe store from storage when using functional form of `persist`._</s>
 
-## `persist` factory
+## `createPersist` factory
 
-In rare cases you might want to use `persist` factory. It allows you to specify some adapter options, like `keyPrefix`.
+In rare cases you might want to use `createPersist` factory. It allows you to specify some adapter options, like `keyPrefix`.
 
 ```javascript
-import { create } from 'effector-storage/local'
+import { createPersist } from 'effector-storage/local'
 
-const persist = create({
+const persist = createPersist({
   keyPrefix: 'app/',
 })
 

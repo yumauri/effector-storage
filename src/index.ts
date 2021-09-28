@@ -15,11 +15,11 @@ export type {
 /**
  * Creates custom `persist`
  */
-export function create(defaults?: ConfigPersist): Persist {
+export function createPersist(defaults?: ConfigPersist): Persist {
   return (config) => base({ ...defaults, ...config })
 }
 
 /**
  * Default `persist`
  */
-export const persist = create()
+export const persist = createPersist()

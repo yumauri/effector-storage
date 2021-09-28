@@ -3,7 +3,7 @@ import * as assert from 'uvu/assert'
 import { createStore } from 'effector'
 import { createStorageMock } from './mocks/storage.mock'
 import { createEventsMock } from './mocks/events.mock'
-import { create } from '../src/local'
+import { createPersist } from '../src/local'
 
 //
 // Mock `localStorage` and events
@@ -28,7 +28,7 @@ test.after(() => {
 //
 
 test('key should be prefixed with keyPrefix', async () => {
-  const persist = create({
+  const persist = createPersist({
     keyPrefix: 'app/',
   })
 
