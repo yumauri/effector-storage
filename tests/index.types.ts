@@ -128,9 +128,11 @@ test('Local `persist` should return Subscription', async () => {
   const ev2: Event<number> = 0 as any
   const handler: Event<any> = 0 as any
   const key = ''
+  const keyPrefix = ''
 
   expectType<Subscription>(persist({ store }))
   expectType<Subscription>(persist({ store, key }))
+  expectType<Subscription>(persist({ store, keyPrefix }))
   expectType<Subscription>(persist({ store, fail: handler }))
   expectType<Subscription>(persist({ store, key, fail: handler }))
   expectType<Subscription>(persist({ source: store, target: store }))

@@ -81,7 +81,7 @@ test('should throw error in case of missing name in named domain', async () => {
     assert.unreachable()
   } catch (err) {
     assert.instance(err, Error)
-    assert.match(err, /Key or name is not defined/)
+    assert.match(String(err), /Key or name is not defined/)
   }
 })
 

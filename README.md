@@ -23,6 +23,9 @@ Small module for [Effector](https://github.com/effector/effector) ☄️ to sync
   - [Units](#units)
   - [Options](#options)
   - [Returns](#returns)
+- [`persist` factory](#persist-factory)
+  - [Options](#options-1)
+  - [Returns](#returns-1)
 - [Advanced usage](#advanced-usage)
 - [Storage adapters](#storage-adapters)
   - [Synchronous storage adapter example](#synchronous-storage-adapter-example)
@@ -117,6 +120,8 @@ const $store = app.createStore(0, { name: 'store' })
 
 ## Functional helpers
 
+⚠️ Due to deprecation of `.thru` method in [effector version 22](https://github.com/effector/effector/releases/tag/effector%4022.0.0), functional helpers become obsolete, so, they are deprecated as well.<s>
+
 There are special `persist` forms to use with functional programming style. You can use them, if you like, with Domain hook or `.thru()` store method:
 
 ```javascript
@@ -138,6 +143,8 @@ const $counter = createStore(0)
   .thru(persist({ key: 'counter' }))
 ```
 
+</s>
+
 ## Formulae
 
 ```javascript
@@ -147,11 +154,14 @@ import { persist } from 'effector-storage/<adapter>'
 - `persist({ store, ...options }): Subscription`
 - `persist({ source, target, ...options }): Subscription`
 
+⚠️ Due to deprecation of `.thru` method in [effector version 22](https://github.com/effector/effector/releases/tag/effector%4022.0.0), functional helpers become obsolete, so, they are deprecated as well.<s>
+
 ```javascript
 import { persist } from 'effector-storage/<adapter>/fp'
 ```
 
 - `persist({ ...options }?): (store: Store) => Store`
+  </s>
 
 ### Units
 
@@ -164,22 +174,26 @@ In order to synchronize _something_, you need to specify effector units. Dependi
 ### Options
 
 - `key`? ([_string_]): Key for local/session storage, to store value in. If omitted — `store` name is used. **Note!** If `key` is not specified, `store` _must_ have a `name`! You can use `'effector/babel-plugin'` to have those names automatically.
+- `keyPrefix`? ([_string_]): Prefix, used in adapter, to be concatenated to `key`. By default = `''`.
 - `clock`? ([_Event_] | [_Effect_] | [_Store_]): Unit, if passed – then value from `store`/`source` will be stored in the storage only upon its trigger.
 - `pickup`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which you can specify to force update `store` value from storage.
 - `done`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which will be triggered on each successful read or write from/to storage.<br>
   Payload structure:
   - `key` ([_string_]): Same `key` as above.
+  - `keyPrefix` ([_string_]): Prefix, used in adapter, to be concatenated to `key`. By default = `''`.
   - `operation` (_`'set'`_ | _`'get'`_): Did error occurs during setting value to storage or getting value from storage.
   - `value` (_State_): Value set to `store` or got from `store`.
 - `fail`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which will be triggered in case of any error (serialization/deserialization error, storage is full and so on). **Note!** If `fail` unit is not specified, any errors will be printed using `console.error(Error)`.<br>
   Payload structure:
   - `key` ([_string_]): Same `key` as above.
+  - `keyPrefix` ([_string_]): Prefix, used in adapter, to be concatenated to `key`. By default = `''`.
   - `operation` (_`'set'`_ | _`'get'`_): Did error occurs during setting value to storage or getting value from storage.
   - `error` ([_Error_]): Error instance
   - `value`? (_any_): In case of _'set'_ operation — value from `store`. In case of _'get'_ operation could contain raw value from storage or could be empty.
 - `finally`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which will be triggered either in case of success or error.<br>
   Payload structure:
   - `key` ([_string_]): Same `key` as above.
+  - `keyPrefix` ([_string_]): Prefix, used in adapter, to be concatenated to `key`. By default = `''`.
   - `operation` (_`'set'`_ | _`'get'`_): Operation stage.
   - `status` (_`'done'`_ | _`'fail'`_): Operation status.
   - `error`? ([_Error_]): Error instance, in case of error.
@@ -189,9 +203,40 @@ In order to synchronize _something_, you need to specify effector units. Dependi
 
 - ([_Subscription_]): You can use this subscription to remove store association with storage, if you don't need them to be synced anymore. It is a function.
 
-- `(store) => Store` ([_Function_]): Function, which accepts store to synchronize with storage, and returns:
+- <s>`(store) => Store` ([_Function_]): Function, which accepts store to synchronize with storage, and returns:
   - ([_Store_]): Same given store.<br>
-    _You cannot unsubscribe store from storage when using functional form of `persist`._
+    _You cannot unsubscribe store from storage when using functional form of `persist`._</s>
+
+## `persist` factory
+
+In rare cases you might want to use `persist` factory. It allows you to specify some adapter options, like `keyPrefix`.
+
+```javascript
+import { create } from 'effector-storage/local'
+
+const persist = create({
+  keyPrefix: 'app/',
+})
+
+// ---8<---
+
+persist({
+  store: $store1,
+  key: 'store1', // localStorage key will be `app/store1`
+})
+persist({
+  store: $store2,
+  key: 'store2', // localStorage key will be `app/store2`
+})
+```
+
+### Options
+
+- `keyPrefix`? ([_string_]): Key prefix for adapter. It will be concatenated with any `key`, given to returned `persist` function.
+
+### Returns
+
+- Custom `persist` function, with predefined adapter options.
 
 ## Advanced usage
 

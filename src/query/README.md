@@ -44,6 +44,8 @@ PR is appreciated :)
 
 ## Functional helper
 
+⚠️ Due to deprecation of `.thru` method in [effector version 22](https://github.com/effector/effector/releases/tag/effector%4022.0.0), functional helpers become obsolete, so, they are deprecated as well.<s>
+
 There is special `persist` forms to use with functional programming style. You can use it, if you like, with Domain hook or `.thru()` store method.
 
 To use it, import `persist` function from `'effector-storage/query/fp'` module:
@@ -66,6 +68,8 @@ const $id = createStore('0')
   .thru(persist({ key: 'id' }))
 ```
 
+</s>
+
 ## Formulae
 
 ```javascript
@@ -73,13 +77,14 @@ import { persist } from 'effector-storage/query'
 ```
 
 - `persist({ store, ...options }): Subscription`
-- `persist({ source, target, ...options }): Subscription`
+- `persist({ source, target, ...options }): Subscription`<s>
 
 ```javascript
 import { persist } from 'effector-storage/query/fp'
 ```
 
 - `persist({ ...options }?): (store: Store) => Store`
+  </s>
 
 ### Options
 

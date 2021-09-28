@@ -1,24 +1,21 @@
-import type { Unit, Store } from 'effector'
-import type { StorageAdapter, Done, Fail, Finally } from '..'
+import type { ConfigAdapter, ConfigCommon } from '../types'
 import { persist as parent } from '..'
+import { fp } from '../fp-helper'
 
-export interface Config<State, Err = Error> {
-  adapter: StorageAdapter
-  clock?: Unit<any>
-  done?: Unit<Done<State>>
-  fail?: Unit<Fail<Err>>
-  finally?: Unit<Finally<State, Err>>
-  pickup?: Unit<any>
-  key?: string
-}
+export type {
+  ConfigPersist,
+  Done,
+  Fail,
+  Finally,
+  Persist,
+  StorageAdapter,
+} from '..'
+
+export interface ConfigStore<State, Err = Error>
+  extends ConfigAdapter,
+    ConfigCommon<State, Err> {}
 
 /**
  * `persist` with curried `store`
  */
-// FIXME: how to infer state backwards?
-export function persist<Err = Error>(config: Config<any, Err>) {
-  return <State>(store: Store<State>): Store<State> => {
-    parent(Object.assign({ store }, config))
-    return store
-  }
-}
+export const persist = fp<ConfigStore<any>>(parent)

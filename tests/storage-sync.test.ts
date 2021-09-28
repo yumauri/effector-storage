@@ -68,7 +68,12 @@ test('broken storage value should launch `catch` handler', async () => {
   assert.is(watch.calls[0].arguments.length, 1)
 
   const { error, ...args } = watch.calls[0].arguments[0 as any] as any
-  assert.equal(args, { key: 'counter2', operation: 'get', value: 'broken' })
+  assert.equal(args, {
+    key: 'counter2',
+    keyPrefix: '',
+    operation: 'get',
+    value: 'broken',
+  })
   assert.instance(error, SyntaxError)
 
   assert.is(mockStorage.getItem('counter2'), 'broken')

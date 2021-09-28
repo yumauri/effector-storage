@@ -1,49 +1,73 @@
-import type { Event, Effect, Store, Unit, Subscription } from 'effector'
-import type { Done, Fail, Finally } from '..'
-import { persist as parent } from '..'
+import type { Subscription } from 'effector'
+import type {
+  ConfigPersist as BaseConfigPersist,
+  ConfigCommon,
+  ConfigJustStore,
+  ConfigJustSourceTarget,
+} from '../types'
+import { persist as base } from '../persist'
 import { nil } from '../nil'
 import { storage } from '../storage'
 
-export interface ConfigStore<State, Err = Error> {
-  clock?: Unit<any>
-  store: Store<State>
-  done?: Unit<Done<State>>
-  fail?: Unit<Fail<Err>>
-  finally?: Unit<Finally<State, Err>>
-  pickup?: Unit<any>
-  key?: string
+export type { Done, Fail, Finally, StorageAdapter } from '../types'
+
+export interface ConfigPersist extends BaseConfigPersist {
+  sync?: boolean
+}
+
+export interface AdapterConfig {
   sync?: boolean
   serialize?: (value: any) => string
   deserialize?: (value: string) => any
 }
 
-export interface ConfigSourceTarget<State, Err = Error> {
-  clock?: Unit<any>
-  source: Store<State> | Event<State> | Effect<State, any, any>
-  target: Store<State> | Event<State> | Effect<State, any, any>
-  done?: Unit<Done<State>>
-  fail?: Unit<Fail<Err>>
-  finally?: Unit<Finally<State, Err>>
-  pickup?: Unit<any>
-  key?: string
-  sync?: boolean
-  serialize?: (value: any) => string
-  deserialize?: (value: string) => any
+export interface ConfigStore<State, Err = Error>
+  extends AdapterConfig,
+    ConfigCommon<State, Err>,
+    ConfigJustStore<State> {}
+
+export interface ConfigSourceTarget<State, Err = Error>
+  extends AdapterConfig,
+    ConfigCommon<State, Err>,
+    ConfigJustSourceTarget<State> {}
+
+export interface Persist {
+  <State, Err = Error>(config: ConfigSourceTarget<State, Err>): Subscription
+  <State, Err = Error>(config: ConfigStore<State, Err>): Subscription
 }
 
 /**
- * Partially applied `persist` with predefined `localStorage` adapter
+ * Function, checking if `localStorage` exists and accessible
  */
-export function persist<State, Err = Error>(
-  config: ConfigStore<State, Err>
-): Subscription
-export function persist<State, Err = Error>(
-  config: ConfigSourceTarget<State, Err>
-): Subscription
-export function persist<State, Err = Error>(config: any): Subscription {
-  const adapter =
-    typeof localStorage !== 'undefined'
-      ? storage(Object.assign({ storage: localStorage, sync: true }, config))
-      : nil('local')
-  return parent<State, Err>(Object.assign({ adapter }, config))
+function supports() {
+  try {
+    return typeof localStorage !== 'undefined'
+  } catch (error) {
+    return false // should somehow return error instance?
+  }
 }
+
+/**
+ * Creates custom partially applied `persist`
+ * with predefined `localStorage` adapter
+ */
+export function create(defaults?: ConfigPersist): Persist {
+  return (config) =>
+    base({
+      adapter: supports()
+        ? storage({
+            storage: localStorage,
+            sync: true,
+            ...defaults,
+            ...config,
+          })
+        : nil('local'),
+      ...defaults,
+      ...config,
+    })
+}
+
+/**
+ * Default partially applied `persist`
+ */
+export const persist = create()
