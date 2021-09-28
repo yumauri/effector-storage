@@ -42,6 +42,7 @@ export interface ConfigCommon<State, Err = Error> {
   finally?: Unit<Finally<State, Err>>
   pickup?: Unit<any>
   key?: string
+  keyPrefix?: string
 }
 
 export interface ConfigJustStore<State> {
