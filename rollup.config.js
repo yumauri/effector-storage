@@ -28,7 +28,17 @@ const src = (name) => ({
       plugins: [dual('.js')],
     },
   ],
-  external: ['effector', '..', '../storage', '../nil'],
+  external: [
+    'effector',
+    'react-native-encrypted-storage',
+    '@react-native-async-storage/async-storage',
+    '..',
+    '../persist',
+    '../storage',
+    '../nil',
+    '../../persist',
+    '../../async-storage',
+  ],
   plugins: [
     nodeResolve({
       extensions: ['.ts'],
@@ -139,6 +149,21 @@ const src = (name) => ({
                   require: './memory/fp/index.cjs',
                   import: './memory/fp/index.js',
                 },
+                './async-storage/package.json': './async-storage/package.json',
+                './async-storage': {
+                  require: './async-storage/index.cjs',
+                  import: './async-storage/index.js',
+                },
+                './rn/async/package.json': './rn/async/package.json',
+                './rn/async': {
+                  require: './rn/async/index.cjs',
+                  import: './rn/async/index.js',
+                },
+                './rn/encrypted/package.json': './rn/encrypted/package.json',
+                './rn/encrypted': {
+                  require: './rn/encrypted/index.cjs',
+                  import: './rn/encrypted/index.js',
+                },
               },
             }),
           }
@@ -167,7 +192,17 @@ const dts = (name) => ({
       format: 'es',
     },
   ],
-  external: ['effector', '..', '../storage'],
+  external: [
+    'effector',
+    'react-native-encrypted-storage',
+    '@react-native-async-storage/async-storage',
+    '..',
+    '../persist',
+    '../storage',
+    '../nil',
+    '../../persist',
+    '../../async-storage',
+  ],
   plugins: [
     generateDts({ respectExternal: true }),
     command(
@@ -188,7 +223,17 @@ const cjsdts = (name) => ({
       format: 'es',
     },
   ],
-  external: ['effector', '..', '../storage'],
+  external: [
+    'effector',
+    'react-native-encrypted-storage',
+    '@react-native-async-storage/async-storage',
+    '..',
+    '../persist',
+    '../storage',
+    '../nil',
+    '../../persist',
+    '../../async-storage',
+  ],
   plugins: [
     generateDts({ respectExternal: true }),
     command([`yarn prettier --write ${BUILD}/${name}index.cjs.d.ts`], {
@@ -212,9 +257,14 @@ export default [
   ...entry('query/fp/'),
   ...entry('memory/'),
   ...entry('memory/fp/'),
+  ...entry('async-storage/'),
+  ...entry('rn/async/'),
+  ...entry('rn/encrypted/'),
 ]
 
 function dual(extension) {
+  const persist = (str) => str.replace('/persist', '')
+
   const index = (str, name) =>
     str.replace(name, name.slice(0, -1) + '/index' + extension + name[0])
 
@@ -233,6 +283,7 @@ function dual(extension) {
   return {
     name: 'rollup-plugin-dual',
     renderChunk(code, _chunk, { format }) {
+      code = persist(code)
       if (format === 'cjs' || format === 'commonjs') {
         code = cjs(code)
       } else if (format === 'es' || format === 'esm' || format === 'module') {

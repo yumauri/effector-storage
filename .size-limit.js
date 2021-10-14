@@ -48,88 +48,122 @@ module.exports = [
   // localStorage
   {
     path: 'build/local/index.js',
-    limit: '972 B',
+    limit: '989 B',
     ignore: ['effector'],
   },
   {
     path: 'build/local/index.cjs',
-    limit: '968 B',
+    limit: '992 B',
     ignore: ['effector'],
   },
   {
     path: 'build/local/fp/index.js',
-    limit: '1008 B',
+    limit: '1026 B',
     ignore: ['effector'],
   },
   {
     path: 'build/local/fp/index.cjs',
-    limit: '1032 B',
+    limit: '1054 B',
     ignore: ['effector'],
   },
 
   // sessionStorage
   {
     path: 'build/session/index.js',
-    limit: '969 B',
+    limit: '985 B',
     ignore: ['effector'],
   },
   {
     path: 'build/session/index.cjs',
-    limit: '966 B',
+    limit: '986 B',
     ignore: ['effector'],
   },
   {
     path: 'build/session/fp/index.js',
-    limit: '1005 B',
+    limit: '1022 B',
     ignore: ['effector'],
   },
   {
     path: 'build/session/fp/index.cjs',
-    limit: '1030 B',
+    limit: '1052 B',
     ignore: ['effector'],
   },
 
   // query string
   {
     path: 'build/query/index.js',
-    limit: '1095 B',
+    limit: '1111 B',
     ignore: ['effector'],
   },
   {
     path: 'build/query/index.cjs',
-    limit: '1062 B',
+    limit: '1086 B',
     ignore: ['effector'],
   },
   {
     path: 'build/query/fp/index.js',
-    limit: '1133 B',
+    limit: '1155 B',
     ignore: ['effector'],
   },
   {
     path: 'build/query/fp/index.cjs',
-    limit: '1161 B',
+    limit: '1178 B',
     ignore: ['effector'],
   },
 
   // memory
   {
     path: 'build/memory/index.js',
-    limit: '752 B',
+    limit: '769 B',
     ignore: ['effector'],
   },
   {
     path: 'build/memory/index.cjs',
-    limit: '727 B',
+    limit: '739 B',
     ignore: ['effector'],
   },
   {
     path: 'build/memory/fp/index.js',
-    limit: '786 B',
+    limit: '799 B',
     ignore: ['effector'],
   },
   {
     path: 'build/memory/fp/index.cjs',
-    limit: '790 B',
+    limit: '799 B',
     ignore: ['effector'],
+  },
+
+  // async storage adapter
+  {
+    path: 'build/async-storage/index.js',
+    limit: '136 B',
+    ignore: ['effector'],
+  },
+  {
+    path: 'build/async-storage/index.cjs',
+    limit: '125 B',
+    ignore: ['effector'],
+  },
+
+  // react native async storages
+  {
+    path: 'build/rn/async/index.js',
+    limit: '863 B',
+    ignore: ['effector', '@react-native-async-storage/async-storage'],
+  },
+  {
+    path: 'build/rn/async/index.cjs',
+    limit: '867 B',
+    ignore: ['effector', '@react-native-async-storage/async-storage'],
+  },
+  {
+    path: 'build/rn/encrypted/index.js',
+    limit: '863 B',
+    ignore: ['effector', 'react-native-encrypted-storage'],
+  },
+  {
+    path: 'build/rn/encrypted/index.cjs',
+    limit: '867 B',
+    ignore: ['effector', 'react-native-encrypted-storage'],
   },
 ]
