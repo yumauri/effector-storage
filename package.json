@@ -40,7 +40,7 @@
     "version": "yarn build"
   },
   "devDependencies": {
-    "@babel/core": "^7.15.5",
+    "@babel/core": "^7.15.8",
     "@babel/plugin-transform-block-scoping": "^7.15.3",
     "@babel/preset-typescript": "^7.15.0",
     "@react-native-async-storage/async-storage": "^1.15.9",
@@ -73,8 +73,8 @@
     "ts-node": "^10.2.1",
     "tsd": "^0.17.0",
     "tslib": "^2.3.1",
-    "typescript": "^4.4.3",
-    "uvu": "^0.5.1",
+    "typescript": "^4.4.4",
+    "uvu": "^0.5.2",
     "yaspeller": "^7.0.0"
   }
 }
