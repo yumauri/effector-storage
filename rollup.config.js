@@ -269,10 +269,15 @@ function dual(extension) {
     str.replace(name, name.slice(0, -1) + '/index' + extension + name[0])
 
   const es = (code) =>
-    code.replace(
-      /(?:^|\n)import\s+?(?:(?:(?:[\w*\s{},$_]*)\s+from\s+?)|)((?:".*?")|(?:'.*?'))[\s]*?(?:;|$|)/g,
-      (str, name) => (name.indexOf('..') === 1 ? index(str, name) : str)
-    )
+    code
+      .replace(
+        /(?:^|\n)import\s+?(?:(?:(?:[\w*\s{},$_]*)\s+from\s+?)|)((?:".*?")|(?:'.*?'))[\s]*?(?:;|$|)/g,
+        (str, name) => (name.indexOf('..') === 1 ? index(str, name) : str)
+      )
+      .replace(
+        /(?:^|\n)export\s+?(?:(?:(?:[\w*\s{},$_]*)\s+from\s+?)|)((?:".*?")|(?:'.*?'))[\s]*?(?:;|$|)/g,
+        (str, name) => (name.indexOf('..') === 1 ? index(str, name) : str)
+      )
 
   const cjs = (code) =>
     code.replace(
