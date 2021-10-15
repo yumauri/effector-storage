@@ -19,7 +19,11 @@
     "localstorage",
     "local storage",
     "sessionstorage",
-    "session storage"
+    "session storage",
+    "react native asyncstorage",
+    "react native async storage",
+    "react native encryptedstorage",
+    "react native encrypted storage"
   ],
   "scripts": {
     "build": "NODE_ENV=production rollup --config",

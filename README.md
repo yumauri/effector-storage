@@ -17,6 +17,8 @@ Small module for [Effector](https://github.com/effector/effector) ☄️ to sync
   - [with `localStorage`](#with-localstorage)
   - [with `sessionStorage`](#with-sessionstorage)
   - [with query string](#with-query-string)
+  - [with React Native AsyncStorage](#with-react-native-asyncstorage)
+  - [with React Native EncryptedStorage](#with-react-native-encryptedstorage)
 - [Usage with domains](#usage-with-domains)
 - [Functional helpers](#functional-helpers)
 - [Formulae](#formulae)
@@ -100,6 +102,38 @@ If two (or more) stores are persisted in query string with the same key — they
 
 ⚠️ **Note**<br>
 Use this only with plain string stores (`Store<string | null>`) to avoid strange unexpected behavior.
+
+### with React Native AsyncStorage
+
+Docs: [effector-storage/rn/async](https://github.com/yumauri/effector-storage/tree/master/src/rn/async/README.md)
+
+```javascript
+import { persist } from 'effector-storage/rn/async'
+
+// persist store `$counter` with key 'counter'
+persist({ store: $counter, key: 'counter' })
+
+// if your storage has a name, you can omit `key` field
+persist({ store: $counter })
+```
+
+⚠️ Note, that [AsyncStorage] is asynchronous, hence the name.
+
+### with React Native EncryptedStorage
+
+Docs: [effector-storage/rn/encrypted](https://github.com/yumauri/effector-storage/tree/master/src/rn/encrypted/README.md)
+
+```javascript
+import { persist } from 'effector-storage/rn/encrypted'
+
+// persist store `$counter` with key 'counter'
+persist({ store: $counter, key: 'counter' })
+
+// if your storage has a name, you can omit `key` field
+persist({ store: $counter })
+```
+
+⚠️ Note, that [EncryptedStorage] is asynchronous (it is based on [AsyncStorage] actually).
 
 ## Usage with domains
 
@@ -498,8 +532,9 @@ Use this approach with caution, beware of infinite circular updates. To avoid th
 - [x] [localStorage] support (docs: [effector-storage/local](https://github.com/yumauri/effector-storage/tree/master/src/local/README.md))
 - [x] [sessionStorage] support (docs: [effector-storage/session](https://github.com/yumauri/effector-storage/tree/master/src/session/README.md))
 - [x] [query string](https://developer.mozilla.org/en-US/docs/Web/API/Location/search) support (docs: [effector-storage/query](https://github.com/yumauri/effector-storage/tree/master/src/query/README.md))
+- [x] [AsyncStorage] support (docs: [effector-storage/rn/async](https://github.com/yumauri/effector-storage/tree/master/src/rn/async/README.md))
+- [x] [EncryptedStorage] support (docs: [effector-storage/rn/encrypted](https://github.com/yumauri/effector-storage/tree/master/src/rn/encrypted/README.md))
 - [ ] [IndexedDB] support
-- [ ] [AsyncStorage] support
 - [ ] [Cookies] support
 - [ ] you name it support
 
@@ -514,6 +549,7 @@ Use this approach with caution, beware of infinite circular updates. To avoid th
 [`'storage'`]: https://developer.mozilla.org/en-US/docs/Web/API/StorageEvent
 [indexeddb]: https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API
 [asyncstorage]: https://react-native-async-storage.github.io/async-storage/
+[encryptedstorage]: https://github.com/emeraldsanto/react-native-encrypted-storage
 [cookies]: https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie
 [_subscription_]: https://effector.dev/docs/glossary#subscription
 [_effect_]: https://effector.dev/docs/api/effector/effect
