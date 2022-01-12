@@ -204,10 +204,6 @@ In order to synchronize _something_, you need to specify effector units. Dependi
 
 - ([_Subscription_]): You can use this subscription to remove store association with storage, if you don't need them to be synced anymore. It is a function.
 
-- <s>`(store) => Store` ([_Function_]): Function, which accepts store to synchronize with storage, and returns:
-  - ([_Store_]): Same given store.<br>
-    _You cannot unsubscribe store from storage when using functional form of `persist`._</s>
-
 ## `createPersist` factory
 
 In rare cases you might want to use `createPersist` factory. It allows you to specify some adapter options, like `keyPrefix`.
