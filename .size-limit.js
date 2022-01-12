@@ -2,25 +2,25 @@ module.exports = [
   // core
   {
     path: 'build/index.js',
-    limit: '845 B',
+    limit: '892 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
   {
     path: 'build/index.cjs',
-    limit: '903 B',
+    limit: '1147 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
   {
     path: 'build/fp/index.js',
-    limit: '905 B',
+    limit: '951 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
   {
     path: 'build/fp/index.cjs',
-    limit: '976 B',
+    limit: '1220 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
@@ -56,25 +56,25 @@ module.exports = [
   // localStorage
   {
     path: 'build/local/index.js',
-    limit: '1115 B',
+    limit: '1165 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
   {
     path: 'build/local/index.cjs',
-    limit: '1240 B',
+    limit: '1484 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
   {
     path: 'build/local/fp/index.js',
-    limit: '1176 B',
+    limit: '1222 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
   {
     path: 'build/local/fp/index.cjs',
-    limit: '1314 B',
+    limit: '1558 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
@@ -82,25 +82,25 @@ module.exports = [
   // sessionStorage
   {
     path: 'build/session/index.js',
-    limit: '1111 B',
+    limit: '1162 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
   {
     path: 'build/session/index.cjs',
-    limit: '1240 B',
+    limit: '1484 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
   {
     path: 'build/session/fp/index.js',
-    limit: '1173 B',
+    limit: '1219 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
   {
     path: 'build/session/fp/index.cjs',
-    limit: '1311 B',
+    limit: '1555 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
@@ -108,25 +108,25 @@ module.exports = [
   // query string
   {
     path: 'build/query/index.js',
-    limit: '1181 B',
+    limit: '1233 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
   {
     path: 'build/query/index.cjs',
-    limit: '1333 B',
+    limit: '1577 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
   {
     path: 'build/query/fp/index.js',
-    limit: '1240 B',
+    limit: '1289 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
   {
     path: 'build/query/fp/index.cjs',
-    limit: '1440 B',
+    limit: '1684 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
@@ -134,25 +134,25 @@ module.exports = [
   // memory
   {
     path: 'build/memory/index.js',
-    limit: '894 B',
+    limit: '944 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
   {
     path: 'build/memory/index.cjs',
-    limit: '977 B',
+    limit: '1221 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
   {
     path: 'build/memory/fp/index.js',
-    limit: '951 B',
+    limit: '1001 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
   {
     path: 'build/memory/fp/index.cjs',
-    limit: '1048 B',
+    limit: '1292 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
@@ -174,25 +174,25 @@ module.exports = [
   // react native async storages
   {
     path: 'build/rn/async/index.js',
-    limit: '1011 B',
+    limit: '1254 B',
     import: '{ persist }',
     ignore: ['effector', '@react-native-async-storage/async-storage'],
   },
   {
     path: 'build/rn/async/index.cjs',
-    limit: '1142 B',
+    limit: '1386 B',
     import: '{ persist }',
     ignore: ['effector', '@react-native-async-storage/async-storage'],
   },
   {
     path: 'build/rn/encrypted/index.js',
-    limit: '1009 B',
+    limit: '1252 B',
     import: '{ persist }',
     ignore: ['effector', 'react-native-encrypted-storage'],
   },
   {
     path: 'build/rn/encrypted/index.cjs',
-    limit: '1141 B',
+    limit: '1385 B',
     import: '{ persist }',
     ignore: ['effector', 'react-native-encrypted-storage'],
   },
