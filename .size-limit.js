@@ -2,13 +2,13 @@ module.exports = [
   // core
   {
     path: 'build/index.js',
-    limit: '894 B',
+    limit: '900 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
   {
     path: 'build/index.cjs',
-    limit: '1149 B',
+    limit: '1155 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
@@ -44,13 +44,13 @@ module.exports = [
   // localStorage
   {
     path: 'build/local/index.js',
-    limit: '1167 B',
+    limit: '1173 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
   {
     path: 'build/local/index.cjs',
-    limit: '1485 B',
+    limit: '1494 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
@@ -58,13 +58,13 @@ module.exports = [
   // sessionStorage
   {
     path: 'build/session/index.js',
-    limit: '1164 B',
+    limit: '1171 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
   {
     path: 'build/session/index.cjs',
-    limit: '1486 B',
+    limit: '1491 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
@@ -72,13 +72,13 @@ module.exports = [
   // query string
   {
     path: 'build/query/index.js',
-    limit: '1235 B',
+    limit: '1239 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
   {
     path: 'build/query/index.cjs',
-    limit: '1579 B',
+    limit: '1587 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
@@ -86,13 +86,13 @@ module.exports = [
   // memory
   {
     path: 'build/memory/index.js',
-    limit: '945 B',
+    limit: '952 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
   {
     path: 'build/memory/index.cjs',
-    limit: '1223 B',
+    limit: '1229 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
@@ -114,25 +114,25 @@ module.exports = [
   // react native async storages
   {
     path: 'build/rn/async/index.js',
-    limit: '1255 B',
+    limit: '1262 B',
     import: '{ persist }',
     ignore: ['effector', '@react-native-async-storage/async-storage'],
   },
   {
     path: 'build/rn/async/index.cjs',
-    limit: '1388 B',
+    limit: '1391 B',
     import: '{ persist }',
     ignore: ['effector', '@react-native-async-storage/async-storage'],
   },
   {
     path: 'build/rn/encrypted/index.js',
-    limit: '1254 B',
+    limit: '1260 B',
     import: '{ persist }',
     ignore: ['effector', 'react-native-encrypted-storage'],
   },
   {
     path: 'build/rn/encrypted/index.cjs',
-    limit: '1387 B',
+    limit: '1392 B',
     import: '{ persist }',
     ignore: ['effector', 'react-native-encrypted-storage'],
   },

@@ -72,8 +72,21 @@ export function persist<State, Err = Error>({
     (operation: 'get' | 'set') =>
     ({ status, params, result, error }: any): any =>
       status === 'done'
-        ? { status, key, keyPrefix, operation, value: result }
-        : { status, key, keyPrefix, operation, value: params, error }
+        ? {
+            status,
+            key,
+            keyPrefix,
+            operation,
+            value: operation === 'get' ? result : params,
+          }
+        : {
+            status,
+            key,
+            keyPrefix,
+            operation,
+            value: params,
+            error,
+          }
 
   // create all auxiliary units and nodes within the region,
   // to be able to remove them all at once on unsubscription

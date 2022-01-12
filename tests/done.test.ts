@@ -12,7 +12,9 @@ const dumbAdapter: StorageAdapter = <T>() => {
   let __: T = 0 as any
   return {
     get: (): T => __,
-    set: (value: T) => (__ = value),
+    set: (value: T) => {
+      __ = value
+    },
   }
 }
 
@@ -57,6 +59,39 @@ test('should fire done and finally events', () => {
       keyPrefix: '',
       operation: 'get',
       value: 0,
+    },
+  ])
+})
+
+test('should return value on successful `set` operation', () => {
+  const watch = snoop(() => undefined)
+
+  const done = createEvent<any>()
+  done.watch(watch.fn)
+
+  const $store = createStore(1)
+  persist({ store: $store, adapter: dumbAdapter, key: 'test', done })
+
+  assert.is(watch.callCount, 1)
+  assert.equal(watch.calls[0].arguments, [
+    {
+      key: 'test',
+      keyPrefix: '',
+      operation: 'get',
+      value: 0,
+    },
+  ])
+
+  // set new value to store
+  ;($store as any).setState(2)
+
+  assert.is(watch.callCount, 2)
+  assert.equal(watch.calls[1].arguments, [
+    {
+      key: 'test',
+      keyPrefix: '',
+      operation: 'set',
+      value: 2,
     },
   ])
 })
