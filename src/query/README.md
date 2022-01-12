@@ -42,34 +42,6 @@ If you have two stores, persisted in query string, and they both updates — you
 Sometimes it can lead to nasty cyclic updates, if two stores are dependant from each other. So, be warned.<br>
 PR is appreciated :)
 
-## Functional helper
-
-⚠️ Due to deprecation of `.thru` method in [effector version 22](https://github.com/effector/effector/releases/tag/effector%4022.0.0), functional helpers become obsolete, so, they are deprecated as well.<s>
-
-There is special `persist` forms to use with functional programming style. You can use it, if you like, with Domain hook or `.thru()` store method.
-
-To use it, import `persist` function from `'effector-storage/query/fp'` module:
-
-```javascript
-import { createDomain } from 'effector'
-import { persist } from 'effector-storage/query/fp'
-
-const query = createDomain('query')
-
-// this hook will persist every store, created in domain,
-// in query string, using stores' names as param names
-query.onCreateStore(persist())
-
-const $id = query.createStore('0', { name: 'id' })
-
-// or persist single store in query string via .thru
-const $id = createStore('0')
-  .on(setId, (id) => `${id}`)
-  .thru(persist({ key: 'id' }))
-```
-
-</s>
-
 ## Formulae
 
 ```javascript
@@ -77,14 +49,7 @@ import { persist } from 'effector-storage/query'
 ```
 
 - `persist({ store, ...options }): Subscription`
-- `persist({ source, target, ...options }): Subscription`<s>
-
-```javascript
-import { persist } from 'effector-storage/query/fp'
-```
-
-- `persist({ ...options }?): (store: Store) => Store`
-  </s>
+- `persist({ source, target, ...options }): Subscription`
 
 ### Options
 

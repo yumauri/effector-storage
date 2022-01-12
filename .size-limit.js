@@ -12,18 +12,6 @@ module.exports = [
     import: '{ persist }',
     ignore: ['effector'],
   },
-  {
-    path: 'build/fp/index.js',
-    limit: '951 B',
-    import: '{ persist }',
-    ignore: ['effector'],
-  },
-  {
-    path: 'build/fp/index.cjs',
-    limit: '1220 B',
-    import: '{ persist }',
-    ignore: ['effector'],
-  },
 
   // nil adapter
   {
@@ -66,18 +54,6 @@ module.exports = [
     import: '{ persist }',
     ignore: ['effector'],
   },
-  {
-    path: 'build/local/fp/index.js',
-    limit: '1222 B',
-    import: '{ persist }',
-    ignore: ['effector'],
-  },
-  {
-    path: 'build/local/fp/index.cjs',
-    limit: '1558 B',
-    import: '{ persist }',
-    ignore: ['effector'],
-  },
 
   // sessionStorage
   {
@@ -89,18 +65,6 @@ module.exports = [
   {
     path: 'build/session/index.cjs',
     limit: '1484 B',
-    import: '{ persist }',
-    ignore: ['effector'],
-  },
-  {
-    path: 'build/session/fp/index.js',
-    limit: '1219 B',
-    import: '{ persist }',
-    ignore: ['effector'],
-  },
-  {
-    path: 'build/session/fp/index.cjs',
-    limit: '1555 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
@@ -118,18 +82,6 @@ module.exports = [
     import: '{ persist }',
     ignore: ['effector'],
   },
-  {
-    path: 'build/query/fp/index.js',
-    limit: '1289 B',
-    import: '{ persist }',
-    ignore: ['effector'],
-  },
-  {
-    path: 'build/query/fp/index.cjs',
-    limit: '1684 B',
-    import: '{ persist }',
-    ignore: ['effector'],
-  },
 
   // memory
   {
@@ -141,18 +93,6 @@ module.exports = [
   {
     path: 'build/memory/index.cjs',
     limit: '1221 B',
-    import: '{ persist }',
-    ignore: ['effector'],
-  },
-  {
-    path: 'build/memory/fp/index.js',
-    limit: '1001 B',
-    import: '{ persist }',
-    ignore: ['effector'],
-  },
-  {
-    path: 'build/memory/fp/index.cjs',
-    limit: '1292 B',
     import: '{ persist }',
     ignore: ['effector'],
   },

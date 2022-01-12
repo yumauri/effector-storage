@@ -20,35 +20,6 @@ Two (or more) different stores, persisted with the same key, will be synchronize
 
 Also, by default, stores, persisted in `localStorage`, are automatically synchronized between two (or more) windows/tabs (meaning they are updated on [`'storage'`] event).
 
-## Functional helper
-
-⚠️ Due to deprecation of `.thru` method in [effector version 22](https://github.com/effector/effector/releases/tag/effector%4022.0.0), functional helpers become obsolete, so, they are deprecated as well.<s>
-
-There is special `persist` forms to use with functional programming style. You can use it, if you like, with Domain hook or `.thru()` store method.
-
-To use it, import `persist` function from `'effector-storage/local/fp'` module:
-
-```javascript
-import { createDomain } from 'effector'
-import { persist } from 'effector-storage/local/fp'
-
-const app = createDomain('app')
-
-// this hook will persist every store, created in domain,
-// in `localStorage`, using stores' names as keys
-app.onCreateStore(persist())
-
-const $store = app.createStore(0, { name: 'store' })
-
-// or persist single store in `localStorage` via .thru
-const $counter = createStore(0)
-  .on(increment, (state) => state + 1)
-  .on(decrement, (state) => state - 1)
-  .thru(persist({ key: 'counter' }))
-```
-
-</s>
-
 ## Formulae
 
 ```javascript
@@ -56,14 +27,7 @@ import { persist } from 'effector-storage/local'
 ```
 
 - `persist({ store, ...options }): Subscription`
-- `persist({ source, target, ...options }): Subscription`<s>
-
-```javascript
-import { persist } from 'effector-storage/local/fp'
-```
-
-- `persist({ ...options }?): (store: Store) => Store`
-  </s>
+- `persist({ source, target, ...options }): Subscription`
 
 ### Options
 

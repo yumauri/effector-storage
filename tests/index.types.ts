@@ -90,36 +90,6 @@ test('General `persist` should return Subscription', async () => {
   )
 })
 
-test('Partially applied `persist` should return Function', async () => {
-  const { persist } = await import('../src/fp')
-
-  const fakeAdapter: StorageAdapter = 0 as any
-  const store: Store<number> = 0 as any
-  const handler: Event<any> = 0 as any
-  const key = ''
-
-  expectType<<State>(store: Store<State>) => Store<State>>(
-    persist({ adapter: fakeAdapter })
-  )
-  expectType<<State>(store: Store<State>) => Store<State>>(
-    persist({ adapter: fakeAdapter, key })
-  )
-  expectType<<State>(store: Store<State>) => Store<State>>(
-    persist({ adapter: fakeAdapter, fail: handler })
-  )
-  expectType<<State>(store: Store<State>) => Store<State>>(
-    persist({ adapter: fakeAdapter, key, fail: handler })
-  )
-  expectType<Store<number>>(persist({ adapter: fakeAdapter })(store))
-  expectType<Store<number>>(persist({ adapter: fakeAdapter, key })(store))
-  expectType<Store<number>>(
-    persist({ adapter: fakeAdapter, fail: handler })(store)
-  )
-  expectType<Store<number>>(
-    persist({ adapter: fakeAdapter, key, fail: handler })(store)
-  )
-})
-
 test('Local `persist` should return Subscription', async () => {
   const { persist } = await import('../src/local')
 
@@ -151,29 +121,6 @@ test('Local `persist` should return Subscription', async () => {
   )
 })
 
-test('Local fp `persist` should return Function', async () => {
-  const { persist } = await import('../src/local/fp')
-
-  const store: Store<number> = 0 as any
-  const handler: Event<any> = 0 as any
-  const key = ''
-
-  expectType<<State>(store: Store<State>) => Store<State>>(persist())
-  expectType<<State>(store: Store<State>) => Store<State>>(persist({}))
-  expectType<<State>(store: Store<State>) => Store<State>>(persist({ key }))
-  expectType<<State>(store: Store<State>) => Store<State>>(
-    persist({ fail: handler })
-  )
-  expectType<<State>(store: Store<State>) => Store<State>>(
-    persist({ key, fail: handler })
-  )
-  expectType<Store<number>>(persist()(store))
-  expectType<Store<number>>(persist({})(store))
-  expectType<Store<number>>(persist({ key })(store))
-  expectType<Store<number>>(persist({ fail: handler })(store))
-  expectType<Store<number>>(persist({ key, fail: handler })(store))
-})
-
 test('Session `persist` should return Subscription', async () => {
   const { persist } = await import('../src/session')
 
@@ -201,29 +148,6 @@ test('Session `persist` should return Subscription', async () => {
   expectType<Subscription>(
     persist({ source: ev1, target: ev2, key, fail: handler })
   )
-})
-
-test('Session fp `persist` should return Function', async () => {
-  const { persist } = await import('../src/session/fp')
-
-  const store: Store<number> = 0 as any
-  const handler: Event<any> = 0 as any
-  const key = ''
-
-  expectType<<State>(store: Store<State>) => Store<State>>(persist())
-  expectType<<State>(store: Store<State>) => Store<State>>(persist({}))
-  expectType<<State>(store: Store<State>) => Store<State>>(persist({ key }))
-  expectType<<State>(store: Store<State>) => Store<State>>(
-    persist({ fail: handler })
-  )
-  expectType<<State>(store: Store<State>) => Store<State>>(
-    persist({ key, fail: handler })
-  )
-  expectType<Store<number>>(persist()(store))
-  expectType<Store<number>>(persist({})(store))
-  expectType<Store<number>>(persist({ key })(store))
-  expectType<Store<number>>(persist({ fail: handler })(store))
-  expectType<Store<number>>(persist({ key, fail: handler })(store))
 })
 
 //

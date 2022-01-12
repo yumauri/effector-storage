@@ -94,11 +94,6 @@ const src = (name) => ({
                   require: './index.cjs',
                   import: './index.js',
                 },
-                './fp/package.json': './fp/package.json',
-                './fp': {
-                  require: './fp/index.cjs',
-                  import: './fp/index.js',
-                },
                 './nil/package.json': './nil/package.json',
                 './nil': {
                   require: './nil/index.cjs',
@@ -109,20 +104,10 @@ const src = (name) => ({
                   require: './local/index.cjs',
                   import: './local/index.js',
                 },
-                './local/fp/package.json': './local/fp/package.json',
-                './local/fp': {
-                  require: './local/fp/index.cjs',
-                  import: './local/fp/index.js',
-                },
                 './session/package.json': './session/package.json',
                 './session': {
                   require: './session/index.cjs',
                   import: './session/index.js',
-                },
-                './session/fp/package.json': './session/fp/package.json',
-                './session/fp': {
-                  require: './session/fp/index.cjs',
-                  import: './session/fp/index.js',
                 },
                 './storage/package.json': './storage/package.json',
                 './storage': {
@@ -134,20 +119,10 @@ const src = (name) => ({
                   require: './query/index.cjs',
                   import: './query/index.js',
                 },
-                './query/fp/package.json': './query/fp/package.json',
-                './query/fp': {
-                  require: './query/fp/index.cjs',
-                  import: './query/fp/index.js',
-                },
                 './memory/package.json': './memory/package.json',
                 './memory': {
                   require: './memory/index.cjs',
                   import: './memory/index.js',
-                },
-                './memory/fp/package.json': './memory/fp/package.json',
-                './memory/fp': {
-                  require: './memory/fp/index.cjs',
-                  import: './memory/fp/index.js',
                 },
                 './async-storage/package.json': './async-storage/package.json',
                 './async-storage': {
@@ -246,17 +221,12 @@ const entry = (name) => [src(name), dts(name), cjsdts(name)]
 
 export default [
   ...entry(''),
-  ...entry('fp/'),
   ...entry('nil/'),
   ...entry('storage/'),
   ...entry('local/'),
-  ...entry('local/fp/'),
   ...entry('session/'),
-  ...entry('session/fp/'),
   ...entry('query/'),
-  ...entry('query/fp/'),
   ...entry('memory/'),
-  ...entry('memory/fp/'),
   ...entry('async-storage/'),
   ...entry('rn/async/'),
   ...entry('rn/encrypted/'),

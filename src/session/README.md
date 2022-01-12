@@ -18,35 +18,6 @@ persist({ store: $counter })
 
 Two (or more) different stores, persisted with the same key, will be synchronized, even if not connected with each other directly — each store will receive updates from another one.
 
-## Functional helper
-
-⚠️ Due to deprecation of `.thru` method in [effector version 22](https://github.com/effector/effector/releases/tag/effector%4022.0.0), functional helpers become obsolete, so, they are deprecated as well.<s>
-
-There is special `persist` forms to use with functional programming style. You can use it, if you like, with Domain hook or `.thru()` store method.
-
-To use it, import `persist` function from `'effector-storage/session/fp'` module:
-
-```javascript
-import { createDomain } from 'effector'
-import { persist } from 'effector-storage/session/fp'
-
-const app = createDomain('app')
-
-// this hook will persist every store, created in domain,
-// in `sessionStorage`, using stores' names as keys
-app.onCreateStore(persist())
-
-const $store = app.createStore(0, { name: 'store' })
-
-// or persist single store in `sessionStorage` via .thru
-const $counter = createStore(0)
-  .on(increment, (state) => state + 1)
-  .on(decrement, (state) => state - 1)
-  .thru(persist({ key: 'counter' }))
-```
-
-</s>
-
 ## Formulae
 
 ```javascript
@@ -54,14 +25,7 @@ import { persist } from 'effector-storage/session'
 ```
 
 - `persist({ store, ...options }): Subscription`
-- `persist({ source, target, ...options }): Subscription`<s>
-
-```javascript
-import { persist } from 'effector-storage/session/fp'
-```
-
-- `persist({ ...options }?): (store: Store) => Store`
-  </s>
+- `persist({ source, target, ...options }): Subscription`
 
 ### Options
 

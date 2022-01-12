@@ -16,7 +16,6 @@
     "AsyncStorage",
     "debounce",
     "EncryptedStorage",
-    "fp",
     "IndexedDB",
     "keyArea",
     "localStorage",

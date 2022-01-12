@@ -155,33 +155,6 @@ app.onCreateStore((store) => persist({ store }))
 const $store = app.createStore(0, { name: 'store' })
 ```
 
-## Functional helpers
-
-⚠️ Due to deprecation of `.thru` method in [effector version 22](https://github.com/effector/effector/releases/tag/effector%4022.0.0), functional helpers become obsolete, so, they are deprecated as well.<s>
-
-There are special `persist` forms to use with functional programming style. You can use them, if you like, with Domain hook or `.thru()` store method:
-
-```javascript
-import { createDomain } from 'effector'
-import { persist } from 'effector-storage/local/fp'
-
-const app = createDomain('app')
-
-// this hook will persist every store, created in domain,
-// in `localStorage`, using stores' names as keys
-app.onCreateStore(persist())
-
-const $store = app.createStore(0, { name: 'store' })
-
-// or persist single store in `localStorage` via .thru
-const $counter = createStore(0)
-  .on(increment, (state) => state + 1)
-  .on(decrement, (state) => state - 1)
-  .thru(persist({ key: 'counter' }))
-```
-
-</s>
-
 ## Formulae
 
 ```javascript
@@ -190,15 +163,6 @@ import { persist } from 'effector-storage/<adapter>'
 
 - `persist({ store, ...options }): Subscription`
 - `persist({ source, target, ...options }): Subscription`
-
-⚠️ Due to deprecation of `.thru` method in [effector version 22](https://github.com/effector/effector/releases/tag/effector%4022.0.0), functional helpers become obsolete, so, they are deprecated as well.<s>
-
-```javascript
-import { persist } from 'effector-storage/<adapter>/fp'
-```
-
-- `persist({ ...options }?): (store: Store) => Store`
-  </s>
 
 ### Units
 
@@ -290,12 +254,6 @@ import { persist } from 'effector-storage'
 Core function `persist` accepts all **common** options, as `persist` functions from sub-modules, plus additional one:
 
 - `adapter` (_StorageAdapter_): Storage adapter to use.
-
-There is also _fp_ form too:
-
-```javascript
-import { persist } from 'effector-storage/fp'
-```
 
 ## Storage adapters
 
