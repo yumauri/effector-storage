@@ -40,8 +40,8 @@
     "doc:update-readme": "npx doctoc --maxlevel 3 README.md",
     "clean": "rm -rf build coverage .nyc_output",
     "size": "size-limit --highlight-less",
-    "release": "np --yolo --no-release-draft --no-2fa --contents ./build",
-    "version": "yarn build"
+    "release": "np --yolo --no-release-draft --no-2fa --no-cleanup --contents ./build",
+    "version": "pnpm build"
   },
   "devDependencies": {
     "@babel/core": "^7.16.7",

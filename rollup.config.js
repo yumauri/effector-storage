@@ -207,8 +207,8 @@ const dts = (name) => ({
     generateDts({ respectExternal: true }),
     command(
       [
-        `yarn flowgen ${BUILD}/${name}index.d.ts --add-flow-header --no-jsdoc --output-file ${BUILD}/${name}index.js.flow`,
-        `yarn prettier --write ${BUILD}/${name}index.d.ts ${BUILD}/${name}index.js.flow`,
+        `pnpm exec flowgen ${BUILD}/${name}index.d.ts --add-flow-header --no-jsdoc --output-file ${BUILD}/${name}index.js.flow`,
+        `pnpm exec prettier --write ${BUILD}/${name}index.d.ts ${BUILD}/${name}index.js.flow`,
       ],
       { wait: true }
     ),
@@ -236,7 +236,7 @@ const cjsdts = (name) => ({
   ],
   plugins: [
     generateDts({ respectExternal: true }),
-    command([`yarn prettier --write ${BUILD}/${name}index.cjs.d.ts`], {
+    command([`pnpm exec prettier --write ${BUILD}/${name}index.cjs.d.ts`], {
       wait: true,
     }),
   ],

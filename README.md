@@ -45,13 +45,16 @@ Small module for [Effector](https://github.com/effector/effector) ☄️ to sync
 
 ## Install
 
+Depending on your package manager
+
 ```bash
+# using `pnpm` ↓
+$ pnpm add effector-storage
+
+# using `yarn` ↓
 $ yarn add effector-storage
-```
 
-Or using `npm`
-
-```bash
+# using `npm` ↓
 $ npm install --save effector-storage
 ```
 

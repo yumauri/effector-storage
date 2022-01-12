@@ -14,11 +14,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - uses: pnpm/action-setup@v2
+        with:
+          version: latest
       - uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-      - run: yarn
-      - run: yarn lint
-      - run: yarn test
-      - run: yarn build
-      - run: yarn size
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+      - run: pnpm lint
+      - run: pnpm test
+      - run: pnpm build
+      - run: pnpm size
