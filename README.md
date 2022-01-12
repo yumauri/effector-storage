@@ -177,7 +177,7 @@ In order to synchronize _something_, you need to specify effector units. Dependi
 - `key`? ([_string_]): Key for local/session storage, to store value in. If omitted — `store` name is used. **Note!** If `key` is not specified, `store` _must_ have a `name`! You can use `'effector/babel-plugin'` to have those names automatically.
 - `keyPrefix`? ([_string_]): Prefix, used in adapter, to be concatenated to `key`. By default = `''`.
 - `clock`? ([_Event_] | [_Effect_] | [_Store_]): Unit, if passed – then value from `store`/`source` will be stored in the storage only upon its trigger.
-- `pickup`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which you can specify to force update `store` value from storage.
+- `pickup`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which you can specify to update `store` value from storage. **Note!** When you add `pickup`, `persist` _will not_ get initial value from storage automatically!
 - `done`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which will be triggered on each successful read or write from/to storage.<br>
   Payload structure:
   - `key` ([_string_]): Same `key` as above.
@@ -349,13 +349,13 @@ persist({ store, adapter }) // <- use adapter
 
 If your storage can be updated from _external source_, and doesn't have any events to react to, but you are able to know about it somehow.
 
-You can use optional `pickup` parameter to specify unit to trigger force update:
+You can use optional `pickup` parameter to specify unit to trigger update (keep in mind, that when you add `pickup`, `persist` _will not_ get initial value from storage automatically):
 
 ```javascript
 import { createEvent, createStore, forward } from 'effector'
 import { persist } from 'effector-storage/session'
 
-// event, which will be used to trigger force update
+// event, which will be used to trigger update
 const pickup = createEvent()
 
 const store = createStore('', { name: 'store' })
@@ -364,7 +364,7 @@ persist({ store, pickup }) // <- set `pickup` parameter
 // --8<--
 
 // when you are sure, that storage was updated,
-// and you need to force update `store` from storage with new value
+// and you need to update `store` from storage with new value
 pickup()
 ```
 

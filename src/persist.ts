@@ -114,13 +114,16 @@ export function persist<State, Err = Error>({
     })
 
     forward({ from: localFail, to: fail })
-    done && forward({ from: localDone, to: done })
-    anyway && forward({ from: localAnyway, to: anyway })
+    if (done) forward({ from: localDone, to: done })
+    if (anyway) forward({ from: localAnyway, to: anyway })
 
-    pickup && forward({ from: pickup, to: getFx.prepend(() => undefined) })
-
-    // kick getter to pick up initial value from storage
-    getFx()
+    if (pickup) {
+      // pick up value from storage ONLY on `pickup` update
+      forward({ from: pickup, to: getFx.prepend(() => undefined) })
+    } else {
+      // kick getter to pick up initial value from storage
+      getFx()
+    }
   })
 
   return (desist.unsubscribe = desist)
