@@ -15,7 +15,7 @@ jobs:
           - 21.0.0
           - 21.8.12
           - 22.0.0
-          - 22.2.0
+          - 22.3.0
 
     name: Node ${{ matrix.node-version }} / effector ${{ matrix.effector-version }}
 
