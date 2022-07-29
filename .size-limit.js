@@ -2,7 +2,7 @@ module.exports = [
   // core
   {
     path: 'build/index.js',
-    limit: '900 B',
+    limit: '901 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
@@ -58,7 +58,7 @@ module.exports = [
   // sessionStorage
   {
     path: 'build/session/index.js',
-    limit: '1171 B',
+    limit: '1170 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
@@ -72,7 +72,7 @@ module.exports = [
   // query string
   {
     path: 'build/query/index.js',
-    limit: '1239 B',
+    limit: '1240 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
@@ -114,7 +114,7 @@ module.exports = [
   // react native async storages
   {
     path: 'build/rn/async/index.js',
-    limit: '1236 B',
+    limit: '1235 B',
     import: '{ persist }',
     ignore: ['effector', '@react-native-async-storage/async-storage'],
   },
@@ -126,7 +126,7 @@ module.exports = [
   },
   {
     path: 'build/rn/encrypted/index.js',
-    limit: '1237 B',
+    limit: '1235 B',
     import: '{ persist }',
     ignore: ['effector', 'react-native-encrypted-storage'],
   },
