@@ -16,13 +16,13 @@ module.exports = [
   // nil adapter
   {
     path: 'build/nil/index.js',
-    limit: '48 B',
+    limit: '56 B',
     import: '{ nil }',
     ignore: ['effector'],
   },
   {
     path: 'build/nil/index.cjs',
-    limit: '344 B',
+    limit: '352 B',
     import: '{ nil }',
     ignore: ['effector'],
   },
@@ -30,13 +30,13 @@ module.exports = [
   // storage adapter
   {
     path: 'build/storage/index.js',
-    limit: '222 B',
+    limit: '230 B',
     import: '{ storage }',
     ignore: ['effector'],
   },
   {
     path: 'build/storage/index.cjs',
-    limit: '504 B',
+    limit: '512 B',
     import: '{ storage }',
     ignore: ['effector'],
   },
@@ -100,13 +100,13 @@ module.exports = [
   // async storage adapter
   {
     path: 'build/async-storage/index.js',
-    limit: '135 B',
+    limit: '143 B',
     import: '{ asyncStorage }',
     ignore: ['effector'],
   },
   {
     path: 'build/async-storage/index.cjs',
-    limit: '430 B',
+    limit: '438 B',
     import: '{ asyncStorage }',
     ignore: ['effector'],
   },
