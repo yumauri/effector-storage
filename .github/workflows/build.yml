@@ -11,6 +11,7 @@ jobs:
         node-version:
           - 14
           - 16
+          - 18
         effector-version:
           - 21.0.0
           - 21.8.12
