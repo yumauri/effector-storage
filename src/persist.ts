@@ -31,10 +31,10 @@ sink.watch((payload) => console.error(payload.error))
  */
 export function persist<State, Err = Error>({
   adapter,
-  clock,
   store,
   source = store,
   target = store,
+  clock = source,
   done,
   fail = sink,
   finally: anyway,
@@ -110,11 +110,19 @@ export function persist<State, Err = Error>({
     getFx.use(value.get)
     setFx.use(value.set)
 
+    const trigger = createEvent<State>()
+    sample({
+      source,
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      clock: clock!, // `clock` is always defined, as long as `source` is defined
+      target: trigger,
+    })
+
     guard({
       source: sample<State, State, [State, State]>(
         storage,
-        (sample as any)(source, clock),
-        (current: any, proposed) => [proposed, current]
+        trigger,
+        (current, proposed) => [proposed, current]
       ),
       filter: ([proposed, current]) => proposed !== current,
       target: setFx.prepend<[State, State]>(([proposed]) => proposed),

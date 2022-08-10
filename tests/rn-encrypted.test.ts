@@ -11,7 +11,7 @@ test('should export adapter and `persist` function', async () => {
     const { persist } = await import('../src/rn/encrypted')
     assert.type(persist, 'function')
   } catch (e) {
-    console.log('//todo: skipped test')
+    console.log('// todo: skipped test')
   }
 })
 
