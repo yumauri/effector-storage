@@ -14,7 +14,7 @@ specifiers:
   effector-21-0-0: npm:effector@21.0.0
   effector-21-8-12: npm:effector@21.8.12
   effector-22-0-0: npm:effector@22.0.0
-  effector-22-3-0: npm:effector@22.3.0
+  effector-22-4-0: npm:effector@22.4.0
   eslint: ^8.27.0
   eslint-config-prettier: ^8.5.0
   eslint-config-standard: ^17.0.0
@@ -57,7 +57,7 @@ devDependencies:
   effector-21-0-0: /effector/21.0.0
   effector-21-8-12: /effector/21.8.12
   effector-22-0-0: /effector/22.0.0
-  effector-22-3-0: /effector/22.3.0
+  effector-22-4-0: /effector/22.4.0
   eslint: 8.27.0
   eslint-config-prettier: 8.5.0_eslint@8.27.0
   eslint-config-standard: 17.0.0_cyo7mwdgoypgk7zxnkwskmm2fq
@@ -1860,8 +1860,8 @@ packages:
     engines: {node: '>=6.0.0'}
     dev: true
 
-  /effector/22.3.0:
-    resolution: {integrity: sha512-Nh7IXn8U4emq8YtAZf2+y2Rs6n4W/gjPaNZpZLFOXOIAsRZSNBFjtK1vHTWNKxxmNFZOaZN6XUXdT8FDs0mAdQ==}
+  /effector/22.4.0:
+    resolution: {integrity: sha512-WQ0rboUp1fvkzo2rPymtWzR9isUl8v9McGvBA4g8zvQaTgZnXQ1iCbNj2S54bADGpSNl1CYv1/61vvdbc5Goyw==}
     engines: {node: '>=11.0.0'}
     dev: true
 
