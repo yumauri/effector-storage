@@ -58,6 +58,20 @@ import { persist } from 'effector-storage/query'
 - `state`?: (`'keep'` | `'erase'`): If `method` is `pushState` or `replaceState` — should current state be preserved or replaced with `null`. Default = `keep`
 - `def`?: (_any_): Default value, which will be passed to `store`/`target` in case of absent query parameter. Default = `store.defaultState` or `null`
 
+## Adapter
+
+```javascript
+import { query } from 'effector-storage/query'
+```
+
+- `query(options?): StorageAdapter`
+
+### Options
+
+- `method`?: ([_function_]): One of `pushState`, `replaceState`, `locationAssign` or `locationReplace`. Default = `pushState`.
+- `state`?: (`'keep'` | `'erase'`): If `method` is `pushState` or `replaceState` — should current state be preserved or replaced with `null`. Default = `keep`
+- `def`?: (_any_): Default value, which will be passed to `store`/`target` in case of absent query parameter. Default = `null`
+
 ## FAQ
 
 ### How do I use custom serialization / deserialization?

@@ -7,6 +7,7 @@ import { createLocationMock } from './mocks/location.mock'
 import { createEventsMock } from './mocks/events.mock'
 import {
   persist,
+  query,
   pushState,
   replaceState,
   locationAssign,
@@ -40,6 +41,7 @@ test.after.each(() => {
 //
 
 test('should export adapter and `persist` function', () => {
+  assert.type(query, 'function')
   assert.type(persist, 'function')
   assert.type(pushState, 'function')
   assert.type(replaceState, 'function')

@@ -12,7 +12,7 @@ export interface AsyncStorageConfig {
 }
 
 /**
- * Generic `AsyncStorage` adapter factory
+ * Creates generic `AsyncStorage` adapter
  */
 export function asyncStorage({
   storage,

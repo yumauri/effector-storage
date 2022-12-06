@@ -4,7 +4,9 @@ import type {
   ConfigCommon,
   ConfigJustStore,
   ConfigJustSourceTarget,
+  StorageAdapter,
 } from '../types'
+import type { StorageConfig } from '../storage'
 import { persist as base } from '../persist'
 import { nil } from '../nil'
 import { storage } from '../storage'
@@ -36,6 +38,8 @@ export interface Persist {
   <State, Err = Error>(config: ConfigStore<State, Err>): Subscription
 }
 
+export interface SessionStorageConfig extends Omit<StorageConfig, 'storage'> {}
+
 /**
  * Function, checking if `sessionStorage` exists and accessible
  */
@@ -48,19 +52,25 @@ function supports() {
 }
 
 /**
+ * Creates `sessionStorage` adapter
+ */
+export function session(config?: SessionStorageConfig): StorageAdapter {
+  return supports()
+    ? storage({
+        storage: sessionStorage,
+        ...config,
+      })
+    : nil('session')
+}
+
+/**
  * Creates custom partially applied `persist`
  * with predefined `sessionStorage` adapter
  */
 export function createPersist(defaults?: ConfigPersist): Persist {
   return (config) =>
     base({
-      adapter: supports()
-        ? storage({
-            storage: sessionStorage,
-            ...defaults,
-            ...config,
-          })
-        : nil('session'),
+      adapter: session({ ...defaults, ...config }),
       ...defaults,
       ...config,
     })

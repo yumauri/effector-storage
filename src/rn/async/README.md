@@ -41,6 +41,19 @@ import { persist } from 'effector-storage/rn/async'
 - `serialize`? (_(value: any) => string_): Custom serialize function. Default = `JSON.stringify`.
 - `deserialize`? (_(value: string) => any_): Custom deserialize function. Default = `JSON.parse`.
 
+## Adapter
+
+```javascript
+import { async } from 'effector-storage/rn/async'
+```
+
+- `async(options?): StorageAdapter`
+
+### Options
+
+- `serialize`? (_(value: any) => string_): Custom serialize function. Default = `JSON.stringify`.
+- `deserialize`? (_(value: string) => any_): Custom deserialize function. Default = `JSON.parse`.
+
 ## FAQ
 
 ### How do I use custom serialization / deserialization?

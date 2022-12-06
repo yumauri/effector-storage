@@ -10,6 +10,7 @@ export type StateBehavior = 'keep' | 'erase'
 export interface QueryConfig {
   method?: ChangeMethod
   state?: StateBehavior
+  def?: any
 }
 
 const keyArea = Symbol() // eslint-disable-line symbol-description
@@ -38,10 +39,11 @@ export const locationReplace: ChangeMethod = (params): void =>
 /**
  * Query string adapter factory
  */
-export function query(
-  { method = pushState, state }: QueryConfig,
-  def: any
-): StorageAdapter {
+export function query({
+  method = pushState,
+  state,
+  def = null,
+}: QueryConfig): StorageAdapter {
   const adapter: StorageAdapter = <State>(
     key: string,
     update: (raw?: any) => any

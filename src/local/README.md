@@ -36,6 +36,20 @@ import { persist } from 'effector-storage/local'
 - `serialize`? (_(value: any) => string_): Custom serialize function. Default = `JSON.stringify`.
 - `deserialize`? (_(value: string) => any_): Custom deserialize function. Default = `JSON.parse`.
 
+## Adapter
+
+```javascript
+import { local } from 'effector-storage/local'
+```
+
+- `local(options?): StorageAdapter`
+
+### Options
+
+- `sync`? ([_boolean_]): Add [`'storage'`] event listener or no. Default = `true`.
+- `serialize`? (_(value: any) => string_): Custom serialize function. Default = `JSON.stringify`.
+- `deserialize`? (_(value: string) => any_): Custom deserialize function. Default = `JSON.parse`.
+
 ## FAQ
 
 ### How do I use custom serialization / deserialization?
