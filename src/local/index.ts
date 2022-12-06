@@ -4,7 +4,9 @@ import type {
   ConfigCommon,
   ConfigJustStore,
   ConfigJustSourceTarget,
+  StorageAdapter,
 } from '../types'
+import type { StorageConfig } from '../storage'
 import { persist as base } from '../persist'
 import { nil } from '../nil'
 import { storage } from '../storage'
@@ -36,6 +38,8 @@ export interface Persist {
   <State, Err = Error>(config: ConfigStore<State, Err>): Subscription
 }
 
+export interface LocalStorageConfig extends Omit<StorageConfig, 'storage'> {}
+
 /**
  * Function, checking if `localStorage` exists and accessible
  */
@@ -48,20 +52,26 @@ function supports() {
 }
 
 /**
+ * Creates `localStorage` adapter
+ */
+export function local(config?: LocalStorageConfig): StorageAdapter {
+  return supports()
+    ? storage({
+        storage: localStorage,
+        sync: true,
+        ...config,
+      })
+    : nil('local')
+}
+
+/**
  * Creates custom partially applied `persist`
  * with predefined `localStorage` adapter
  */
 export function createPersist(defaults?: ConfigPersist): Persist {
   return (config) =>
     base({
-      adapter: supports()
-        ? storage({
-            storage: localStorage,
-            sync: true,
-            ...defaults,
-            ...config,
-          })
-        : nil('local'),
+      adapter: local({ ...defaults, ...config }),
       ...defaults,
       ...config,
     })

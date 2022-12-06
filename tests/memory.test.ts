@@ -2,13 +2,14 @@ import { test } from 'uvu'
 import * as assert from 'uvu/assert'
 import { snoop } from 'snoop'
 import { createStore } from 'effector'
-import { persist } from '../src/memory'
+import { memory, persist } from '../src/memory'
 
 //
 // Tests
 //
 
 test('should export adapter and `persist` function', () => {
+  assert.type(memory, 'function')
   assert.type(persist, 'function')
 })
 

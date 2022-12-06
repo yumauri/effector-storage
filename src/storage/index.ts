@@ -8,7 +8,7 @@ export interface StorageConfig {
 }
 
 /**
- * Generic `Storage` adapter factory
+ * Creates generic `Storage` adapter
  */
 export function storage({
   storage,

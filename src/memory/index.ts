@@ -30,13 +30,18 @@ export interface Persist {
 }
 
 /**
+ * Returns memory adapter
+ */
+export { memory }
+
+/**
  * Creates custom partially applied `persist`
  * with predefined `memory` adapter
  */
 export function createPersist(defaults?: ConfigPersist): Persist {
   return (config) =>
     base({
-      adapter: memory,
+      adapter: memory(),
       ...defaults,
       ...config,
     })

@@ -2,7 +2,7 @@ import { test } from 'uvu'
 import * as assert from 'uvu/assert'
 import { createStore } from 'effector'
 import { createStorageMock } from './mocks/storage.mock'
-import { persist } from '../src/session'
+import { session, persist } from '../src/session'
 
 //
 // Mock `sessionStorage`
@@ -23,6 +23,7 @@ test.after(() => {
 //
 
 test('should export adapter and `persist` function', () => {
+  assert.type(session, 'function')
   assert.type(persist, 'function')
 })
 

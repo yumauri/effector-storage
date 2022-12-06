@@ -4,7 +4,9 @@ import type {
   ConfigCommon,
   ConfigJustStore,
   ConfigJustSourceTarget,
+  StorageAdapter,
 } from '../../types'
+import type { AsyncStorageConfig as BaseAsyncStorageConfig } from '../../async-storage'
 import { persist as base } from '../../persist'
 import { asyncStorage } from '../../async-storage'
 import EncryptedStorage from 'react-native-encrypted-storage'
@@ -33,6 +35,19 @@ export interface Persist {
   <State, Err = Error>(config: ConfigStore<State, Err>): Subscription
 }
 
+export interface EncryptedStorageConfig
+  extends Omit<BaseAsyncStorageConfig, 'storage'> {}
+
+/**
+ * Creates `EncryptedStorage` adapter
+ */
+export function encrypted(config: EncryptedStorageConfig): StorageAdapter {
+  return asyncStorage({
+    storage: EncryptedStorage,
+    ...config,
+  })
+}
+
 /**
  * Creates custom partially applied `persist`
  * with predefined `EncryptedStorage` adapter
@@ -40,11 +55,7 @@ export interface Persist {
 export function createPersist(defaults?: ConfigPersist): Persist {
   return (config) =>
     base({
-      adapter: asyncStorage({
-        storage: EncryptedStorage,
-        ...defaults,
-        ...config,
-      }),
+      adapter: encrypted({ ...defaults, ...config }),
       ...defaults,
       ...config,
     })

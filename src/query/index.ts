@@ -4,18 +4,20 @@ import type {
   ConfigCommon,
   ConfigJustStore,
   ConfigJustSourceTarget,
+  StorageAdapter,
 } from '../types'
-import type { ChangeMethod, StateBehavior } from './adapter'
+import type { ChangeMethod, StateBehavior, QueryConfig } from './adapter'
 import { persist as base } from '../persist'
 import { nil } from '../nil'
-import { query } from './adapter'
+import { query as adapter } from './adapter'
 
 export type { Done, Fail, Finally, StorageAdapter } from '../types'
+export type { ChangeMethod, StateBehavior, QueryConfig } from './adapter'
 export {
-  pushState,
-  replaceState,
   locationAssign,
   locationReplace,
+  pushState,
+  replaceState,
 } from './adapter'
 
 export interface ConfigPersist extends BaseConfigPersist {
@@ -45,6 +47,20 @@ export interface Persist {
 }
 
 /**
+ * Function, checking if `history` and `location` exists and accessible
+ */
+function supports() {
+  return typeof history !== 'undefined' && typeof location !== 'undefined'
+}
+
+/**
+ * Creates query string adapter
+ */
+export function query(config?: QueryConfig): StorageAdapter {
+  return supports() ? adapter({ ...config }) : nil('query')
+}
+
+/**
  * Creates custom partially applied `persist`
  * with predefined `query` adapter
  */
@@ -58,10 +74,7 @@ export function createPersist(defaults?: ConfigPersist): Persist {
         : null
 
     return base({
-      adapter:
-        typeof history !== 'undefined' && typeof location !== 'undefined'
-          ? query({ ...defaults, ...config }, def)
-          : nil('query'),
+      adapter: query({ ...defaults, ...config, def }),
       ...defaults,
       ...config,
     })

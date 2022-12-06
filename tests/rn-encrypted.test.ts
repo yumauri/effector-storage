@@ -8,7 +8,8 @@ import * as assert from 'uvu/assert'
 test('should export adapter and `persist` function', async () => {
   try {
     // I'm not sure, how to mock 'react-native-encrypted-storage' module ???
-    const { persist } = await import('../src/rn/encrypted')
+    const { encrypted, persist } = await import('../src/rn/encrypted')
+    assert.type(encrypted, 'function')
     assert.type(persist, 'function')
   } catch (e) {
     console.log('// todo: skipped test')
