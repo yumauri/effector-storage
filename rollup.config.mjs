@@ -18,14 +18,12 @@ const src = (name) => ({
       externalLiveBindings: false,
       esModule: false,
       exports: 'named',
-      plugins: [dual('.cjs')],
     },
     {
       file: `${BUILD}/${name}index.js`,
       format: 'es',
       sourcemap: process.env.NODE_ENV === 'production',
       exports: 'named',
-      plugins: [dual('.js')],
     },
   ],
   external: [
@@ -40,10 +38,12 @@ const src = (name) => ({
     '../../async-storage',
   ],
   plugins: [
+    // resolve typescript files
     nodeResolve({
       extensions: ['.ts'],
     }),
 
+    // apply babel transformations
     babel({
       extensions: ['.ts'],
       babelHelpers: 'bundled',
@@ -51,6 +51,10 @@ const src = (name) => ({
       plugins: ['@babel/plugin-transform-block-scoping'],
     }),
 
+    // make it possible to import/require index files
+    dual(),
+
+    // minify for production
     process.env.NODE_ENV === 'production' &&
       terser({
         compress: {
@@ -232,27 +236,27 @@ export default [
   ...entry('rn/encrypted/'),
 ]
 
-function dual(extension) {
+function dual() {
   const persist = (str) => str.replace('/persist', '')
 
-  const index = (str, name) =>
-    str.replace(name, name.slice(0, -1) + '/index' + extension + name[0])
+  const index = (str, name, extension) =>
+    str.replace(name, name.slice(0, -1) + '/index.' + extension + name[0])
 
   const es = (code) =>
     code
       .replace(
         /(?:^|\n)import\s+?(?:(?:(?:[\w*\s{},$_]*)\s+from\s+?)|)((?:".*?")|(?:'.*?'))[\s]*?(?:;|$|)/g,
-        (str, name) => (name.indexOf('..') === 1 ? index(str, name) : str)
+        (str, name) => (name.indexOf('..') === 1 ? index(str, name, 'js') : str)
       )
       .replace(
         /(?:^|\n)export\s+?(?:(?:(?:[\w*\s{},$_]*)\s+from\s+?)|)((?:".*?")|(?:'.*?'))[\s]*?(?:;|$|)/g,
-        (str, name) => (name.indexOf('..') === 1 ? index(str, name) : str)
+        (str, name) => (name.indexOf('..') === 1 ? index(str, name, 'js') : str)
       )
 
   const cjs = (code) =>
     code.replace(
       /(?:^|\n)(?:let|const|var)\s+(?:{[^}]+}|\S+)\s*=\s*require\(([^)]+)\)/g,
-      (str, name) => (name.indexOf('..') === 1 ? index(str, name) : str)
+      (str, name) => (name.indexOf('..') === 1 ? index(str, name, 'cjs') : str)
     )
 
   return {
