@@ -7,7 +7,7 @@ import type {
   StorageAdapter,
 } from '../../types'
 import type { AsyncStorageConfig as BaseAsyncStorageConfig } from '../../async-storage'
-import { persist as base } from '../../persist'
+import { persist as base } from '../../core'
 import { asyncStorage } from '../../async-storage'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 

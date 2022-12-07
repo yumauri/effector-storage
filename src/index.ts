@@ -1,5 +1,5 @@
 import type { ConfigPersist, Persist } from './types'
-import { persist as base } from './persist'
+import { persist as base } from './core'
 
 export type {
   ConfigPersist,
@@ -22,4 +22,4 @@ export function createPersist(defaults?: ConfigPersist): Persist {
 /**
  * Default `persist`
  */
-export const persist = createPersist()
+export const persist: Persist = base

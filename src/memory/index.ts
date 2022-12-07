@@ -5,7 +5,7 @@ import type {
   ConfigJustStore,
   ConfigJustSourceTarget,
 } from '../types'
-import { persist as base } from '../persist'
+import { persist as base } from '../core'
 import { memory } from './adapter'
 
 export type {

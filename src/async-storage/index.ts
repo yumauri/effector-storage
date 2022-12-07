@@ -1,4 +1,4 @@
-import type { StorageAdapter } from '..'
+import type { StorageAdapter } from '../types'
 
 export interface AsyncStorage {
   getItem: (key: string) => Promise<string | null>

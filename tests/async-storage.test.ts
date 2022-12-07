@@ -2,7 +2,7 @@ import { test } from 'uvu'
 import * as assert from 'uvu/assert'
 import { snoop } from 'snoop'
 import { createStore, createEvent } from 'effector'
-import { persist } from '../src'
+import { persist } from '../src/core'
 import { asyncStorage } from '../src/async-storage'
 import { createAsyncStorageMock } from './mocks/async-storage.mock'
 

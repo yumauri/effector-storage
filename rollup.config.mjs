@@ -30,11 +30,11 @@ const src = (name) => ({
     'effector',
     'react-native-encrypted-storage',
     '@react-native-async-storage/async-storage',
-    '..',
-    '../persist',
+    './core',
+    '../core',
+    '../../core',
     '../storage',
     '../nil',
-    '../../persist',
     '../../async-storage',
   ],
   plugins: [
@@ -97,6 +97,11 @@ const src = (name) => ({
                 '.': {
                   require: './index.cjs',
                   import: './index.js',
+                },
+                './core/package.json': './core/package.json',
+                './core': {
+                  require: './core/index.cjs',
+                  import: './core/index.js',
                 },
                 './nil/package.json': './nil/package.json',
                 './nil': {
@@ -175,11 +180,11 @@ const dts = (name) => ({
     'effector',
     'react-native-encrypted-storage',
     '@react-native-async-storage/async-storage',
-    '..',
-    '../persist',
+    './core',
+    '../core',
+    '../../core',
     '../storage',
     '../nil',
-    '../../persist',
     '../../async-storage',
   ],
   plugins: [
@@ -206,11 +211,11 @@ const cjsdts = (name) => ({
     'effector',
     'react-native-encrypted-storage',
     '@react-native-async-storage/async-storage',
-    '..',
-    '../persist',
+    './core',
+    '../core',
+    '../../core',
     '../storage',
     '../nil',
-    '../../persist',
     '../../async-storage',
   ],
   plugins: [
@@ -225,6 +230,7 @@ const entry = (name) => [src(name), dts(name), cjsdts(name)]
 
 export default [
   ...entry(''),
+  ...entry('core/'),
   ...entry('nil/'),
   ...entry('storage/'),
   ...entry('local/'),
@@ -237,8 +243,6 @@ export default [
 ]
 
 function dual() {
-  const persist = (str) => str.replace('/persist', '')
-
   const index = (str, name, extension) =>
     str.replace(name, name.slice(0, -1) + '/index.' + extension + name[0])
 
@@ -246,23 +250,22 @@ function dual() {
     code
       .replace(
         /(?:^|\n)import\s+?(?:(?:(?:[\w*\s{},$_]*)\s+from\s+?)|)((?:".*?")|(?:'.*?'))[\s]*?(?:;|$|)/g,
-        (str, name) => (name.indexOf('..') === 1 ? index(str, name, 'js') : str)
+        (str, name) => (name.indexOf('.') === 1 ? index(str, name, 'js') : str)
       )
       .replace(
         /(?:^|\n)export\s+?(?:(?:(?:[\w*\s{},$_]*)\s+from\s+?)|)((?:".*?")|(?:'.*?'))[\s]*?(?:;|$|)/g,
-        (str, name) => (name.indexOf('..') === 1 ? index(str, name, 'js') : str)
+        (str, name) => (name.indexOf('.') === 1 ? index(str, name, 'js') : str)
       )
 
   const cjs = (code) =>
     code.replace(
       /(?:^|\n)(?:let|const|var)\s+(?:{[^}]+}|\S+)\s*=\s*require\(([^)]+)\)/g,
-      (str, name) => (name.indexOf('..') === 1 ? index(str, name, 'cjs') : str)
+      (str, name) => (name.indexOf('.') === 1 ? index(str, name, 'cjs') : str)
     )
 
   return {
     name: 'rollup-plugin-dual',
     renderChunk(code, _chunk, { format }) {
-      code = persist(code)
       if (format === 'cjs' || format === 'commonjs') {
         code = cjs(code)
       } else if (format === 'es' || format === 'esm' || format === 'module') {

@@ -1,7 +1,7 @@
+import type { StorageAdapter } from '../src/types'
+import type { Event, Store, Subscription } from 'effector'
 import { test } from 'uvu'
 import { expectType } from 'tsd'
-import { Event, Store, Subscription } from 'effector'
-import { StorageAdapter } from '../src'
 
 //
 // Tests

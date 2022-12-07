@@ -7,7 +7,7 @@ import type {
   StorageAdapter,
 } from '../types'
 import type { ChangeMethod, StateBehavior, QueryConfig } from './adapter'
-import { persist as base } from '../persist'
+import { persist as base } from '../core'
 import { nil } from '../nil'
 import { query as adapter } from './adapter'
 

@@ -1,7 +1,7 @@
 import { test } from 'uvu'
 import * as assert from 'uvu/assert'
 import { createStore, createEvent } from 'effector'
-import { persist } from '../src'
+import { persist } from '../src/core'
 import { storage } from '../src/storage'
 import { createStorageMock } from './mocks/storage.mock'
 

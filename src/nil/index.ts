@@ -1,4 +1,4 @@
-import type { StorageAdapter } from '..'
+import type { StorageAdapter } from '../types'
 
 /**
  * Nil/Void adapter

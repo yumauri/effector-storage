@@ -1,8 +1,9 @@
+import type { StorageAdapter } from '../src/types'
 import { test } from 'uvu'
 import * as assert from 'uvu/assert'
 import { snoop } from 'snoop'
 import { createStore, createDomain } from 'effector'
-import { persist, StorageAdapter } from '../src'
+import { persist } from '../src/core'
 
 //
 // Dumb fake adapter

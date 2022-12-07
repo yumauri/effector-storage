@@ -1,4 +1,4 @@
-import type { StorageAdapter } from '..'
+import type { StorageAdapter } from '../types'
 
 const data = new Map<string, any>()
 

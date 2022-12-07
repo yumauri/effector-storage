@@ -1,10 +1,11 @@
+import type { StorageAdapter } from '../src'
 import { test } from 'uvu'
 import * as assert from 'uvu/assert'
 import { snoop } from 'snoop'
 import { createStore, createEvent } from 'effector'
 import { createStorageMock } from './mocks/storage.mock'
 import { createEventsMock } from './mocks/events.mock'
-import { StorageAdapter, persist } from '../src'
+import { persist } from '../src/core'
 import { storage } from '../src/storage'
 
 //

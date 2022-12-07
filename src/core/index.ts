@@ -6,7 +6,7 @@ import type {
   Done,
   Fail,
   Finally,
-} from './types'
+} from '../types'
 import {
   clearNode,
   createEffect,

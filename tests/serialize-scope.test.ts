@@ -1,3 +1,4 @@
+import type { StorageAdapter } from '../src/types'
 import { test } from 'uvu'
 import * as assert from 'uvu/assert'
 import { type Snoop, snoop } from 'snoop'
@@ -9,7 +10,7 @@ import {
   allSettled,
   serialize,
 } from 'effector'
-import { persist, StorageAdapter } from '../src'
+import { persist } from '../src/core'
 
 //
 // Effector version guard

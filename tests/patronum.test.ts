@@ -1,9 +1,10 @@
+import type { StorageAdapter } from '../src/types'
 import { debounce } from 'patronum/debounce'
 import { test } from 'uvu'
 import * as assert from 'uvu/assert'
 import { snoop, Snoop } from 'snoop'
 import { createEvent, createStore, sample } from 'effector'
-import { persist, StorageAdapter } from '../src'
+import { persist } from '../src/core'
 
 //
 // Fake adapter

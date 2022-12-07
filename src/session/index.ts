@@ -7,7 +7,7 @@ import type {
   StorageAdapter,
 } from '../types'
 import type { StorageConfig } from '../storage'
-import { persist as base } from '../persist'
+import { persist as base } from '../core'
 import { nil } from '../nil'
 import { storage } from '../storage'
 
