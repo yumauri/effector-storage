@@ -39,7 +39,7 @@ export const locationReplace: ChangeMethod = (params): void =>
 /**
  * Query string adapter factory
  */
-export function query({
+export function adapter({
   method = pushState,
   state,
   def = null,

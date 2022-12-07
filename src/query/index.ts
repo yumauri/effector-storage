@@ -9,7 +9,7 @@ import type {
 import type { ChangeMethod, StateBehavior, QueryConfig } from './adapter'
 import { persist as base } from '../core'
 import { nil } from '../nil'
-import { query as adapter } from './adapter'
+import { adapter } from './adapter'
 
 export type { Done, Fail, Finally, StorageAdapter } from '../types'
 export type { ChangeMethod, StateBehavior, QueryConfig } from './adapter'

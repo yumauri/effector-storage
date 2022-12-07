@@ -6,7 +6,7 @@ import type {
   ConfigJustSourceTarget,
 } from '../types'
 import { persist as base } from '../core'
-import { memory } from './adapter'
+import { adapter } from './adapter'
 
 export type {
   ConfigPersist,
@@ -32,7 +32,7 @@ export interface Persist {
 /**
  * Returns memory adapter
  */
-export { memory }
+export { adapter as memory }
 
 /**
  * Creates custom partially applied `persist`
@@ -41,7 +41,7 @@ export { memory }
 export function createPersist(defaults?: ConfigPersist): Persist {
   return (config) =>
     base({
-      adapter: memory(),
+      adapter: adapter(),
       ...defaults,
       ...config,
     })
