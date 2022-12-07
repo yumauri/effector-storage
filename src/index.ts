@@ -12,6 +12,24 @@ export type {
   StorageAdapter,
 } from './types'
 
+//
+// reexport adapters
+//
+
+export type { AsyncStorageConfig } from './async-storage'
+export type { LocalStorageConfig } from './local'
+export type { QueryConfig } from './query'
+export type { SessionStorageConfig } from './session'
+export type { StorageConfig } from './storage'
+
+export { asyncStorage } from './async-storage'
+export { local } from './local'
+export { memory } from './memory'
+export { nil } from './nil'
+export { query } from './query'
+export { session } from './session'
+export { storage } from './storage'
+
 /**
  * Creates custom `persist`
  */
