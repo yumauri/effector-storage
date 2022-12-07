@@ -8,6 +8,22 @@ import generatePackageJson from 'rollup-plugin-generate-package-json'
 const SRC = 'src'
 const BUILD = 'build'
 
+const external = [
+  'effector',
+  'react-native-encrypted-storage',
+  '@react-native-async-storage/async-storage',
+  /\.[./]*\/core/,
+  /\.[./]*\/nil/,
+  /\.[./]*\/storage/,
+  /\.[./]*\/local/,
+  /\.[./]*\/session/,
+  /\.[./]*\/query/,
+  /\.[./]*\/memory/,
+  /\.[./]*\/async-storage/,
+  /\.[./]*\/rn\/async/,
+  /\.[./]*\/rn\/encrypted/,
+]
+
 const src = (name) => ({
   input: `${SRC}/${name}index.ts`,
   output: [
@@ -26,17 +42,7 @@ const src = (name) => ({
       exports: 'named',
     },
   ],
-  external: [
-    'effector',
-    'react-native-encrypted-storage',
-    '@react-native-async-storage/async-storage',
-    './core',
-    '../core',
-    '../../core',
-    '../storage',
-    '../nil',
-    '../../async-storage',
-  ],
+  external,
   plugins: [
     // resolve typescript files
     nodeResolve({
@@ -82,16 +88,17 @@ const src = (name) => ({
               bugs: pkg.bugs,
               homepage: pkg.homepage,
               keywords: pkg.keywords,
-              types: 'index.d.ts',
               peerDependencies: {
                 effector: '>=21.0.0',
               },
 
               // cjs + esm magic
               type: 'module',
+              sideEffects: false,
               main: 'index.cjs',
               module: 'index.js',
               'react-native': 'index.js',
+              types: 'index.d.ts',
               exports: {
                 './package.json': './package.json',
                 '.': {
@@ -155,6 +162,7 @@ const src = (name) => ({
           {
             baseContents: {
               type: 'module',
+              sideEffects: false,
               main: 'index.cjs',
               module: 'index.js',
               'react-native': 'index.js',
@@ -176,17 +184,7 @@ const dts = (name) => ({
       format: 'es',
     },
   ],
-  external: [
-    'effector',
-    'react-native-encrypted-storage',
-    '@react-native-async-storage/async-storage',
-    './core',
-    '../core',
-    '../../core',
-    '../storage',
-    '../nil',
-    '../../async-storage',
-  ],
+  external,
   plugins: [
     generateDts({ respectExternal: true }),
     command(
@@ -207,17 +205,7 @@ const cjsdts = (name) => ({
       format: 'es',
     },
   ],
-  external: [
-    'effector',
-    'react-native-encrypted-storage',
-    '@react-native-async-storage/async-storage',
-    './core',
-    '../core',
-    '../../core',
-    '../storage',
-    '../nil',
-    '../../async-storage',
-  ],
+  external,
   plugins: [
     generateDts({ respectExternal: true }),
     command([`pnpm exec prettier --write ${BUILD}/${name}index.cjs.d.ts`], {
