@@ -54,6 +54,23 @@ test('store should be initialized from storage value', () => {
   assert.is($counter3.getState(), 42)
 })
 
+test('store should be initialized with default value', () => {
+  const $counter31 = createStore(0, { name: 'counter31' })
+  const adapter = storage({ storage: mockStorage, def: 42 })
+  persist({ store: $counter31, adapter })
+  assert.is(mockStorage.getItem('counter31'), null)
+  assert.is($counter31.getState(), 42)
+})
+
+test('store should be initialized from storage value, not default value', () => {
+  mockStorage.setItem('counter32', '42')
+  const adapter = storage({ storage: mockStorage, def: 21 })
+  const $counter32 = createStore(0, { name: 'counter32' })
+  persist({ store: $counter32, adapter })
+  assert.is(mockStorage.getItem('counter32'), '42')
+  assert.is($counter32.getState(), 42)
+})
+
 test('reset store should reset it to given initial value', () => {
   mockStorage.setItem('counter4', '42')
   const reset = createEvent()

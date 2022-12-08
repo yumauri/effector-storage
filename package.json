@@ -37,6 +37,7 @@
     "test": "npm-run-all --parallel test:*",
     "test:node": "nyc --reporter=lcov --reporter=text uvu -r ts-node/register -r tests/rewiremock -i mock -i types tests",
     "test:types": "uvu -r ts-node/register -r tests/rewiremock tests types",
+    "test-one": "uvu -r ts-node/register -r tests/rewiremock tests",
     "doc:update-readme": "npx doctoc --maxlevel 3 README.md",
     "clean": "rm -rf build coverage .nyc_output",
     "size": "size-limit --highlight-less",

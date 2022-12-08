@@ -71,7 +71,7 @@ export function createPersist(defaults?: ConfigPersist): Persist {
         ? config.def
         : 'store' in config
         ? config.store.defaultState
-        : null
+        : undefined
 
     return base({
       adapter: query({ ...defaults, ...config, def }),

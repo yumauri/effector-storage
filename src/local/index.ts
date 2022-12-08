@@ -21,6 +21,7 @@ export interface AdapterConfig {
   sync?: boolean
   serialize?: (value: any) => string
   deserialize?: (value: string) => any
+  def?: any
 }
 
 export interface ConfigStore<State, Err = Error>
@@ -69,12 +70,20 @@ export function local(config?: LocalStorageConfig): StorageAdapter {
  * with predefined `localStorage` adapter
  */
 export function createPersist(defaults?: ConfigPersist): Persist {
-  return (config) =>
-    base({
-      adapter: local({ ...defaults, ...config }),
+  return (config) => {
+    const def =
+      config.def !== undefined
+        ? config.def
+        : 'store' in config
+        ? config.store.defaultState
+        : undefined
+
+    return base({
+      adapter: local({ ...defaults, ...config, def }),
       ...defaults,
       ...config,
     })
+  }
 }
 
 /**

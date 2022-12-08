@@ -21,6 +21,7 @@ export interface AdapterConfig {
   sync?: boolean
   serialize?: (value: any) => string
   deserialize?: (value: string) => any
+  def?: any
 }
 
 export interface ConfigStore<State, Err = Error>
@@ -68,12 +69,20 @@ export function session(config?: SessionStorageConfig): StorageAdapter {
  * with predefined `sessionStorage` adapter
  */
 export function createPersist(defaults?: ConfigPersist): Persist {
-  return (config) =>
-    base({
-      adapter: session({ ...defaults, ...config }),
+  return (config) => {
+    const def =
+      config.def !== undefined
+        ? config.def
+        : 'store' in config
+        ? config.store.defaultState
+        : undefined
+
+    return base({
+      adapter: session({ ...defaults, ...config, def }),
       ...defaults,
       ...config,
     })
+  }
 }
 
 /**
