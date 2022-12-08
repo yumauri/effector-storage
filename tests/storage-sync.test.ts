@@ -113,6 +113,24 @@ test('persisted store should be erased on storage.clear()', async () => {
   assert.is($counter4.getState(), null)
 })
 
+test('persisted store should be restored to default value on storage.clear()', async () => {
+  const mockStorage = createStorageMock()
+  mockStorage.setItem('counter5', '42')
+
+  const $counter5 = createStore(0, { name: 'counter5' })
+  const adapter = storage({ storage: mockStorage, sync: true, def: 21 })
+  persist({ store: $counter5, adapter })
+  assert.is($counter5.getState(), 42) // <- restore value from storage
+
+  mockStorage.clear()
+  await events.dispatchEvent('storage', {
+    storageArea: mockStorage,
+    key: null,
+  })
+
+  assert.is($counter5.getState(), 21) // <- default value from adapter
+})
+
 //
 // Launch tests
 //

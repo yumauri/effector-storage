@@ -5,6 +5,7 @@ export interface StorageConfig {
   sync?: boolean
   serialize?: (value: any) => string
   deserialize?: (value: string) => any
+  def?: any
 }
 
 /**
@@ -15,6 +16,7 @@ export function storage({
   sync = false,
   serialize = JSON.stringify,
   deserialize = JSON.parse,
+  def,
 }: StorageConfig): StorageAdapter {
   const adapter: StorageAdapter = <State>(
     key: string,
@@ -23,6 +25,7 @@ export function storage({
     if (sync && typeof addEventListener !== 'undefined') {
       addEventListener('storage', (e) => {
         if (e.storageArea === storage) {
+          // call `get` function with new value
           if (e.key === key) update(e.newValue)
 
           // `key` attribute is `null` when the change is caused by the storage `clear()` method
@@ -34,9 +37,11 @@ export function storage({
     return {
       get(value?: string | null) {
         const item = value !== undefined ? value : storage.getItem(key)
-        return value === undefined && item === null
-          ? undefined
-          : deserialize(item as any)
+        return item === null
+          ? def !== undefined
+            ? def
+            : value // 'undefined' when pickup, 'null' when clear
+          : deserialize(item)
       },
 
       set(value: State) {

@@ -10,7 +10,7 @@ module.exports = [
   {
     name: 'core persist, cjs module',
     path: 'build/index.cjs',
-    limit: '2222 B',
+    limit: '2246 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
@@ -35,14 +35,14 @@ module.exports = [
   {
     name: 'storage adapter, es module',
     path: 'build/storage/index.js',
-    limit: '230 B',
+    limit: '233 B',
     import: '{ storage }',
     ignore: ['effector'],
   },
   {
     name: 'storage adapter, cjs module',
     path: 'build/storage/index.cjs',
-    limit: '512 B',
+    limit: '516 B',
     import: '{ storage }',
     ignore: ['effector'],
   },
@@ -51,14 +51,14 @@ module.exports = [
   {
     name: '`localStorage` persist, es module',
     path: 'build/local/index.js',
-    limit: '1182 B',
+    limit: '1254 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
   {
     name: '`localStorage` persist, cjs module',
     path: 'build/local/index.cjs',
-    limit: '1476 B',
+    limit: '1536 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
@@ -68,14 +68,14 @@ module.exports = [
   {
     name: 'core persist + `localStorage` adapter, es module',
     path: 'build/index.js',
-    limit: '1190 B',
+    limit: '1259 B',
     import: '{ persist, local }',
     ignore: ['effector'],
   },
   {
     name: 'core persist + `localStorage` adapter factory, es module',
     path: ['build/index.js', 'build/local/index.js'],
-    limit: '1191 B',
+    limit: '1261 B',
     import: {
       'build/index.js': '{ persist }',
       'build/local/index.js': '{ local }',
@@ -87,14 +87,14 @@ module.exports = [
   {
     name: '`sessionStorage` persist, es module',
     path: 'build/session/index.js',
-    limit: '1180 B',
+    limit: '1252 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
   {
     name: '`sessionStorage` persist, cjs module',
     path: 'build/session/index.cjs',
-    limit: '1467 B',
+    limit: '1533 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
@@ -103,14 +103,14 @@ module.exports = [
   {
     name: 'query string persist, es module',
     path: 'build/query/index.js',
-    limit: '1298 B',
+    limit: '1297 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
   {
     name: 'query string persist, cjs module',
     path: 'build/query/index.cjs',
-    limit: '1605 B',
+    limit: '1604 B',
     import: '{ persist }',
     ignore: ['effector'],
   },

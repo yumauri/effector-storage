@@ -411,7 +411,7 @@ test('should work with source/target (issue #20)', () => {
   // pass initial query state to target
   assert.is(global.location.search, '?id=20_1_1')
   assert.is(watchSource.callCount, 0)
-  assert.is(watchTarget.callCount, 2) // first and second // fix later?
+  assert.is(watchTarget.callCount, 2) // first and second // FIXME: later?
   assert.equal(watchTarget.calls[0].arguments, ['20_1_1'])
   assert.equal(watchTarget.calls[1].arguments, ['20_1_1'])
 
@@ -446,7 +446,7 @@ test('should work with source/target with default state (issue #20)', () => {
 
   // pass default value to target
   assert.is(global.location.search, '')
-  assert.is(watchTarget.callCount, 2) // first and second // fix later?
+  assert.is(watchTarget.callCount, 2) // first and second // FIXME: later?
   assert.equal(watchTarget.calls[0].arguments, ['20_2_0'])
   assert.equal(watchTarget.calls[1].arguments, ['20_2_0'])
 })
