@@ -1,45 +1,45 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@babel/core': ^7.20.5
-  '@babel/plugin-transform-block-scoping': ^7.20.5
+  '@babel/core': ^7.20.12
+  '@babel/plugin-transform-block-scoping': ^7.20.11
   '@babel/preset-typescript': ^7.18.6
   '@react-native-async-storage/async-storage': ^1.17.11
   '@rollup/plugin-babel': ^6.0.3
   '@rollup/plugin-node-resolve': ^15.0.1
-  '@size-limit/preset-small-lib': ^8.1.0
-  '@typescript-eslint/eslint-plugin': ^5.45.1
-  '@typescript-eslint/parser': ^5.45.1
+  '@size-limit/preset-small-lib': ^8.1.2
+  '@typescript-eslint/eslint-plugin': ^5.49.0
+  '@typescript-eslint/parser': ^5.49.0
   effector: 21.0.0
   effector-21-0-0: npm:effector@21.0.0
   effector-21-8-12: npm:effector@21.8.12
   effector-22-0-0: npm:effector@22.0.0
   effector-22-4-0: npm:effector@22.4.0
-  eslint: ^8.29.0
-  eslint-config-prettier: ^8.5.0
+  eslint: ^8.32.0
+  eslint-config-prettier: ^8.6.0
   eslint-config-standard: ^17.0.0
-  eslint-plugin-import: ^2.26.0
-  eslint-plugin-n: ^15.6.0
+  eslint-plugin-import: ^2.27.5
+  eslint-plugin-n: ^15.6.1
   eslint-plugin-promise: ^6.1.1
-  flowgen: 1.20.1
-  np: ^7.6.2
+  flowgen: 1.21.0
+  np: ^7.6.3
   npm-run-all: ^4.1.5
   nyc: ^15.1.0
   patronum: 1.1.0
-  prettier: ^2.8.0
+  prettier: ^2.8.3
   react-native-encrypted-storage: ^4.0.3
   rewiremock: ^3.14.4
-  rollup: ^3.6.0
+  rollup: ^3.10.1
   rollup-plugin-command: ^1.1.3
-  rollup-plugin-dts: ^5.0.0
+  rollup-plugin-dts: ^5.1.1
   rollup-plugin-generate-package-json: ^3.2.0
   rollup-plugin-terser: ^7.0.2
-  size-limit: ^8.1.0
+  size-limit: ^8.1.2
   snoop: ^1.0.4
   ts-node: ^10.9.1
   tsd: ^0.25.0
   tslib: ^2.4.1
-  typescript: ^4.9.3
+  typescript: ^4.9.4
   uvu: 0.5.4
   yaspeller: ^8.0.1
 
@@ -64,7 +64,7 @@ devDependencies:
   eslint-plugin-import: 2.27.5_6savw6y3b7jng6f64kgkyoij64
   eslint-plugin-n: 15.6.1_eslint@8.32.0
   eslint-plugin-promise: 6.1.1_eslint@8.32.0
-  flowgen: 1.20.1
+  flowgen: 1.21.0
   np: 7.6.3
   npm-run-all: 4.1.5
   nyc: 15.1.0
@@ -2660,8 +2660,8 @@ packages:
     resolution: {integrity: sha512-5nqDSxl8nn5BSNxyR3n4I6eDmbolI6WT+QqR547RwxQapgjQBmtktdP+HTBb/a/zLsbzERTONyUB5pefh5TtjQ==}
     dev: true
 
-  /flowgen/1.20.1:
-    resolution: {integrity: sha512-Wus3KAhsOF7CiZGkBKZawf0AJXe06Wot6UGQt7h9QS6MBtBkFgG30wTAgpy1byA3FKYb059vO341XtN8LUhenQ==}
+  /flowgen/1.21.0:
+    resolution: {integrity: sha512-pFNFFyMLRmW6njhOIm5TrbGUDTv64aujmys2KrkRE2NYD8sXwJUyicQRwU5SPRBRJnFSD/FNlnHo2NnHI5eJSw==}
     hasBin: true
     dependencies:
       '@babel/code-frame': 7.18.6
