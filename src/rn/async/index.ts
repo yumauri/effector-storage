@@ -43,7 +43,7 @@ export interface AsyncStorageConfig
  */
 export function async(config: AsyncStorageConfig): StorageAdapter {
   return asyncStorage({
-    storage: AsyncStorage,
+    storage: () => AsyncStorage,
     ...config,
   })
 }

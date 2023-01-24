@@ -43,7 +43,7 @@ export interface EncryptedStorageConfig
  */
 export function encrypted(config: EncryptedStorageConfig): StorageAdapter {
   return asyncStorage({
-    storage: EncryptedStorage,
+    storage: () => EncryptedStorage,
     ...config,
   })
 }

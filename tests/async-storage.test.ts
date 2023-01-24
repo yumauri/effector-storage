@@ -11,7 +11,7 @@ import { createAsyncStorageMock } from './mocks/async-storage.mock'
 //
 
 const mockAsyncStorage = createAsyncStorageMock()
-const asyncStorageAdapter = asyncStorage({ storage: mockAsyncStorage })
+const asyncStorageAdapter = asyncStorage({ storage: () => mockAsyncStorage })
 
 const timeout = (t: number) => new Promise((resolve) => setTimeout(resolve, t))
 
@@ -188,9 +188,9 @@ test('broken store value should launch `catch` handler', async () => {
 
 test('different storage instances should not interfere', async () => {
   const mockStorage1 = createAsyncStorageMock()
-  const storageAdapter1 = asyncStorage({ storage: mockStorage1 })
+  const storageAdapter1 = asyncStorage({ storage: () => mockStorage1 })
   const mockStorage2 = createAsyncStorageMock()
-  const storageAdapter2 = asyncStorage({ storage: mockStorage2 })
+  const storageAdapter2 = asyncStorage({ storage: () => mockStorage2 })
 
   await mockStorage1.setItem('custom', '111')
   await mockStorage2.setItem('custom', '222')
@@ -227,7 +227,7 @@ test('different storage instances should not interfere', async () => {
 test('should be possible to use custom serialization', async () => {
   const mockStorage = createAsyncStorageMock()
   const storageDateAdapter = asyncStorage({
-    storage: mockStorage,
+    storage: () => mockStorage,
     serialize: (date: Date) => String(date.getTime()),
     deserialize: (timestamp: string) => new Date(Number(timestamp)),
   })
@@ -288,11 +288,11 @@ test('should sync stores, persisted to the same adapter-key, but different adapt
   await mockStorage.setItem('same-key-1', '0')
 
   const adapter1 = asyncStorage({
-    storage: mockStorage,
+    storage: () => mockStorage,
     serialize: (value) => String(value),
     deserialize: (value) => Number(value),
   })
-  const adapter2 = asyncStorage({ storage: mockStorage })
+  const adapter2 = asyncStorage({ storage: () => mockStorage })
 
   const $store0 = createStore(1)
   const $store1 = createStore(2)

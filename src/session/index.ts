@@ -42,13 +42,15 @@ export interface Persist {
 export interface SessionStorageConfig extends Omit<StorageConfig, 'storage'> {}
 
 /**
- * Function, checking if `sessionStorage` exists and accessible
+ * Function, checking if `sessionStorage` exists
  */
 function supports() {
   try {
     return typeof sessionStorage !== 'undefined'
   } catch (error) {
-    return false // should somehow return error instance?
+    // accessing `sessionStorage` could throw an exception only in one case -
+    // when `sessionStorage` IS supported, but blocked by security policies
+    return true
   }
 }
 
@@ -58,7 +60,7 @@ function supports() {
 export function session(config?: SessionStorageConfig): StorageAdapter {
   return supports()
     ? storage({
-        storage: sessionStorage,
+        storage: () => sessionStorage,
         ...config,
       })
     : nil('session')

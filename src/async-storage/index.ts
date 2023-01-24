@@ -6,7 +6,7 @@ export interface AsyncStorage {
 }
 
 export interface AsyncStorageConfig {
-  storage: AsyncStorage
+  storage: () => AsyncStorage
   serialize?: (value: any) => string
   deserialize?: (value: string) => any
 }
@@ -21,15 +21,20 @@ export function asyncStorage({
 }: AsyncStorageConfig): StorageAdapter {
   const adapter: StorageAdapter = <State>(key: string) => ({
     async get() {
-      const item = await storage.getItem(key)
+      const item = await storage().getItem(key)
       return item === null ? undefined : deserialize(item)
     },
 
     async set(value: State) {
-      await storage.setItem(key, serialize(value))
+      await storage().setItem(key, serialize(value))
     },
   })
 
-  adapter.keyArea = storage
+  try {
+    adapter.keyArea = storage()
+  } catch (error) {
+    // do nothing
+  }
+
   return adapter
 }

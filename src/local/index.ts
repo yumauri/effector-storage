@@ -42,13 +42,15 @@ export interface Persist {
 export interface LocalStorageConfig extends Omit<StorageConfig, 'storage'> {}
 
 /**
- * Function, checking if `localStorage` exists and accessible
+ * Function, checking if `localStorage` exists
  */
 function supports() {
   try {
     return typeof localStorage !== 'undefined'
   } catch (error) {
-    return false // should somehow return error instance?
+    // accessing `localStorage` could throw an exception only in one case -
+    // when `localStorage` IS supported, but blocked by security policies
+    return true
   }
 }
 
@@ -58,7 +60,7 @@ function supports() {
 export function local(config?: LocalStorageConfig): StorageAdapter {
   return supports()
     ? storage({
-        storage: localStorage,
+        storage: () => localStorage,
         sync: true,
         ...config,
       })

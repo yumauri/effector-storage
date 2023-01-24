@@ -28,7 +28,7 @@ import { storage } from 'effector-storage/storage'
 
 ### Options
 
-- `storage` ([Storage]): Compatible synchronous storage.
+- `storage` (_() => [Storage]_): Compatible synchronous storage.
 - `sync`? ([_boolean_]): Add [`'storage'`] event listener or no. Default = `false`.
 - `serialize`? (_(value: any) => string_): Custom serialize function. Default = `JSON.stringify`.
 - `deserialize`? (_(value: string) => any_): Custom deserialize function. Default = `JSON.parse`.
