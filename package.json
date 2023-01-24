@@ -58,7 +58,7 @@
     "effector-21-0-0": "npm:effector@21.0.0",
     "effector-21-8-12": "npm:effector@21.8.12",
     "effector-22-0-0": "npm:effector@22.0.0",
-    "effector-22-4-0": "npm:effector@22.4.0",
+    "effector-22-5-0": "npm:effector@22.5.0",
     "eslint": "^8.32.0",
     "eslint-config-prettier": "^8.6.0",
     "eslint-config-standard": "^17.0.0",
