@@ -6,7 +6,6 @@ import type {
   ConfigJustSourceTarget,
   StorageAdapter,
 } from '../types'
-import type { StorageConfig } from '../storage'
 import { persist as base } from '../core'
 import { nil } from '../nil'
 import { storage } from '../storage'
@@ -17,7 +16,7 @@ export interface ConfigPersist extends BaseConfigPersist {
   sync?: boolean
 }
 
-export interface AdapterConfig {
+export interface SessionStorageConfig {
   sync?: boolean
   serialize?: (value: any) => string
   deserialize?: (value: string) => any
@@ -25,12 +24,12 @@ export interface AdapterConfig {
 }
 
 export interface ConfigStore<State, Err = Error>
-  extends AdapterConfig,
+  extends SessionStorageConfig,
     ConfigCommon<State, Err>,
     ConfigJustStore<State> {}
 
 export interface ConfigSourceTarget<State, Err = Error>
-  extends AdapterConfig,
+  extends SessionStorageConfig,
     ConfigCommon<State, Err>,
     ConfigJustSourceTarget<State> {}
 
@@ -38,8 +37,6 @@ export interface Persist {
   <State, Err = Error>(config: ConfigSourceTarget<State, Err>): Subscription
   <State, Err = Error>(config: ConfigStore<State, Err>): Subscription
 }
-
-export interface SessionStorageConfig extends Omit<StorageConfig, 'storage'> {}
 
 /**
  * Function, checking if `sessionStorage` exists

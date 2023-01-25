@@ -25,19 +25,13 @@ export interface ConfigPersist extends BaseConfigPersist {
   state?: StateBehavior
 }
 
-export interface AdapterConfig {
-  method?: ChangeMethod
-  state?: StateBehavior
-  def?: any
-}
-
 export interface ConfigStore<State, Err = Error>
-  extends AdapterConfig,
+  extends QueryConfig,
     ConfigCommon<State, Err>,
     ConfigJustStore<State> {}
 
 export interface ConfigSourceTarget<State, Err = Error>
-  extends AdapterConfig,
+  extends QueryConfig,
     ConfigCommon<State, Err>,
     ConfigJustSourceTarget<State> {}
 

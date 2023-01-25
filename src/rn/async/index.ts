@@ -6,7 +6,6 @@ import type {
   ConfigJustSourceTarget,
   StorageAdapter,
 } from '../../types'
-import type { AsyncStorageConfig as BaseAsyncStorageConfig } from '../../async-storage'
 import { persist as base } from '../../core'
 import { asyncStorage } from '../../async-storage'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -15,18 +14,18 @@ export type { Done, Fail, Finally, StorageAdapter } from '../../types'
 
 export interface ConfigPersist extends BaseConfigPersist {}
 
-export interface AdapterConfig {
+export interface AsyncStorageConfig {
   serialize?: (value: any) => string
   deserialize?: (value: string) => any
 }
 
 export interface ConfigStore<State, Err = Error>
-  extends AdapterConfig,
+  extends AsyncStorageConfig,
     ConfigCommon<State, Err>,
     ConfigJustStore<State> {}
 
 export interface ConfigSourceTarget<State, Err = Error>
-  extends AdapterConfig,
+  extends AsyncStorageConfig,
     ConfigCommon<State, Err>,
     ConfigJustSourceTarget<State> {}
 
@@ -34,9 +33,6 @@ export interface Persist {
   <State, Err = Error>(config: ConfigSourceTarget<State, Err>): Subscription
   <State, Err = Error>(config: ConfigStore<State, Err>): Subscription
 }
-
-export interface AsyncStorageConfig
-  extends Omit<BaseAsyncStorageConfig, 'storage'> {}
 
 /**
  * Creates `AsyncStorage` adapter
