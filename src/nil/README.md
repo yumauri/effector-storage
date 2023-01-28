@@ -18,6 +18,8 @@ persist({
 
 Note though, that two (or more) different stores, persisted with the same key and same `keyArea`, will be synchronized nonetheless, even if not connected with each other directly — each store will receive updates from another one.
 
+`nil` is "no-op" adapter for [`either`](../tools/README.md#either) function.
+
 ## Adapter
 
 ```javascript

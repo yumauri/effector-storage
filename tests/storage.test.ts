@@ -11,7 +11,7 @@ import { createStorageMock } from './mocks/storage.mock'
 //
 
 const mockStorage = createStorageMock()
-const storageAdapter = storage({ storage: mockStorage })
+const storageAdapter = storage({ storage: () => mockStorage })
 
 //
 // Tests
@@ -56,7 +56,7 @@ test('store should be initialized from storage value', () => {
 
 test('store should be initialized with default value', () => {
   const $counter31 = createStore(0, { name: 'counter31' })
-  const adapter = storage({ storage: mockStorage, def: 42 })
+  const adapter = storage({ storage: () => mockStorage, def: 42 })
   persist({ store: $counter31, adapter })
   assert.is(mockStorage.getItem('counter31'), null)
   assert.is($counter31.getState(), 42)
@@ -64,7 +64,7 @@ test('store should be initialized with default value', () => {
 
 test('store should be initialized from storage value, not default value', () => {
   mockStorage.setItem('counter32', '42')
-  const adapter = storage({ storage: mockStorage, def: 21 })
+  const adapter = storage({ storage: () => mockStorage, def: 21 })
   const $counter32 = createStore(0, { name: 'counter32' })
   persist({ store: $counter32, adapter })
   assert.is(mockStorage.getItem('counter32'), '42')
@@ -185,9 +185,9 @@ test('broken store value should launch `catch` handler', () => {
 
 test('different storage instances should not interfere', () => {
   const mockStorage1 = createStorageMock()
-  const storageAdapter1 = storage({ storage: mockStorage1 })
+  const storageAdapter1 = storage({ storage: () => mockStorage1 })
   const mockStorage2 = createStorageMock()
-  const storageAdapter2 = storage({ storage: mockStorage2 })
+  const storageAdapter2 = storage({ storage: () => mockStorage2 })
 
   mockStorage1.setItem('custom', '111')
   mockStorage2.setItem('custom', '222')
@@ -220,7 +220,7 @@ test('different storage instances should not interfere', () => {
 test('should be possible to use custom serialization', () => {
   const mockStorage = createStorageMock()
   const storageDateAdapter = storage({
-    storage: mockStorage,
+    storage: () => mockStorage,
     sync: false,
     serialize: (date: Date) => String(date.getTime()),
     deserialize: (timestamp: string) => new Date(Number(timestamp)),
@@ -274,8 +274,8 @@ test('should sync stores, persisted to the same adapter-key, but different adapt
   const mockStorage = createStorageMock()
   mockStorage.setItem('same-key-1', '0')
 
-  const adapter1 = storage({ storage: mockStorage, sync: false })
-  const adapter2 = storage({ storage: mockStorage, sync: true })
+  const adapter1 = storage({ storage: () => mockStorage, sync: false })
+  const adapter2 = storage({ storage: () => mockStorage, sync: true })
 
   const $store0 = createStore(1)
   const $store1 = createStore(2)

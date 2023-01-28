@@ -30,6 +30,12 @@ export { query } from './query'
 export { session } from './session'
 export { storage } from './storage'
 
+//
+// reexport tools
+//
+
+export { either } from './tools'
+
 /**
  * Creates custom `persist`
  */

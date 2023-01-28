@@ -16,7 +16,7 @@ test('should NOT pickup new initial value', () => {
   const mockStorage = createStorageMock()
   mockStorage.setItem('$store', '0')
 
-  const adapter = storage({ storage: mockStorage })
+  const adapter = storage({ storage: () => mockStorage })
 
   const pickup = createEvent()
   const $store = createStore(1, { name: '$store' })
@@ -38,7 +38,7 @@ test('should pickup new value on event', () => {
   const mockStorage = createStorageMock()
   mockStorage.setItem('$store', '42')
 
-  const adapter = storage({ storage: mockStorage })
+  const adapter = storage({ storage: () => mockStorage })
 
   const pickup = createEvent()
   const $store = createStore(1, { name: '$store' })

@@ -13,7 +13,7 @@ test('should set value to storage only on `clock` trigger', () => {
   const mockStorage = createStorageMock()
   mockStorage.setItem('$store', '0')
 
-  const adapter = storage({ storage: mockStorage })
+  const adapter = storage({ storage: () => mockStorage })
 
   const clock = createEvent()
   const $store = createStore(1, { name: '$store' })

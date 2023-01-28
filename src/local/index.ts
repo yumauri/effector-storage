@@ -6,7 +6,6 @@ import type {
   ConfigJustSourceTarget,
   StorageAdapter,
 } from '../types'
-import type { StorageConfig } from '../storage'
 import { persist as base } from '../core'
 import { nil } from '../nil'
 import { storage } from '../storage'
@@ -17,7 +16,7 @@ export interface ConfigPersist extends BaseConfigPersist {
   sync?: boolean
 }
 
-export interface AdapterConfig {
+export interface LocalStorageConfig {
   sync?: boolean
   serialize?: (value: any) => string
   deserialize?: (value: string) => any
@@ -25,12 +24,12 @@ export interface AdapterConfig {
 }
 
 export interface ConfigStore<State, Err = Error>
-  extends AdapterConfig,
+  extends LocalStorageConfig,
     ConfigCommon<State, Err>,
     ConfigJustStore<State> {}
 
 export interface ConfigSourceTarget<State, Err = Error>
-  extends AdapterConfig,
+  extends LocalStorageConfig,
     ConfigCommon<State, Err>,
     ConfigJustSourceTarget<State> {}
 
@@ -39,16 +38,16 @@ export interface Persist {
   <State, Err = Error>(config: ConfigStore<State, Err>): Subscription
 }
 
-export interface LocalStorageConfig extends Omit<StorageConfig, 'storage'> {}
-
 /**
- * Function, checking if `localStorage` exists and accessible
+ * Function, checking if `localStorage` exists
  */
 function supports() {
   try {
     return typeof localStorage !== 'undefined'
   } catch (error) {
-    return false // should somehow return error instance?
+    // accessing `localStorage` could throw an exception only in one case -
+    // when `localStorage` IS supported, but blocked by security policies
+    return true
   }
 }
 
@@ -58,7 +57,7 @@ function supports() {
 export function local(config?: LocalStorageConfig): StorageAdapter {
   return supports()
     ? storage({
-        storage: localStorage,
+        storage: () => localStorage,
         sync: true,
         ...config,
       })

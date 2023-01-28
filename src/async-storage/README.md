@@ -29,7 +29,7 @@ import { asyncStorage } from 'effector-storage/async-storage'
 
 ### Options
 
-- `storage` ([AsyncStorage]): Compatible asynchronous storage.
+- `storage` (_() => [AsyncStorage]_): Compatible asynchronous storage.
 - `serialize`? (_(value: any) => string_): Custom serialize function. Default = `JSON.stringify`.
 - `deserialize`? (_(value: string) => any_): Custom deserialize function. Default = `JSON.parse`.
 

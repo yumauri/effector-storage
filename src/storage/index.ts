@@ -1,7 +1,7 @@
 import type { StorageAdapter } from '../types'
 
 export interface StorageConfig {
-  storage: Storage
+  storage: () => Storage
   sync?: boolean
   serialize?: (value: any) => string
   deserialize?: (value: string) => any
@@ -24,7 +24,9 @@ export function storage({
   ) => {
     if (sync && typeof addEventListener !== 'undefined') {
       addEventListener('storage', (e) => {
-        if (e.storageArea === storage) {
+        // I hope storage is accessible in case 'storage' event is happening
+        // so calling `storage()` should not throw security exception here
+        if (e.storageArea === storage()) {
           // call `get` function with new value
           if (e.key === key) update(e.newValue)
 
@@ -36,7 +38,7 @@ export function storage({
 
     return {
       get(value?: string | null) {
-        const item = value !== undefined ? value : storage.getItem(key)
+        const item = value !== undefined ? value : storage().getItem(key)
         return item === null
           ? def !== undefined
             ? def
@@ -45,11 +47,16 @@ export function storage({
       },
 
       set(value: State) {
-        storage.setItem(key, serialize(value))
+        storage().setItem(key, serialize(value))
       },
     }
   }
 
-  adapter.keyArea = storage
+  try {
+    adapter.keyArea = storage()
+  } catch (error) {
+    // do nothing
+  }
+
   return adapter
 }

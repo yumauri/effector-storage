@@ -19,6 +19,7 @@
     "IndexedDB",
     "keyArea",
     "localStorage",
+    "noop",
     "patronum",
     "Payload",
     "pushState",
