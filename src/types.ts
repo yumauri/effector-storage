@@ -6,6 +6,7 @@ export interface StorageAdapter {
     get(value?: any): State | Promise<State>
   }
   keyArea?: any
+  noop?: boolean
 }
 
 export type Done<State> = {

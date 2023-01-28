@@ -13,6 +13,7 @@ const external = [
   'react-native-encrypted-storage',
   '@react-native-async-storage/async-storage',
   /\.[./]*\/core/,
+  /\.[./]*\/tools/,
   /\.[./]*\/nil/,
   /\.[./]*\/storage/,
   /\.[./]*\/local/,
@@ -109,6 +110,11 @@ const src = (name) => ({
                 './core': {
                   require: './core/index.cjs',
                   import: './core/index.js',
+                },
+                './tools/package.json': './tools/package.json',
+                './tools': {
+                  require: './tools/index.cjs',
+                  import: './tools/index.js',
                 },
                 './nil/package.json': './nil/package.json',
                 './nil': {
@@ -219,6 +225,7 @@ const entry = (name) => [src(name), dts(name), cjsdts(name)]
 export default [
   ...entry(''),
   ...entry('core/'),
+  ...entry('tools/'),
   ...entry('nil/'),
   ...entry('storage/'),
   ...entry('local/'),

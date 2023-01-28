@@ -262,6 +262,7 @@ interface StorageAdapter {
     set(value: State): void
   }
   keyArea?: any
+  noop?: boolean
 }
 ```
 
@@ -279,6 +280,10 @@ interface StorageAdapter {
 
 Adapter function can have static field `keyArea` — this could be any value of any type, which should be unique for _keys namespace_. For example, two local storage adapters could have different settings, but both of them uses same _storage area_ — `localStorage`. So, different stores, persisted in local storage with the same key (but possibly with different adapters), should be synced. That is what `keyArea` is responsible for. Value of that field is used as a key in cache `Map`.<br>
 In case it is omitted — adapter instances is used instead.
+
+#### noop
+
+Marks adapter as "no-op" for [`either`](https://github.com/yumauri/effector-storage/tree/master/src/tools/README.md#either) function.
 
 ### Synchronous storage adapter example
 

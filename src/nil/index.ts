@@ -11,5 +11,6 @@ export function nil(keyArea: any = ''): StorageAdapter {
     }
 
   adapter.keyArea = keyArea
+  adapter.noop = true
   return adapter
 }
