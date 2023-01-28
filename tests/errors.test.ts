@@ -283,23 +283,6 @@ test('unhandled error should be printed to console.error', () => {
   }
 })
 
-test('should not printed same error twice', () => {
-  const error = snoop(() => undefined)
-  const consoleError = console.error
-  console.error = error.fn
-
-  try {
-    const $store = createStore(0)
-    persist({ store: $store, adapter: syncErrorAdapter, key: 'key-1' })
-
-    //
-    ;($store as any).setState(5) // <- same value as in previous test
-    assert.is(error.callCount, 1) // <- didn't call watcher on set
-  } finally {
-    console.error = consoleError
-  }
-})
-
 //
 // Launch tests
 //

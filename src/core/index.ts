@@ -12,13 +12,19 @@ import {
   createEffect,
   createEvent,
   createNode,
+  createStore,
   forward,
   guard,
   is,
+  merge,
   sample,
   withRegion,
 } from 'effector'
 import { getAreaStorage } from './area'
+
+// identity helper function,
+// used instead of native serialization functions, if there are not defined
+const identity = <T>(value: T) => value
 
 /**
  * Default sink for unhandled errors
@@ -88,11 +94,27 @@ export function persist<State, Err = Error>({
             error,
           }
 
+  const sop =
+    (operation: 'read' | 'write') =>
+    ({ params, error }: any): any => ({
+      status: 'fail',
+      key,
+      keyPrefix,
+      operation,
+      value: params,
+      error,
+    })
+
   // create all auxiliary units and nodes within the region,
   // to be able to remove them all at once on unsubscription
   withRegion(region, () => {
     const getFx = createEffect<void, State, Err>()
     const setFx = createEffect<State, void, Err>()
+    const readFx = createEffect<State, State, Err>()
+    const writeFx = createEffect<State, State, Err>()
+
+    // @ts-expect-error due to old typings in import
+    const raw = createStore<State>(null, { serialize: 'ignore' })
 
     const localAnyway = createEvent<Finally<State, Err>>()
     const localDone = localAnyway.filterMap<Done<State>>(
@@ -110,6 +132,18 @@ export function persist<State, Err = Error>({
     getFx.use(value.get)
     setFx.use(value.set)
 
+    let read = identity
+    let write = identity
+    if (is.store(source)) {
+      const serialize = (source as any).graphite.meta.serialize
+      if (serialize && serialize.read && serialize.write) {
+        read = serialize.read
+        write = serialize.write
+      }
+    }
+    readFx.use(read)
+    writeFx.use(write)
+
     const trigger = createEvent<State>()
     sample({
       source,
@@ -120,17 +154,25 @@ export function persist<State, Err = Error>({
 
     guard({
       source: sample<State, State, [State, State]>(
-        storage,
+        raw,
         trigger,
         (current, proposed) => [proposed, current]
       ),
       filter: ([proposed, current]) => proposed !== current,
-      target: setFx.prepend<[State, State]>(([proposed]) => proposed),
+      target: writeFx.prepend<[State, State]>(([proposed]) => proposed),
     })
+    forward({ from: writeFx.doneData, to: setFx })
     forward({ from: [getFx.doneData, setFx], to: storage })
-    forward({ from: [getFx.doneData, storage], to: target })
+    sample({ source: merge([getFx.doneData, storage]), target: readFx })
+    forward({ from: readFx.doneData, to: [target, raw] })
+
     forward({
-      from: [getFx.finally.map(op('get')), setFx.finally.map(op('set'))],
+      from: [
+        getFx.finally.map(op('get')),
+        setFx.finally.map(op('set')),
+        readFx.fail.map(sop('read')),
+        writeFx.fail.map(sop('write')),
+      ],
       to: localAnyway,
     })
 

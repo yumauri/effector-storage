@@ -110,16 +110,12 @@ test('target event should be called with default value on storage.clear()', asyn
 
   persist({ source, target, key: 'counter4', sync: true, def: 42 })
 
-  // FIXME: target called 2 times because `forward` doesn't batch updates
-  // first:  getFx.done -> target
-  // second: getFx.done -> storage area -> target
-  assert.is(watch.callCount, 2)
+  assert.is(watch.callCount, 1)
   assert.equal(watch.calls[0].arguments, [42])
-  assert.equal(watch.calls[1].arguments, [42])
 
   source(21)
-  assert.is(watch.callCount, 3)
-  assert.equal(watch.calls[2].arguments, [21])
+  assert.is(watch.callCount, 2)
+  assert.equal(watch.calls[1].arguments, [21])
 
   global.sessionStorage.clear()
   await events.dispatchEvent('storage', {
@@ -127,12 +123,8 @@ test('target event should be called with default value on storage.clear()', asyn
     key: null,
   })
 
-  // FIXME: target called 2 times because `forward` doesn't batch updates
-  // first:  getFx.done -> target
-  // second: getFx.done -> storage area -> target
-  assert.is(watch.callCount, 5)
-  assert.equal(watch.calls[3].arguments, [42])
-  assert.equal(watch.calls[4].arguments, [42])
+  assert.is(watch.callCount, 3)
+  assert.equal(watch.calls[2].arguments, [42])
 })
 
 test('target event should be called with null on storage.clear()', async () => {
@@ -159,12 +151,8 @@ test('target event should be called with null on storage.clear()', async () => {
     key: null,
   })
 
-  // FIXME: target called 2 times because `forward` doesn't batch updates
-  // first:  getFx.done -> target
-  // second: getFx.done -> storage area -> target
-  assert.is(watch.callCount, 4)
+  assert.is(watch.callCount, 3)
   assert.equal(watch.calls[2].arguments, [null])
-  assert.equal(watch.calls[3].arguments, [null])
 })
 
 //
