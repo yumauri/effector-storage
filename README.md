@@ -20,11 +20,11 @@ Small module for [Effector](https://github.com/effector/effector) ☄️ to sync
   - [with React Native AsyncStorage](#with-react-native-asyncstorage)
   - [with React Native EncryptedStorage](#with-react-native-encryptedstorage)
 - [Usage with domains](#usage-with-domains)
-- [Functional helpers](#functional-helpers)
 - [Formulae](#formulae)
   - [Units](#units)
   - [Options](#options)
   - [Returns](#returns)
+  - [Notes](#notes)
 - [`createPersist` factory](#createpersist-factory)
   - [Options](#options-1)
   - [Returns](#returns-1)
@@ -203,6 +203,12 @@ In order to synchronize _something_, you need to specify effector units. Dependi
 ### Returns
 
 - ([_Subscription_]): You can use this subscription to remove store association with storage, if you don't need them to be synced anymore. It is a function.
+
+### Notes
+
+Without specifying `pickup` property, calling `persist` will immediately call adapter to get initial value. In case of synchronous storage (like `localStorage` or `sessionStorage`) this action will synchronously set store value, and call `done`/`fail`/`finally` right away. You should take that into account, if you adds some logic on `done`, for example — place `persist` after that logic (see issue [#38](https://github.com/yumauri/effector-storage/issues/38) for more details).
+
+You can modify adapter to be asynchronous to mitigate this behavior with [`async`](https://github.com/yumauri/effector-storage/tree/master/src/tools/README.md#async) function.
 
 ## `createPersist` factory
 

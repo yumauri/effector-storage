@@ -34,7 +34,7 @@ export { storage } from './storage'
 // reexport tools
 //
 
-export { either } from './tools'
+export { async, either } from './tools'
 
 /**
  * Creates custom `persist`
