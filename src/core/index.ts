@@ -75,8 +75,8 @@ export function persist<State, Err = Error>({
   const desist = () => clearNode(region)
 
   const op =
-    (operation: 'get' | 'set') =>
-    ({ status, params, result, error }: any): any =>
+    (operation: 'get' | 'set' | 'read' | 'write') =>
+    ({ status = 'fail', params, result, error }: any): any =>
       status === 'done'
         ? {
             status,
@@ -93,17 +93,6 @@ export function persist<State, Err = Error>({
             value: params,
             error,
           }
-
-  const sop =
-    (operation: 'read' | 'write') =>
-    ({ params, error }: any): any => ({
-      status: 'fail',
-      key,
-      keyPrefix,
-      operation,
-      value: params,
-      error,
-    })
 
   // create all auxiliary units and nodes within the region,
   // to be able to remove them all at once on unsubscription
@@ -170,8 +159,8 @@ export function persist<State, Err = Error>({
       from: [
         getFx.finally.map(op('get')),
         setFx.finally.map(op('set')),
-        readFx.fail.map(sop('read')),
-        writeFx.fail.map(sop('write')),
+        readFx.fail.map(op('read')),
+        writeFx.fail.map(op('write')),
       ],
       to: localAnyway,
     })
