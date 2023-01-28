@@ -1,6 +1,29 @@
 # Adapter utility functions
 
+## `async`
+
+Makes synchronous storage adapter asynchronous.
+
+```javascript
+import { persist, async, local } from 'effector-storage'
+
+persist({
+  adapter: async(local()),
+  store: $counter,
+  done: valueRestored,
+})
+
+// add watcher AFTER persist
+valueRestored.watch(({ value }) => console.log(value))
+```
+
+Without specifying `pickup` property, calling `persist` will immediately call adapter to get initial value. In case of synchronous storage (like `localStorage` or `sessionStorage`) this action will synchronously set store value, and call `done`/`fail`/`finally` right away (see issue [#38](https://github.com/yumauri/effector-storage/issues/38) for more details).
+
+With `async` utility function you can modify adapter to be asynchronous to mitigate this behavior.
+
 ## `either`
+
+Given two adapters, this function will return first one, either second one, if first one is "no-op" adapter.
 
 ```javascript
 import { persist, either, local, log } from 'effector-storage'
