@@ -156,7 +156,7 @@ test('should sync stores with same key and different serializations', () => {
   assert.equal(watch.calls[3].arguments, ['d29ybGQ='])
 })
 
-test('should fire done and finally events once each', () => {
+test('should fire done and finally events twice each', () => {
   if (old()) return
 
   const mockStorage = createStorageMock()
@@ -183,9 +183,9 @@ test('should fire done and finally events once each', () => {
     finally: anyway,
   })
 
-  assert.is(watch.callCount, 2)
+  assert.is(watch.callCount, 4)
 
-  // `finally`, get value from storage
+  // .finally -> get value from storage
   assert.equal(watch.calls[0].arguments, [
     {
       key: 'test',
@@ -196,13 +196,34 @@ test('should fire done and finally events once each', () => {
     },
   ])
 
-  // `done`, get value from storage
+  // .done -> get value from storage
   assert.equal(watch.calls[1].arguments, [
     {
       key: 'test',
       keyPrefix: '',
       operation: 'get',
       value: 'dGVzdA==',
+    },
+  ])
+
+  // .finally -> read value
+  assert.equal(watch.calls[2].arguments, [
+    {
+      status: 'done',
+      key: 'test',
+      keyPrefix: '',
+      operation: 'read',
+      value: 'test',
+    },
+  ])
+
+  // .done -> read value
+  assert.equal(watch.calls[3].arguments, [
+    {
+      key: 'test',
+      keyPrefix: '',
+      operation: 'read',
+      value: 'test',
     },
   ])
 })

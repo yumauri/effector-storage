@@ -76,14 +76,15 @@ export function persist<State, Err = Error>({
 
   const op =
     (operation: 'get' | 'set' | 'read' | 'write') =>
-    ({ status = 'fail', params, result, error }: any): any =>
+    ({ status, params, result, error }: any): any =>
       status === 'done'
         ? {
             status,
             key,
             keyPrefix,
             operation,
-            value: operation === 'get' ? result : params,
+            value:
+              operation === 'get' || operation === 'read' ? result : params,
           }
         : {
             status,
@@ -156,14 +157,20 @@ export function persist<State, Err = Error>({
     forward({ from: readFx.doneData, to: [target, raw] })
 
     forward({
-      from: [
-        getFx.finally.map(op('get')),
-        setFx.finally.map(op('set')),
-        readFx.fail.map(op('read')),
-        writeFx.fail.map(op('write')),
-      ],
+      from: [getFx.finally.map(op('get')), setFx.finally.map(op('set'))],
       to: localAnyway,
     })
+
+    // read !== identity implies that write !== identity as well
+    if (read !== identity) {
+      forward({
+        from: [
+          readFx.finally.map(op('read')),
+          writeFx.finally.map(op('write')),
+        ],
+        to: localAnyway,
+      })
+    }
 
     forward({ from: localFail, to: fail })
     if (done) forward({ from: localDone, to: done })

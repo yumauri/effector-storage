@@ -182,7 +182,7 @@ In order to synchronize _something_, you need to specify effector units. Dependi
   Payload structure:
   - `key` ([_string_]): Same `key` as above.
   - `keyPrefix` ([_string_]): Prefix, used in adapter, to be concatenated to `key`. By default = `''`.
-  - `operation` (_`'set'`_ | _`'get'`_): Type of operation, read (get) or write (set).
+  - `operation` (_`'set'`_ | _`'get'`_ | _`'read'`_ | _`'write'`_): Type of operation, read (get), write (set), serialize (write) or deserialize (read).
   - `value` (_State_): Value set to `store` or got from `store`.
 - `fail`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which will be triggered in case of any error (serialization/deserialization error, storage is full and so on). **Note!** If `fail` unit is not specified, any errors will be printed using `console.error(Error)`.<br>
   Payload structure:
