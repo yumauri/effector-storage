@@ -23,7 +23,7 @@ import {
 import { getAreaStorage } from './area'
 
 // identity helper function,
-// used instead of native serialization functions, if there are not defined
+// used instead of native serialization functions, if they are not defined
 const identity = <T>(value: T) => value
 
 /**
