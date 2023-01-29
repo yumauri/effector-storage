@@ -12,13 +12,19 @@ import {
   createEffect,
   createEvent,
   createNode,
+  createStore,
   forward,
   guard,
   is,
+  merge,
   sample,
   withRegion,
 } from 'effector'
 import { getAreaStorage } from './area'
+
+// identity helper function,
+// used instead of native serialization functions, if they are not defined
+const identity = <T>(value: T) => value
 
 /**
  * Default sink for unhandled errors
@@ -69,7 +75,7 @@ export function persist<State, Err = Error>({
   const desist = () => clearNode(region)
 
   const op =
-    (operation: 'get' | 'set') =>
+    (operation: 'get' | 'set' | 'read' | 'write') =>
     ({ status, params, result, error }: any): any =>
       status === 'done'
         ? {
@@ -77,7 +83,8 @@ export function persist<State, Err = Error>({
             key,
             keyPrefix,
             operation,
-            value: operation === 'get' ? result : params,
+            value:
+              operation === 'get' || operation === 'read' ? result : params,
           }
         : {
             status,
@@ -93,6 +100,11 @@ export function persist<State, Err = Error>({
   withRegion(region, () => {
     const getFx = createEffect<void, State, Err>()
     const setFx = createEffect<State, void, Err>()
+    const readFx = createEffect<State, State, Err>()
+    const writeFx = createEffect<State, State, Err>()
+
+    // @ts-expect-error due to old typings in import
+    const raw = createStore<State>(null, { serialize: 'ignore' })
 
     const localAnyway = createEvent<Finally<State, Err>>()
     const localDone = localAnyway.filterMap<Done<State>>(
@@ -110,6 +122,18 @@ export function persist<State, Err = Error>({
     getFx.use(value.get)
     setFx.use(value.set)
 
+    let read = identity
+    let write = identity
+    if (is.store(source)) {
+      const serialize = (source as any).graphite.meta.serialize
+      if (serialize && serialize.read && serialize.write) {
+        read = serialize.read
+        write = serialize.write
+      }
+    }
+    readFx.use(read)
+    writeFx.use(write)
+
     const trigger = createEvent<State>()
     sample({
       source,
@@ -120,19 +144,33 @@ export function persist<State, Err = Error>({
 
     guard({
       source: sample<State, State, [State, State]>(
-        storage,
+        raw,
         trigger,
         (current, proposed) => [proposed, current]
       ),
       filter: ([proposed, current]) => proposed !== current,
-      target: setFx.prepend<[State, State]>(([proposed]) => proposed),
+      target: writeFx.prepend<[State, State]>(([proposed]) => proposed),
     })
+    forward({ from: writeFx.doneData, to: setFx })
     forward({ from: [getFx.doneData, setFx], to: storage })
-    forward({ from: [getFx.doneData, storage], to: target })
+    sample({ source: merge([getFx.doneData, storage]), target: readFx })
+    forward({ from: readFx.doneData, to: [target, raw] })
+
     forward({
       from: [getFx.finally.map(op('get')), setFx.finally.map(op('set'))],
       to: localAnyway,
     })
+
+    // read !== identity implies that write !== identity as well
+    if (read !== identity) {
+      forward({
+        from: [
+          readFx.finally.map(op('read')),
+          writeFx.finally.map(op('write')),
+        ],
+        to: localAnyway,
+      })
+    }
 
     forward({ from: localFail, to: fail })
     if (done) forward({ from: localDone, to: done })
