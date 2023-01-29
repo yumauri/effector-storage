@@ -10,7 +10,7 @@ module.exports = [
   {
     name: 'root persist, cjs module',
     path: 'build/index.cjs',
-    limit: '2502 B',
+    limit: '2595 B',
     // import: '{ persist }', // tree-shaking is not working with cjs
     ignore: ['effector'],
   },
@@ -63,6 +63,22 @@ module.exports = [
     ignore: ['effector'],
   },
 
+  // log adapter
+  {
+    name: 'log adapter, es module',
+    path: 'build/log/index.js',
+    limit: '120 B',
+    import: '{ log }',
+    ignore: ['effector'],
+  },
+  {
+    name: 'log adapter, cjs module',
+    path: 'build/log/index.cjs',
+    limit: '180 B',
+    // import: '{ log }', // tree-shaking is not working with cjs
+    ignore: ['effector'],
+  },
+
   // storage adapter
   {
     name: 'storage adapter, es module',
@@ -98,16 +114,16 @@ module.exports = [
   // localStorage, but using adapter
   // should be ~ the same size as direct import
   {
-    name: 'core  adapter, es module',
+    name: 'core adapter, es module',
     path: 'build/index.js',
     limit: '1426 B',
     import: '{ persist, local }',
     ignore: ['effector'],
   },
   {
-    name: 'core  adapter factory, es module',
+    name: 'core adapter factory, es module',
     path: ['build/index.js', 'build/local/index.js'],
-    limit: '1428 B',
+    limit: '1427 B',
     import: {
       'build/index.js': '{ persist }',
       'build/local/index.js': '{ local }',

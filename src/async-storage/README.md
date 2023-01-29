@@ -5,13 +5,12 @@ Adapter to persist [_store_] in compatible asynchronous storage.
 ## Usage
 
 ```javascript
-import { persist } from 'effector-storage'
-import { asyncStorage } from 'effector-storage/async-storage'
+import { persist, asyncStorage } from 'effector-storage'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 // persist store `$counter` in `localStorage` with key 'counter'
 persist({
-  adapter: asyncStorage({ storage: AsyncStorage }),
+  adapter: asyncStorage({ storage: () => AsyncStorage }),
   store: $counter,
   key: 'counter',
 })
@@ -20,6 +19,12 @@ persist({
 Two (or more) different stores, persisted with the same key, will be synchronized, even if not connected with each other directly — each store will receive updates from another one.
 
 ## Adapter
+
+```javascript
+import { asyncStorage } from 'effector-storage'
+```
+
+or
 
 ```javascript
 import { asyncStorage } from 'effector-storage/async-storage'

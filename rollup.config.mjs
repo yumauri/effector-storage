@@ -15,6 +15,7 @@ const external = [
   /\.[./]*\/core/,
   /\.[./]*\/tools/,
   /\.[./]*\/nil/,
+  /\.[./]*\/log/,
   /\.[./]*\/storage/,
   /\.[./]*\/local/,
   /\.[./]*\/session/,
@@ -120,6 +121,11 @@ const src = (name) => ({
                 './nil': {
                   require: './nil/index.cjs',
                   import: './nil/index.js',
+                },
+                './log/package.json': './log/package.json',
+                './log': {
+                  require: './log/index.cjs',
+                  import: './log/index.js',
                 },
                 './local/package.json': './local/package.json',
                 './local': {
@@ -227,6 +233,7 @@ export default [
   ...entry('core/'),
   ...entry('tools/'),
   ...entry('nil/'),
+  ...entry('log/'),
   ...entry('storage/'),
   ...entry('local/'),
   ...entry('session/'),

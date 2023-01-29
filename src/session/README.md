@@ -38,6 +38,12 @@ import { persist } from 'effector-storage/session'
 ## Adapter
 
 ```javascript
+import { session } from 'effector-storage'
+```
+
+or
+
+```javascript
 import { session } from 'effector-storage/session'
 ```
 

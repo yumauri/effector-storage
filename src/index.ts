@@ -24,6 +24,7 @@ export type { StorageConfig } from './storage'
 
 export { asyncStorage } from './async-storage'
 export { local } from './local'
+export { log } from './log'
 export { memory } from './memory'
 export { nil } from './nil'
 export { query } from './query'
