@@ -39,6 +39,12 @@ import { persist } from 'effector-storage/local'
 ## Adapter
 
 ```javascript
+import { local } from 'effector-storage'
+```
+
+or
+
+```javascript
 import { local } from 'effector-storage/local'
 ```
 

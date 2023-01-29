@@ -21,6 +21,12 @@ Two (or more) different stores, persisted with the same key, will be synchronize
 ## Adapter
 
 ```javascript
+import { storage } from 'effector-storage'
+```
+
+or
+
+```javascript
 import { storage } from 'effector-storage/storage'
 ```
 

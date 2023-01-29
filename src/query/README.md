@@ -61,6 +61,12 @@ import { persist } from 'effector-storage/query'
 ## Adapter
 
 ```javascript
+import { query } from 'effector-storage'
+```
+
+or
+
+```javascript
 import { query } from 'effector-storage/query'
 ```
 

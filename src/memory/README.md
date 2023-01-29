@@ -34,6 +34,12 @@ import { persist } from 'effector-storage/memory'
 ## Adapter
 
 ```javascript
+import { memory } from 'effector-storage'
+```
+
+or
+
+```javascript
 import { memory } from 'effector-storage/memory'
 ```
 

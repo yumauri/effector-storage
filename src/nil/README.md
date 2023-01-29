@@ -5,8 +5,7 @@
 ## Usage
 
 ```javascript
-import { persist } from 'effector-storage'
-import { nil } from 'effector-storage/nil'
+import { persist, nil } from 'effector-storage'
 
 // persist store `$counter` with nil adapter == do nothing
 persist({
@@ -21,6 +20,12 @@ Note though, that two (or more) different stores, persisted with the same key an
 `nil` is "no-op" adapter for [`either`](../tools/README.md#either) function.
 
 ## Adapter
+
+```javascript
+import { nil } from 'effector-storage'
+```
+
+or
 
 ```javascript
 import { nil } from 'effector-storage/nil'
