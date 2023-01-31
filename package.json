@@ -52,8 +52,8 @@
     "@rollup/plugin-babel": "^6.0.3",
     "@rollup/plugin-node-resolve": "^15.0.1",
     "@size-limit/preset-small-lib": "^8.1.2",
-    "@typescript-eslint/eslint-plugin": "^5.49.0",
-    "@typescript-eslint/parser": "^5.49.0",
+    "@typescript-eslint/eslint-plugin": "^5.50.0",
+    "@typescript-eslint/parser": "^5.50.0",
     "effector": "21.0.0",
     "effector-21-0-0": "npm:effector@21.0.0",
     "effector-21-8-12": "npm:effector@21.8.12",
@@ -84,7 +84,12 @@
     "tsd": "^0.25.0",
     "tslib": "^2.5.0",
     "typescript": "^4.9.5",
-    "uvu": "0.5.4",
+    "uvu": "0.5.6",
     "yaspeller": "^8.0.1"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "uvu@0.5.6": "patches/uvu@0.5.6.patch"
+    }
   }
 }

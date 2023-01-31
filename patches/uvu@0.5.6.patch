@@ -1,0 +1,29 @@
+diff --git a/parse/index.js b/parse/index.js
+index a02f1118c49d6a24186fb5ef1dfbdf52d7443c10..0cdb8d5d1cfb15fc0a0a3755554c57d6d24b3714 100644
+--- a/parse/index.js
++++ b/parse/index.js
+@@ -7,6 +7,11 @@ const ls = promisify(readdir);
+ const toStat = promisify(stat);
+ const toRegex = x => new RegExp(x, 'i');
+ 
++function exists(dep) {
++	try { return require.resolve(dep) }
++	catch (err) { return false }
++}
++
+ async function parse(dir, pattern, opts = {}) {
+ 	if (pattern) pattern = toRegex(pattern);
+ 	else if (dir) pattern = /(((?:[^\/]*(?:\/|$))*)[\\\/])?\w+\.([mc]js|[jt]sx?)$/;
+@@ -18,8 +23,10 @@ async function parse(dir, pattern, opts = {}) {
+ 	let ignores = ['^.git', 'node_modules'].concat(opts.ignore || []).map(toRegex);
+ 
+ 	requires.forEach(name => {
+-		try { return require(name) }
+-		catch (e) { throw new Error(`Cannot find module "${name}"`) }
++		let tmp = exists(name);
++		if (tmp) return require(tmp);
++		if (tmp = exists(resolve(name))) return require(tmp);
++		throw new Error(`Cannot find module '${name}'`);
+ 	});
+ 
+ 	// NOTE: Node 8.x support
