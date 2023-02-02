@@ -15,9 +15,7 @@ specifiers:
   '@size-limit/preset-small-lib': ^8.1.2
   '@typescript-eslint/eslint-plugin': ^5.50.0
   '@typescript-eslint/parser': ^5.50.0
-  effector: 21.0.0
-  effector-21-0-0: npm:effector@21.0.0
-  effector-21-8-12: npm:effector@21.8.12
+  effector: 22.0.0
   effector-22-0-0: npm:effector@22.0.0
   effector-22-5-0: npm:effector@22.5.0
   eslint: ^8.33.0
@@ -58,9 +56,7 @@ devDependencies:
   '@size-limit/preset-small-lib': 8.1.2_size-limit@8.1.2
   '@typescript-eslint/eslint-plugin': 5.50.0_go4drrxstycfikanvu45pi4vgq
   '@typescript-eslint/parser': 5.50.0_4vsywjlpuriuw3tl5oq6zy5a64
-  effector: 21.0.0
-  effector-21-0-0: /effector/21.0.0
-  effector-21-8-12: /effector/21.8.12
+  effector: 22.0.0
   effector-22-0-0: /effector/22.0.0
   effector-22-5-0: /effector/22.5.0
   eslint: 8.33.0
@@ -73,7 +69,7 @@ devDependencies:
   np: 7.6.3
   npm-run-all: 4.1.5
   nyc: 15.1.0
-  patronum: 1.1.0_effector@21.0.0
+  patronum: 1.1.0_effector@22.0.0
   prettier: 2.8.3
   react-native-encrypted-storage: 4.0.3
   rewiremock: 3.14.4
@@ -2039,16 +2035,6 @@ packages:
 
   /duplexer3/0.1.5:
     resolution: {integrity: sha512-1A8za6ws41LQgv9HrE/66jyC5yuSjQ3L/KOpFtoBilsAK2iA2wuS5rTt1OCzIvtS2V7nVmedsUU+DGRcjBmOYA==}
-    dev: true
-
-  /effector/21.0.0:
-    resolution: {integrity: sha512-ZGLsQw7XCd2mCaW8/MoJDrmy+7ykKzG9DwwnBvH5KPC8LQDgGsOWNd2x/yrM3MUkDdT0ovkTZcqqw6gtFNEjmg==}
-    engines: {node: '>=6.0.0'}
-    dev: true
-
-  /effector/21.8.12:
-    resolution: {integrity: sha512-Xlw+qvPlfiF0qOHwRQ3RzS5/TtbfpCZ88ucLqG6o8algEV0nxI+Rd8fyJObDljfqQH0+2ByInawu731IXz5RCA==}
-    engines: {node: '>=6.0.0'}
     dev: true
 
   /effector/22.0.0:
@@ -4611,12 +4597,12 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /patronum/1.1.0_effector@21.0.0:
+  /patronum/1.1.0_effector@22.0.0:
     resolution: {integrity: sha512-YSbGQUbLxTO8m4FeXEwg/Xq0h3ka9S3+WvTANHGlNqo+2gPpglex32xh2dzC7ZP0likG/gHQNEOZokNV1nS7HA==}
     peerDependencies:
       effector: ^21.4.0
     dependencies:
-      effector: 21.0.0
+      effector: 22.0.0
     dev: true
 
   /pbkdf2/3.1.2:

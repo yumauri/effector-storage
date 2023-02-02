@@ -4,7 +4,7 @@ import { version } from 'effector'
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-const effectorVersion: string = process.env.EFFECTOR_VERSION || '21.0.0'
+const effectorVersion: string = process.env.EFFECTOR_VERSION || '22.0.0'
 
 //
 // Tests
