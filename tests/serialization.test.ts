@@ -11,8 +11,8 @@ import { createStorageMock } from './mocks/storage.mock'
 //
 
 let warn = true
-function old(need = '22.4') {
-  if (version < need) {
+function old() {
+  if (version < '22.4') {
     if (warn) {
       console.log(
         '// skip native serialization tests due to old effector version'
@@ -99,13 +99,10 @@ test('store native serialization should work alongside adapter serialization', (
 })
 
 test('store native serialize:ignore should be persisted anyways', () => {
-  if (old('22.0')) return
-
   const mockStorage = createStorageMock()
   const storageAdapter = storage({ storage: () => mockStorage, sync: false })
 
   const $data = createStore(0, {
-    // @ts-expect-error due to old typings in import
     serialize: 'ignore',
   })
 
