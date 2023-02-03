@@ -103,8 +103,7 @@ export function persist<State, Err = Error>({
     const readFx = createEffect<State, State, Err>()
     const writeFx = createEffect<State, State, Err>()
 
-    // @ts-expect-error due to old typings in import
-    const raw = createStore<State>(null, { serialize: 'ignore' })
+    const raw = createStore<State>(null as State, { serialize: 'ignore' })
 
     const localAnyway = createEvent<Finally<State, Err>>()
     const localDone = localAnyway.filterMap<Done<State>>(
@@ -143,17 +142,13 @@ export function persist<State, Err = Error>({
     })
 
     guard({
-      source: sample<State, State, [State, State]>(
-        raw,
-        trigger,
-        (current, proposed) => [proposed, current]
-      ),
+      source: sample(raw, trigger, (current, proposed) => [proposed, current]),
       filter: ([proposed, current]) => proposed !== current,
-      target: writeFx.prepend<[State, State]>(([proposed]) => proposed),
+      target: writeFx.prepend(([proposed]: State[]) => proposed),
     })
     forward({ from: writeFx.doneData, to: setFx })
     forward({ from: [getFx.doneData, setFx], to: storage })
-    sample({ source: merge([getFx.doneData, storage]), target: readFx })
+    sample({ source: merge([getFx.doneData, storage]), target: readFx as any })
     forward({ from: readFx.doneData, to: [target, raw] })
 
     forward({

@@ -21,7 +21,6 @@ export function getAreaStorage<State>(keyArea: any, key: string): Store<State> {
     return store
   }
 
-  // @ts-expect-error due to old typings in import
   store = createStore(null, { serialize: 'ignore' })
   area.set(key, store)
 

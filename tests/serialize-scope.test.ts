@@ -71,9 +71,7 @@ test('store without sid should warn', async () => {
   const event = createEvent()
   createStore(0).on(event, () => 42)
 
-  // @ts-expect-error due to old typings in import
   const scope = fork()
-  // @ts-expect-error due to old typings in import
   await allSettled(event, { scope })
 
   serialize(scope)
@@ -92,9 +90,7 @@ test('store with sid should not warn', async () => {
   const event = createEvent()
   createStore(0, { sid: 'x' }).on(event, () => 42)
 
-  // @ts-expect-error due to old typings in import
   const scope = fork()
-  // @ts-expect-error due to old typings in import
   await allSettled(event, { scope })
 
   serialize(scope)
@@ -109,12 +105,9 @@ test('not serializable store should not warn', async () => {
   const fn: MockErrorFn = (console.error as any).mock
 
   const event = createEvent()
-  // @ts-expect-error due to old typings in import
   createStore(0, { serialize: 'ignore' }).on(event, () => 42)
 
-  // @ts-expect-error due to old typings in import
   const scope = fork()
-  // @ts-expect-error due to old typings in import
   await allSettled(event, { scope })
 
   serialize(scope)
@@ -141,9 +134,7 @@ test('persist usage should not warn', async () => {
   // do not pickup value from adapter until `pickup` is triggered
   assert.is($store.getState(), 0)
 
-  // @ts-expect-error due to old typings in import
   const scope = fork()
-  // @ts-expect-error due to old typings in import
   await allSettled(event, { scope })
 
   // should fill scoped store value

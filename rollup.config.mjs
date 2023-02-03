@@ -91,7 +91,7 @@ const src = (name) => ({
               homepage: pkg.homepage,
               keywords: pkg.keywords,
               peerDependencies: {
-                effector: '>=21.0.0',
+                effector: '>=22.0.0',
               },
 
               // cjs + esm magic
