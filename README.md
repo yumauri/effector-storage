@@ -182,20 +182,20 @@ In order to synchronize _something_, you need to specify effector units. Dependi
   Payload structure:
   - `key` ([_string_]): Same `key` as above.
   - `keyPrefix` ([_string_]): Prefix, used in adapter, to be concatenated to `key`. By default = `''`.
-  - `operation` (_`'set'`_ | _`'get'`_ | _`'read'`_ | _`'write'`_): Type of operation, read (get), write (set), serialize (write) or deserialize (read).
+  - `operation` (_`'set'`_ | _`'get'`_): Type of operation, read (get) or write (set).
   - `value` (_State_): Value set to `store` or got from `store`.
 - `fail`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which will be triggered in case of any error (serialization/deserialization error, storage is full and so on). **Note!** If `fail` unit is not specified, any errors will be printed using `console.error(Error)`.<br>
   Payload structure:
   - `key` ([_string_]): Same `key` as above.
   - `keyPrefix` ([_string_]): Prefix, used in adapter, to be concatenated to `key`. By default = `''`.
-  - `operation` (_`'set'`_ | _`'get'`_ | _`'read'`_ | _`'write'`_): Type of operation, read (get), write (set), serialize (write) or deserialize (read).
+  - `operation` (_`'set'`_ | _`'get'`_): Type of operation, read (get) or write (set).
   - `error` ([_Error_]): Error instance
   - `value`? (_any_): In case of _'set'_ operation — value from `store`. In case of _'get'_ operation could contain raw value from storage or could be empty.
 - `finally`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which will be triggered either in case of success or error.<br>
   Payload structure:
   - `key` ([_string_]): Same `key` as above.
   - `keyPrefix` ([_string_]): Prefix, used in adapter, to be concatenated to `key`. By default = `''`.
-  - `operation` (_`'set'`_ | _`'get'`_ | _`'read'`_ | _`'write'`_): Type of operation, read (get), write (set), serialize (write) or deserialize (read).
+  - `operation` (_`'set'`_ | _`'get'`_): Type of operation, read (get) or write (set).
   - `status` (_`'done'`_ | _`'fail'`_): Operation status.
   - `error`? ([_Error_]): Error instance, in case of error.
   - `value`? (_any_): Value, in case it is exists (look above).

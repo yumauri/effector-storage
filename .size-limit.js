@@ -3,14 +3,14 @@ module.exports = [
   {
     name: 'root persist, es module',
     path: 'build/index.js',
-    limit: '880 B',
+    limit: '752 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
   {
     name: 'root persist, cjs module',
     path: 'build/index.cjs',
-    limit: '2423 B',
+    limit: '2288 B',
     // import: '{ persist }', // tree-shaking is not working with cjs
     ignore: ['effector'],
   },
@@ -19,14 +19,14 @@ module.exports = [
   {
     name: 'core persist, es module',
     path: 'build/core/index.js',
-    limit: '876 B',
+    limit: '749 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
   {
     name: 'core persist, cjs module',
     path: 'build/core/index.cjs',
-    limit: '1065 B',
+    limit: '937 B',
     // import: '{ persist }', // tree-shaking is not working with cjs
     ignore: ['effector'],
   },
@@ -99,14 +99,14 @@ module.exports = [
   {
     name: '`localStorage` persist, es module',
     path: 'build/local/index.js',
-    limit: '1227 B',
+    limit: '1095 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
   {
     name: '`localStorage` persist, cjs module',
     path: 'build/local/index.cjs',
-    limit: '1495 B',
+    limit: '1365 B',
     // import: '{ persist }', // tree-shaking is not working with cjs
     ignore: ['effector'],
   },
@@ -116,14 +116,14 @@ module.exports = [
   {
     name: 'core adapter, es module',
     path: 'build/index.js',
-    limit: '1232 B',
+    limit: '1101 B',
     import: '{ persist, local }',
     ignore: ['effector'],
   },
   {
     name: 'core adapter factory, es module',
     path: ['build/index.js', 'build/local/index.js'],
-    limit: '1234 B',
+    limit: '1103 B',
     import: {
       'build/index.js': '{ persist }',
       'build/local/index.js': '{ local }',
@@ -135,14 +135,14 @@ module.exports = [
   {
     name: '`sessionStorage` persist, es module',
     path: 'build/session/index.js',
-    limit: '1225 B',
+    limit: '1095 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
   {
     name: '`sessionStorage` persist, cjs module',
     path: 'build/session/index.cjs',
-    limit: '1492 B',
+    limit: '1363 B',
     // import: '{ persist }', // tree-shaking is not working with cjs
     ignore: ['effector'],
   },
@@ -151,14 +151,14 @@ module.exports = [
   {
     name: 'query string persist, es module',
     path: 'build/query/index.js',
-    limit: '1257 B',
+    limit: '1128 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
   {
     name: 'query string persist, cjs module',
     path: 'build/query/index.cjs',
-    limit: '1549 B',
+    limit: '1426 B',
     // import: '{ persist }', // tree-shaking is not working with cjs
     ignore: ['effector'],
   },
@@ -167,14 +167,14 @@ module.exports = [
   {
     name: 'memory adapter, es module',
     path: 'build/memory/index.js',
-    limit: '953 B',
+    limit: '826 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
   {
     name: 'memory adapter, cjs module',
     path: 'build/memory/index.cjs',
-    limit: '1185 B',
+    limit: '1056 B',
     // import: '{ persist }', // tree-shaking is not working with cjs
     ignore: ['effector'],
   },
@@ -199,28 +199,28 @@ module.exports = [
   {
     name: '`AsyncStorage` persist, es module',
     path: 'build/rn/async/index.js',
-    limit: '1297 B',
+    limit: '1167 B',
     import: '{ persist }',
     ignore: ['effector', '@react-native-async-storage/async-storage'],
   },
   {
     name: '`AsyncStorage` persist, cjs module',
     path: 'build/rn/async/index.cjs',
-    limit: '1318 B',
+    limit: '1186 B',
     // import: '{ persist }', // tree-shaking is not working with cjs
     ignore: ['effector', '@react-native-async-storage/async-storage'],
   },
   {
     name: '`EncryptedStorage` persist, es module',
     path: 'build/rn/encrypted/index.js',
-    limit: '1296 B',
+    limit: '1167 B',
     import: '{ persist }',
     ignore: ['effector', 'react-native-encrypted-storage'],
   },
   {
     name: '`EncryptedStorage` persist, cjs module',
     path: 'build/rn/encrypted/index.cjs',
-    limit: '1318 B',
+    limit: '1186 B',
     // import: '{ persist }', // tree-shaking is not working with cjs
     ignore: ['effector', 'react-native-encrypted-storage'],
   },
