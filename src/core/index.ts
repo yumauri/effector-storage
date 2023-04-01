@@ -1,4 +1,4 @@
-import type { Subscription } from 'effector'
+import type { Effect, Subscription } from 'effector'
 import type {
   ConfigPersist,
   ConfigSourceTarget,
@@ -8,18 +8,39 @@ import type {
   Finally,
 } from '../types'
 import {
+  attach,
   clearNode,
-  createEffect,
   createEvent,
   createNode,
+  createStore,
   forward,
   guard,
   is,
   merge,
   sample,
+  scopeBind,
   withRegion,
 } from 'effector'
 import { getAreaStorage } from './area'
+
+// helper function to swap two function arguments
+// end extract current context from ref-box
+const contextual =
+  <T, C, R>(fn: (value: T, ctx?: C) => R) =>
+  (ctx: { ref?: C }, value: T) =>
+    fn(value, ctx.ref)
+
+// helper function for safe bind effects to scope
+// since version 22.4.0 there is `safe` option in `scopeBind`,
+// but as long as effector-storage supports 22.0 this helper is required
+const safeBind = (fx: Effect<any, any, any>) => {
+  try {
+    // @ts-expect-error due to old typings in import
+    return scopeBind(fx, { safe: true })
+  } catch (e) {
+    return fx
+  }
+}
 
 /**
  * Default sink for unhandled errors
@@ -40,6 +61,7 @@ export function persist<State, Err = Error>({
   fail = sink,
   finally: anyway,
   pickup,
+  context,
   key: keyName,
   keyPrefix = '',
 }: Partial<
@@ -92,8 +114,27 @@ export function persist<State, Err = Error>({
   // create all auxiliary units and nodes within the region,
   // to be able to remove them all at once on unsubscription
   withRegion(region, () => {
-    const getFx = createEffect<void, State, Err>()
-    const setFx = createEffect<State, void, Err>()
+    const ctx = createStore<{ ref: any }>(
+      { ref: undefined },
+      { serialize: 'ignore' }
+    )
+
+    const value = adapter<State>(keyPrefix + key, (x) => bindedGet(x))
+
+    const getFx = attach({
+      source: ctx,
+      effect: contextual(value.get),
+    }) as any as Effect<void, State, Err>
+
+    const setFx = attach({
+      source: ctx,
+      effect: contextual(value.set),
+    }) as any as Effect<State, void, Err>
+
+    let bindedGet: (raw?: any) => any = getFx
+    ctx.updates.watch(() => {
+      bindedGet = safeBind(getFx)
+    })
 
     const localAnyway = createEvent<Finally<State, Err>>()
     const localDone = localAnyway.filterMap<Done<State>>(
@@ -106,10 +147,6 @@ export function persist<State, Err = Error>({
           ? { key, keyPrefix, operation, error, value }
           : undefined
     )
-
-    const value = adapter<State>(keyPrefix + key, getFx)
-    getFx.use(value.get)
-    setFx.use(value.set)
 
     const trigger = createEvent<State>()
     sample({
@@ -139,9 +176,18 @@ export function persist<State, Err = Error>({
     if (done) forward({ from: localDone, to: done })
     if (anyway) forward({ from: localAnyway, to: anyway })
 
+    if (context) {
+      ctx.on(context, ({ ref }, payload) => ({
+        ref: payload === undefined ? ref : payload,
+      }))
+    }
+
     if (pickup) {
       // pick up value from storage ONLY on `pickup` update
       forward({ from: pickup, to: getFx.prepend(() => undefined) })
+      ctx.on(pickup, ({ ref }, payload) => ({
+        ref: payload === undefined ? ref : payload,
+      }))
     } else {
       // kick getter to pick up initial value from storage
       getFx()

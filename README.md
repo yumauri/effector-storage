@@ -177,7 +177,8 @@ In order to synchronize _something_, you need to specify effector units. Dependi
 - `key`? ([_string_]): Key for local/session storage, to store value in. If omitted — `store` name is used. **Note!** If `key` is not specified, `store` _must_ have a `name`! You can use `'effector/babel-plugin'` to have those names automatically.
 - `keyPrefix`? ([_string_]): Prefix, used in adapter, to be concatenated to `key`. By default = `''`.
 - `clock`? ([_Event_] | [_Effect_] | [_Store_]): Unit, if passed – then value from `store`/`source` will be stored in the storage only upon its trigger.
-- `pickup`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which you can specify to update `store` value from storage. **Note!** When you add `pickup`, `persist` _will not_ get initial value from storage automatically!
+- `pickup`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which you can specify to update `store` value from storage. This unit can also set a special context for adapter. **Note!** When you add `pickup`, `persist` _will not_ get initial value from storage automatically!
+- `context`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which can set a special context for adapter.
 - `done`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which will be triggered on each successful read or write from/to storage.<br>
   Payload structure:
   - `key` ([_string_]): Same `key` as above.
@@ -235,6 +236,8 @@ persist({
 
 ### Options
 
+- `pickup`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which you can specify to update `store` value from storage. This unit can also set a special context for adapter. **Note!** When you add `pickup`, `persist` _will not_ get initial value from storage automatically!
+- `context`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which can set a special context for adapter.
 - `keyPrefix`? ([_string_]): Key prefix for adapter. It will be concatenated with any `key`, given to returned `persist` function.
 
 ### Returns
@@ -245,7 +248,7 @@ persist({
 
 `effector-storage` consists of a _core_ module and _adapter_ modules.
 
-The core module itself does nothing with actual storage, it just connects effector units to the storage adapter, using two _Effects_ and bunch of _forwards_.
+The core module itself does nothing with actual storage, it just connects effector units to the storage adapter, using couple of _Effects_ and bunch of connections.
 
 The storage adapter _gets_ and _sets_ values, and also can asynchronously emit values on storage updates.
 
@@ -264,8 +267,8 @@ Adapter is a function, which is called by the core `persist` function, and has f
 ```typescript
 interface StorageAdapter {
   <State>(key: string, update: (raw?: any) => any): {
-    get(raw?: any): State | Promise<State>
-    set(value: State): void
+    get(raw?: any, ctx?: any): State | Promise<State>
+    set(value: State, ctx?: any): void
   }
   keyArea?: any
   noop?: boolean
@@ -280,7 +283,8 @@ interface StorageAdapter {
 #### Returns
 
 - `{ get, set }` (_{ Function, Function }_): Getter from and setter to storage. These functions are used as Effects handlers, and could be sync or async. Also, you don't have to catch exceptions and errors inside those functions — Effects will do that for you.<br>
-  As mentioned above, call of `update` function will trigger `get` function with the same argument. So you can handle cases, when `get` function is called during initial `persist` execution (without arguments), or after external update. Check out [example below](#storage-with-external-updates-example).
+  As mentioned above, call of `update` function will trigger `get` function with the same argument. So you can handle cases, when `get` function is called during initial `persist` execution (without arguments), or after external update. Check out [example below](#storage-with-external-updates-example).<br>
+  Also getter and setter both accepts optional _context_ as a second argument — it can be any value. This context could be useful, if adapter depends on some external environment, for example, it can contain _Request_ and _Response_ from Express middleware, to get/set cookies from/to. (TODO: isomorphic cookies adapter example).
 
 #### keyArea
 
@@ -389,10 +393,10 @@ import { persist } from 'effector-storage'
 const pickup = createEvent()
 
 const adapter = (key, update) => {
-  // if `pickup` event was triggered -> trigger `update`
+  // if `pickup` event was triggered -> call an `update` function
   // this will call `get` function from below ↓
   // wrapped in Effect, to handle any errors
-  forward({ from: pickup, to: update })
+  pickup.watch(update)
   return {
     get: () => localStorage.getItem(key),
     set: (value) => localStorage.setItem(key, value),
