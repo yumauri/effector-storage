@@ -27,7 +27,7 @@ jobs:
       - name: 📦 Use PNPM
         uses: pnpm/action-setup@v2
         with:
-          version: latest
+          version: 7.29.3
 
       - name: 🐧 Use Node ${{ matrix.node-version }}
         uses: actions/setup-node@v2
