@@ -2,8 +2,8 @@ import type { Event, Effect, Store, Unit, Subscription } from 'effector'
 
 export interface StorageAdapter {
   <State>(key: string, update: (raw?: any) => any): {
-    set(value: State): void
-    get(value?: any): State | Promise<State>
+    get(raw?: any, ctx?: any): State | Promise<State>
+    set(value: State, ctx?: any): void
   }
   keyArea?: any
   noop?: boolean
@@ -29,6 +29,8 @@ export type Finally<State, Err> =
   | (Fail<Err> & { status: 'fail' })
 
 export interface ConfigPersist {
+  pickup?: Unit<any>
+  context?: Unit<any>
   keyPrefix?: string
 }
 
@@ -42,6 +44,7 @@ export interface ConfigCommon<State, Err = Error> {
   fail?: Unit<Fail<Err>>
   finally?: Unit<Finally<State, Err>>
   pickup?: Unit<any>
+  context?: Unit<any>
   key?: string
   keyPrefix?: string
 }

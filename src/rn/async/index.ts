@@ -37,7 +37,7 @@ export interface Persist {
 /**
  * Creates `AsyncStorage` adapter
  */
-export function async(config: AsyncStorageConfig): StorageAdapter {
+export function async(config?: AsyncStorageConfig): StorageAdapter {
   return asyncStorage({
     storage: () => AsyncStorage,
     ...config,

@@ -37,12 +37,12 @@ export function storage({
     }
 
     return {
-      get(value?: string | null) {
-        const item = value !== undefined ? value : storage().getItem(key)
+      get(raw?: string | null) {
+        const item = raw !== undefined ? raw : storage().getItem(key)
         return item === null
           ? def !== undefined
             ? def
-            : value // 'undefined' when pickup, 'null' when clear
+            : raw // 'undefined' when pickup, 'null' when clear
           : deserialize(item)
       },
 

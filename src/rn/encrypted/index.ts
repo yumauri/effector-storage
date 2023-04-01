@@ -37,7 +37,7 @@ export interface Persist {
 /**
  * Creates `EncryptedStorage` adapter
  */
-export function encrypted(config: EncryptedStorageConfig): StorageAdapter {
+export function encrypted(config?: EncryptedStorageConfig): StorageAdapter {
   return asyncStorage({
     storage: () => EncryptedStorage,
     ...config,
