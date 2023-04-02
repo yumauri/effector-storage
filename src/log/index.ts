@@ -1,13 +1,19 @@
 import type { StorageAdapter } from '../types'
 
+export interface LogConfig {
+  keyArea?: any
+  logger?: (msg: string) => void
+}
+
 /**
  * Log adapter
  * Does nothing, like `nil` adapter, but print messages
  */
-export function log(
-  keyArea: any = '',
-  logger: (msg: string) => void = console.log
-): StorageAdapter {
+log.factory = true as const
+export function log({
+  keyArea = '',
+  logger = console.log,
+}: LogConfig = {}): StorageAdapter {
   const adapter: StorageAdapter = (key: string) =>
     <any>{
       set(value: any) {

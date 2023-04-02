@@ -43,7 +43,7 @@ or
 import { memory } from 'effector-storage/memory'
 ```
 
-- `memory(area?): StorageAdapter`
+- `memory({ area? }?): StorageAdapter`
 
 ### Options
 

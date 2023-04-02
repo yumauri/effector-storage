@@ -2,8 +2,7 @@ import { test } from 'uvu'
 import * as assert from 'uvu/assert'
 import { snoop } from 'snoop'
 import { createStore } from 'effector'
-import { persist } from '../src/core'
-import { log } from '../src/log'
+import { persist, log } from '../src'
 
 //
 // Tests
@@ -14,7 +13,7 @@ test('store should ignore initial `undefined` from storage value', () => {
 
   const $counter0 = createStore(42, { name: 'log::counter0' })
 
-  persist({ store: $counter0, adapter: log('', logger.fn) })
+  persist({ store: $counter0, adapter: log({ logger: logger.fn }) })
 
   assert.is($counter0.getState(), 42)
   assert.is(logger.callCount, 1)
@@ -28,7 +27,7 @@ test('store new value should be ignored by storage', () => {
 
   const $counter1 = createStore(0, { name: 'log::counter1' })
 
-  persist({ store: $counter1, adapter: log('', logger.fn) })
+  persist({ store: $counter1, adapter: log({ logger: logger.fn }) })
   ;($counter1 as any).setState(42)
 
   assert.is($counter1.getState(), 42)
@@ -44,8 +43,21 @@ test('stores in with different key area should not be synced', () => {
   const $store1 = createStore(0)
   const $store2 = createStore(0)
 
-  persist({ store: $store1, key: 'store', adapter: log('area1', logger.fn) })
-  persist({ store: $store2, key: 'store', adapter: log('area2', logger.fn) })
+  persist({
+    store: $store1,
+    key: 'store',
+    adapter: log,
+    keyArea: 'area1',
+    logger: logger.fn,
+  })
+
+  persist({
+    store: $store2,
+    key: 'store',
+    adapter: log,
+    keyArea: 'area2',
+    logger: logger.fn,
+  })
 
   // update one of two stores
   ;($store1 as any).setState(42)

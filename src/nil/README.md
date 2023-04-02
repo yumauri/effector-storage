@@ -9,7 +9,7 @@ import { persist, nil } from 'effector-storage'
 
 // persist store `$counter` with nil adapter == do nothing
 persist({
-  adapter: nil(),
+  adapter: nil,
   store: $counter,
   key: 'counter',
 })
@@ -31,7 +31,7 @@ or
 import { nil } from 'effector-storage/nil'
 ```
 
-- `nil(keyArea?): StorageAdapter`
+- `nil({ keyArea? }?): StorageAdapter`
 
 ### Options
 

@@ -10,6 +10,7 @@ export type {
   Finally,
   Persist,
   StorageAdapter,
+  StorageAdapterFactory,
 } from './types'
 
 //
@@ -18,6 +19,9 @@ export type {
 
 export type { AsyncStorageConfig } from './async-storage'
 export type { LocalStorageConfig } from './local'
+export type { LogConfig } from './log'
+export type { MemoryConfig } from './memory'
+export type { NilConfig } from './nil'
 export type { QueryConfig } from './query'
 export type { SessionStorageConfig } from './session'
 export type { StorageConfig } from './storage'
@@ -41,7 +45,11 @@ export { async, either } from './tools'
  * Creates custom `persist`
  */
 export function createPersist(defaults?: ConfigPersist): Persist {
-  return (config) => base({ ...defaults, ...config })
+  return (config: any) =>
+    base({
+      ...defaults,
+      ...config,
+    })
 }
 
 /**

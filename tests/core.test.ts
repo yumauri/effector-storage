@@ -3,7 +3,7 @@ import { test } from 'uvu'
 import * as assert from 'uvu/assert'
 import { snoop } from 'snoop'
 import { createEvent, createStore } from 'effector'
-import { persist } from '../src/core'
+import { persist, createPersist } from '../src'
 
 //
 // Dumb fake adapter
@@ -23,6 +23,9 @@ const dumbAdapter: StorageAdapter = <T>() => {
 
 test('should exports function', () => {
   assert.type(persist, 'function')
+  assert.type(createPersist, 'function')
+  assert.type(createPersist(), 'function')
+  assert.type(createPersist({ keyPrefix: 'app' }), 'function')
 })
 
 test('should be ok on good parameters', () => {
@@ -98,6 +101,15 @@ test('should return Subscription', () => {
   })
   assert.type(unsubscribe, 'function')
   assert.type(unsubscribe.unsubscribe, 'function')
+
+  const persistApp = createPersist({ keyPrefix: 'app' })
+  const unsubscribeApp = persistApp({
+    store: $store,
+    adapter: dumbAdapter,
+    key: 'test',
+  })
+  assert.type(unsubscribeApp, 'function')
+  assert.type(unsubscribeApp.unsubscribe, 'function')
 })
 
 test('should restore value from adapter on store', () => {

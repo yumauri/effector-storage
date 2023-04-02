@@ -14,6 +14,7 @@ export interface AsyncStorageConfig {
 /**
  * Creates generic `AsyncStorage` adapter
  */
+asyncStorage.factory = true as const
 export function asyncStorage({
   storage,
   serialize = JSON.stringify,

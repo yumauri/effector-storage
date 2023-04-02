@@ -1,10 +1,10 @@
 import type { StorageAdapter } from '../src/types'
 import { test } from 'uvu'
 import * as assert from 'uvu/assert'
+import { snoop } from 'snoop'
+import { createStore } from 'effector'
 import { createStorageMock } from './mocks/storage.mock'
-import { local } from '../src/local'
-import { nil } from '../src/nil'
-import { either } from '../src/tools'
+import { persist, local, nil, log, either } from '../src'
 
 declare let global: any
 
@@ -51,6 +51,23 @@ test('should return second adapter if localStorage is not supported', () => {
   const one = local()
   const another = dumbAdapter
   assert.equal(either(one, another), another)
+})
+
+test('should work with factories', () => {
+  const logger = snoop(() => undefined)
+
+  const $counter1 = createStore(1, { name: 'counter1' })
+
+  persist({
+    adapter: either(local, log),
+    store: $counter1,
+    logger: logger.fn,
+  })
+
+  assert.is(logger.callCount, 1)
+  assert.equal(logger.calls[0].arguments, [
+    '[log adapter] get value for key "counter1"',
+  ])
 })
 
 //

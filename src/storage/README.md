@@ -10,7 +10,7 @@ import { storage } from 'effector-storage/storage'
 
 // persist store `$counter` in `localStorage` with key 'counter'
 persist({
-  adapter: storage({ storage: localStorage }),
+  adapter: storage({ storage: () => localStorage }),
   store: $counter,
   key: 'counter',
 })

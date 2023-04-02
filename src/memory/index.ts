@@ -14,7 +14,9 @@ export type {
   Fail,
   Finally,
   StorageAdapter,
+  StorageAdapterFactory,
 } from '../types'
+export type { MemoryConfig } from './adapter'
 
 export interface ConfigStore<State, Err = Error>
   extends ConfigCommon<State, Err>,
