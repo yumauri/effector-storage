@@ -10,7 +10,13 @@ import { persist as base } from '../core'
 import { nil } from '../nil'
 import { storage } from '../storage'
 
-export type { Done, Fail, Finally, StorageAdapter } from '../types'
+export type {
+  Done,
+  Fail,
+  Finally,
+  StorageAdapter,
+  StorageAdapterFactory,
+} from '../types'
 
 export interface ConfigPersist extends BaseConfigPersist {
   sync?: boolean
@@ -54,6 +60,7 @@ function supports() {
 /**
  * Creates `localStorage` adapter
  */
+local.factory = true as const
 export function local(config?: LocalStorageConfig): StorageAdapter {
   return supports()
     ? storage({
@@ -61,7 +68,7 @@ export function local(config?: LocalStorageConfig): StorageAdapter {
         sync: true,
         ...config,
       })
-    : nil('local')
+    : nil({ keyArea: 'local' })
 }
 
 /**
@@ -69,20 +76,12 @@ export function local(config?: LocalStorageConfig): StorageAdapter {
  * with predefined `localStorage` adapter
  */
 export function createPersist(defaults?: ConfigPersist): Persist {
-  return (config) => {
-    const def =
-      config.def !== undefined
-        ? config.def
-        : 'store' in config
-        ? config.store.defaultState
-        : undefined
-
-    return base({
-      adapter: local({ ...defaults, ...config, def }),
+  return (config) =>
+    base({
+      adapter: local,
       ...defaults,
       ...config,
     })
-  }
 }
 
 /**

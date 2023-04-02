@@ -10,7 +10,13 @@ import { persist as base } from '../../core'
 import { asyncStorage } from '../../async-storage'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
-export type { Done, Fail, Finally, StorageAdapter } from '../../types'
+export type {
+  Done,
+  Fail,
+  Finally,
+  StorageAdapter,
+  StorageAdapterFactory,
+} from '../../types'
 
 export interface ConfigPersist extends BaseConfigPersist {}
 
@@ -37,6 +43,7 @@ export interface Persist {
 /**
  * Creates `AsyncStorage` adapter
  */
+async.factory = true as const
 export function async(config?: AsyncStorageConfig): StorageAdapter {
   return asyncStorage({
     storage: () => AsyncStorage,
@@ -51,7 +58,7 @@ export function async(config?: AsyncStorageConfig): StorageAdapter {
 export function createPersist(defaults?: ConfigPersist): Persist {
   return (config) =>
     base({
-      adapter: async({ ...defaults, ...config }),
+      adapter: async,
       ...defaults,
       ...config,
     })

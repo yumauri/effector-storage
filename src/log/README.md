@@ -11,7 +11,7 @@ import { persist, log } from 'effector-storage'
 
 // persist store `$counter` with log adapter == do nothing + print messages
 persist({
-  adapter: log(),
+  adapter: log,
   store: $counter,
   key: 'counter',
 })
@@ -33,7 +33,7 @@ or
 import { log } from 'effector-storage/log'
 ```
 
-- `log(keyArea?, logger?): StorageAdapter`
+- `log({ keyArea?, logger? }?): StorageAdapter`
 
 ### Options
 

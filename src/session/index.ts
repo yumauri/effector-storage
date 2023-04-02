@@ -10,7 +10,13 @@ import { persist as base } from '../core'
 import { nil } from '../nil'
 import { storage } from '../storage'
 
-export type { Done, Fail, Finally, StorageAdapter } from '../types'
+export type {
+  Done,
+  Fail,
+  Finally,
+  StorageAdapter,
+  StorageAdapterFactory,
+} from '../types'
 
 export interface ConfigPersist extends BaseConfigPersist {
   sync?: boolean
@@ -54,13 +60,14 @@ function supports() {
 /**
  * Creates `sessionStorage` adapter
  */
+session.factory = true as const
 export function session(config?: SessionStorageConfig): StorageAdapter {
   return supports()
     ? storage({
         storage: () => sessionStorage,
         ...config,
       })
-    : nil('session')
+    : nil({ keyArea: 'session' })
 }
 
 /**
@@ -68,20 +75,12 @@ export function session(config?: SessionStorageConfig): StorageAdapter {
  * with predefined `sessionStorage` adapter
  */
 export function createPersist(defaults?: ConfigPersist): Persist {
-  return (config) => {
-    const def =
-      config.def !== undefined
-        ? config.def
-        : 'store' in config
-        ? config.store.defaultState
-        : undefined
-
-    return base({
-      adapter: session({ ...defaults, ...config, def }),
+  return (config) =>
+    base({
+      adapter: session,
       ...defaults,
       ...config,
     })
-  }
 }
 
 /**

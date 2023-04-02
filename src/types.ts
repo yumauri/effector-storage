@@ -9,6 +9,11 @@ export interface StorageAdapter {
   noop?: boolean
 }
 
+export interface StorageAdapterFactory<AdapterConfig> {
+  (config?: AdapterConfig): StorageAdapter
+  factory: true
+}
+
 export type Done<State> = {
   key: string
   keyPrefix: string
@@ -38,6 +43,10 @@ export interface ConfigAdapter {
   adapter: StorageAdapter
 }
 
+export interface ConfigAdapterFactory<AdapterConfig> {
+  adapter: StorageAdapterFactory<AdapterConfig>
+}
+
 export interface ConfigCommon<State, Err = Error> {
   clock?: Unit<any>
   done?: Unit<Done<State>>
@@ -59,16 +68,28 @@ export interface ConfigJustSourceTarget<State> {
 }
 
 export interface ConfigStore<State, Err = Error>
-  extends ConfigAdapter,
-    ConfigCommon<State, Err>,
+  extends ConfigCommon<State, Err>,
     ConfigJustStore<State> {}
 
 export interface ConfigSourceTarget<State, Err = Error>
-  extends ConfigAdapter,
-    ConfigCommon<State, Err>,
+  extends ConfigCommon<State, Err>,
     ConfigJustSourceTarget<State> {}
 
 export interface Persist {
-  <State, Err = Error>(config: ConfigSourceTarget<State, Err>): Subscription
-  <State, Err = Error>(config: ConfigStore<State, Err>): Subscription
+  <State, Err = Error>(
+    config: ConfigAdapter & ConfigSourceTarget<State, Err>
+  ): Subscription
+  <State, Err = Error>(
+    config: ConfigAdapter & ConfigStore<State, Err>
+  ): Subscription
+  <AdapterConfig, State, Err = Error>(
+    config: ConfigAdapterFactory<AdapterConfig> &
+      ConfigSourceTarget<State, Err> &
+      AdapterConfig
+  ): Subscription
+  <AdapterConfig, State, Err = Error>(
+    config: ConfigAdapterFactory<AdapterConfig> &
+      ConfigStore<State, Err> &
+      AdapterConfig
+  ): Subscription
 }

@@ -11,7 +11,13 @@ import { persist as base } from '../core'
 import { nil } from '../nil'
 import { adapter } from './adapter'
 
-export type { Done, Fail, Finally, StorageAdapter } from '../types'
+export type {
+  Done,
+  Fail,
+  Finally,
+  StorageAdapter,
+  StorageAdapterFactory,
+} from '../types'
 export type { ChangeMethod, StateBehavior, QueryConfig } from './adapter'
 export {
   locationAssign,
@@ -50,8 +56,13 @@ function supports() {
 /**
  * Creates query string adapter
  */
+query.factory = true as const
 export function query(config?: QueryConfig): StorageAdapter {
-  return supports() ? adapter({ ...config }) : nil('query')
+  return supports()
+    ? adapter({
+        ...config,
+      })
+    : nil({ keyArea: 'query' })
 }
 
 /**
@@ -59,20 +70,12 @@ export function query(config?: QueryConfig): StorageAdapter {
  * with predefined `query` adapter
  */
 export function createPersist(defaults?: ConfigPersist): Persist {
-  return (config) => {
-    const def =
-      config.def !== undefined
-        ? config.def
-        : 'store' in config
-        ? config.store.defaultState
-        : undefined
-
-    return base({
-      adapter: query({ ...defaults, ...config, def }),
+  return (config) =>
+    base({
+      adapter: query,
       ...defaults,
       ...config,
     })
-  }
 }
 
 /**

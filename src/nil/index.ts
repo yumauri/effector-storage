@@ -1,9 +1,14 @@
 import type { StorageAdapter } from '../types'
 
+export interface NilConfig {
+  keyArea?: any
+}
+
 /**
  * Nil/Void adapter
  */
-export function nil(keyArea: any = ''): StorageAdapter {
+nil.factory = true as const
+export function nil({ keyArea = '' }: NilConfig = {}): StorageAdapter {
   const adapter: StorageAdapter = () =>
     <any>{
       get() {}, // eslint-disable-line @typescript-eslint/no-empty-function

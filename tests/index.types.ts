@@ -150,6 +150,34 @@ test('Session `persist` should return Subscription', async () => {
   )
 })
 
+test("Should be possible to pass adapter's arguments in core persist with adapter factory", async () => {
+  const { persist, local } = await import('../src')
+
+  const store: Store<number> = 0 as any
+
+  expectType<Subscription>(persist({ store, adapter: local() }))
+  expectType<Subscription>(persist({ store, adapter: local }))
+  expectType<Subscription>(
+    persist({
+      store,
+      adapter: local,
+      sync: false,
+      serialize: (value: number) => String(value),
+      deserialize: (value: string) => Number(value),
+      def: 42,
+    })
+  )
+})
+
+test('Should not accept any arbitrary argument in core persist with adapter factory', async () => {
+  const { persist, local } = await import('../src')
+
+  const store: Store<number> = 0 as any
+
+  // @ts-expect-error should fail on wrong arguments
+  persist({ store, adapter: local, blablabla: 0 })
+})
+
 //
 // DO NOT launch tests, because they will fail in runtime
 // TypeScript will do the job for us, by checking the syntax

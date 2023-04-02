@@ -1,5 +1,7 @@
 import type { Effect, Subscription } from 'effector'
 import type {
+  ConfigAdapter,
+  ConfigAdapterFactory,
   ConfigPersist,
   ConfigSourceTarget,
   ConfigStore,
@@ -51,23 +53,30 @@ sink.watch((payload) => console.error(payload.error))
 /**
  * Main `persist` function
  */
-export function persist<State, Err = Error>({
-  adapter,
-  store,
-  source = store,
-  target = store,
-  clock = source,
-  done,
-  fail = sink,
-  finally: anyway,
-  pickup,
-  context,
-  key: keyName,
-  keyPrefix = '',
-}: Partial<
-  ConfigPersist & ConfigStore<State, Err> & ConfigSourceTarget<State, Err>
->): Subscription {
-  if (!adapter) {
+export function persist<State, Err = Error>(
+  config: Partial<
+    (ConfigAdapter | ConfigAdapterFactory<any>) &
+      ConfigPersist &
+      ConfigStore<State, Err> &
+      ConfigSourceTarget<State, Err>
+  >
+): Subscription {
+  const {
+    adapter: adapterOrFactory,
+    store,
+    source = store,
+    target = store,
+    clock = source,
+    done,
+    fail = sink,
+    finally: anyway,
+    pickup,
+    context,
+    key: keyName,
+    keyPrefix = '',
+  } = config
+
+  if (!adapterOrFactory) {
     throw Error('Adapter is not defined')
   }
   if (!source) {
@@ -82,6 +91,15 @@ export function persist<State, Err = Error>({
   if (source === target && !is.store(source)) {
     throw Error('Source must be different from target')
   }
+
+  // get default value from store, if given
+  // this is used in adapter factory
+  if ((config as any).def === undefined && is.store(source)) {
+    ;(config as any).def = source.defaultState
+  }
+
+  const adapter =
+    'factory' in adapterOrFactory ? adapterOrFactory(config) : adapterOrFactory
 
   const key = keyName || source.shortName
   const storage = getAreaStorage<State>(

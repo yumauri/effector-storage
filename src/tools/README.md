@@ -8,7 +8,7 @@ Makes synchronous storage adapter asynchronous.
 import { persist, async, local } from 'effector-storage'
 
 persist({
-  adapter: async(local()),
+  adapter: async(local),
   store: $counter,
   done: valueRestored,
 })
@@ -32,7 +32,7 @@ import { persist, either, local, log } from 'effector-storage'
 //   store `$counter` in `localStorage` with key 'counter'
 // - in node environment will just log persist activity
 persist({
-  adapter: either(local(), log()),
+  adapter: either(local, log),
   store: $counter,
   key: 'counter',
 })
