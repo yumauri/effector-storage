@@ -1,12 +1,17 @@
 name: publish
 
 on:
+  workflow_dispatch:
   release:
-    types: [published]
+    types:
+      - published
 
 jobs:
   publish:
     runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
 
     name: Publish
 
@@ -23,8 +28,8 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18.16.0
-          cache: pnpm
           registry-url: https://registry.npmjs.org/
+          cache: pnpm
 
       - name: 🔍 Installation
         run: pnpm install --frozen-lockfile --ignore-scripts
@@ -46,3 +51,4 @@ jobs:
         working-directory: build
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true
