@@ -1,65 +1,57 @@
-export function createLocationMock(url: string): Location {
-  const location = Object.create(new URL(url))
-  let history: History & {
+const noop: any = () => undefined
+
+export class LocationMock extends URL implements Location {
+  private history?: History & {
     _push: (url: string) => void
     _replace: (url: string) => void
   }
 
-  const noop: any = () => undefined
-  let assignCallback: Location['assign'] = noop
-  let reloadCallback: Location['reload'] = noop
-  let replaceCallback: Location['replace'] = noop
+  private assignCallback: Location['assign'] = noop
+  private reloadCallback: Location['reload'] = noop
+  private replaceCallback: Location['replace'] = noop
 
-  Object.defineProperty(location, 'assign', {
-    value(url: string) {
-      assignCallback(url)
-      if (history) {
-        history._push(url)
-      }
-      Object.setPrototypeOf(location, new URL(location.origin + url))
-    },
-  })
+  public ancestorOrigins = [] as any as DOMStringList
 
-  Object.defineProperty(location, 'reload', {
-    value() {
-      reloadCallback()
-    },
-  })
+  public assign(url: string) {
+    this.assignCallback(url)
+    if (this.history) {
+      this.history._push(url)
+    }
+    this.href = this.origin + url
+  }
 
-  Object.defineProperty(location, 'replace', {
-    value(url: string) {
-      replaceCallback(url)
-      if (history) {
-        history._replace(url)
-      }
-      Object.setPrototypeOf(location, new URL(location.origin + url))
-    },
-  })
+  public reload() {
+    this.reloadCallback()
+  }
 
-  Object.defineProperty(location, '_callbacks', {
-    value({ assign, reload, replace }: Partial<Location>) {
-      assignCallback = assign || noop
-      reloadCallback = reload || noop
-      replaceCallback = replace || noop
-    },
-  })
+  public replace(url: string) {
+    this.replaceCallback(url)
+    if (this.history) {
+      this.history._replace(url)
+    }
+    this.href = this.origin + url
+  }
 
-  Object.defineProperty(location, '_history', {
-    value(
-      h: History & {
-        _push: (url: string) => void
-        _replace: (url: string) => void
-      }
-    ) {
-      history = h
-    },
-  })
+  public _callbacks({ assign, reload, replace }: Partial<Location>) {
+    this.assignCallback = assign || noop
+    this.reloadCallback = reload || noop
+    this.replaceCallback = replace || noop
+  }
 
-  Object.defineProperty(location, '_set', {
-    value(url: string) {
-      Object.setPrototypeOf(location, new URL(location.origin + url))
-    },
-  })
+  public _history(
+    h: History & {
+      _push: (url: string) => void
+      _replace: (url: string) => void
+    }
+  ) {
+    this.history = h
+  }
 
-  return location
+  public _set(url: string) {
+    this.href = this.origin + url
+  }
+}
+
+export function createLocationMock(url: string): Location {
+  return new LocationMock(url)
 }

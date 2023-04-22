@@ -1,79 +1,77 @@
-const has = (object: any, key: string) =>
-  Object.prototype.hasOwnProperty.call(object, key)
+const noop: any = () => undefined
+
+export class StorageMock implements Storage {
+  private storage = new Map<string, string>()
+
+  private getCallback: (key: string) => string | null = noop
+  private setCallback: (key: string, value: string) => void = noop
+  private removeCallback: (key: string) => void = noop
+  private clearCallback: () => void = noop
+
+  constructor() {
+    return new Proxy(this, {
+      get(target, property, receiver) {
+        if (property in target) {
+          return Reflect.get(target, property, receiver)
+        }
+        return target.storage.get(String(property))
+      },
+      set(target, property, value, receiver) {
+        if (property in target) {
+          return Reflect.set(target, property, value, receiver)
+        }
+        target.storage.set(String(property), String(value))
+        return true
+      },
+    })
+  }
+
+  public setItem(key: string, value: string) {
+    key = String(key)
+    value = String(value)
+    this.setCallback(key, value)
+    this.storage.set(key, value)
+  }
+
+  public getItem(key: string) {
+    key = String(key)
+    this.getCallback(key)
+    return this.storage.has(key) ? this.storage.get(key) ?? null : null
+  }
+
+  public removeItem(key: string) {
+    key = String(key)
+    this.removeCallback(key)
+    this.storage.delete(key)
+  }
+
+  public clear() {
+    this.clearCallback()
+    this.storage.clear()
+  }
+
+  public get length() {
+    return this.storage.size
+  }
+
+  public key(n: number) {
+    const key = Array.from(this.storage.keys())[n]
+    return key === undefined ? null : key
+  }
+
+  public _callbacks(
+    get: typeof StorageMock.prototype.getCallback | null,
+    set: typeof StorageMock.prototype.setCallback | null,
+    remove: typeof StorageMock.prototype.removeCallback | null,
+    clear: typeof StorageMock.prototype.clearCallback | null
+  ) {
+    this.getCallback = get === null ? noop : get
+    this.setCallback = set === null ? noop : set
+    this.removeCallback = remove === null ? noop : remove
+    this.clearCallback = clear === null ? noop : clear
+  }
+}
 
 export function createStorageMock(): Storage {
-  const storage = Object.create(null)
-
-  const noop: any = () => undefined
-  let getCallback: (key: string) => string | null = noop
-  let setCallback: (key: string, value: string) => void = noop
-  let removeCallback: (key: string) => void = noop
-  let clearCallback: () => void = noop
-
-  Object.defineProperty(storage, 'setItem', {
-    value(key: string, value: string) {
-      setCallback(key, value)
-      key = String(key)
-      value = String(value)
-      storage[key] = value
-    },
-  })
-
-  Object.defineProperty(storage, 'getItem', {
-    value(key: string) {
-      getCallback(key)
-      key = String(key)
-      return has(storage, key) ? storage[key] : null
-    },
-  })
-
-  Object.defineProperty(storage, 'removeItem', {
-    value(key: string) {
-      removeCallback(key)
-      key = String(key)
-      if (has(storage, key)) {
-        delete storage[key]
-      }
-    },
-  })
-
-  Object.defineProperty(storage, 'clear', {
-    value() {
-      clearCallback()
-      for (const key in storage) {
-        if (has(storage, key)) {
-          delete storage[key]
-        }
-      }
-    },
-  })
-
-  Object.defineProperty(storage, 'length', {
-    get() {
-      return Object.keys(storage).length
-    },
-  })
-
-  Object.defineProperty(storage, 'key', {
-    value(n: number) {
-      const key = Object.keys(storage)[n]
-      return key === undefined ? null : key
-    },
-  })
-
-  Object.defineProperty(storage, '_callbacks', {
-    value(
-      get: typeof getCallback | null,
-      set: typeof setCallback | null,
-      remove: typeof removeCallback | null,
-      clear: typeof clearCallback | null
-    ) {
-      getCallback = get === null ? noop : get
-      setCallback = set === null ? noop : set
-      removeCallback = remove === null ? noop : remove
-      clearCallback = clear === null ? noop : clear
-    },
-  })
-
-  return storage
+  return new StorageMock()
 }

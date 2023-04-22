@@ -1,26 +1,15 @@
-name: build
+name: publish
 
 on:
-  - push
-  - pull_request
+  push:
+    branches:
+      - main
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version:
-          - 16
-          - 18
-        effector-version:
-          - 22.0.0
-          - 22.8.1
-
-    name: Node ${{ matrix.node-version }} / effector ${{ matrix.effector-version }}
-
-    env:
-      EFFECTOR_VERSION: ${{ matrix.effector-version }}
+    name: Publish
 
     steps:
       - name: 🛎️ Checkout
@@ -31,11 +20,12 @@ jobs:
         with:
           version: 7.29.3
 
-      - name: 🐧 Use Node ${{ matrix.node-version }}
+      - name: 🐧 Use Node 18.16.0
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 18.16.0
           cache: pnpm
+          registry-url: https://registry.npmjs.org/
 
       - name: 🔍 Installation
         run: pnpm install --frozen-lockfile --ignore-scripts
@@ -51,3 +41,9 @@ jobs:
 
       - name: 🔬 Check size
         run: pnpm size
+
+      - name: 📦 Publish
+        run: pnpm publish --access public
+        working-directory: dist
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}

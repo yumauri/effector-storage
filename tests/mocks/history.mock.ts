@@ -4,124 +4,113 @@ type HistoryItem = {
   url?: string | null
 }
 
+const noop: any = () => undefined
+
+export class HistoryMock implements History {
+  private location?: Location & { _set: (url: string) => void }
+
+  private items: HistoryItem[]
+  private index: number
+
+  private backCallback: History['back'] = noop
+  private forwardCallback: History['forward'] = noop
+  private goCallback: History['go'] = noop
+  private pushStateCallback: History['pushState'] = noop
+  private replaceStateCallback: History['replaceState'] = noop
+
+  constructor(data: any, title: string, url?: string | null) {
+    this.items = [{ data, title, url }]
+    this.index = 0
+  }
+
+  public scrollRestoration: ScrollRestoration = 'auto'
+
+  public get length() {
+    return this.items.length
+  }
+
+  public get state() {
+    return this.items[this.index].data
+  }
+
+  private updateLocation() {
+    if (this.location && this.items[this.index].url != null) {
+      this.location._set(this.items[this.index].url as string)
+    }
+  }
+
+  public back() {
+    this.backCallback()
+    if (this.index > 0) {
+      this.index -= 1
+      this.updateLocation()
+    }
+  }
+
+  public forward() {
+    this.forwardCallback()
+    if (this.index < this.items.length - 1) {
+      this.index += 1
+      this.updateLocation()
+    }
+  }
+
+  public go(delta?: number) {
+    this.goCallback(delta)
+    const idx = this.index + (delta || 0)
+    if (idx >= 0 && idx <= this.items.length - 1) {
+      this.index = idx
+      this.updateLocation()
+    }
+  }
+
+  public pushState(data: any, title: string, url?: string | null) {
+    this.pushStateCallback(data, title, url)
+    this.items.push({ data, title, url })
+    this.index = this.items.length - 1
+    this.updateLocation()
+  }
+
+  public replaceState(data: any, title: string, url?: string | null) {
+    this.replaceStateCallback(data, title, url)
+    this.items[this.items.length - 1] = { data, title, url }
+    this.index = this.items.length - 1
+    this.updateLocation()
+  }
+
+  public _callbacks({
+    back,
+    forward,
+    go,
+    pushState,
+    replaceState,
+  }: Partial<History>) {
+    this.backCallback = back || noop
+    this.forwardCallback = forward || noop
+    this.goCallback = go || noop
+    this.pushStateCallback = pushState || noop
+    this.replaceStateCallback = replaceState || noop
+  }
+
+  public _location(l: Location & { _set: (url: string) => void }) {
+    this.location = l
+  }
+
+  public _push(url: string) {
+    this.items.push({ data: null, title: '', url })
+    this.index = this.items.length - 1
+  }
+
+  public _replace(url: string) {
+    this.items[this.items.length - 1] = { data: null, title: '', url }
+    this.index = this.items.length - 1
+  }
+}
+
 export function createHistoryMock(
   data: any,
   title: string,
   url?: string | null
 ): History {
-  const history = Object.create(null)
-  let location: Location & { _set: (url: string) => void }
-
-  const items: HistoryItem[] = [{ data, title, url }]
-  let index = 0
-
-  const noop: any = () => undefined
-  let backCallback: History['back'] = noop
-  let forwardCallback: History['forward'] = noop
-  let goCallback: History['go'] = noop
-  let pushStateCallback: History['pushState'] = noop
-  let replaceStateCallback: History['replaceState'] = noop
-
-  Object.defineProperty(history, 'length', {
-    get() {
-      return items.length
-    },
-  })
-
-  Object.defineProperty(history, 'state', {
-    get() {
-      return items[index].data
-    },
-  })
-
-  Object.defineProperty(history, 'back', {
-    value() {
-      backCallback()
-      if (index > 0) {
-        index -= 1
-        if (location && items[index].url != null) {
-          location._set(items[index].url as string)
-        }
-      }
-    },
-  })
-
-  Object.defineProperty(history, 'forward', {
-    value() {
-      forwardCallback()
-      if (index < items.length - 1) {
-        index += 1
-        if (location && items[index].url != null) {
-          location._set(items[index].url as string)
-        }
-      }
-    },
-  })
-
-  Object.defineProperty(history, 'go', {
-    value(delta?: number) {
-      goCallback(delta)
-      const idx = index + (delta || 0)
-      if (idx >= 0 && idx <= items.length - 1) {
-        index = idx
-        if (location && items[index].url != null) {
-          location._set(items[index].url as string)
-        }
-      }
-    },
-  })
-
-  Object.defineProperty(history, 'pushState', {
-    value(data: any, title: string, url?: string | null) {
-      pushStateCallback(data, title, url)
-      items.push({ data, title, url })
-      index = items.length - 1
-      if (location && items[index].url != null) {
-        location._set(items[index].url as string)
-      }
-    },
-  })
-
-  Object.defineProperty(history, 'replaceState', {
-    value(data: any, title: string, url?: string | null) {
-      replaceStateCallback(data, title, url)
-      items[items.length - 1] = { data, title, url }
-      index = items.length - 1
-      if (location && items[index].url != null) {
-        location._set(items[index].url as string)
-      }
-    },
-  })
-
-  Object.defineProperty(history, '_callbacks', {
-    value({ back, forward, go, pushState, replaceState }: Partial<History>) {
-      backCallback = back || noop
-      forwardCallback = forward || noop
-      goCallback = go || noop
-      pushStateCallback = pushState || noop
-      replaceStateCallback = replaceState || noop
-    },
-  })
-
-  Object.defineProperty(history, '_location', {
-    value(l: Location & { _set: (url: string) => void }) {
-      location = l
-    },
-  })
-
-  Object.defineProperty(history, '_push', {
-    value(url: string) {
-      items.push({ data: null, title: '', url })
-      index = items.length - 1
-    },
-  })
-
-  Object.defineProperty(history, '_replace', {
-    value(url: string) {
-      items[items.length - 1] = { data: null, title: '', url }
-      index = items.length - 1
-    },
-  })
-
-  return history
+  return new HistoryMock(data, title, url)
 }
