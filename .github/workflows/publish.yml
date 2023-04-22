@@ -1,9 +1,8 @@
 name: publish
 
 on:
-  push:
-    branches:
-      - main
+  release:
+    types: [published]
 
 jobs:
   publish:
@@ -44,6 +43,6 @@ jobs:
 
       - name: 📦 Publish
         run: pnpm publish --access public
-        working-directory: dist
+        working-directory: build
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
