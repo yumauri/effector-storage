@@ -43,3 +43,29 @@ Adapter can be marked as "no-op" using property `noop: true`. If first adapter, 
 This can be useful with code, which runs in different environments, for example, with server-side rendering same code will run in node, and in browser. There is no `localStorage` support in node, so `local` adapter will be marked as no-op (it will use no-op `nil` adapter under the hood).
 
 Note, that `either` will not fallback to second adapter in case of read/write error in the first one. Second adapter will be used _only_ in case first adapter is not supported within the environment.
+
+## `farcached`
+
+Wraps [`@farfetched/core`](https://farfetched.pages.dev/api/operators/cache.html) cache adapter to be used as `persist` adapter :)
+
+```javascript
+import { persist, farcached } from 'effector-storage'
+import { localStorageCache } from '@farfetched/core'
+
+persist({
+  store: $store,
+  adapter: farcached(localStorageCache({ maxAge: '15m' })),
+  key: 'store',
+})
+```
+
+Out of the box Farfetched provides 4 cache adapters:
+
+- `inMemoryCache`
+- `sessionStorageCache`
+- `localStorageCache`
+- `voidCache` (this one is no-op)
+
+From real usage point of view, using Farfetched cache adapters could be useful, when you need logic for cache invalidation, because all of provided adapters have `maxAge` option.
+
+Also, you could use Farfetched cache adapters to inject different cache adapters with `fork` using [`cache.__.$instance`](https://farfetched.pages.dev/recipes/server_cache.html#inject-adapter) internal store.

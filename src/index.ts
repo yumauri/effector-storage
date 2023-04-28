@@ -39,7 +39,7 @@ export { storage } from './storage'
 // reexport tools
 //
 
-export { async, either } from './tools'
+export { async, either, farcached } from './tools'
 
 /**
  * Creates custom `persist`

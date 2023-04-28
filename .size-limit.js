@@ -10,7 +10,7 @@ module.exports = [
   {
     name: 'root persist, cjs module',
     path: 'build/index.cjs',
-    limit: '2543 B',
+    limit: '2647 B',
     // import: '{ persist }', // tree-shaking is not working with cjs
     ignore: ['effector'],
   },
@@ -35,14 +35,14 @@ module.exports = [
   {
     name: 'tools, es module',
     path: 'build/tools/index.js',
-    limit: '200 B',
-    import: '{ async, either }',
+    limit: '315 B',
+    import: '{ async, either, farcached }',
     ignore: ['effector'],
   },
   {
     name: 'tools, cjs module',
     path: 'build/tools/index.cjs',
-    limit: '259 B',
+    limit: '509 B',
     // import: '{ async, either }', // tree-shaking is not working with cjs
     ignore: ['effector'],
   },
