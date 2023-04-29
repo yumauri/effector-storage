@@ -19,11 +19,11 @@ export type {
 } from '../types'
 
 export interface ConfigPersist extends BaseConfigPersist {
-  sync?: boolean
+  sync?: boolean | 'force'
 }
 
 export interface SessionStorageConfig {
-  sync?: boolean
+  sync?: boolean | 'force'
   serialize?: (value: any) => string
   deserialize?: (value: string) => any
   def?: any

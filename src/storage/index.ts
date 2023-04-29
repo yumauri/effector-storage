@@ -2,7 +2,7 @@ import type { StorageAdapter } from '../types'
 
 export interface StorageConfig {
   storage: () => Storage
-  sync?: boolean
+  sync?: boolean | 'force'
   serialize?: (value: any) => string
   deserialize?: (value: string) => any
   def?: any
@@ -29,7 +29,7 @@ export function storage({
         // so calling `storage()` should not throw security exception here
         if (e.storageArea === storage()) {
           // call `get` function with new value
-          if (e.key === key) update(e.newValue)
+          if (e.key === key) update(sync === 'force' ? undefined : e.newValue)
 
           // `key` attribute is `null` when the change is caused by the storage `clear()` method
           if (e.key === null) update(null)
