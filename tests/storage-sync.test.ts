@@ -131,6 +131,25 @@ test('persisted store should be restored to default value on storage.clear()', a
   assert.is($counter5.getState(), 21) // <- default value from adapter
 })
 
+test('persisted store should be force updated from storage', async () => {
+  const $counter6 = createStore(0, { name: 'counter6' })
+  persist({
+    store: $counter6,
+    adapter: storage({ storage: () => mockStorage, sync: 'force' }),
+  })
+  assert.is($counter6.getState(), 0)
+
+  mockStorage.setItem('counter6', '42')
+  await events.dispatchEvent('storage', {
+    storageArea: mockStorage,
+    key: 'counter6',
+    oldValue: null,
+    newValue: '13', // <- should be ignored as obsolete value and `force` is enabled
+  })
+
+  assert.is($counter6.getState(), 42) // <- should read value from storage
+})
+
 //
 // Launch tests
 //
