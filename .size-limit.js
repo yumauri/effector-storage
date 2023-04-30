@@ -10,7 +10,7 @@ module.exports = [
   {
     name: 'root persist, cjs module',
     path: 'build/index.cjs',
-    limit: '2656 B',
+    limit: '2765 B',
     // import: '{ persist }', // tree-shaking is not working with cjs
     ignore: ['effector'],
   },
@@ -151,14 +151,14 @@ module.exports = [
   {
     name: 'query string persist, es module',
     path: 'build/query/index.js',
-    limit: '1280 B',
+    limit: '1395 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
   {
     name: 'query string persist, cjs module',
     path: 'build/query/index.cjs',
-    limit: '1576 B',
+    limit: '1693 B',
     // import: '{ persist }', // tree-shaking is not working with cjs
     ignore: ['effector'],
   },

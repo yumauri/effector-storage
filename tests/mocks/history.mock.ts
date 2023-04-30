@@ -25,21 +25,21 @@ export class HistoryMock implements History {
 
   public scrollRestoration: ScrollRestoration = 'auto'
 
-  public get length() {
+  public get length(): number {
     return this.items.length
   }
 
-  public get state() {
+  public get state(): any {
     return this.items[this.index].data
   }
 
-  private updateLocation() {
+  private updateLocation(): void {
     if (this.location && this.items[this.index].url != null) {
       this.location._set(this.items[this.index].url as string)
     }
   }
 
-  public back() {
+  public back(): void {
     this.backCallback()
     if (this.index > 0) {
       this.index -= 1
@@ -47,7 +47,7 @@ export class HistoryMock implements History {
     }
   }
 
-  public forward() {
+  public forward(): void {
     this.forwardCallback()
     if (this.index < this.items.length - 1) {
       this.index += 1
@@ -55,7 +55,7 @@ export class HistoryMock implements History {
     }
   }
 
-  public go(delta?: number) {
+  public go(delta?: number): void {
     this.goCallback(delta)
     const idx = this.index + (delta || 0)
     if (idx >= 0 && idx <= this.items.length - 1) {
@@ -64,14 +64,14 @@ export class HistoryMock implements History {
     }
   }
 
-  public pushState(data: any, title: string, url?: string | null) {
+  public pushState(data: any, title: string, url?: string | null): void {
     this.pushStateCallback(data, title, url)
     this.items.push({ data, title, url })
     this.index = this.items.length - 1
     this.updateLocation()
   }
 
-  public replaceState(data: any, title: string, url?: string | null) {
+  public replaceState(data: any, title: string, url?: string | null): void {
     this.replaceStateCallback(data, title, url)
     this.items[this.items.length - 1] = { data, title, url }
     this.index = this.items.length - 1
@@ -84,7 +84,7 @@ export class HistoryMock implements History {
     go,
     pushState,
     replaceState,
-  }: Partial<History>) {
+  }: Partial<History>): void {
     this.backCallback = back || noop
     this.forwardCallback = forward || noop
     this.goCallback = go || noop
@@ -92,16 +92,16 @@ export class HistoryMock implements History {
     this.replaceStateCallback = replaceState || noop
   }
 
-  public _location(l: Location & { _set: (url: string) => void }) {
+  public _location(l: Location & { _set: (url: string) => void }): void {
     this.location = l
   }
 
-  public _push(url: string) {
+  public _push(url: string): void {
     this.items.push({ data: null, title: '', url })
     this.index = this.items.length - 1
   }
 
-  public _replace(url: string) {
+  public _replace(url: string): void {
     this.items[this.items.length - 1] = { data: null, title: '', url }
     this.index = this.items.length - 1
   }

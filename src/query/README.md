@@ -36,11 +36,22 @@ import { persist, replaceState } from 'effector-storage/query'
 persist({ store: $id, key: 'id', method: replaceState })
 ```
 
-⚠️ **Known issue**<br>
-Several states, persisted in the query string, causes several history updates, even if updates were happen (almost) simultaneously.<br>
+## ⚠️ Updates batching
+
+By default, updates are applied immediately and synchronously, so, several states, persisted in the query string, will cause several history updates, even if updates were happen (almost) simultaneously.<br>
 If you have two stores, persisted in query string, and they both updates — you will have two history records (when using default `pushState` method). Thus if you want to go back using "⬅️Back" button — you will have to click it twice, to revert both stores in the original state.<br>
-Sometimes it can lead to nasty cyclic updates, if two stores are dependant from each other. So, be warned.<br>
-PR is appreciated :)
+Sometimes it can lead to nasty cyclic updates, if two stores are dependant from each other.
+
+To avoid this, you can use `timeout` option, which will throttle updates, and will apply them only after some time:
+
+```javascript
+persist({ store: $page, key: 'page', timeout: 10 })
+persist({ store: $count, key: 'count', timeout: 10 })
+```
+
+If those two stores will be updated simultaneously (within 10 milliseconds), only one history record will be created, and "⬅️Back" button will revert both stores to the original state.
+
+Note though, _all_ updates are collected in single buffer, regardless of URL change method, and are flushed after _shortest_ given timeout. This is because, event with different URL change methods, you still have only single _medium_ — location query string.
 
 ## Formulae
 
@@ -56,6 +67,7 @@ import { persist } from 'effector-storage/query'
 - ... all the [common options](../../README.md#options) from `persist` function.
 - `method`?: ([_function_]): One of `pushState`, `replaceState`, `locationAssign` or `locationReplace`. Default = `pushState`.
 - `state`?: (`'keep'` | `'erase'`): If `method` is `pushState` or `replaceState` — should current state be preserved or replaced with `null`. Default = `keep`.
+- `timeout`?: ([_number_]): Timeout in milliseconds, which will be used to throttle updates. Default = `undefined` (meaning updates will be applied immediately)
 - `def`?: (_any_): Default value, which will be passed to `store`/`target` in case of absent query parameter. Default = `store.defaultState` or `null`.
 
 ## Adapter
@@ -76,6 +88,7 @@ import { query } from 'effector-storage/query'
 
 - `method`?: ([_function_]): One of `pushState`, `replaceState`, `locationAssign` or `locationReplace`. Default = `pushState`.
 - `state`?: (`'keep'` | `'erase'`): If `method` is `pushState` or `replaceState` — should current state be preserved or replaced with `null`. Default = `keep`
+- `timeout`?: ([_number_]): Timeout in milliseconds, which will be used to throttle updates. Default = `undefined` (meaning updates will be applied immediately)
 - `def`?: (_any_): Default value, which will be passed to `store`/`target` in case of absent query parameter. Default = `null`
 
 ## FAQ
@@ -107,3 +120,4 @@ sample({
 
 [_store_]: https://effector.dev/docs/api/effector/store
 [_function_]: https://developer.mozilla.org/en-US/docs/Glossary/Function
+[_number_]: https://developer.mozilla.org/en-US/docs/Glossary/Number

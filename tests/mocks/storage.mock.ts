@@ -26,35 +26,35 @@ export class StorageMock implements Storage {
     })
   }
 
-  public setItem(key: string, value: string) {
+  public setItem(key: string, value: string): void {
     key = String(key)
     value = String(value)
     this.setCallback(key, value)
     this.storage.set(key, value)
   }
 
-  public getItem(key: string) {
+  public getItem(key: string): string | null {
     key = String(key)
     this.getCallback(key)
     return this.storage.has(key) ? this.storage.get(key) ?? null : null
   }
 
-  public removeItem(key: string) {
+  public removeItem(key: string): void {
     key = String(key)
     this.removeCallback(key)
     this.storage.delete(key)
   }
 
-  public clear() {
+  public clear(): void {
     this.clearCallback()
     this.storage.clear()
   }
 
-  public get length() {
+  public get length(): number {
     return this.storage.size
   }
 
-  public key(n: number) {
+  public key(n: number): string | null {
     const key = Array.from(this.storage.keys())[n]
     return key === undefined ? null : key
   }
@@ -64,7 +64,7 @@ export class StorageMock implements Storage {
     set: typeof StorageMock.prototype.setCallback | null,
     remove: typeof StorageMock.prototype.removeCallback | null,
     clear: typeof StorageMock.prototype.clearCallback | null
-  ) {
+  ): void {
     this.getCallback = get === null ? noop : get
     this.setCallback = set === null ? noop : set
     this.removeCallback = remove === null ? noop : remove

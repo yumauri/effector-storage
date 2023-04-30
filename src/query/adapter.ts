@@ -10,10 +10,15 @@ export type StateBehavior = 'keep' | 'erase'
 export interface QueryConfig {
   method?: ChangeMethod
   state?: StateBehavior
+  timeout?: number
   def?: any
 }
 
 const keyArea = Symbol() // eslint-disable-line symbol-description
+
+const buffer: Map<string, any> = new Map()
+let timeoutId: number | undefined
+let scheduled: number | undefined
 
 /*
  * Location change methods list
@@ -37,12 +42,32 @@ export const locationReplace: ChangeMethod = (params): void =>
   location.replace(url(params))
 
 /**
+ * Flush buffer to actual location search params
+ */
+function flush(method: ChangeMethod, state?: StateBehavior) {
+  scheduled = undefined
+  if (buffer.size) {
+    const params = new URLSearchParams(location.search)
+    for (const [name, value] of buffer.entries()) {
+      if (value != null) {
+        params.set(name, `${value}`)
+      } else {
+        params.delete(name)
+      }
+    }
+    buffer.clear()
+    method(params, state === 'erase')
+  }
+}
+
+/**
  * Query string adapter factory
  */
 export function adapter({
   method = pushState,
   state,
   def = null,
+  timeout,
 }: QueryConfig): StorageAdapter {
   const adapter: StorageAdapter = <State>(
     key: string,
@@ -59,13 +84,19 @@ export function adapter({
       },
 
       set(value: State) {
-        const params = new URLSearchParams(location.search)
-        if (value != null) {
-          params.set(key, `${value}`)
-        } else {
-          params.delete(key)
+        buffer.set(key, value)
+
+        if (timeout === undefined) {
+          clearTimeout(timeoutId)
+          return flush(method, state)
         }
-        method(params, state === 'erase')
+
+        const deadline = Date.now() + timeout
+        if (scheduled === undefined || scheduled > deadline) {
+          clearTimeout(timeoutId)
+          scheduled = deadline
+          timeoutId = setTimeout(flush, timeout, method, state)
+        }
       },
     }
   }

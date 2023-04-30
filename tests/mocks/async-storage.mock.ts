@@ -10,7 +10,7 @@ export class AsyncStorageMock implements AsyncStorage {
   private removeCallback: (key: string) => void = noop
   private clearCallback: () => void = noop
 
-  public async setItem(key: string, value: string) {
+  public async setItem(key: string, value: string): Promise<void> {
     await Promise.resolve()
     key = String(key)
     value = String(value)
@@ -18,21 +18,21 @@ export class AsyncStorageMock implements AsyncStorage {
     this.storage.set(key, value)
   }
 
-  public async getItem(key: string) {
+  public async getItem(key: string): Promise<string | null> {
     await Promise.resolve()
     key = String(key)
     this.getCallback(key)
     return this.storage.has(key) ? this.storage.get(key) ?? null : null
   }
 
-  public async removeItem(key: string) {
+  public async removeItem(key: string): Promise<void> {
     await Promise.resolve()
     key = String(key)
     this.removeCallback(key)
     this.storage.delete(key)
   }
 
-  public async clear() {
+  public async clear(): Promise<void> {
     await Promise.resolve()
     this.clearCallback()
     this.storage.clear()
@@ -43,7 +43,7 @@ export class AsyncStorageMock implements AsyncStorage {
     set: typeof AsyncStorageMock.prototype.setCallback | null,
     remove: typeof AsyncStorageMock.prototype.removeCallback | null,
     clear: typeof AsyncStorageMock.prototype.clearCallback | null
-  ) {
+  ): void {
     this.getCallback = get === null ? noop : get
     this.setCallback = set === null ? noop : set
     this.removeCallback = remove === null ? noop : remove
