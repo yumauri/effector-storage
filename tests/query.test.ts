@@ -1,4 +1,5 @@
 import { test } from 'uvu'
+import { install as installFakeTimers } from '@sinonjs/fake-timers'
 import * as assert from 'uvu/assert'
 import { snoop } from 'snoop'
 import { createStore, createEvent } from 'effector'
@@ -21,6 +22,10 @@ import {
 declare let global: any
 let events: ReturnType<typeof createEventsMock>
 
+test.before(() => {
+  global.clock = installFakeTimers()
+})
+
 test.before.each(() => {
   global.history = createHistoryMock(null, '', 'http://domain.test')
   global.location = createLocationMock('http://domain.test')
@@ -34,6 +39,11 @@ test.after.each(() => {
   delete global.history
   delete global.location
   delete global.addEventListener
+})
+
+test.after(() => {
+  global.clock.uninstall()
+  delete global.clock
 })
 
 //
@@ -76,8 +86,8 @@ test('should change store value to default, in case history go back', async () =
   assert.is(global.location.search, '?id=4242')
   global.history.back()
 
-  await events.dispatchEvent('popstate', null)
-  await new Promise((resolve) => setTimeout(resolve, 10))
+  events.dispatchEvent('popstate', null)
+  await global.clock.runAllAsync()
 
   assert.is(global.location.search, '')
   assert.is($id.getState(), '1212')
@@ -447,6 +457,73 @@ test('should work with source/target with default state (issue #20)', () => {
   assert.is(global.location.search, '')
   assert.is(watchTarget.callCount, 1)
   assert.equal(watchTarget.calls[0].arguments, ['20_2_0'])
+})
+
+test('should batch location updates (issue #23)', async () => {
+  const snoopPushState = snoop(() => undefined)
+  global.history._callbacks({
+    pushState: snoopPushState.fn,
+  })
+
+  const $page = createStore('1')
+  const $count = createStore('25')
+
+  persist({ store: $page, key: 'page', timeout: 0 })
+  persist({ store: $count, key: 'count', timeout: 0 })
+
+  assert.is(global.location.search, '')
+  assert.is(global.history.length, 1)
+
+  //
+  ;($page as any).setState('2')
+  ;($count as any).setState('20')
+
+  await global.clock.runAllAsync()
+  assert.is(global.location.search, '?page=2&count=20')
+  assert.is(global.history.length, 2) // <- sigle history record added
+  assert.is(snoopPushState.callCount, 1) // <- single pushState call expecuted
+  assert.equal(snoopPushState.calls[0].arguments, [
+    null,
+    '',
+    '/?page=2&count=20',
+  ])
+})
+
+test('shortest timeout should take precedence (issue #23)', async () => {
+  const snoopPushState = snoop(() => undefined)
+  global.history._callbacks({
+    pushState: snoopPushState.fn,
+  })
+
+  const $page = createStore('1')
+  const $count = createStore('25')
+
+  persist({ store: $page, key: 'page', timeout: 1000 })
+  persist({ store: $count, key: 'count', timeout: 100 })
+
+  assert.is(global.location.search, '')
+  assert.is(global.history.length, 1)
+
+  //
+  ;($page as any).setState('2')
+  ;($count as any).setState('20')
+
+  await global.clock.tickAsync(70)
+  assert.is(global.location.search, '') // still nothing
+  assert.is(global.history.length, 1)
+
+  await global.clock.tickAsync(70)
+  assert.is(global.location.search, '?page=2&count=20')
+  assert.is(global.history.length, 2) // <- sigle history record added
+  assert.is(snoopPushState.callCount, 1) // <- single pushState call expecuted
+  assert.equal(snoopPushState.calls[0].arguments, [
+    null,
+    '',
+    '/?page=2&count=20',
+  ])
+
+  await global.clock.tickAsync(5000)
+  assert.is(snoopPushState.callCount, 1) // <- wasn't called again
 })
 
 //

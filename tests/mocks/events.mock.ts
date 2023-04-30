@@ -10,7 +10,10 @@ interface Events {
 export class EventsMock implements Events {
   private listeners = new Map<string, EventListener[]>()
 
-  public async dispatchEvent(name: string, event: any) {
+  public async dispatchEvent(
+    name: string,
+    event: any
+  ): Promise<unknown[] | undefined> {
     const listeners = this.listeners.get(name)
     if (listeners && listeners.length > 0) {
       return Promise.all(
@@ -24,7 +27,7 @@ export class EventsMock implements Events {
     }
   }
 
-  public addEventListener = (name: string, listener: EventListener) => {
+  public addEventListener = (name: string, listener: EventListener): void => {
     let listeners = this.listeners.get(name)
     if (!listeners) {
       this.listeners.set(name, (listeners = []))

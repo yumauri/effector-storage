@@ -44,6 +44,7 @@ test.after(() => {
   delete global.sessionStorage
   delete global.localStorage
   global.clock.uninstall()
+  delete global.clock
 })
 
 //

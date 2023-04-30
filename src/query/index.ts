@@ -29,6 +29,7 @@ export {
 export interface ConfigPersist extends BaseConfigPersist {
   method?: ChangeMethod
   state?: StateBehavior
+  timeout?: number
 }
 
 export interface ConfigStore<State, Err = Error>

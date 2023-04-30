@@ -12,7 +12,7 @@ export class LocationMock extends URL implements Location {
 
   public ancestorOrigins = [] as any as DOMStringList
 
-  public assign(url: string) {
+  public assign(url: string): void {
     this.assignCallback(url)
     if (this.history) {
       this.history._push(url)
@@ -20,11 +20,11 @@ export class LocationMock extends URL implements Location {
     this.href = this.origin + url
   }
 
-  public reload() {
+  public reload(): void {
     this.reloadCallback()
   }
 
-  public replace(url: string) {
+  public replace(url: string): void {
     this.replaceCallback(url)
     if (this.history) {
       this.history._replace(url)
@@ -32,7 +32,7 @@ export class LocationMock extends URL implements Location {
     this.href = this.origin + url
   }
 
-  public _callbacks({ assign, reload, replace }: Partial<Location>) {
+  public _callbacks({ assign, reload, replace }: Partial<Location>): void {
     this.assignCallback = assign || noop
     this.reloadCallback = reload || noop
     this.replaceCallback = replace || noop
@@ -43,11 +43,11 @@ export class LocationMock extends URL implements Location {
       _push: (url: string) => void
       _replace: (url: string) => void
     }
-  ) {
+  ): void {
     this.history = h
   }
 
-  public _set(url: string) {
+  public _set(url: string): void {
     this.href = this.origin + url
   }
 }
