@@ -22,7 +22,7 @@ jobs:
       - name: 📦 Use PNPM
         uses: pnpm/action-setup@v2
         with:
-          version: 8.3.1
+          version: 8.4.0
 
       - name: 🐧 Use Node 18.16.0
         uses: actions/setup-node@v3
@@ -47,7 +47,7 @@ jobs:
         run: pnpm size
 
       - name: 📦 Publish
-        run: pnpm publish --access public
+        run: pnpm publish --access public --provenance
         working-directory: build
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
