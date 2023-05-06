@@ -20,6 +20,7 @@ export type {
 
 export interface ConfigPersist extends BaseConfigPersist {
   sync?: boolean | 'force'
+  timeout?: number
 }
 
 export interface LocalStorageConfig {

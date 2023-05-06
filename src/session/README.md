@@ -33,6 +33,7 @@ import { persist } from 'effector-storage/session'
 - `sync`? ([_boolean_] | 'force'): Add [`'storage'`] event listener or no. Default = `false`. In case of `'force'` value adapter will always read new value from `sessionStorage`, instead of event.
 - `serialize`? (_(value: any) => string_): Custom serialize function. Default = `JSON.stringify`.
 - `deserialize`? (_(value: string) => any_): Custom deserialize function. Default = `JSON.parse`.
+- `timeout`?: ([_number_]): Timeout in milliseconds, which will be used to throttle writes to _sessionStorage_. Default = `undefined` (meaning updates will be set to the _sessionStorage_ immediately)
 - `def`?: (_any_): Default value, which will be passed to `store`/`target` in case of absent storage value. Default = `store.defaultState` or `null`.
 
 ## Adapter
@@ -54,6 +55,8 @@ import { session } from 'effector-storage/session'
 - `sync`? ([_boolean_] | 'force'): Add [`'storage'`] event listener or no. Default = `false`. In case of `'force'` value adapter will always read new value from `sessionStorage`, instead of event.
 - `serialize`? (_(value: any) => string_): Custom serialize function. Default = `JSON.stringify`.
 - `deserialize`? (_(value: string) => any_): Custom deserialize function. Default = `JSON.parse`.
+- `timeout`?: ([_number_]): Timeout in milliseconds, which will be used to throttle writes to _sessionStorage_. Default = `undefined` (meaning updates will be set to the _sessionStorage_ immediately)
+- `def`?: (_any_): Default value, which will be passed to `store`/`target` in case of absent storage value. Default = `store.defaultState` or `null`.
 
 ## FAQ
 
