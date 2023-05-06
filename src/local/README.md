@@ -128,3 +128,4 @@ window.addEventListener('resize', () => {
 [_store_]: https://effector.dev/docs/api/effector/store
 [_function_]: https://developer.mozilla.org/en-US/docs/Glossary/Function
 [_boolean_]: https://developer.mozilla.org/en-US/docs/Glossary/Boolean
+[_number_]: https://developer.mozilla.org/en-US/docs/Glossary/Number

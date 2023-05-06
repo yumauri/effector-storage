@@ -45,3 +45,4 @@ import { storage } from 'effector-storage/storage'
 [`'storage'`]: https://developer.mozilla.org/en-US/docs/Web/API/StorageEvent
 [_store_]: https://effector.dev/docs/api/effector/store
 [_boolean_]: https://developer.mozilla.org/en-US/docs/Glossary/Boolean
+[_number_]: https://developer.mozilla.org/en-US/docs/Glossary/Number
