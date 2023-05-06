@@ -10,7 +10,7 @@ module.exports = [
   {
     name: 'root persist, cjs module',
     path: 'build/index.cjs',
-    limit: '2765 B',
+    limit: '2866 B',
     // import: '{ persist }', // tree-shaking is not working with cjs
     ignore: ['effector'],
   },
@@ -83,14 +83,14 @@ module.exports = [
   {
     name: 'storage adapter, es module',
     path: 'build/storage/index.js',
-    limit: '266 B',
+    limit: '367 B',
     import: '{ storage }',
     ignore: ['effector'],
   },
   {
     name: 'storage adapter, cjs module',
     path: 'build/storage/index.cjs',
-    limit: '324 B',
+    limit: '423 B',
     // import: '{ storage }', // tree-shaking is not working with cjs
     ignore: ['effector'],
   },
@@ -99,14 +99,14 @@ module.exports = [
   {
     name: '`localStorage` persist, es module',
     path: 'build/local/index.js',
-    limit: '1254 B',
+    limit: '1355 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
   {
     name: '`localStorage` persist, cjs module',
     path: 'build/local/index.cjs',
-    limit: '1529 B',
+    limit: '1628 B',
     // import: '{ persist }', // tree-shaking is not working with cjs
     ignore: ['effector'],
   },
@@ -116,14 +116,14 @@ module.exports = [
   {
     name: 'core adapter, es module',
     path: 'build/index.js',
-    limit: '1261 B',
+    limit: '1361 B',
     import: '{ persist, local }',
     ignore: ['effector'],
   },
   {
     name: 'core adapter factory, es module',
     path: ['build/index.js', 'build/local/index.js'],
-    limit: '1264 B',
+    limit: '1363 B',
     import: {
       'build/index.js': '{ persist }',
       'build/local/index.js': '{ local }',
@@ -135,14 +135,14 @@ module.exports = [
   {
     name: '`sessionStorage` persist, es module',
     path: 'build/session/index.js',
-    limit: '1252 B',
+    limit: '1352 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
   {
     name: '`sessionStorage` persist, cjs module',
     path: 'build/session/index.cjs',
-    limit: '1526 B',
+    limit: '1625 B',
     // import: '{ persist }', // tree-shaking is not working with cjs
     ignore: ['effector'],
   },

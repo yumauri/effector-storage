@@ -59,16 +59,16 @@ export class StorageMock implements Storage {
     return key === undefined ? null : key
   }
 
-  public _callbacks(
-    get: typeof StorageMock.prototype.getCallback | null,
-    set: typeof StorageMock.prototype.setCallback | null,
-    remove: typeof StorageMock.prototype.removeCallback | null,
-    clear: typeof StorageMock.prototype.clearCallback | null
-  ): void {
-    this.getCallback = get === null ? noop : get
-    this.setCallback = set === null ? noop : set
-    this.removeCallback = remove === null ? noop : remove
-    this.clearCallback = clear === null ? noop : clear
+  public _callbacks({
+    getItem,
+    setItem,
+    removeItem,
+    clear,
+  }: Partial<Storage>): void {
+    this.getCallback = getItem || noop
+    this.setCallback = setItem || noop
+    this.removeCallback = removeItem || noop
+    this.clearCallback = clear || noop
   }
 }
 

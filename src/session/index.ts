@@ -26,6 +26,7 @@ export interface SessionStorageConfig {
   sync?: boolean | 'force'
   serialize?: (value: any) => string
   deserialize?: (value: string) => any
+  timeout?: number
   def?: any
 }
 

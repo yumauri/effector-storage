@@ -26,6 +26,7 @@ export interface LocalStorageConfig {
   sync?: boolean | 'force'
   serialize?: (value: any) => string
   deserialize?: (value: string) => any
+  timeout?: number
   def?: any
 }
 
