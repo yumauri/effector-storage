@@ -14,6 +14,13 @@ export interface StorageAdapterFactory<AdapterConfig> {
   factory: true
 }
 
+export type Contract<Data> =
+  | ((raw: unknown) => raw is Data)
+  | {
+      isData: (raw: unknown) => raw is Data
+      getErrorMessages: (raw: unknown) => string[]
+    }
+
 export type Done<State> = {
   key: string
   keyPrefix: string
@@ -37,6 +44,7 @@ export interface ConfigPersist {
   pickup?: Unit<any>
   context?: Unit<any>
   keyPrefix?: string
+  contract?: Contract<any>
 }
 
 export interface ConfigAdapter {
@@ -56,6 +64,7 @@ export interface ConfigCommon<State, Err = Error> {
   context?: Unit<any>
   key?: string
   keyPrefix?: string
+  contract?: Contract<State | undefined>
 }
 
 export interface ConfigJustStore<State> {
