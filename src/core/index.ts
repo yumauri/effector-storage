@@ -5,6 +5,7 @@ import type {
   ConfigPersist,
   ConfigSourceTarget,
   ConfigStore,
+  Contract,
   Done,
   Fail,
   Finally,
@@ -13,6 +14,7 @@ import {
   attach,
   clearNode,
   createEvent,
+  createEffect,
   createNode,
   createStore,
   forward,
@@ -31,6 +33,20 @@ const contextual =
   <T, C, R>(fn: (value: T, ctx?: C) => R) =>
   (ctx: { ref?: C }, value: T) =>
     fn(value, ctx.ref)
+
+// helper function to validate data with contract
+const contracted =
+  <T>(contract?: Contract<T>) =>
+  (raw: unknown) =>
+    !contract || // no contract -> data is valid
+    raw === undefined || // `undefined` is always valid
+    ('isData' in contract ? contract.isData(raw) : contract(raw))
+      ? (raw as T)
+      : (() => {
+          throw 'getErrorMessages' in contract
+            ? contract.getErrorMessages(raw)
+            : undefined
+        })()
 
 // helper function for safe bind effects to scope
 // since version 22.4.0 there is `safe` option in `scopeBind`,
@@ -74,6 +90,7 @@ export function persist<State, Err = Error>(
     context,
     key: keyName,
     keyPrefix = '',
+    contract,
   } = config
 
   if (!adapterOrFactory) {
@@ -110,8 +127,8 @@ export function persist<State, Err = Error>(
   const desist = () => clearNode(region)
 
   const op =
-    (operation: 'get' | 'set') =>
-    ({ status, params, result, error }: any): any =>
+    (operation: 'get' | 'set' | 'validate') =>
+    ({ status = 'fail', params, result, error }: any): any =>
       status === 'done'
         ? {
             status,
@@ -149,10 +166,7 @@ export function persist<State, Err = Error>(
       effect: contextual(value.set),
     }) as any as Effect<State, void, Err>
 
-    let bindedGet: (raw?: any) => any = getFx
-    ctx.updates.watch(() => {
-      bindedGet = safeBind(getFx)
-    })
+    const validateFx = createEffect<unknown, State>(contracted(contract))
 
     const localAnyway = createEvent<Finally<State, Err>>()
     const localDone = localAnyway.filterMap<Done<State>>(
@@ -167,6 +181,12 @@ export function persist<State, Err = Error>(
     )
 
     const trigger = createEvent<State>()
+
+    let bindedGet: (raw?: any) => any = getFx
+    ctx.updates.watch(() => {
+      bindedGet = safeBind(getFx)
+    })
+
     sample({
       source,
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -183,10 +203,18 @@ export function persist<State, Err = Error>(
       target: setFx.prepend(([proposed]: State[]) => proposed),
     })
     forward({ from: [getFx.doneData, setFx], to: storage })
-    sample({ source: merge([getFx.doneData, storage]), target: target as any })
+    sample({
+      source: merge([getFx.doneData, storage]),
+      target: validateFx as any,
+    })
+    forward({ from: validateFx.doneData, to: target })
 
     forward({
-      from: [getFx.finally.map(op('get')), setFx.finally.map(op('set'))],
+      from: [
+        getFx.finally.map(op('get')),
+        setFx.finally.map(op('set')),
+        validateFx.fail.map(op('validate')),
+      ],
       to: localAnyway,
     })
 

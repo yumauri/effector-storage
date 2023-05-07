@@ -18,6 +18,9 @@ devDependencies:
   '@farfetched/core':
     specifier: ^0.8.11
     version: 0.8.11(effector@22.8.3)
+  '@farfetched/runtypes':
+    specifier: ^0.8.11
+    version: 0.8.11(@farfetched/core@0.8.11)(runtypes@6.6.0)
   '@react-native-async-storage/async-storage':
     specifier: ^1.18.1
     version: 1.18.1(react-native@0.71.7)
@@ -105,6 +108,9 @@ devDependencies:
   rollup-plugin-terser:
     specifier: ^7.0.2
     version: 7.0.2(rollup@3.21.5)
+  runtypes:
+    specifier: ^6.6.0
+    version: 6.6.0
   size-limit:
     specifier: ^8.2.4
     version: 8.2.4
@@ -1724,6 +1730,16 @@ packages:
       effector: 22.8.3
     dev: true
 
+  /@farfetched/runtypes@0.8.11(@farfetched/core@0.8.11)(runtypes@6.6.0):
+    resolution: {integrity: sha512-WDftDPm0jEyUTxIuIircoFs66p/jLaQ/2S6ospPBtojDADPS/Ce6YEANPHUN1K6WQne9E18U7J8BbALLzPqbGg==}
+    peerDependencies:
+      '@farfetched/core': 0.8.11
+      runtypes: ^6.6.0
+    dependencies:
+      '@farfetched/core': 0.8.11(effector@22.8.3)
+      runtypes: 6.6.0
+    dev: true
+
   /@hapi/hoek@9.3.0:
     resolution: {integrity: sha512-/c6rf4UJlmHlC9b5BaNvzAcFv7HZ2QHaV0D4/HNlBdvFnvQq8RI4kYdhyPCl7Xj+oWvTWQ8ujhqS53LIgAe6KQ==}
     dev: true
@@ -2938,7 +2954,7 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001485
+      caniuse-lite: 1.0.30001486
       electron-to-chromium: 1.4.385
       node-releases: 2.0.10
       update-browserslist-db: 1.0.11(browserslist@4.21.5)
@@ -3082,8 +3098,8 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /caniuse-lite@1.0.30001485:
-    resolution: {integrity: sha512-8aUpZ7sjhlOyiNsg+pgcrTTPUXKh+rg544QYHSvQErljVEKJzvkYkCR/hUFeeVoEfTToUtY9cUKNRC7+c45YkA==}
+  /caniuse-lite@1.0.30001486:
+    resolution: {integrity: sha512-uv7/gXuHi10Whlj0pp5q/tsK/32J2QSqVRKQhs2j8VsDCjgyruAh/eEXHF822VqO9yT6iZKw3nRwZRSPBE9OQg==}
     dev: true
 
   /chalk@2.4.2:
@@ -6645,8 +6661,8 @@ packages:
     engines: {node: '>= 0.6'}
     dev: true
 
-  /react-devtools-core@4.27.6:
-    resolution: {integrity: sha512-jeFNhEzcSwpiqmw+zix5IFibNEPmUodICN7ClrlRKGktzO/3FMteMb52l1NRUiz/ABSYt9hOZ9IPgVDrg5pyUw==}
+  /react-devtools-core@4.27.7:
+    resolution: {integrity: sha512-12N0HrhCPbD76Z7SkyJdGdXdPGouUsgV6tlEsbSpAnLDO06tjXZP+irht4wPdYwJAJRQ85DxL48eQoz7UmrSuQ==}
     dependencies:
       shell-quote: 1.8.1
       ws: 7.5.9
@@ -6724,7 +6740,7 @@ packages:
       pretty-format: 26.6.2
       promise: 8.3.0
       react: 18.2.0
-      react-devtools-core: 4.27.6
+      react-devtools-core: 4.27.7
       react-native-codegen: 0.71.5(@babel/preset-env@7.21.5)
       react-native-gradle-plugin: 0.71.17
       react-refresh: 0.4.3
@@ -7071,6 +7087,10 @@ packages:
     resolution: {integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==}
     dependencies:
       queue-microtask: 1.2.3
+    dev: true
+
+  /runtypes@6.6.0:
+    resolution: {integrity: sha512-ddM7sgB3fyboDlBzEYFQ04L674sKjbs4GyW2W32N/5Ae47NRd/GyMASPC2PFw8drPHYGEcZ0mZ26r5RcB8msfQ==}
     dev: true
 
   /sade@1.8.1:

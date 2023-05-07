@@ -24,6 +24,7 @@ Small module for [Effector](https://github.com/effector/effector) ☄️ to sync
   - [Units](#units)
   - [Options](#options)
   - [Returns](#returns)
+  - [Contracts](#contracts)
   - [Notes](#notes)
 - [`createPersist` factory](#createpersist-factory)
   - [Options](#options-1)
@@ -179,6 +180,7 @@ In order to synchronize _something_, you need to specify effector units. Dependi
 - `clock`? ([_Event_] | [_Effect_] | [_Store_]): Unit, if passed – then value from `store`/`source` will be stored in the storage only upon its trigger.
 - `pickup`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which you can specify to update `store` value from storage. This unit can also set a special context for adapter. **Note!** When you add `pickup`, `persist` _will not_ get initial value from storage automatically!
 - `context`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which can set a special context for adapter.
+- `contract`? ([_Contract_]): Rule to statically validate data from storage.
 - `done`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which will be triggered on each successful read or write from/to storage.<br>
   Payload structure:
   - `key` ([_string_]): Same `key` as above.
@@ -189,14 +191,14 @@ In order to synchronize _something_, you need to specify effector units. Dependi
   Payload structure:
   - `key` ([_string_]): Same `key` as above.
   - `keyPrefix` ([_string_]): Prefix, used in adapter, to be concatenated to `key`. By default = `''`.
-  - `operation` (_`'set'`_ | _`'get'`_): Type of operation, read (get) or write (set).
+  - `operation` (_`'set'`_ | _`'get'`_ | _`'validate'`_): Type of operation, read (get), write (set) or validation against contract (validate).
   - `error` ([_Error_]): Error instance
   - `value`? (_any_): In case of _'set'_ operation — value from `store`. In case of _'get'_ operation could contain raw value from storage or could be empty.
 - `finally`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which will be triggered either in case of success or error.<br>
   Payload structure:
   - `key` ([_string_]): Same `key` as above.
   - `keyPrefix` ([_string_]): Prefix, used in adapter, to be concatenated to `key`. By default = `''`.
-  - `operation` (_`'set'`_ | _`'get'`_): Type of operation, read (get) or write (set).
+  - `operation` (_`'set'`_ | _`'get'`_ | _`'validate'`_): Type of operation, read (get), write (set) or validation against contract (validate).
   - `status` (_`'done'`_ | _`'fail'`_): Operation status.
   - `error`? ([_Error_]): Error instance, in case of error.
   - `value`? (_any_): Value, in case it is exists (look above).
@@ -204,6 +206,52 @@ In order to synchronize _something_, you need to specify effector units. Dependi
 ### Returns
 
 - ([_Subscription_]): You can use this subscription to remove store association with storage, if you don't need them to be synced anymore. It is a function.
+
+### Contracts
+
+You can use `contract` option to validate data from storage. Contract has the following type definition:
+
+```typescript
+export type Contract<Data> =
+  | ((raw: unknown) => raw is Data)
+  | {
+      isData: (raw: unknown) => raw is Data
+      getErrorMessages: (raw: unknown) => string[]
+    }
+```
+
+So, it could be simple type guard function in trivial use cases, or more complex object with `isData` type guard and `getErrorMessages` function, which returns array of error messages. This format is fully compatible with [Farfetched contracts](https://farfetched.pages.dev/api/primitives/contract.html), so you can use any adapter from Farfetched ([runtypes](https://farfetched.pages.dev/api/contracts/runtypes.html), [zod](https://farfetched.pages.dev/api/contracts/zod.html), [io-ts](https://farfetched.pages.dev/api/contracts/io-ts.html), [superstruct](https://farfetched.pages.dev/api/contracts/superstruct.html), [typed-contracts](https://farfetched.pages.dev/api/contracts/typed-contracts.html)) with `persist` and `contract` option:
+
+```typescript
+// simple type guard
+persist({
+  store: $counter,
+  key: 'counter',
+  contract: (raw): raw is number => typeof raw === 'number',
+})
+```
+
+```typescript
+// complex contract with Farfetched adapter
+import { Record, Literal, Number } from 'runtypes'
+import { runtypeContract } from '@farfetched/runtypes'
+
+const Asteroid = Record({
+  type: Literal('asteroid'),
+  mass: Number,
+})
+
+persist({
+  store: $asteroid,
+  key: 'asteroid',
+  contract: runtypeContract(Asteroid),
+})
+```
+
+There are two gotchas with contracts:
+
+1. From `effector-storage` point of view it is absolutely normal, when there is no persisted value in the storage yet. So, `undefined` value is _always valid_, event if contract is not explicitly allows it.
+2. `effector-storage` does not validate data, which is written to the storage. But it will validate it nonetheless, after persisting, so, if you write invalid data to the storage, `fail` will be triggered, but data _will be_ persisted.
 
 ### Notes
 
@@ -239,6 +287,7 @@ persist({
 - `pickup`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which you can specify to update `store` value from storage. This unit can also set a special context for adapter. **Note!** When you add `pickup`, `persist` _will not_ get initial value from storage automatically!
 - `context`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which can set a special context for adapter.
 - `keyPrefix`? ([_string_]): Key prefix for adapter. It will be concatenated with any `key`, given to returned `persist` function.
+- `contract`? ([_Contract_]): Rule to statically validate data from storage.
 
 ### Returns
 
@@ -531,3 +580,4 @@ Use this approach with caution, beware of infinite circular updates. To avoid th
 [_function_]: https://developer.mozilla.org/en-US/docs/Glossary/Function
 [_boolean_]: https://developer.mozilla.org/en-US/docs/Glossary/Boolean
 [_error_]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error
+[_Contract_]: #contracts
