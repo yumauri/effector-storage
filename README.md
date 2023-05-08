@@ -250,8 +250,8 @@ persist({
 
 There are two gotchas with contracts:
 
-1. From `effector-storage` point of view it is absolutely normal, when there is no persisted value in the storage yet. So, `undefined` value is _always valid_, event if contract is not explicitly allows it.
-2. `effector-storage` does not validate data, which is written to the storage. But it will validate it nonetheless, after persisting, so, if you write invalid data to the storage, `fail` will be triggered, but data _will be_ persisted.
+1. From `effector-storage` point of view it is absolutely normal, when there is no persisted value in the storage yet. So, `undefined` value is _always valid_, event if contract does not explicitly allow it.
+2. `effector-storage` does not prevent persisting invalid data to the storage, but it will validate it nonetheless, after persisting, so, if you write invalid data to the storage, `fail` will be triggered, but data will be persisted.
 
 ### Notes
 
