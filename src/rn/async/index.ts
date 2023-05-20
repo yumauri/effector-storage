@@ -1,9 +1,8 @@
 import type { Subscription } from 'effector'
 import type {
   ConfigPersist as BaseConfigPersist,
-  ConfigCommon,
-  ConfigJustStore,
-  ConfigJustSourceTarget,
+  ConfigStore as BaseConfigStore,
+  ConfigSourceTarget as BaseConfigSourceTarget,
   StorageAdapter,
 } from '../../types'
 import { persist as base } from '../../core'
@@ -11,6 +10,7 @@ import { asyncStorage } from '../../async-storage'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export type {
+  Contract,
   Done,
   Fail,
   Finally,
@@ -27,13 +27,11 @@ export interface AsyncStorageConfig {
 
 export interface ConfigStore<State, Err = Error>
   extends AsyncStorageConfig,
-    ConfigCommon<State, Err>,
-    ConfigJustStore<State> {}
+    BaseConfigStore<State, Err> {}
 
 export interface ConfigSourceTarget<State, Err = Error>
   extends AsyncStorageConfig,
-    ConfigCommon<State, Err>,
-    ConfigJustSourceTarget<State> {}
+    BaseConfigSourceTarget<State, Err> {}
 
 export interface Persist {
   <State, Err = Error>(config: ConfigSourceTarget<State, Err>): Subscription

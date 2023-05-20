@@ -5,6 +5,7 @@ export type {
   ConfigPersist,
   ConfigSourceTarget,
   ConfigStore,
+  Contract,
   Done,
   Fail,
   Finally,

@@ -1,9 +1,8 @@
 import type { Subscription } from 'effector'
 import type {
   ConfigPersist as BaseConfigPersist,
-  ConfigCommon,
-  ConfigJustStore,
-  ConfigJustSourceTarget,
+  ConfigStore as BaseConfigStore,
+  ConfigSourceTarget as BaseConfigSourceTarget,
   StorageAdapter,
 } from '../types'
 import type { ChangeMethod, StateBehavior, QueryConfig } from './adapter'
@@ -12,6 +11,7 @@ import { nil } from '../nil'
 import { adapter } from './adapter'
 
 export type {
+  Contract,
   Done,
   Fail,
   Finally,
@@ -34,13 +34,11 @@ export interface ConfigPersist extends BaseConfigPersist {
 
 export interface ConfigStore<State, Err = Error>
   extends QueryConfig,
-    ConfigCommon<State, Err>,
-    ConfigJustStore<State> {}
+    BaseConfigStore<State, Err> {}
 
 export interface ConfigSourceTarget<State, Err = Error>
   extends QueryConfig,
-    ConfigCommon<State, Err>,
-    ConfigJustSourceTarget<State> {}
+    BaseConfigSourceTarget<State, Err> {}
 
 export interface Persist {
   <State, Err = Error>(config: ConfigSourceTarget<State, Err>): Subscription

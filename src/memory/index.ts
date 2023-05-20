@@ -1,15 +1,14 @@
 import type { Subscription } from 'effector'
 import type {
-  ConfigPersist,
-  ConfigCommon,
-  ConfigJustStore,
-  ConfigJustSourceTarget,
+  ConfigPersist as BaseConfigPersist,
+  ConfigStore as BaseConfigStore,
+  ConfigSourceTarget as BaseConfigSourceTarget,
 } from '../types'
 import { persist as base } from '../core'
 import { adapter } from './adapter'
 
 export type {
-  ConfigPersist,
+  Contract,
   Done,
   Fail,
   Finally,
@@ -18,13 +17,13 @@ export type {
 } from '../types'
 export type { MemoryConfig } from './adapter'
 
+export interface ConfigPersist extends BaseConfigPersist {}
+
 export interface ConfigStore<State, Err = Error>
-  extends ConfigCommon<State, Err>,
-    ConfigJustStore<State> {}
+  extends BaseConfigStore<State, Err> {}
 
 export interface ConfigSourceTarget<State, Err = Error>
-  extends ConfigCommon<State, Err>,
-    ConfigJustSourceTarget<State> {}
+  extends BaseConfigSourceTarget<State, Err> {}
 
 export interface Persist {
   <State, Err = Error>(config: ConfigSourceTarget<State, Err>): Subscription

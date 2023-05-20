@@ -1,9 +1,8 @@
 import type { Subscription } from 'effector'
 import type {
   ConfigPersist as BaseConfigPersist,
-  ConfigCommon,
-  ConfigJustStore,
-  ConfigJustSourceTarget,
+  ConfigStore as BaseConfigStore,
+  ConfigSourceTarget as BaseConfigSourceTarget,
   StorageAdapter,
 } from '../types'
 import { persist as base } from '../core'
@@ -11,6 +10,7 @@ import { nil } from '../nil'
 import { storage } from '../storage'
 
 export type {
+  Contract,
   Done,
   Fail,
   Finally,
@@ -33,13 +33,11 @@ export interface SessionStorageConfig {
 
 export interface ConfigStore<State, Err = Error>
   extends SessionStorageConfig,
-    ConfigCommon<State, Err>,
-    ConfigJustStore<State> {}
+    BaseConfigStore<State, Err> {}
 
 export interface ConfigSourceTarget<State, Err = Error>
   extends SessionStorageConfig,
-    ConfigCommon<State, Err>,
-    ConfigJustSourceTarget<State> {}
+    BaseConfigSourceTarget<State, Err> {}
 
 export interface Persist {
   <State, Err = Error>(config: ConfigSourceTarget<State, Err>): Subscription

@@ -55,7 +55,7 @@ export interface ConfigAdapterFactory<AdapterConfig> {
   adapter: StorageAdapterFactory<AdapterConfig>
 }
 
-export interface ConfigCommon<State, Err = Error> {
+interface ConfigCommon<State, Err = Error> {
   clock?: Unit<any>
   done?: Unit<Done<State>>
   fail?: Unit<Fail<Err>>
@@ -67,11 +67,11 @@ export interface ConfigCommon<State, Err = Error> {
   contract?: Contract<State | undefined>
 }
 
-export interface ConfigJustStore<State> {
+interface ConfigJustStore<State> {
   store: Store<State>
 }
 
-export interface ConfigJustSourceTarget<State> {
+interface ConfigJustSourceTarget<State> {
   source: Store<State> | Event<State> | Effect<State, any, any>
   target: Store<State> | Event<State> | Effect<State, any, any>
 }
