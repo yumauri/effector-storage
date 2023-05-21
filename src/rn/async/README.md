@@ -1,5 +1,7 @@
 # React Native AsyncStorage adapter
 
+❗️ Will be deprecated in next minor release and removed in next major release, in favor of [`@effector-storage/react-native-async-storage`](https://github.com/yumauri/effector-storage-extras/tree/main/packages/react-native-async-storage).
+
 Adapter to persist [_store_] using React Native [AsyncStorage].
 
 ## Preconditions

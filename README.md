@@ -19,6 +19,7 @@ Small module for [Effector](https://github.com/effector/effector) ☄️ to sync
   - [with query string](#with-query-string)
   - [with React Native AsyncStorage](#with-react-native-asyncstorage)
   - [with React Native EncryptedStorage](#with-react-native-encryptedstorage)
+  - [extra adapters](#extra-adapters)
 - [Usage with domains](#usage-with-domains)
 - [Formulae](#formulae)
   - [Units](#units)
@@ -109,6 +110,8 @@ Use this only with plain string stores (`Store<string | null>`) to avoid strange
 
 ### with React Native AsyncStorage
 
+❗️ Will be deprecated in next minor release and removed in next major release, in favor of [`@effector-storage/react-native-async-storage`](https://github.com/yumauri/effector-storage-extras/tree/main/packages/react-native-async-storage).
+
 Docs: [effector-storage/rn/async](https://github.com/yumauri/effector-storage/tree/main/src/rn/async/README.md)
 
 ```javascript
@@ -125,6 +128,8 @@ persist({ store: $counter })
 
 ### with React Native EncryptedStorage
 
+❗️ Will be deprecated in next minor release and removed in next major release, in favor of [`@effector-storage/react-native-encrypted-storage`](https://github.com/yumauri/effector-storage-extras/tree/main/packages/react-native-encrypted-storage).
+
 Docs: [effector-storage/rn/encrypted](https://github.com/yumauri/effector-storage/tree/main/src/rn/encrypted/README.md)
 
 ```javascript
@@ -138,6 +143,10 @@ persist({ store: $counter })
 ```
 
 ⚠️ Note, that [EncryptedStorage] is asynchronous (it is based on [AsyncStorage] actually).
+
+### extra adapters
+
+You can find a collection of useful adapters in [effector-storage-extras](https://github.com/yumauri/effector-storage-extras). That side repository was created in order to not bloat `effector-storage` with dependencies and adapters, which depends on other libraries.
 
 ## Usage with domains
 
