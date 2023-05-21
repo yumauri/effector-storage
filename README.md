@@ -63,7 +63,7 @@ $ npm install --save effector-storage
 
 ### with `localStorage`
 
-Docs: [effector-storage/local](https://github.com/yumauri/effector-storage/tree/master/src/local/README.md)
+Docs: [effector-storage/local](https://github.com/yumauri/effector-storage/tree/main/src/local/README.md)
 
 ```javascript
 import { persist } from 'effector-storage/local'
@@ -79,7 +79,7 @@ Stores, persisted in `localStorage`, are automatically synced between two (or mo
 
 ### with `sessionStorage`
 
-Docs: [effector-storage/session](https://github.com/yumauri/effector-storage/tree/master/src/session/README.md)
+Docs: [effector-storage/session](https://github.com/yumauri/effector-storage/tree/main/src/session/README.md)
 
 Same as above, just import `persist` from `'effector-storage/session'`:
 
@@ -91,7 +91,7 @@ Stores, persisted in `sessionStorage`, are synced between instances, but not bet
 
 ### with query string
 
-Docs: [effector-storage/query](https://github.com/yumauri/effector-storage/tree/master/src/query/README.md)
+Docs: [effector-storage/query](https://github.com/yumauri/effector-storage/tree/main/src/query/README.md)
 
 You can _reflect_ plain string store value in query string parameter, using this adapter. Think of it like about synchronizing store value and query string parameter.
 
@@ -109,7 +109,7 @@ Use this only with plain string stores (`Store<string | null>`) to avoid strange
 
 ### with React Native AsyncStorage
 
-Docs: [effector-storage/rn/async](https://github.com/yumauri/effector-storage/tree/master/src/rn/async/README.md)
+Docs: [effector-storage/rn/async](https://github.com/yumauri/effector-storage/tree/main/src/rn/async/README.md)
 
 ```javascript
 import { persist } from 'effector-storage/rn/async'
@@ -125,7 +125,7 @@ persist({ store: $counter })
 
 ### with React Native EncryptedStorage
 
-Docs: [effector-storage/rn/encrypted](https://github.com/yumauri/effector-storage/tree/master/src/rn/encrypted/README.md)
+Docs: [effector-storage/rn/encrypted](https://github.com/yumauri/effector-storage/tree/main/src/rn/encrypted/README.md)
 
 ```javascript
 import { persist } from 'effector-storage/rn/encrypted'
@@ -257,7 +257,7 @@ There are two gotchas with contracts:
 
 Without specifying `pickup` property, calling `persist` will immediately call adapter to get initial value. In case of synchronous storage (like `localStorage` or `sessionStorage`) this action will synchronously set store value, and call `done`/`fail`/`finally` right away. You should take that into account, if you adds some logic on `done`, for example — place `persist` after that logic (see issue [#38](https://github.com/yumauri/effector-storage/issues/38) for more details).
 
-You can modify adapter to be asynchronous to mitigate this behavior with [`async`](https://github.com/yumauri/effector-storage/tree/master/src/tools/README.md#async) function.
+You can modify adapter to be asynchronous to mitigate this behavior with [`async`](https://github.com/yumauri/effector-storage/tree/main/src/tools/README.md#async) function.
 
 ## `createPersist` factory
 
@@ -342,7 +342,7 @@ In case it is omitted — adapter instances is used instead.
 
 #### noop
 
-Marks adapter as "no-op" for [`either`](https://github.com/yumauri/effector-storage/tree/master/src/tools/README.md#either) function.
+Marks adapter as "no-op" for [`either`](https://github.com/yumauri/effector-storage/tree/main/src/tools/README.md#either) function.
 
 ### Synchronous storage adapter example
 
@@ -550,11 +550,11 @@ Use this approach with caution, beware of infinite circular updates. To avoid th
 
 ## TODO
 
-- [x] [localStorage] support (docs: [effector-storage/local](https://github.com/yumauri/effector-storage/tree/master/src/local/README.md))
-- [x] [sessionStorage] support (docs: [effector-storage/session](https://github.com/yumauri/effector-storage/tree/master/src/session/README.md))
-- [x] [query string](https://developer.mozilla.org/en-US/docs/Web/API/Location/search) support (docs: [effector-storage/query](https://github.com/yumauri/effector-storage/tree/master/src/query/README.md))
-- [x] [AsyncStorage] support (docs: [effector-storage/rn/async](https://github.com/yumauri/effector-storage/tree/master/src/rn/async/README.md))
-- [x] [EncryptedStorage] support (docs: [effector-storage/rn/encrypted](https://github.com/yumauri/effector-storage/tree/master/src/rn/encrypted/README.md))
+- [x] [localStorage] support (docs: [effector-storage/local](https://github.com/yumauri/effector-storage/tree/main/src/local/README.md))
+- [x] [sessionStorage] support (docs: [effector-storage/session](https://github.com/yumauri/effector-storage/tree/main/src/session/README.md))
+- [x] [query string](https://developer.mozilla.org/en-US/docs/Web/API/Location/search) support (docs: [effector-storage/query](https://github.com/yumauri/effector-storage/tree/main/src/query/README.md))
+- [x] [AsyncStorage] support (docs: [effector-storage/rn/async](https://github.com/yumauri/effector-storage/tree/main/src/rn/async/README.md))
+- [x] [EncryptedStorage] support (docs: [effector-storage/rn/encrypted](https://github.com/yumauri/effector-storage/tree/main/src/rn/encrypted/README.md))
 - [ ] [IndexedDB] support
 - [ ] [Cookies] support
 - [ ] you name it support
