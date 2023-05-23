@@ -325,7 +325,7 @@ Adapter is a function, which is called by the core `persist` function, and has f
 ```typescript
 interface StorageAdapter {
   <State>(key: string, update: (raw?: any) => any): {
-    get(raw?: any, ctx?: any): State | Promise<State>
+    get(raw?: any, ctx?: any): State | Promise<State | undefined> | undefined
     set(value: State, ctx?: any): void
   }
   keyArea?: any
