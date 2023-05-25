@@ -562,9 +562,9 @@ Use this approach with caution, beware of infinite circular updates. To avoid th
 - [x] [localStorage] support (docs: [effector-storage/local](https://github.com/yumauri/effector-storage/tree/main/src/local/README.md))
 - [x] [sessionStorage] support (docs: [effector-storage/session](https://github.com/yumauri/effector-storage/tree/main/src/session/README.md))
 - [x] [query string](https://developer.mozilla.org/en-US/docs/Web/API/Location/search) support (docs: [effector-storage/query](https://github.com/yumauri/effector-storage/tree/main/src/query/README.md))
-- [x] [AsyncStorage] support (docs: [effector-storage/rn/async](https://github.com/yumauri/effector-storage/tree/main/src/rn/async/README.md))
-- [x] [EncryptedStorage] support (docs: [effector-storage/rn/encrypted](https://github.com/yumauri/effector-storage/tree/main/src/rn/encrypted/README.md))
-- [ ] [IndexedDB] support
+- [x] [AsyncStorage] support (extras: [@effector-storage/react-native-async-storage](https://github.com/yumauri/effector-storage-extras/tree/main/packages/react-native-async-storage))
+- [x] [EncryptedStorage] support (extras: [@effector-storage/react-native-encrypted-storage](https://github.com/yumauri/effector-storage-extras/tree/main/packages/react-native-encrypted-storage))
+- [x] [IndexedDB] support (extras: [@effector-storage/idb-keyval](https://github.com/yumauri/effector-storage-extras/tree/main/packages/idb-keyval))
 - [ ] [Cookies] support
 - [ ] you name it support
 
