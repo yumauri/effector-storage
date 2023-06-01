@@ -17,6 +17,7 @@ Small module for [Effector](https://github.com/effector/effector) ☄️ to sync
   - [with `localStorage`](#with-localstorage)
   - [with `sessionStorage`](#with-sessionstorage)
   - [with query string](#with-query-string)
+  - [with `BroadcastChannel`](#with-broadcastchannel)
   - [with React Native AsyncStorage](#with-react-native-asyncstorage)
   - [with React Native EncryptedStorage](#with-react-native-encryptedstorage)
   - [extra adapters](#extra-adapters)
@@ -107,6 +108,16 @@ If two (or more) stores are persisted in query string with the same key — they
 
 ⚠️ **Note**<br>
 Use this only with plain string stores (`Store<string | null>`) to avoid strange unexpected behavior.
+
+### with `BroadcastChannel`
+
+Docs: [effector-storage/broadcast](https://github.com/yumauri/effector-storage/tree/main/src/broadcast/README.md)
+
+You can sync stores across different browsing contexts (tabs, windows, workers), just import `persist` from `'effector-storage/broadcast'`:
+
+```javascript
+import { persist } from 'effector-storage/broadcast'
+```
 
 ### with React Native AsyncStorage
 
@@ -562,6 +573,7 @@ Use this approach with caution, beware of infinite circular updates. To avoid th
 - [x] [localStorage] support (docs: [effector-storage/local](https://github.com/yumauri/effector-storage/tree/main/src/local/README.md))
 - [x] [sessionStorage] support (docs: [effector-storage/session](https://github.com/yumauri/effector-storage/tree/main/src/session/README.md))
 - [x] [query string](https://developer.mozilla.org/en-US/docs/Web/API/Location/search) support (docs: [effector-storage/query](https://github.com/yumauri/effector-storage/tree/main/src/query/README.md))
+- [x] [BroadcastChannel] support (docs: [effector-storage/broadcast](https://github.com/yumauri/effector-storage/tree/main/src/broadcast/README.md))
 - [x] [AsyncStorage] support (extras: [@effector-storage/react-native-async-storage](https://github.com/yumauri/effector-storage-extras/tree/main/packages/react-native-async-storage))
 - [x] [EncryptedStorage] support (extras: [@effector-storage/react-native-encrypted-storage](https://github.com/yumauri/effector-storage-extras/tree/main/packages/react-native-encrypted-storage))
 - [x] [IndexedDB] support (extras: [@effector-storage/idb-keyval](https://github.com/yumauri/effector-storage-extras/tree/main/packages/idb-keyval))
@@ -578,6 +590,7 @@ Use this approach with caution, beware of infinite circular updates. To avoid th
 [sessionstorage]: https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage
 [`'storage'`]: https://developer.mozilla.org/en-US/docs/Web/API/StorageEvent
 [indexeddb]: https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API
+[broadcastchannel]: https://developer.mozilla.org/en-US/docs/Web/API/BroadcastChannel
 [asyncstorage]: https://react-native-async-storage.github.io/async-storage/
 [encryptedstorage]: https://github.com/emeraldsanto/react-native-encrypted-storage
 [cookies]: https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie

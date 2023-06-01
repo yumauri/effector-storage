@@ -22,6 +22,7 @@ const external = [
   /\.[./]*\/query/,
   /\.[./]*\/memory/,
   /\.[./]*\/async-storage/,
+  /\.[./]*\/broadcast/,
   /\.[./]*\/rn\/async/,
   /\.[./]*\/rn\/encrypted/,
 ]
@@ -157,6 +158,11 @@ const src = (name) => ({
                   require: './async-storage/index.cjs',
                   import: './async-storage/index.js',
                 },
+                './broadcast/package.json': './broadcast/package.json',
+                './broadcast': {
+                  require: './broadcast/index.cjs',
+                  import: './broadcast/index.js',
+                },
                 './rn/async/package.json': './rn/async/package.json',
                 './rn/async': {
                   require: './rn/async/index.cjs',
@@ -240,6 +246,7 @@ export default [
   ...entry('query/'),
   ...entry('memory/'),
   ...entry('async-storage/'),
+  ...entry('broadcast/'),
   ...entry('rn/async/'),
   ...entry('rn/encrypted/'),
 ]

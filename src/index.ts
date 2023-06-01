@@ -19,6 +19,7 @@ export type {
 //
 
 export type { AsyncStorageConfig } from './async-storage'
+export type { BroadcastConfig } from './broadcast'
 export type { LocalStorageConfig } from './local'
 export type { LogConfig } from './log'
 export type { MemoryConfig } from './memory'
@@ -28,6 +29,7 @@ export type { SessionStorageConfig } from './session'
 export type { StorageConfig } from './storage'
 
 export { asyncStorage } from './async-storage'
+export { broadcast } from './broadcast'
 export { local } from './local'
 export { log } from './log'
 export { memory } from './memory'

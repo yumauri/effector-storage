@@ -25,7 +25,7 @@ export function storage({
     key: string,
     update: (raw?: any) => any
   ) => {
-    let scheduled: number | undefined
+    let scheduled: ReturnType<typeof setTimeout> | undefined
     let unsaved: State
     let to: Storage
 
