@@ -142,7 +142,7 @@ export function persist<State, Err = Error>(
             key,
             keyPrefix,
             operation,
-            value: params,
+            value: typeof params === 'function' ? undefined : params, // hide internal "box" implementation
             error,
           }
 

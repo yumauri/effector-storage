@@ -1,0 +1,37 @@
+name: playwright tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: 🛎️ Checkout
+        uses: actions/checkout@v3
+
+      - name: 📦 Use PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8.5.1
+
+      - name: 🐧 Use Node 18.16.0
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.16.0
+          registry-url: https://registry.npmjs.org/
+          cache: pnpm
+
+      - name: 🔍 Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: 🔍 Install Playwright browsers
+        run: pnpm exec playwright install --with-deps
+
+      - name: 🎭 Run tests
+        run: pnpm exec playwright test
