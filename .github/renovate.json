@@ -4,6 +4,7 @@
   "enabled": true,
   "automerge": false,
   "enabledManagers": ["npm"],
+  "rangeStrategy": "bump",
   "lockFileMaintenance": { "enabled": true },
   "assignees": ["yumauri"],
   "labels": ["dependencies"],
