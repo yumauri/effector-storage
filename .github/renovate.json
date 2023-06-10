@@ -14,7 +14,7 @@
       "minimumReleaseAge": "3 days"
     },
     {
-      "matchPackagePatterns": ["^effector"],
+      "matchPackagePatterns": ["^effector", "@types/node"],
       "enabled": false
     },
     {
