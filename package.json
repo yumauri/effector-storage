@@ -54,7 +54,7 @@
     "@react-native-async-storage/async-storage": "^1.18.2",
     "@rollup/plugin-babel": "^6.0.3",
     "@rollup/plugin-node-resolve": "^15.1.0",
-    "@sinonjs/fake-timers": "^10.2.0",
+    "@sinonjs/fake-timers": "^11.0.0",
     "@size-limit/preset-small-lib": "^8.2.4",
     "@types/node": "^18.16.17",
     "@types/sinonjs__fake-timers": "^8.1.2",
