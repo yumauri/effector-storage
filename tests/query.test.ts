@@ -526,6 +526,25 @@ test('shortest timeout should take precedence (issue #23)', async () => {
   assert.is(snoopPushState.callCount, 1) // <- wasn't called again
 })
 
+test('store value should be serialized and deserialized', () => {
+  global.history = createHistoryMock(null, '', 'http://domain.test?id=42')
+  global.location = createLocationMock('http://domain.test?id=42')
+  global.history._location(global.location)
+  global.location._history(global.history)
+
+  const $id = createStore(0, { name: 'id' })
+  persist({
+    store: $id,
+    serialize: (id) => String(id),
+    deserialize: (id) => Number(id),
+  })
+  assert.is($id.getState(), 42)
+
+  //
+  ;($id as any).setState(12)
+  assert.is(global.location.search, '?id=12')
+})
+
 //
 // Launch tests
 //
