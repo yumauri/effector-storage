@@ -10,6 +10,8 @@ export type StateBehavior = 'keep' | 'erase'
 export interface QueryConfig {
   method?: ChangeMethod
   state?: StateBehavior
+  serialize?: (value: any) => string
+  deserialize?: (value: string) => any
   timeout?: number
   def?: any
 }
@@ -66,6 +68,8 @@ function flush(method: ChangeMethod, state?: StateBehavior) {
 export function adapter({
   method = pushState,
   state,
+  serialize,
+  deserialize,
   def = null,
   timeout,
 }: QueryConfig): StorageAdapter {
@@ -80,11 +84,12 @@ export function adapter({
     return {
       get() {
         const params = new URLSearchParams(location.search)
-        return params.get(key) || def
+        const value = params.get(key)
+        return value ? (deserialize ? deserialize(value) : value) : def
       },
 
       set(value: State) {
-        buffer.set(key, value)
+        buffer.set(key, serialize ? serialize(value) : value)
 
         if (timeout === undefined) {
           clearTimeout(timeoutId)

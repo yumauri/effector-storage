@@ -67,6 +67,8 @@ import { persist } from 'effector-storage/query'
 - ... all the [common options](../../README.md#options) from `persist` function.
 - `method`?: ([_function_]): One of `pushState`, `replaceState`, `locationAssign` or `locationReplace`. Default = `pushState`.
 - `state`?: (`'keep'` | `'erase'`): If `method` is `pushState` or `replaceState` — should current state be preserved or replaced with `null`. Default = `keep`.
+- `serialize`? (_(value: any) => string_): Custom serialize function.
+- `deserialize`? (_(value: string) => any_): Custom deserialize function.
 - `timeout`?: ([_number_]): Timeout in milliseconds, which will be used to throttle updates. Default = `undefined` (meaning updates will be applied immediately)
 - `def`?: (_any_): Default value, which will be passed to `store`/`target` in case of absent query parameter. Default = `store.defaultState` or `null`.
 
@@ -88,6 +90,8 @@ import { query } from 'effector-storage/query'
 
 - `method`?: ([_function_]): One of `pushState`, `replaceState`, `locationAssign` or `locationReplace`. Default = `pushState`.
 - `state`?: (`'keep'` | `'erase'`): If `method` is `pushState` or `replaceState` — should current state be preserved or replaced with `null`. Default = `keep`
+- `serialize`? (_(value: any) => string_): Custom serialize function.
+- `deserialize`? (_(value: string) => any_): Custom deserialize function.
 - `timeout`?: ([_number_]): Timeout in milliseconds, which will be used to throttle updates. Default = `undefined` (meaning updates will be applied immediately)
 - `def`?: (_any_): Default value, which will be passed to `store`/`target` in case of absent query parameter. Default = `null`
 
@@ -95,9 +99,22 @@ import { query } from 'effector-storage/query'
 
 ### How do I use custom serialization / deserialization?
 
-You don't. Use this adapter only with plain string stores `Store<string | null>`.
+There are `serialize` and `deserialize` options for that. By default, they are _undefined_, meaning, that you should use plain string store `Store<string | null>`. But in some cases is is useful to use custom serialization, for example, to serialize number identifiers:
 
-If you need some sort of serialization — you can use `.map` method for that. For deserialization you have to use some snippets with `sample`, for example:
+```typescript
+import { persist } from 'effector-storage/query'
+
+const $id = createStore<number | null>(null)
+
+persist({
+  store: $id,
+  key: 'id',
+  serialize: (id) => String(id),
+  deserialize: (id) => Number(id),
+})
+```
+
+Also, if you need some sort of serialization — you can use `.map` method for that. For deserialization you can use some snippets with `sample`, for example:
 
 ```javascript
 import { persist } from 'effector-storage/query'
