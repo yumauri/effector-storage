@@ -532,7 +532,7 @@ test('store value should be serialized and deserialized', () => {
   global.history._location(global.location)
   global.location._history(global.history)
 
-  const $id = createStore(0, { name: 'id' })
+  const $id = createStore<number | null>(null, { name: 'id' })
   persist({
     store: $id,
     serialize: (id) => String(id),
