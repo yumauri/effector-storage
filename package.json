@@ -48,8 +48,8 @@
     "@babel/core": "^7.22.5",
     "@babel/plugin-transform-block-scoping": "^7.22.5",
     "@babel/preset-typescript": "^7.22.5",
-    "@farfetched/core": "^0.8.12",
-    "@farfetched/runtypes": "^0.8.12",
+    "@farfetched/core": "^0.8.13",
+    "@farfetched/runtypes": "^0.8.13",
     "@playwright/test": "^1.35.1",
     "@react-native-async-storage/async-storage": "^1.18.2",
     "@rollup/plugin-babel": "^6.0.3",
@@ -92,7 +92,7 @@
     "vite": "^4.3.9",
     "yaspeller": "^8.0.1"
   },
-  "packageManager": "pnpm@8.6.3",
+  "packageManager": "pnpm@8.6.4",
   "pnpm": {
     "patchedDependencies": {
       "uvu@0.5.6": "patches/uvu@0.5.6.patch"
