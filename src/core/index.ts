@@ -31,8 +31,8 @@ import { getAreaStorage } from './area'
 // end extract current context from ref-box
 const contextual =
   <T, C, R>(fn: (value: T, ctx?: C) => R) =>
-  (ctx: { ref?: C }, value: T) =>
-    fn(value, ctx.ref)
+  ([ref]: [C?], value: T) =>
+    fn(value, ref)
 
 // helper function to validate data with contract
 const contracted =
@@ -149,10 +149,7 @@ export function persist<State, Err = Error>(
   // create all auxiliary units and nodes within the region,
   // to be able to remove them all at once on unsubscription
   withRegion(region, () => {
-    const ctx = createStore<{ ref: any }>(
-      { ref: undefined },
-      { serialize: 'ignore' }
-    )
+    const ctx = createStore<[any?]>([], { serialize: 'ignore' })
 
     const value = adapter<State>(keyPrefix + key, (x) => bindedGet(x))
 
@@ -223,17 +220,17 @@ export function persist<State, Err = Error>(
     if (anyway) forward({ from: localAnyway, to: anyway })
 
     if (context) {
-      ctx.on(context, ({ ref }, payload) => ({
-        ref: payload === undefined ? ref : payload,
-      }))
+      ctx.on(context, ([ref], payload) => [
+        payload === undefined ? ref : payload,
+      ])
     }
 
     if (pickup) {
       // pick up value from storage ONLY on `pickup` update
       forward({ from: pickup, to: getFx.prepend(() => undefined) })
-      ctx.on(pickup, ({ ref }, payload) => ({
-        ref: payload === undefined ? ref : payload,
-      }))
+      ctx.on(pickup, ([ref], payload) => [
+        payload === undefined ? ref : payload,
+      ])
     } else {
       // kick getter to pick up initial value from storage
       getFx()
