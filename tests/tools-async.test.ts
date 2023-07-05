@@ -1,3 +1,4 @@
+import type { StorageAdapter } from '../src'
 import { test } from 'uvu'
 import * as assert from 'uvu/assert'
 import { snoop } from 'snoop'
@@ -155,6 +156,68 @@ test("should accept adapter's arguments in core persist", async () => {
 
   await timeout(0)
   assert.is($counter3.getState(), 42) // <- restored default value from `def`
+})
+
+test('should preserve context', async () => {
+  const get = snoop((_value, _ctx) => undefined as any) // eslint-disable-line @typescript-eslint/no-unused-vars
+  const set = snoop((_value, _ctx) => undefined as any) // eslint-disable-line @typescript-eslint/no-unused-vars
+
+  const update = createEvent<number>()
+  const pickup = createEvent<string>()
+  const $store = createStore(0)
+
+  const adapter: StorageAdapter = (_, upd) => {
+    update.watch(upd)
+    return {
+      get: get.fn,
+      set: set.fn,
+    }
+  }
+
+  persist({
+    store: $store,
+    adapter: async(adapter),
+    pickup,
+    key: 'store',
+  })
+
+  // doesn't call adapter before pickup
+  assert.is(get.callCount, 0)
+  assert.is(set.callCount, 0)
+
+  pickup('context payload') // <- pick up new value with context
+
+  // doesn't call adapter yet, because of `async` tool wrapper
+  assert.is(get.callCount, 0)
+  assert.is(set.callCount, 0)
+
+  await timeout(0)
+  assert.is(get.callCount, 1)
+  assert.is(set.callCount, 0) // <- `set` is not called
+  assert.equal(get.calls[0].arguments, [undefined, 'context payload'])
+
+  //
+  ;($store as any).setState(42) // <- update store to trigger `set`
+
+  // doesn't call adapter yet, because of `async` tool wrapper
+  assert.is(get.callCount, 1)
+  assert.is(set.callCount, 0)
+
+  await timeout(0)
+  assert.is(get.callCount, 1) // <- `get` is not called
+  assert.is(set.callCount, 1)
+  assert.equal(set.calls[0].arguments, [42, 'context payload'])
+
+  update(54) // <- emulate external adapter update
+
+  // doesn't call adapter yet, because of `async` tool wrapper
+  assert.is(get.callCount, 1)
+  assert.is(set.callCount, 1)
+
+  await timeout(0)
+  assert.is(get.callCount, 2)
+  assert.is(set.callCount, 1) // <- `set` is not called
+  assert.equal(get.calls[1].arguments, [54, 'context payload'])
 })
 
 //

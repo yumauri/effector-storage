@@ -25,8 +25,8 @@ export function async<T>(
     ) => {
       const { get, set } = adapter<State>(key, update)
       return {
-        get: (value: State) => Promise.resolve(value).then(get),
-        set: (value?: any) => Promise.resolve(value).then(set),
+        get: async (value?: any, ctx?: any) => get(await value, ctx),
+        set: async (value: State, ctx?: any) => set(await value, ctx),
       }
     }
 
