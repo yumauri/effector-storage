@@ -27,7 +27,7 @@ test('context from pickup should be passed to adapter', async () => {
   assert.equal(watch.calls[0].arguments, [undefined, 42])
 
   //
-  ;($store as any).setState(54) // <- update store to trigger `get`
+  ;($store as any).setState(54) // <- update store to trigger `set`
 
   assert.is(watch.callCount, 2)
   assert.equal(watch.calls[1].arguments, [54, 42])
@@ -50,7 +50,7 @@ test('context from context should be passed to adapter', async () => {
   assert.equal(watch.calls[0].arguments, [undefined, undefined])
 
   //
-  ;($store as any).setState(72) // <- update store to trigger `get`
+  ;($store as any).setState(72) // <- update store to trigger `set`
 
   assert.is(watch.callCount, 2)
   assert.equal(watch.calls[1].arguments, [72, undefined])
@@ -60,7 +60,7 @@ test('context from context should be passed to adapter', async () => {
   assert.is(watch.callCount, 2) // setting context does not call any adapter methods
 
   //
-  ;($store as any).setState(27) // <- update store to trigger `get`
+  ;($store as any).setState(27) // <- update store to trigger `set`
 
   assert.is(watch.callCount, 3)
   assert.equal(watch.calls[2].arguments, [27, 'new context'])
