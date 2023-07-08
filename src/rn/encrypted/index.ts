@@ -40,6 +40,8 @@ export interface Persist {
 
 /**
  * Creates `EncryptedStorage` adapter
+ *
+ * @deprecated use @effector-storage/react-native-encrypted-storage instead
  */
 encrypted.factory = true as const
 export function encrypted(config?: EncryptedStorageConfig): StorageAdapter {
@@ -52,6 +54,8 @@ export function encrypted(config?: EncryptedStorageConfig): StorageAdapter {
 /**
  * Creates custom partially applied `persist`
  * with predefined `EncryptedStorage` adapter
+ *
+ * @deprecated use @effector-storage/react-native-encrypted-storage instead
  */
 export function createPersist(defaults?: ConfigPersist): Persist {
   return (config) =>
@@ -64,5 +68,7 @@ export function createPersist(defaults?: ConfigPersist): Persist {
 
 /**
  * Default partially applied `persist`
+ *
+ * @deprecated use @effector-storage/react-native-encrypted-storage instead
  */
 export const persist = createPersist()

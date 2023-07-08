@@ -1,6 +1,6 @@
 # React Native EncryptedStorage adapter
 
-❗️ Will be deprecated in next minor release and removed in next major release, in favor of [`@effector-storage/react-native-encrypted-storage`](https://github.com/yumauri/effector-storage-extras/tree/main/packages/react-native-encrypted-storage).
+❗️ Deprecated and will be removed in next major release, in favor of [`@effector-storage/react-native-encrypted-storage`](https://github.com/yumauri/effector-storage-extras/tree/main/packages/react-native-encrypted-storage).
 
 Adapter to persist [_store_] using React Native [EncryptedStorage].
 

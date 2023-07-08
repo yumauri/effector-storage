@@ -40,6 +40,8 @@ export interface Persist {
 
 /**
  * Creates `AsyncStorage` adapter
+ *
+ * @deprecated use @effector-storage/react-native-async-storage instead
  */
 async.factory = true as const
 export function async(config?: AsyncStorageConfig): StorageAdapter {
@@ -52,6 +54,8 @@ export function async(config?: AsyncStorageConfig): StorageAdapter {
 /**
  * Creates custom partially applied `persist`
  * with predefined `AsyncStorage` adapter
+ *
+ * @deprecated use @effector-storage/react-native-async-storage instead
  */
 export function createPersist(defaults?: ConfigPersist): Persist {
   return (config) =>
@@ -64,5 +68,7 @@ export function createPersist(defaults?: ConfigPersist): Persist {
 
 /**
  * Default partially applied `persist`
+ *
+ * @deprecated use @effector-storage/react-native-async-storage instead
  */
 export const persist = createPersist()

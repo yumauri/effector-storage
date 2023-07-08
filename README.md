@@ -121,7 +121,7 @@ import { persist } from 'effector-storage/broadcast'
 
 ### with React Native AsyncStorage
 
-❗️ Will be deprecated in next minor release and removed in next major release, in favor of [`@effector-storage/react-native-async-storage`](https://github.com/yumauri/effector-storage-extras/tree/main/packages/react-native-async-storage).
+❗️ Deprecated and will be removed in next major release, in favor of [`@effector-storage/react-native-async-storage`](https://github.com/yumauri/effector-storage-extras/tree/main/packages/react-native-async-storage).
 
 Docs: [effector-storage/rn/async](https://github.com/yumauri/effector-storage/tree/main/src/rn/async/README.md)
 
@@ -139,7 +139,7 @@ persist({ store: $counter })
 
 ### with React Native EncryptedStorage
 
-❗️ Will be deprecated in next minor release and removed in next major release, in favor of [`@effector-storage/react-native-encrypted-storage`](https://github.com/yumauri/effector-storage-extras/tree/main/packages/react-native-encrypted-storage).
+❗️ Deprecated and will be removed in next major release, in favor of [`@effector-storage/react-native-encrypted-storage`](https://github.com/yumauri/effector-storage-extras/tree/main/packages/react-native-encrypted-storage).
 
 Docs: [effector-storage/rn/encrypted](https://github.com/yumauri/effector-storage/tree/main/src/rn/encrypted/README.md)
 
