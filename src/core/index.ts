@@ -17,10 +17,8 @@ import {
   createEffect,
   createNode,
   createStore,
-  forward,
   guard,
   is,
-  merge,
   sample,
   scopeBind,
   withRegion,
@@ -199,25 +197,22 @@ export function persist<State, Err = Error>(
       filter: ([proposed, current]) => proposed !== current,
       target: setFx.prepend(([proposed]: State[]) => proposed),
     })
-    forward({ from: [getFx.doneData, setFx], to: storage })
-    sample({
-      source: merge([getFx.doneData, storage]),
-      target: validateFx as any,
-    })
-    forward({ from: validateFx.doneData, to: target })
+    sample({ clock: [getFx.doneData, setFx], target: storage as any })
+    sample({ clock: [getFx.doneData, storage], target: validateFx as any })
+    sample({ clock: validateFx.doneData, target })
 
-    forward({
-      from: [
+    sample({
+      clock: [
         getFx.finally.map(op('get')),
         setFx.finally.map(op('set')),
         validateFx.fail.map(op('validate')),
       ],
-      to: localAnyway,
+      target: localAnyway,
     })
 
-    forward({ from: localFail, to: fail })
-    if (done) forward({ from: localDone, to: done })
-    if (anyway) forward({ from: localAnyway, to: anyway })
+    if (anyway) sample({ clock: localAnyway, target: anyway })
+    if (done) sample({ clock: localDone, target: done })
+    sample({ clock: localFail, target: fail })
 
     if (context) {
       ctx.on(context, ([ref], payload) => [
@@ -227,7 +222,7 @@ export function persist<State, Err = Error>(
 
     if (pickup) {
       // pick up value from storage ONLY on `pickup` update
-      forward({ from: pickup, to: getFx.prepend(() => undefined) })
+      sample({ clock: pickup, fn: () => undefined, target: getFx })
       ctx.on(pickup, ([ref], payload) => [
         payload === undefined ? ref : payload,
       ])

@@ -191,7 +191,7 @@ In order to synchronize _something_, you need to specify effector units. Dependi
 
 - `store` ([_Store_]): Store to synchronize with local/session storage.
 - `source` ([_Event_] | [_Effect_] | [_Store_]): Source unit, which updates will be sent to local/session storage.
-- `target` ([_Event_] | [_Effect_] | [_Store_]): Target unit, which will receive updates from local/session storage (as well as initial value). Must be different than `source` to avoid circular updates — `source` updates are forwarded directly to `target`.
+- `target` ([_Event_] | [_Effect_] | [_Store_]): Target unit, which will receive updates from local/session storage (as well as initial value). Must be different than `source` to avoid circular updates — `source` updates are passed directly to `target`.
 
 ### Options
 
@@ -436,7 +436,7 @@ If your storage can be updated from _external source_, and doesn't have any even
 You can use optional `pickup` parameter to specify unit to trigger update (keep in mind, that when you add `pickup`, `persist` _will not_ get initial value from storage automatically):
 
 ```javascript
-import { createEvent, createStore, forward } from 'effector'
+import { createEvent, createStore } from 'effector'
 import { persist } from 'effector-storage/session'
 
 // event, which will be used to trigger update
@@ -455,7 +455,7 @@ pickup()
 Another option, if you have your own adapter, you can add this feature right into it:
 
 ```javascript
-import { createEvent, createStore, forward } from 'effector'
+import { createEvent, createStore } from 'effector'
 import { persist } from 'effector-storage'
 
 // event, which will be used in adapter to react to
