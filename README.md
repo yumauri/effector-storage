@@ -106,9 +106,6 @@ persist({ store: $id, key: 'id' })
 
 If two (or more) stores are persisted in query string with the same key — they are synced between themselves.
 
-⚠️ **Note**<br>
-Use this only with plain string stores (`Store<string | null>`) to avoid strange unexpected behavior.
-
 ### with `BroadcastChannel`
 
 Docs: [effector-storage/broadcast](https://github.com/yumauri/effector-storage/tree/main/src/broadcast/README.md)

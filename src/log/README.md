@@ -2,7 +2,7 @@
 
 Adapter, which does nothing, like `nil` adapter, but print messages. Useful for test purposes and when other storage options are not available and you want to see adapter messages.
 
-⚠️ Experimental, subject to change in future releases. Do not rely on message format and argument of `logger` function, use it only for test and debug purposes.
+🚧 This is an experimental adapter, and is subject to change in future releases. Do not rely on message format and argument of `logger` function, use it only for test and debug purposes.
 
 ## Usage
 
