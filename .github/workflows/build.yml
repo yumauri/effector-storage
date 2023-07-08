@@ -39,17 +39,20 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: pnpm
 
-      - name: 🔍 Installation
+      - name: 🔍 Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
 
-      - name: 👮‍♂️ Linting
+      - name: 👮 Lint sources
         run: pnpm lint
 
-      - name: 🧪 Testing
+      - name: 🧪 Test
         run: pnpm test
 
       - name: 🔧 Build
         run: pnpm build
+
+      - name: 👮 Lint package.json
+        run: pnpm publint
 
       - name: 🔬 Check size
         run: pnpm size

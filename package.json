@@ -33,6 +33,7 @@
     "check:format": "prettier --check src",
     "check:spell": "yaspeller .",
     "lint": "npm-run-all --parallel check:*",
+    "publint": "pnpm dlx publint build",
     "format": "prettier --write src tests",
     "test": "npm-run-all --parallel test:*",
     "test:node": "c8 --src=src --all --reporter=lcov --reporter=text uvu -r ts-node/register -r tests/rewiremock -i mock -i types tests",
