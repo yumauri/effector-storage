@@ -327,6 +327,37 @@ test('should sync stores, persisted to the same adapter-key, but different adapt
   assert.equal(watch.calls[5].arguments, [3])
 })
 
+test('should not throw on storage access error', async () => {
+  const watch = snoop(() => undefined)
+  const fail = createEvent<any>()
+  fail.watch(watch.fn)
+
+  const $storex = createStore(0, { name: 'counterx' })
+
+  const throwAdapter = asyncStorage({
+    storage() {
+      throw new Error('Access denied')
+    },
+  })
+
+  assert.not.throws(() =>
+    persist({ store: $storex, adapter: throwAdapter, fail })
+  )
+
+  await timeout(0)
+
+  assert.is(watch.callCount, 1)
+  const { error, ...args } = watch.calls[0].arguments[0 as any] as any
+  assert.equal(args, {
+    key: 'counterx',
+    keyPrefix: '',
+    operation: 'get',
+    value: undefined,
+  })
+  assert.instance(error, Error)
+  assert.match(error, /Access denied/)
+})
+
 //
 // Launch tests
 //
