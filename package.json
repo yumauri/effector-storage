@@ -36,7 +36,7 @@
     "publint": "pnpm dlx publint build",
     "format": "prettier --write src tests",
     "test": "npm-run-all --parallel test:*",
-    "test:node": "c8 --src=src --all --reporter=lcov --reporter=text uvu -r ts-node/register -r tests/rewiremock -i mock -i types tests",
+    "test:node": "c8 --src=src --all --include=**/*.ts --include=!src/types.ts --reporter=lcov --reporter=text uvu -r ts-node/register -r tests/rewiremock -i mock -i types tests",
     "test:types": "uvu -r ts-node/register -r tests/rewiremock tests types",
     "test-one": "uvu -r ts-node/register -r tests/rewiremock -i mock -i types tests",
     "e2e": "playwright test",
