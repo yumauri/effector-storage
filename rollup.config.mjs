@@ -1,6 +1,6 @@
-import { terser } from 'rollup-plugin-terser'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import babel from '@rollup/plugin-babel'
+import terser from '@rollup/plugin-terser'
 import command from 'rollup-plugin-command'
 import generateDts from 'rollup-plugin-dts'
 import generatePackageJson from 'rollup-plugin-generate-package-json'
