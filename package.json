@@ -33,7 +33,7 @@
     "check:format": "prettier --check src",
     "check:spell": "yaspeller .",
     "lint": "npm-run-all --parallel check:*",
-    "publint": "pnpm dlx publint build",
+    "publint": "publint build",
     "format": "prettier --write src tests",
     "test": "npm-run-all --parallel test:*",
     "test:node": "c8 --src=src --all --include=**/*.ts --include=!src/types.ts --reporter=lcov --reporter=text uvu -r ts-node/register -r tests/rewiremock -i mock -i types tests",
@@ -46,12 +46,12 @@
     "size": "size-limit --highlight-less"
   },
   "devDependencies": {
-    "@babel/core": "^7.22.8",
+    "@babel/core": "^7.22.9",
     "@babel/plugin-transform-block-scoping": "^7.22.5",
     "@babel/preset-typescript": "^7.22.5",
     "@farfetched/core": "^0.8.13",
     "@farfetched/runtypes": "^0.8.13",
-    "@playwright/test": "^1.35.1",
+    "@playwright/test": "^1.36.0",
     "@react-native-async-storage/async-storage": "^1.19.0",
     "@rollup/plugin-babel": "^6.0.3",
     "@rollup/plugin-node-resolve": "^15.1.0",
@@ -59,8 +59,8 @@
     "@size-limit/preset-small-lib": "^8.2.6",
     "@types/node": "^18.16.19",
     "@types/sinonjs__fake-timers": "^8.1.2",
-    "@typescript-eslint/eslint-plugin": "^5.61.0",
-    "@typescript-eslint/parser": "^5.61.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
     "c8": "^8.0.0",
     "effector": "22.0.0",
     "effector-22-0-0": "npm:effector@22.0.0",
@@ -74,7 +74,8 @@
     "flowgen": "^1.21.0",
     "npm-run-all": "^4.1.5",
     "patronum": "^1.18.0",
-    "prettier": "^2.8.8",
+    "prettier": "^3.0.0",
+    "publint": "^0.1.16",
     "react-native-encrypted-storage": "^4.0.3",
     "rewiremock": "^3.14.5",
     "rollup": "^3.26.2",
@@ -90,10 +91,10 @@
     "tslib": "^2.6.0",
     "typescript": "^5.1.6",
     "uvu": "0.5.6",
-    "vite": "^4.4.2",
+    "vite": "^4.4.3",
     "yaspeller": "^8.0.1"
   },
-  "packageManager": "pnpm@8.6.6",
+  "packageManager": "pnpm@8.6.7",
   "pnpm": {
     "patchedDependencies": {
       "uvu@0.5.6": "patches/uvu@0.5.6.patch"

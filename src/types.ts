@@ -1,7 +1,10 @@
 import type { Event, Effect, Store, Unit, Subscription } from 'effector'
 
 export interface StorageAdapter {
-  <State>(key: string, update: (raw?: any) => any): {
+  <State>(
+    key: string,
+    update: (raw?: any) => any
+  ): {
     get(raw?: any, ctx?: any): State | Promise<State | undefined> | undefined
     set(value: State, ctx?: any): void
   }

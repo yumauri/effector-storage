@@ -32,7 +32,7 @@ import type { StorageAdapter, StorageAdapterFactory } from '../types'
 
 export function either<
   A1 extends StorageAdapter | StorageAdapterFactory<any>,
-  A2 extends StorageAdapter | StorageAdapterFactory<any>
+  A2 extends StorageAdapter | StorageAdapterFactory<any>,
 >(
   one: A1,
   another: A2
