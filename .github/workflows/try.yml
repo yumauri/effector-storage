@@ -43,7 +43,7 @@ jobs:
         run: >
           npm config set //npm.pkg.github.com/:_authToken $GITHUB_TOKEN &&
           pnpm remove effector &&
-          pnpm add -D effector@$INPUT_EFFECTOR
+          pnpm add --save-exact --save-dev effector@$INPUT_EFFECTOR
         env:
           INPUT_EFFECTOR: ${{ inputs.effector }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
