@@ -17,6 +17,7 @@ test('effector should be mocked', () => {
       assert.is(version, tryVersion)
     } else {
       console.log('unknown try version:', tryEffectorVersion)
+      console.log('effector version:', version)
     }
   } else {
     assert.is(version, effectorVersion)

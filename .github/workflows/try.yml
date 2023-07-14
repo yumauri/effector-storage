@@ -40,7 +40,15 @@ jobs:
         run: pnpm install --frozen-lockfile --ignore-scripts
 
       - name: ☄️ Install required effector dependency
-        run: pnpm remove effector && pnpm add -D effector@${{ inputs.effector }}
+        run: >
+          npm config set //npm.pkg.github.com/:_authToken $GITHUB_TOKEN &&
+          pnpm remove effector &&
+          pnpm add -D $INPUT_EFFECTOR
+        env:
+          INPUT_EFFECTOR: ${{ inputs.effector }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 🧪 Test
         run: pnpm test-try
+        env:
+          INPUT_EFFECTOR: ${{ inputs.effector }}
