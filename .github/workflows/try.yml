@@ -1,0 +1,46 @@
+name: try
+
+on:
+  workflow_call:
+    inputs:
+      effector:
+        description: effector dependency
+        required: false
+        default: "npm:effector@22.8.6"
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version:
+          - 16
+          - 18
+
+    name: Node ${{ matrix.node-version }} / effector ${{ inputs.username }}
+
+    steps:
+      - name: 🛎️ Checkout
+        uses: actions/checkout@v3
+
+      - name: 📦 Use PNPM
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8.6.7
+
+      - name: 🐧 Use Node ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: pnpm
+
+      - name: 🔍 Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      - name: ☄️ Install required effector dependency
+        run: pnpm remove effector && pnpm add -D effector@${{ inputs.effector }}
+
+      - name: 🧪 Test
+        run: pnpm test-try
