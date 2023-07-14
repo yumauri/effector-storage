@@ -79,6 +79,8 @@ persist({ store: $counter })
 
 Stores, persisted in `localStorage`, are automatically synced between two (or more) windows/tabs. Also, they are synced between instances, so if you will persist two stores with the same key — each store will receive updates from another one.
 
+ℹ️ If you need just basic bare minimum functionality, you can take a look at [`effector-localstorage`](https://github.com/ilyalesik/effector-localstorage) library. It has similar API, it much simpler and tinier.
+
 ### with `sessionStorage`
 
 Docs: [effector-storage/session](https://github.com/yumauri/effector-storage/tree/main/src/session/README.md)
@@ -332,7 +334,10 @@ Adapter is a function, which is called by the core `persist` function, and has f
 
 ```typescript
 interface StorageAdapter {
-  <State>(key: string, update: (raw?: any) => any): {
+  <State>(
+    key: string,
+    update: (raw?: any) => any
+  ): {
     get(raw?: any, ctx?: any): State | Promise<State | undefined> | undefined
     set(value: State, ctx?: any): void
   }

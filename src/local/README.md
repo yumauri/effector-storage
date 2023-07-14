@@ -20,6 +20,8 @@ Two (or more) different stores, persisted with the same key, will be synchronize
 
 Also, by default, stores, persisted in `localStorage`, are automatically synchronized between two (or more) windows/tabs (meaning they are updated on [`'storage'`] event).
 
+ℹ️ If you need just basic bare minimum functionality, you can take a look at [`effector-localstorage`](https://github.com/ilyalesik/effector-localstorage) library. It has similar API, it much simpler and tinier.
+
 ## Formulae
 
 ```javascript
