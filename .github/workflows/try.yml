@@ -1,7 +1,7 @@
 name: try
 
 on:
-  workflow_call:
+  workflow_dispatch:
     inputs:
       effector:
         description: effector dependency
