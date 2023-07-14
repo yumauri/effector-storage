@@ -19,7 +19,7 @@ jobs:
           - 16
           - 18
 
-    name: Node ${{ matrix.node-version }} / effector ${{ inputs.username }}
+    name: Node ${{ matrix.node-version }} / effector ${{ inputs.effector }}
 
     steps:
       - name: 🛎️ Checkout
