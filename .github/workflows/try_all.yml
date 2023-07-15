@@ -1,0 +1,21 @@
+name: try versions
+run-name: Try different effector versions
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  try:
+    strategy:
+      matrix:
+        effector:
+          - npm:effector@22.0.0
+          - npm:effector@22.8.6
+
+    name: Try effector ${{ matrix.effector-version }}
+
+    uses: ./.github/workflows/try.yml
+    with:
+      effector: ${{ matrix.effector }}
+    secrets: inherit
