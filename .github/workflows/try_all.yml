@@ -2,7 +2,10 @@ name: try versions
 run-name: Try different effector versions
 
 on:
-  workflow_call:
+  push:
+    branches:
+      - main
+  pull_request:
   workflow_dispatch:
 
 jobs:
@@ -13,7 +16,7 @@ jobs:
           - npm:effector@22.0.0
           - npm:effector@22.8.6
 
-    name: Try effector ${{ matrix.effector-version }}
+    name: ${{ matrix.effector-version }}
 
     uses: ./.github/workflows/try.yml
     with:

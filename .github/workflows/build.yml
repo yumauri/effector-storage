@@ -16,14 +16,8 @@ jobs:
         node-version:
           - 16
           - 18
-        effector-version:
-          - 22.0.0
-          - 22.8.6
 
-    name: Node ${{ matrix.node-version }} / effector ${{ matrix.effector-version }}
-
-    env:
-      EFFECTOR_VERSION: ${{ matrix.effector-version }}
+    name: Node ${{ matrix.node-version }}
 
     steps:
       - name: 🛎️ Checkout
