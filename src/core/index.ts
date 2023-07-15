@@ -51,7 +51,6 @@ const contracted =
 // but as long as effector-storage supports 22.0 this helper is required
 const safeBind = (fx: Effect<any, any, any>) => {
   try {
-    // @ts-expect-error due to old typings in import
     return scopeBind(fx, { safe: true })
   } catch (e) {
     return fx
@@ -187,7 +186,7 @@ export function persist<State, Err = Error>(
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       clock: clock!, // `clock` is always defined, as long as `source` is defined
       target: trigger,
-    })
+    } as any)
 
     guard({
       source: sample(storage, trigger, (current, proposed) => [
@@ -199,7 +198,7 @@ export function persist<State, Err = Error>(
     })
     sample({ clock: [getFx.doneData, setFx], target: storage as any })
     sample({ clock: [getFx.doneData, storage], target: validateFx as any })
-    sample({ clock: validateFx.doneData, target })
+    sample({ clock: validateFx.doneData, target: target as any })
 
     sample({
       clock: [
