@@ -1,4 +1,5 @@
 name: try
+run-name: Try with effector ${{ inputs.effector }}
 
 on:
   workflow_dispatch:
