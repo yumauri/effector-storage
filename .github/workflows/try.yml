@@ -43,8 +43,8 @@ jobs:
         uses: octokit/request-action@v2.x
         with:
           route: GET /users/{username}/packages/npm/effector-storage/versions
-          username: ${{ github.repository_owner }}
         env:
+          INPUT_USERNAME: ${{ github.repository_owner }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 📦 Generate effector-storage latest package
