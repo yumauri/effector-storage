@@ -13,6 +13,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+      packages: write
+
     name: Test, build and publish GitHub package
 
     steps:
@@ -51,7 +55,9 @@ jobs:
         run: pnpm size
 
       - name: 📦 Publish CI package
-        run: pnpm publish --access public --no-git-checks
+        run: >
+          npm config set //npm.pkg.github.com/:_authToken $GITHUB_TOKEN &&
+          pnpm publish --access public --no-git-checks --force
         working-directory: build
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
