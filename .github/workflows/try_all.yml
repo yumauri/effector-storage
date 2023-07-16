@@ -3,12 +3,9 @@ run-name: Try different effector versions
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+  registry_package:
+    types:
+      - published
 
 jobs:
   try:
@@ -23,4 +20,5 @@ jobs:
     uses: ./.github/workflows/try.yml
     with:
       effector: ${{ matrix.effector }}
+      effector-storage: ${{ github.event_name == 'registry_package' && 'npm:@' + github.repository_owner + '/effector-storage@' + github.event.registry_package.package_version.npm_metadata.version || '' }}
     secrets: inherit
