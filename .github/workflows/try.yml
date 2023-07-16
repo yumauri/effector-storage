@@ -1,5 +1,5 @@
 name: try
-run-name: Try with effector ${{ inputs.effector }}
+run-name: Try ${{ inputs.effector-storage || 'latest' }} with ${{ inputs.effector }}
 
 on:
   workflow_dispatch:
@@ -9,11 +9,19 @@ on:
         required: false
         default: "npm:effector@22.8.6"
         type: string
+      effector-storage:
+        description: effector-storage dependency
+        required: false
+        type: string
   workflow_call:
     inputs:
       effector:
         description: effector dependency
         required: true
+        type: string
+      effector-storage:
+        description: effector-storage dependency
+        required: false
         type: string
 
 jobs:
@@ -26,9 +34,28 @@ jobs:
           - 16
           - 18
 
-    name: Node ${{ matrix.node-version }} / effector ${{ inputs.effector }}
+    name: Node ${{ matrix.node-version }} / ${{ inputs.effector }} / ${{ inputs.effector-storage || 'latest' }}
 
     steps:
+      - name: 📦 Get effector-storage latest package version
+        id: get_latest_version
+        if: inputs.effector-storage == ''
+        uses: octokit/request-action@v2.x
+        with:
+          route: GET /users/{username}/packages/npm/effector-storage/versions
+          username: ${{ github.repository_owner }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 📦 Generate effector-storage latest package
+        id: get_latest_package
+        if: inputs.effector-storage == ''
+        run: echo "pkg=npm:@${{ github.repository_owner }}/effector-storage@${{ fromJson(steps.get_latest_version.outputs.data)[0].name }}" >> "$GITHUB_OUTPUT"
+
+      - name: 📦 Use effector-storage version
+        id: use_effector_storage
+        run: echo "pkg=${{ inputs.effector-storage || steps.get_latest_package.outputs.pkg }}" >> "$GITHUB_OUTPUT"
+
       - name: 🛎️ Checkout
         uses: actions/checkout@v3
 
@@ -46,14 +73,20 @@ jobs:
       - name: 🔍 Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
 
-      - name: ☄️ Install required effector dependency
+      - name: ☄️ Install required effector and effector-storage dependencies
         run: >
           npm config set //npm.pkg.github.com/:_authToken $GITHUB_TOKEN &&
           pnpm remove effector &&
-          pnpm add --save-exact --save-dev effector@$INPUT_EFFECTOR
+          pnpm add --save-exact --save-dev effector@$INPUT_EFFECTOR effector-storage@$INPUT_EFFECTOR_STORAGE
         env:
           INPUT_EFFECTOR: ${{ inputs.effector }}
+          INPUT_EFFECTOR_STORAGE: ${{ steps.use_effector_storage.outputs.pkg }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: ⛑️ Fix tests to use package instead of sources
+        run: >
+          find tests -type f -exec sed -i "s|'../../src|'effector-storage|g" {} + &&
+          find tests -type f -exec sed -i "s|'../src|'effector-storage|g" {} +
 
       - name: 🧪 Test
         run: pnpm test-try
