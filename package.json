@@ -40,7 +40,7 @@
     "test:types": "uvu -r ts-node/register tests types",
     "test-try": "node -e \"console.log('Installed effector version:', require('effector').version)\" && npm-run-all --parallel test-try:*",
     "test-try:node": "uvu -r esbuild-register -i mock -i types tests",
-    "//TODO: test-try:types": "uvu -r esbuild-register tests types",
+    "test-try:types": "uvu -r ts-node/register tests types",
     "test-one": "uvu -r ts-node/register -i mock -i types tests",
     "e2e": "playwright test",
     "e2e:server": "vite build --force -c e2e/empty-app/vite.config.ts && vite preview -c e2e/empty-app/vite.config.ts",

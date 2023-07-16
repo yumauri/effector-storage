@@ -85,6 +85,7 @@ jobs:
 
       - name: ⛑️ Fix tests to use package instead of sources
         run: >
+          find tests -type f -exec sed -i "s|'../src/types'|'effector-storage'|g" {} + &&
           find tests -type f -exec sed -i "s|'../../src|'effector-storage|g" {} + &&
           find tests -type f -exec sed -i "s|'../src|'effector-storage|g" {} +
 
