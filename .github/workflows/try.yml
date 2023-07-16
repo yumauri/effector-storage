@@ -2,18 +2,18 @@ name: try
 run-name: Try with effector ${{ inputs.effector }}
 
 on:
-  workflow_call:
-    inputs:
-      effector:
-        description: effector dependency
-        required: true
-        type: string
   workflow_dispatch:
     inputs:
       effector:
         description: effector dependency
         required: false
         default: "npm:effector@22.8.6"
+        type: string
+  workflow_call:
+    inputs:
+      effector:
+        description: effector dependency
+        required: true
         type: string
 
 jobs:

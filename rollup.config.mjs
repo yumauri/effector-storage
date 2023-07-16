@@ -82,9 +82,13 @@ const src = (name) => ({
         ? // main package.json
           {
             baseContents: (pkg) => ({
-              name: pkg.name,
+              name: process.env.CI_PACKAGE
+                ? `@${process.env.GITHUB_REPOSITORY_OWNER}/${pkg.name}`
+                : pkg.name,
               description: pkg.description,
-              version: pkg.version,
+              version: process.env.CI_PACKAGE
+                ? `${pkg.version}-${process.env.GITHUB_SHA}`
+                : pkg.version,
               author: pkg.author,
               license: pkg.license,
               repository: pkg.repository,

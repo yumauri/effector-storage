@@ -13,35 +13,38 @@ jobs:
     permissions:
       id-token: write
 
-    name: Publish
+    name: Test, build and publish NPM package
 
     steps:
       - name: 🛎️ Checkout
         uses: actions/checkout@v3
 
-      - name: 📦 Use PNPM
+      - name: 📦 Setup PNPM
         uses: pnpm/action-setup@v2
         with:
           version: 8.6.7
 
-      - name: 🐧 Use Node 18.16.1
+      - name: 🐧 Setup Node 18.16.1
         uses: actions/setup-node@v3
         with:
           node-version: 18.16.1
           registry-url: https://registry.npmjs.org/
           cache: pnpm
 
-      - name: 🔍 Installation
+      - name: 🔍 Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
 
-      - name: 👮‍♂️ Linting
+      - name: 👮 Lint sources
         run: pnpm lint
 
-      - name: 🧪 Testing
+      - name: 🧪 Test
         run: pnpm test
 
       - name: 🔧 Build
         run: pnpm build
+
+      - name: 👮 Lint package.json
+        run: pnpm publint
 
       - name: 🔬 Check size
         run: pnpm size

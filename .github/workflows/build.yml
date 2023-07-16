@@ -1,37 +1,33 @@
 name: build
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
   pull_request:
-  workflow_dispatch:
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version:
-          - 16
-          - 18
-
-    name: Node ${{ matrix.node-version }}
+    name: Test, build and publish GitHub package
 
     steps:
       - name: 🛎️ Checkout
         uses: actions/checkout@v3
 
-      - name: 📦 Use PNPM
+      - name: 📦 Setup PNPM
         uses: pnpm/action-setup@v2
         with:
           version: 8.6.7
 
-      - name: 🐧 Use Node ${{ matrix.node-version }}
+      - name: 🐧 Setup Node 18.16.1
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 18.16.1
           cache: pnpm
 
       - name: 🔍 Install dependencies
@@ -45,9 +41,17 @@ jobs:
 
       - name: 🔧 Build
         run: pnpm build
+        env:
+          CI_PACKAGE: true
 
       - name: 👮 Lint package.json
         run: pnpm publint
 
       - name: 🔬 Check size
         run: pnpm size
+
+      - name: 📦 Publish CI package
+        run: pnpm publish --access public --no-git-checks
+        working-directory: build
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,11 +1,13 @@
 name: playwright tests
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
   pull_request:
-  workflow_dispatch:
+    branches:
+      - main
 
 jobs:
   test:
