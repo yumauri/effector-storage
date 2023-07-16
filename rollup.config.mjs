@@ -209,6 +209,9 @@ const src = (name) => ({
 
     // copy license and readme
     name === '' && command([`cp LICENSE ${BUILD}/`, `cp README.md ${BUILD}/`]),
+
+    // copy .npmrc
+    process.env.CI_PACKAGE && command([`cp .npmrc ${BUILD}/`]),
   ],
 })
 
