@@ -1,5 +1,7 @@
 # Generic asynchronous storage adapter
 
+[![bundlejs](https://deno.bundlejs.com/badge?q=effector-storage&treeshake=[{persist,asyncStorage}]&config={%22esbuild%22:{%22external%22:[%22effector%22]}})](https://bundlejs.com/?q=effector-storage&treeshake=%5B%7Bpersist%2CasyncStorage%7D%5D&config=%7B%22esbuild%22%3A%7B%22external%22%3A%5B%22effector%22%5D%7D%7D)
+
 Adapter to persist [_store_] in compatible asynchronous storage.
 
 ## Usage

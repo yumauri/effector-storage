@@ -1,5 +1,7 @@
 # Nil adapter
 
+[![bundlejs](https://deno.bundlejs.com/badge?q=effector-storage&treeshake=[{persist,nil}]&config={%22esbuild%22:{%22external%22:[%22effector%22]}})](https://bundlejs.com/?q=effector-storage&treeshake=%5B%7Bpersist%2Cnil%7D%5D&config=%7B%22esbuild%22%3A%7B%22external%22%3A%5B%22effector%22%5D%7D%7D)
+
 "Do nothing" adapter, useful for test purposes and when other storage options are not available.
 
 ## Usage

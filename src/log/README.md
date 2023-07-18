@@ -1,5 +1,7 @@
 # (Experimental) Log adapter
 
+[![bundlejs](https://deno.bundlejs.com/badge?q=effector-storage&treeshake=[{persist,log}]&config={%22esbuild%22:{%22external%22:[%22effector%22]}})](https://bundlejs.com/?q=effector-storage&treeshake=%5B%7Bpersist%2Clog%7D%5D&config=%7B%22esbuild%22%3A%7B%22external%22%3A%5B%22effector%22%5D%7D%7D)
+
 Adapter, which does nothing, like `nil` adapter, but print messages. Useful for test purposes and when other storage options are not available and you want to see adapter messages.
 
 🚧 This is an experimental adapter, and is subject to change in future releases. Do not rely on message format and argument of `logger` function, use it only for test and debug purposes.

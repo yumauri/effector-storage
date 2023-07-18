@@ -1,5 +1,7 @@
 # (Experimental) `BroadcastChannel` adapter
 
+[![bundlejs](https://deno.bundlejs.com/badge?q=effector-storage/broadcast&treeshake=[{persist}]&config={%22esbuild%22:{%22external%22:[%22effector%22]}})](https://bundlejs.com/?q=effector-storage%2Fbroadcast&treeshake=%5B%7Bpersist%7D%5D&config=%7B%22esbuild%22%3A%7B%22external%22%3A%5B%22effector%22%5D%7D%7D)
+
 Adapter to sync [_store_]s across different [browsing contexts](https://developer.mozilla.org/en-US/docs/Glossary/Browsing_context) of a given [origin](https://developer.mozilla.org/en-US/docs/Glossary/Origin), using [`BroadcastChannel`] API.
 
 Long story short, using this adapter you can synchronize stores in different tabs of the same website, or between tabs and [Web Workers](https://developer.mozilla.org/en-US/docs/Web/API/Worker), or [Shared Workers](https://developer.mozilla.org/en-US/docs/Web/API/SharedWorker), or [Service Worker](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API), without actually persisting store value anywhere aside from memory.
