@@ -69,7 +69,7 @@
     "c8": "^8.0.0",
     "effector": "^22.8.6",
     "esbuild-register": "^3.4.2",
-    "eslint": "^8.45.0",
+    "eslint": "^8.46.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-config-standard": "^17.1.0",
     "eslint-plugin-import": "^2.27.5",
