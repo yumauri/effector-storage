@@ -21,7 +21,7 @@ jobs:
       - name: 📦 Use PNPM
         uses: pnpm/action-setup@v2
         with:
-          version: 8.6.10
+          version: 8.6.11
 
       - name: 🐧 Use Node 18.17.0
         uses: actions/setup-node@v3
