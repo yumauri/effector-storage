@@ -44,8 +44,8 @@ devDependencies:
     specifier: ^0.4.3
     version: 0.4.3(rollup@3.27.0)
   '@sinonjs/fake-timers':
-    specifier: ^10.3.0
-    version: 10.3.0
+    specifier: ^11.0.0
+    version: 11.0.0
   '@size-limit/preset-small-lib':
     specifier: ^8.2.6
     version: 8.2.6(size-limit@8.2.6)
@@ -1167,8 +1167,8 @@ packages:
       type-detect: 4.0.8
     dev: true
 
-  /@sinonjs/fake-timers@10.3.0:
-    resolution: {integrity: sha512-V4BG07kuYSUkTCSBHG8G8TNhM+F19jXFWnQtzj+we8DrkpSBCee9Z3Ms8yiGer/dlmhe35/Xdgyo3/0rQKg7YA==}
+  /@sinonjs/fake-timers@11.0.0:
+    resolution: {integrity: sha512-bqiI/5ur6ZOozG06BeJjbplIqHY/KftV1zaewbZHORH902GrHURKwl7H1G/4OC5EaxDYQJlrD0OLJ1XD6x01dQ==}
     dependencies:
       '@sinonjs/commons': 3.0.0
     dev: true
