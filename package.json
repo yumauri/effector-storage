@@ -96,10 +96,5 @@
     "vite": "^4.4.8",
     "yaspeller": "^8.0.1"
   },
-  "packageManager": "pnpm@8.6.11",
-  "pnpm": {
-    "patchedDependencies": {
-      "uvu@0.5.6": "patches/uvu@0.5.6.patch"
-    }
-  }
+  "packageManager": "pnpm@8.6.12"
 }
