@@ -58,7 +58,7 @@
     "@playwright/test": "^1.37.1",
     "@react-native-async-storage/async-storage": "^1.19.2",
     "@rollup/plugin-babel": "^6.0.3",
-    "@rollup/plugin-node-resolve": "^15.2.0",
+    "@rollup/plugin-node-resolve": "^15.2.1",
     "@rollup/plugin-terser": "^0.4.3",
     "@sinonjs/fake-timers": "^11.1.0",
     "@size-limit/preset-small-lib": "^8.2.6",
