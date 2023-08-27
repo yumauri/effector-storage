@@ -27,8 +27,8 @@ devDependencies:
     specifier: ^1.37.1
     version: 1.37.1
   '@react-native-async-storage/async-storage':
-    specifier: ^1.19.2
-    version: 1.19.2
+    specifier: ^1.19.3
+    version: 1.19.3
   '@rollup/plugin-babel':
     specifier: ^6.0.3
     version: 6.0.3(@babel/core@7.22.10)(rollup@3.28.0)
@@ -1066,8 +1066,8 @@ packages:
       fsevents: 2.3.2
     dev: true
 
-  /@react-native-async-storage/async-storage@1.19.2:
-    resolution: {integrity: sha512-7jTQKbT3BdhFHQMnfElsLeeyVqNICv72lPKbeNHnNgLP9eH3+Yk1GFMWWb7A8qRMYianSmwmx1cYofNe9H9hLQ==}
+  /@react-native-async-storage/async-storage@1.19.3:
+    resolution: {integrity: sha512-CwGfoHCWdPOTPS+2fW6YRE1fFBpT9++ahLEroX5hkgwyoQ+TkmjOaUxixdEIoVua9Pz5EF2pGOIJzqOTMWfBlA==}
     peerDependencies:
       react-native: ^0.0.0-0 || 0.60 - 0.72 || 1000.0.0
     dependencies:
