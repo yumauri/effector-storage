@@ -73,13 +73,13 @@ devDependencies:
     version: 9.0.0(eslint@8.47.0)
   eslint-config-standard:
     specifier: ^17.1.0
-    version: 17.1.0(eslint-plugin-import@2.28.0)(eslint-plugin-n@16.0.1)(eslint-plugin-promise@6.1.1)(eslint@8.47.0)
+    version: 17.1.0(eslint-plugin-import@2.28.0)(eslint-plugin-n@16.1.0)(eslint-plugin-promise@6.1.1)(eslint@8.47.0)
   eslint-plugin-import:
     specifier: ^2.28.0
     version: 2.28.0(@typescript-eslint/parser@6.4.0)(eslint@8.47.0)
   eslint-plugin-n:
-    specifier: ^16.0.1
-    version: 16.0.1(eslint@8.47.0)
+    specifier: ^16.1.0
+    version: 16.1.0(eslint@8.47.0)
   eslint-plugin-promise:
     specifier: ^6.1.1
     version: 6.1.1(eslint@8.47.0)
@@ -1726,7 +1726,7 @@ packages:
     dev: true
 
   /concat-map@0.0.1:
-    resolution: {integrity: sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=}
+    resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
     dev: true
 
   /convert-source-map@1.9.0:
@@ -2047,7 +2047,7 @@ packages:
       eslint: 8.47.0
     dev: true
 
-  /eslint-config-standard@17.1.0(eslint-plugin-import@2.28.0)(eslint-plugin-n@16.0.1)(eslint-plugin-promise@6.1.1)(eslint@8.47.0):
+  /eslint-config-standard@17.1.0(eslint-plugin-import@2.28.0)(eslint-plugin-n@16.1.0)(eslint-plugin-promise@6.1.1)(eslint@8.47.0):
     resolution: {integrity: sha512-IwHwmaBNtDK4zDHQukFDW5u/aTb8+meQWZvNFWkiGmbWjD6bqyuSSBxxXKkCftCUzc1zwCH2m/baCNDLGmuO5Q==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
@@ -2058,7 +2058,7 @@ packages:
     dependencies:
       eslint: 8.47.0
       eslint-plugin-import: 2.28.0(@typescript-eslint/parser@6.4.0)(eslint@8.47.0)
-      eslint-plugin-n: 16.0.1(eslint@8.47.0)
+      eslint-plugin-n: 16.1.0(eslint@8.47.0)
       eslint-plugin-promise: 6.1.1(eslint@8.47.0)
     dev: true
 
@@ -2162,8 +2162,8 @@ packages:
       - supports-color
     dev: true
 
-  /eslint-plugin-n@16.0.1(eslint@8.47.0):
-    resolution: {integrity: sha512-CDmHegJN0OF3L5cz5tATH84RPQm9kG+Yx39wIqIwPR2C0uhBGMWfbbOtetR83PQjjidA5aXMu+LEFw1jaSwvTA==}
+  /eslint-plugin-n@16.1.0(eslint@8.47.0):
+    resolution: {integrity: sha512-3wv/TooBst0N4ND+pnvffHuz9gNPmk/NkLwAxOt2JykTl/hcuECe6yhTtLJcZjIxtZwN+GX92ACp/QTLpHA3Hg==}
     engines: {node: '>=16.0.0'}
     peerDependencies:
       eslint: '>=7.0.0'
@@ -2172,6 +2172,7 @@ packages:
       builtins: 5.0.1
       eslint: 8.47.0
       eslint-plugin-es-x: 7.2.0(eslint@8.47.0)
+      get-tsconfig: 4.7.0
       ignore: 5.2.4
       is-core-module: 2.13.0
       minimatch: 3.1.2
