@@ -62,7 +62,7 @@ jobs:
       - name: 📦 Use PNPM
         uses: pnpm/action-setup@v2
         with:
-          version: 8.6.12
+          version: 8.7.6
 
       - name: 🐧 Use Node ${{ matrix.node-version }}
         uses: actions/setup-node@v3

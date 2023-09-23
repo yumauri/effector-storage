@@ -22,12 +22,12 @@ jobs:
       - name: 📦 Setup PNPM
         uses: pnpm/action-setup@v2
         with:
-          version: 8.6.12
+          version: 8.7.6
 
-      - name: 🐧 Setup Node 18.17.1
+      - name: 🐧 Setup Node 18.18.0
         uses: actions/setup-node@v3
         with:
-          node-version: 18.17.1
+          node-version: 18.18.0
           registry-url: https://registry.npmjs.org/
           cache: pnpm
 
