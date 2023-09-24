@@ -10,8 +10,6 @@ const BUILD = 'build'
 
 const external = [
   'effector',
-  'react-native-encrypted-storage',
-  '@react-native-async-storage/async-storage',
   /\.[./]*\/core/,
   /\.[./]*\/tools/,
   /\.[./]*\/nil/,
@@ -179,18 +177,6 @@ const src = (name) => ({
                   import: './broadcast/index.js',
                   require: './broadcast/index.cjs',
                 },
-                './rn/async/package.json': './rn/async/package.json',
-                './rn/async': {
-                  types: './rn/async/index.d.ts',
-                  import: './rn/async/index.js',
-                  require: './rn/async/index.cjs',
-                },
-                './rn/encrypted/package.json': './rn/encrypted/package.json',
-                './rn/encrypted': {
-                  types: './rn/encrypted/index.d.ts',
-                  import: './rn/encrypted/index.js',
-                  require: './rn/encrypted/index.cjs',
-                },
               },
             }),
           }
@@ -268,8 +254,6 @@ export default [
   ...entry('memory/'),
   ...entry('async-storage/'),
   ...entry('broadcast/'),
-  ...entry('rn/async/'),
-  ...entry('rn/encrypted/'),
 ]
 
 function dual() {

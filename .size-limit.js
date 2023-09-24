@@ -210,34 +210,4 @@ module.exports = [
     // import: '{ broadcast }', // tree-shaking is not working with cjs
     ignore: ['effector'],
   },
-
-  // react native async storages
-  {
-    name: '`AsyncStorage` persist, es module',
-    path: 'build/rn/async/index.js',
-    limit: '1416 B',
-    import: '{ persist }',
-    ignore: ['effector', '@react-native-async-storage/async-storage'],
-  },
-  {
-    name: '`AsyncStorage` persist, cjs module',
-    path: 'build/rn/async/index.cjs',
-    limit: '1440 B',
-    // import: '{ persist }', // tree-shaking is not working with cjs
-    ignore: ['effector', '@react-native-async-storage/async-storage'],
-  },
-  {
-    name: '`EncryptedStorage` persist, es module',
-    path: 'build/rn/encrypted/index.js',
-    limit: '1416 B',
-    import: '{ persist }',
-    ignore: ['effector', 'react-native-encrypted-storage'],
-  },
-  {
-    name: '`EncryptedStorage` persist, cjs module',
-    path: 'build/rn/encrypted/index.cjs',
-    limit: '1440 B',
-    // import: '{ persist }', // tree-shaking is not working with cjs
-    ignore: ['effector', 'react-native-encrypted-storage'],
-  },
 ]
