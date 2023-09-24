@@ -46,17 +46,6 @@ const contracted =
             : undefined
         })()
 
-// helper function for safe bind effects to scope
-// since version 22.4.0 there is `safe` option in `scopeBind`,
-// but as long as effector-storage supports 22.0 this helper is required
-const safeBind = (fx: Effect<any, any, any>) => {
-  try {
-    return scopeBind(fx, { safe: true })
-  } catch (e) {
-    return fx
-  }
-}
-
 /**
  * Default sink for unhandled errors
  */
@@ -178,7 +167,7 @@ export function persist<State, Err = Error>(
 
     let bindedGet: (raw?: any) => any = getFx
     ctx.updates.watch(() => {
-      bindedGet = safeBind(getFx)
+      bindedGet = scopeBind(getFx as any, { safe: true })
     })
 
     sample({
