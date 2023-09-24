@@ -3,14 +3,14 @@ module.exports = [
   {
     name: 'root persist, es module',
     path: 'build/index.js',
-    limit: '999 B',
+    limit: '962 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
   {
     name: 'root persist, cjs module',
     path: 'build/index.cjs',
-    limit: '3196 B',
+    limit: '3163 B',
     // import: '{ persist }', // tree-shaking is not working with cjs
     ignore: ['effector'],
   },
@@ -19,14 +19,14 @@ module.exports = [
   {
     name: 'core persist, es module',
     path: 'build/core/index.js',
-    limit: '995 B',
+    limit: '959 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
   {
     name: 'core persist, cjs module',
     path: 'build/core/index.cjs',
-    limit: '1179 B',
+    limit: '1143 B',
     // import: '{ persist }', // tree-shaking is not working with cjs
     ignore: ['effector'],
   },
@@ -99,14 +99,14 @@ module.exports = [
   {
     name: '`localStorage` persist, es module',
     path: 'build/local/index.js',
-    limit: '1423 B',
+    limit: '1390 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
   {
     name: '`localStorage` persist, cjs module',
     path: 'build/local/index.cjs',
-    limit: '1698 B',
+    limit: '1664 B',
     // import: '{ persist }', // tree-shaking is not working with cjs
     ignore: ['effector'],
   },
@@ -116,14 +116,14 @@ module.exports = [
   {
     name: 'core adapter, es module',
     path: 'build/index.js',
-    limit: '1429 B',
+    limit: '1396 B',
     import: '{ persist, local }',
     ignore: ['effector'],
   },
   {
     name: 'core adapter factory, es module',
     path: ['build/index.js', 'build/local/index.js'],
-    limit: '1431 B',
+    limit: '1398 B',
     import: {
       'build/index.js': '{ persist }',
       'build/local/index.js': '{ local }',
@@ -135,14 +135,14 @@ module.exports = [
   {
     name: '`sessionStorage` persist, es module',
     path: 'build/session/index.js',
-    limit: '1419 B',
+    limit: '1388 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
   {
     name: '`sessionStorage` persist, cjs module',
     path: 'build/session/index.cjs',
-    limit: '1693 B',
+    limit: '1661 B',
     // import: '{ persist }', // tree-shaking is not working with cjs
     ignore: ['effector'],
   },
@@ -151,14 +151,14 @@ module.exports = [
   {
     name: 'query string persist, es module',
     path: 'build/query/index.js',
-    limit: '1495 B',
+    limit: '1454 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
   {
     name: 'query string persist, cjs module',
     path: 'build/query/index.cjs',
-    limit: '1786 B',
+    limit: '1745 B',
     // import: '{ persist }', // tree-shaking is not working with cjs
     ignore: ['effector'],
   },
@@ -167,14 +167,14 @@ module.exports = [
   {
     name: 'memory adapter, es module',
     path: 'build/memory/index.js',
-    limit: '1091 B',
+    limit: '1053 B',
     import: '{ persist }',
     ignore: ['effector'],
   },
   {
     name: 'memory adapter, cjs module',
     path: 'build/memory/index.cjs',
-    limit: '1317 B',
+    limit: '1283 B',
     // import: '{ persist }', // tree-shaking is not working with cjs
     ignore: ['effector'],
   },
@@ -199,14 +199,14 @@ module.exports = [
   {
     name: 'broadcast channel adapter, es module',
     path: 'build/broadcast/index.js',
-    limit: '1293 B',
+    limit: '1253 B',
     import: '{ broadcast }',
     ignore: ['effector'],
   },
   {
     name: 'broadcast channel adapter, cjs module',
     path: 'build/broadcast/index.cjs',
-    limit: '1543 B',
+    limit: '1510 B',
     // import: '{ broadcast }', // tree-shaking is not working with cjs
     ignore: ['effector'],
   },

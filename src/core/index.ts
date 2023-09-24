@@ -17,7 +17,6 @@ import {
   createEffect,
   createNode,
   createStore,
-  guard,
   is,
   sample,
   scopeBind,
@@ -171,20 +170,19 @@ export function persist<State, Err = Error>(
     })
 
     sample({
+      clock, // `clock` is always defined, as long as `source` is defined
       source,
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      clock: clock!, // `clock` is always defined, as long as `source` is defined
       target: trigger,
     } as any)
 
-    guard({
-      source: sample(storage, trigger, (current, proposed) => [
-        proposed,
-        current,
-      ]),
-      filter: ([proposed, current]) => proposed !== current,
-      target: setFx.prepend(([proposed]: State[]) => proposed),
+    sample({
+      clock: trigger,
+      source: storage,
+      filter: (current, proposed) => proposed !== current,
+      fn: (_, proposed) => proposed,
+      target: setFx,
     })
+
     sample({ clock: [getFx.doneData, setFx], target: storage as any })
     sample({ clock: [getFx.doneData, storage], target: validateFx as any })
     sample({ clock: validateFx.doneData, target: target as any })
