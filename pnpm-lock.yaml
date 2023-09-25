@@ -26,9 +26,6 @@ devDependencies:
   '@playwright/test':
     specifier: ^1.38.1
     version: 1.38.1
-  '@react-native-async-storage/async-storage':
-    specifier: ^1.19.3
-    version: 1.19.3
   '@rollup/plugin-babel':
     specifier: ^6.0.3
     version: 6.0.3(@babel/core@7.22.20)(rollup@3.29.2)
@@ -98,9 +95,6 @@ devDependencies:
   publint:
     specifier: ^0.2.2
     version: 0.2.2
-  react-native-encrypted-storage:
-    specifier: ^4.0.3
-    version: 4.0.3
   rollup:
     specifier: ^3.29.2
     version: 3.29.2
@@ -1061,14 +1055,6 @@ packages:
     hasBin: true
     dependencies:
       playwright: 1.38.1
-    dev: true
-
-  /@react-native-async-storage/async-storage@1.19.3:
-    resolution: {integrity: sha512-CwGfoHCWdPOTPS+2fW6YRE1fFBpT9++ahLEroX5hkgwyoQ+TkmjOaUxixdEIoVua9Pz5EF2pGOIJzqOTMWfBlA==}
-    peerDependencies:
-      react-native: ^0.0.0-0 || 0.60 - 0.72 || 1000.0.0
-    dependencies:
-      merge-options: 3.0.4
     dev: true
 
   /@rollup/plugin-babel@6.0.3(@babel/core@7.22.20)(rollup@3.29.2):
@@ -2784,11 +2770,6 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
-  /is-plain-obj@2.1.0:
-    resolution: {integrity: sha512-YWnfyRwxL/+SsrWYfOpUtz5b3YD+nyfkHvjbcanzk8zgyO4ASD67uVMRt8k5bM4lLMDnXfriRhOpemw+NfT1eA==}
-    engines: {node: '>=8'}
-    dev: true
-
   /is-regex@1.1.4:
     resolution: {integrity: sha512-kvRdxDsxZjhzUX07ZnLydzS1TU/TJlTUHHY4YLL87e37oUA49DfkLqgy+VjFocowy29cKvcSiu+kIv728jTTVg==}
     engines: {node: '>= 0.4'}
@@ -3084,13 +3065,6 @@ packages:
       trim-newlines: 3.0.1
       type-fest: 0.18.1
       yargs-parser: 20.2.9
-    dev: true
-
-  /merge-options@3.0.4:
-    resolution: {integrity: sha512-2Sug1+knBjkaMsMgf1ctR1Ujx+Ayku4EdJN4Z+C2+JzoeF7A3OZ9KM2GY0CpQS51NR61LTurMJrRKPhSs3ZRTQ==}
-    engines: {node: '>=10'}
-    dependencies:
-      is-plain-obj: 2.1.0
     dev: true
 
   /merge2@1.4.1:
@@ -3530,13 +3504,6 @@ packages:
 
   /react-is@18.2.0:
     resolution: {integrity: sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==}
-    dev: true
-
-  /react-native-encrypted-storage@4.0.3:
-    resolution: {integrity: sha512-0pJA4Aj2S1PIJEbU7pN/Qvf7JIJx3hFywx+i+bLHtgK0/6Zryf1V2xVsWcrD50dfiu3jY1eN2gesQ5osGxE7jA==}
-    peerDependencies:
-      react: '*'
-      react-native: '*'
     dev: true
 
   /read-pkg-up@7.0.1:

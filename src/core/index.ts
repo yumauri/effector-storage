@@ -196,9 +196,12 @@ export function persist<State, Err = Error>(
       target: localAnyway,
     })
 
-    if (anyway) sample({ clock: localAnyway, target: anyway })
-    if (done) sample({ clock: localDone, target: done })
-    sample({ clock: localFail, target: fail })
+    // effector 23 introduced "targetable" types - UnitTargetable, StoreWritable, EventCallable
+    // so, targeting non-targetable unit is not allowed anymore.
+    // soothe typescript by casting to any for a while, until we drop support for effector 22 branch
+    if (anyway) sample({ clock: localAnyway, target: anyway } as any)
+    if (done) sample({ clock: localDone, target: done } as any)
+    sample({ clock: localFail, target: fail } as any)
 
     if (context) {
       ctx.on(context, ([ref], payload) => [
