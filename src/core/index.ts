@@ -150,17 +150,7 @@ export function persist<State, Err = Error>(
 
     const validateFx = createEffect<unknown, State>(contracted(contract))
 
-    const localAnyway = createEvent<Finally<State, Err>>()
-    const localDone = localAnyway.filterMap<Done<State>>(
-      ({ status, key, keyPrefix, operation, value }) =>
-        status === 'done' ? { key, keyPrefix, operation, value } : undefined
-    )
-    const localFail = localAnyway.filterMap<Fail<Err>>(
-      ({ status, key, keyPrefix, operation, error, value }: any) =>
-        status === 'fail'
-          ? { key, keyPrefix, operation, error, value }
-          : undefined
-    )
+    const complete = createEvent<Finally<State, Err>>()
 
     const trigger = createEvent<State>()
 
@@ -183,9 +173,22 @@ export function persist<State, Err = Error>(
       target: setFx,
     })
 
-    sample({ clock: [getFx.doneData, setFx], target: storage as any })
-    sample({ clock: [getFx.doneData, storage], target: validateFx as any })
-    sample({ clock: validateFx.doneData, target: target as any })
+    sample({
+      clock: [getFx.doneData, setFx],
+      filter: <T>(x?: T | undefined): x is T => x !== undefined,
+      target: storage as any,
+    })
+
+    sample({
+      clock: [getFx.doneData, storage],
+      target: validateFx as any,
+    })
+
+    sample({
+      clock: validateFx.doneData,
+      filter: <T>(x?: T | undefined): x is T => x !== undefined,
+      target: target as any,
+    })
 
     sample({
       clock: [
@@ -193,15 +196,45 @@ export function persist<State, Err = Error>(
         setFx.finally.map(op('set')),
         validateFx.fail.map(op('validate')),
       ],
-      target: localAnyway,
+      target: complete,
     })
 
     // effector 23 introduced "targetable" types - UnitTargetable, StoreWritable, EventCallable
     // so, targeting non-targetable unit is not allowed anymore.
     // soothe typescript by casting to any for a while, until we drop support for effector 22 branch
-    if (anyway) sample({ clock: localAnyway, target: anyway } as any)
-    if (done) sample({ clock: localDone, target: done } as any)
-    sample({ clock: localFail, target: fail } as any)
+    if (anyway) {
+      sample({
+        clock: complete,
+        target: anyway as any,
+      })
+    }
+
+    if (done) {
+      sample({
+        clock: complete,
+        filter: ({ status }) => status === 'done',
+        fn: ({ key, keyPrefix, operation, value }): Done<State> => ({
+          key,
+          keyPrefix,
+          operation,
+          value,
+        }),
+        target: done as any,
+      })
+    }
+
+    sample({
+      clock: complete,
+      filter: ({ status }) => status === 'fail',
+      fn: ({ key, keyPrefix, operation, error, value }: any): Fail<Err> => ({
+        key,
+        keyPrefix,
+        operation,
+        error,
+        value,
+      }),
+      target: fail as any,
+    })
 
     if (context) {
       ctx.on(context, ([ref], payload) => [
