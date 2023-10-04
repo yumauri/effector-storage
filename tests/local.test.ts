@@ -152,14 +152,11 @@ test('target event should be called with null on storage.clear()', async () => {
 
   persist({ source, target, key: 'counter5' })
 
-  // FIXME: target called 1, but with `undefined`
-  // this may be appropriate for stores, but not for events
-  assert.is(watch.callCount, 1)
-  assert.equal(watch.calls[0].arguments, [undefined])
+  assert.is(watch.callCount, 0) // target is not triggered
 
   source(21)
-  assert.is(watch.callCount, 2)
-  assert.equal(watch.calls[1].arguments, [21])
+  assert.is(watch.callCount, 1)
+  assert.equal(watch.calls[0].arguments, [21])
 
   global.localStorage.clear()
   await events.dispatchEvent('storage', {
@@ -167,8 +164,8 @@ test('target event should be called with null on storage.clear()', async () => {
     key: null,
   })
 
-  assert.is(watch.callCount, 3)
-  assert.equal(watch.calls[2].arguments, [null])
+  assert.is(watch.callCount, 2)
+  assert.equal(watch.calls[1].arguments, [null])
 })
 
 //

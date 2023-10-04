@@ -2,31 +2,8 @@ import type { StorageAdapter } from '../src/types'
 import { test } from 'uvu'
 import * as assert from 'uvu/assert'
 import { type Snoop, snoop } from 'snoop'
-import {
-  version,
-  createStore,
-  createEvent,
-  fork,
-  allSettled,
-  serialize,
-} from 'effector'
+import { createStore, createEvent, fork, allSettled, serialize } from 'effector'
 import { persist } from '../src/core'
-
-//
-// Effector version guard
-//
-
-let warn = true
-function old() {
-  if (version < '22.3') {
-    if (warn) {
-      console.log('// skip scope serialize tests due to old effector version')
-      warn = false
-    }
-    return true
-  }
-  return false
-}
 
 //
 // Dumb fake adapter
@@ -64,8 +41,6 @@ test.after.each(() => {
 //
 
 test('store without sid should warn', async () => {
-  if (old()) return
-
   const fn: MockErrorFn = (console.error as any).mock
 
   const event = createEvent()
@@ -83,8 +58,6 @@ test('store without sid should warn', async () => {
 })
 
 test('store with sid should not warn', async () => {
-  if (old()) return
-
   const fn: MockErrorFn = (console.error as any).mock
 
   const event = createEvent()
@@ -100,8 +73,6 @@ test('store with sid should not warn', async () => {
 })
 
 test('not serializable store should not warn', async () => {
-  if (old()) return
-
   const fn: MockErrorFn = (console.error as any).mock
 
   const event = createEvent()
@@ -117,8 +88,6 @@ test('not serializable store should not warn', async () => {
 })
 
 test('persist usage should not warn', async () => {
-  if (old()) return
-
   const fn: MockErrorFn = (console.error as any).mock
 
   const event = createEvent()

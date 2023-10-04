@@ -7,7 +7,7 @@ on:
       effector:
         description: effector dependency
         required: false
-        default: "npm:effector@22.8.6"
+        default: "npm:effector@22.8.7"
         type: string
       effector-storage:
         description: effector-storage dependency

@@ -41,14 +41,7 @@ test('storage updates should be debounced', async () => {
   const increment = createEvent()
   increment.watch(incrementWatch.fn)
 
-  // since version 7.30 pnpm is aliasing peer dependencies
-  // (see https://github.com/pnpm/pnpm/issues/4301),
-  // patronum has effector ^22.1.2 as peer dependency,
-  // and it is aliased to the latest installed 22.8.6
-  // thus, producing error, that Event type from 22.0.0
-  // is incompatible with Event type from 22.8.6
-  // TODO: remove `as any` after deprecating effector 22.0.0
-  const debounced = debounce({ source: increment as any, timeout: 10 })
+  const debounced = debounce({ source: increment, timeout: 10 })
   debounced.watch(debouncedWatch.fn)
 
   const $store = createStore(0, { name: 'debounced' }).on(
@@ -154,15 +147,7 @@ test('storage updates should be debounced, using clock', async () => {
   persist({
     adapter,
     store: $store,
-
-    // since version 7.30 pnpm is aliasing peer dependencies
-    // (see https://github.com/pnpm/pnpm/issues/4301),
-    // patronum has effector ^22.1.2 as peer dependency,
-    // and it is aliased to the latest installed 22.8.6
-    // thus, producing error, that Event type from 22.0.0
-    // is incompatible with Event type from 22.8.6
-    // TODO: remove `as any` after deprecating effector 22.0.0
-    clock: debounce({ source: $store as any, timeout: 10 }),
+    clock: debounce({ source: $store, timeout: 10 }),
   })
 
   // after `persist`

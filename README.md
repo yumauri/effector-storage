@@ -18,8 +18,6 @@ Small module for [Effector](https://github.com/effector/effector) ☄️ to sync
   - [with `sessionStorage`](#with-sessionstorage)
   - [with query string](#with-query-string)
   - [with `BroadcastChannel`](#with-broadcastchannel)
-  - [with React Native AsyncStorage](#with-react-native-asyncstorage)
-  - [with React Native EncryptedStorage](#with-react-native-encryptedstorage)
   - [extra adapters](#extra-adapters)
 - [Usage with domains](#usage-with-domains)
 - [Formulae](#formulae)
@@ -117,42 +115,6 @@ You can sync stores across different browsing contexts (tabs, windows, workers),
 ```javascript
 import { persist } from 'effector-storage/broadcast'
 ```
-
-### with React Native AsyncStorage
-
-❗️ Deprecated and will be removed in next major release, in favor of [`@effector-storage/react-native-async-storage`](https://github.com/yumauri/effector-storage-extras/tree/main/packages/react-native-async-storage).
-
-Docs: [effector-storage/rn/async](https://github.com/yumauri/effector-storage/tree/main/src/rn/async/README.md)
-
-```javascript
-import { persist } from 'effector-storage/rn/async'
-
-// persist store `$counter` with key 'counter'
-persist({ store: $counter, key: 'counter' })
-
-// if your storage has a name, you can omit `key` field
-persist({ store: $counter })
-```
-
-⚠️ Note, that [AsyncStorage] is asynchronous, hence the name.
-
-### with React Native EncryptedStorage
-
-❗️ Deprecated and will be removed in next major release, in favor of [`@effector-storage/react-native-encrypted-storage`](https://github.com/yumauri/effector-storage-extras/tree/main/packages/react-native-encrypted-storage).
-
-Docs: [effector-storage/rn/encrypted](https://github.com/yumauri/effector-storage/tree/main/src/rn/encrypted/README.md)
-
-```javascript
-import { persist } from 'effector-storage/rn/encrypted'
-
-// persist store `$counter` with key 'counter'
-persist({ store: $counter, key: 'counter' })
-
-// if your storage has a name, you can omit `key` field
-persist({ store: $counter })
-```
-
-⚠️ Note, that [EncryptedStorage] is asynchronous (it is based on [AsyncStorage] actually).
 
 ### extra adapters
 
@@ -385,7 +347,7 @@ persist({ store, adapter }) // <- use adapter
 
 ### Asynchronous storage adapter example
 
-Using asynchronous storage is just as simple. Once again, this is just a bare simple idea, without serialization and edge cases checks.
+Using asynchronous storage is just as simple. Once again, this is just a bare simple idea, without serialization and edge cases checks. If you need to use React Native Async Storage, try [@effector-storage/react-native-async-storage](https://github.com/yumauri/effector-storage-extras/tree/main/packages/react-native-async-storage)) adapter instead.
 
 ```javascript
 import AsyncStorage from '@react-native-async-storage/async-storage'

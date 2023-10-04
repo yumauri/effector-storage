@@ -6,6 +6,8 @@ Adapter to persist [_store_] in compatible asynchronous storage.
 
 ## Usage
 
+Note, that this is just an example. If you need to use React Native Async Storage, try [@effector-storage/react-native-async-storage](https://github.com/yumauri/effector-storage-extras/tree/main/packages/react-native-async-storage)) adapter instead.
+
 ```javascript
 import { persist, asyncStorage } from 'effector-storage'
 import AsyncStorage from '@react-native-async-storage/async-storage'
