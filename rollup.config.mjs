@@ -107,75 +107,135 @@ const src = (name) => ({
               exports: {
                 './package.json': './package.json',
                 '.': {
-                  types: './index.d.ts',
-                  import: './index.js',
-                  require: './index.cjs',
+                  import: {
+                    types: './index.d.ts',
+                    default: './index.js',
+                  },
+                  require: {
+                    types: './index.d.cts',
+                    default: './index.cjs',
+                  },
                 },
                 './core/package.json': './core/package.json',
                 './core': {
-                  types: './core/index.d.ts',
-                  import: './core/index.js',
-                  require: './core/index.cjs',
+                  import: {
+                    types: './core/index.d.ts',
+                    default: './core/index.js',
+                  },
+                  require: {
+                    types: './core/index.d.cts',
+                    default: './core/index.cjs',
+                  },
                 },
                 './tools/package.json': './tools/package.json',
                 './tools': {
-                  types: './tools/index.d.ts',
-                  import: './tools/index.js',
-                  require: './tools/index.cjs',
+                  import: {
+                    types: './tools/index.d.ts',
+                    default: './tools/index.js',
+                  },
+                  require: {
+                    types: './tools/index.d.cts',
+                    default: './tools/index.cjs',
+                  },
                 },
                 './nil/package.json': './nil/package.json',
                 './nil': {
-                  types: './nil/index.d.ts',
-                  import: './nil/index.js',
-                  require: './nil/index.cjs',
+                  import: {
+                    types: './nil/index.d.ts',
+                    default: './nil/index.js',
+                  },
+                  require: {
+                    types: './nil/index.d.cts',
+                    default: './nil/index.cjs',
+                  },
                 },
                 './log/package.json': './log/package.json',
                 './log': {
-                  types: './log/index.d.ts',
-                  import: './log/index.js',
-                  require: './log/index.cjs',
+                  import: {
+                    types: './log/index.d.ts',
+                    default: './log/index.js',
+                  },
+                  require: {
+                    types: './log/index.d.cts',
+                    default: './log/index.cjs',
+                  },
                 },
                 './local/package.json': './local/package.json',
                 './local': {
-                  types: './local/index.d.ts',
-                  import: './local/index.js',
-                  require: './local/index.cjs',
+                  import: {
+                    types: './local/index.d.ts',
+                    default: './local/index.js',
+                  },
+                  require: {
+                    types: './local/index.d.cts',
+                    default: './local/index.cjs',
+                  },
                 },
                 './session/package.json': './session/package.json',
                 './session': {
-                  types: './session/index.d.ts',
-                  import: './session/index.js',
-                  require: './session/index.cjs',
+                  import: {
+                    types: './session/index.d.ts',
+                    default: './session/index.js',
+                  },
+                  require: {
+                    types: './session/index.d.cts',
+                    default: './session/index.cjs',
+                  },
                 },
                 './storage/package.json': './storage/package.json',
                 './storage': {
-                  types: './storage/index.d.ts',
-                  import: './storage/index.js',
-                  require: './storage/index.cjs',
+                  import: {
+                    types: './storage/index.d.ts',
+                    default: './storage/index.js',
+                  },
+                  require: {
+                    types: './storage/index.d.cts',
+                    default: './storage/index.cjs',
+                  },
                 },
                 './query/package.json': './query/package.json',
                 './query': {
-                  types: './query/index.d.ts',
-                  import: './query/index.js',
-                  require: './query/index.cjs',
+                  import: {
+                    types: './query/index.d.ts',
+                    default: './query/index.js',
+                  },
+                  require: {
+                    types: './query/index.d.cts',
+                    default: './query/index.cjs',
+                  },
                 },
                 './memory/package.json': './memory/package.json',
                 './memory': {
-                  types: './memory/index.d.ts',
-                  import: './memory/index.js',
-                  require: './memory/index.cjs',
+                  import: {
+                    types: './memory/index.d.ts',
+                    default: './memory/index.js',
+                  },
+                  require: {
+                    types: './memory/index.d.cts',
+                    default: './memory/index.cjs',
+                  },
                 },
                 './async-storage/package.json': './async-storage/package.json',
                 './async-storage': {
-                  types: './async-storage/index.d.ts',
-                  import: './async-storage/index.js',
-                  require: './async-storage/index.cjs',
+                  import: {
+                    types: './async-storage/index.d.ts',
+                    default: './async-storage/index.js',
+                  },
+                  require: {
+                    types: './async-storage/index.d.cts',
+                    default: './async-storage/index.cjs',
+                  },
                 },
                 './broadcast/package.json': './broadcast/package.json',
                 './broadcast': {
-                  types: './broadcast/index.d.ts',
-                  import: './broadcast/index.js',
-                  require: './broadcast/index.cjs',
+                  import: {
+                    types: './broadcast/index.d.ts',
+                    default: './broadcast/index.js',
+                  },
+                  require: {
+                    types: './broadcast/index.d.cts',
+                    default: './broadcast/index.cjs',
+                  },
                 },
               },
             }),
@@ -189,6 +249,19 @@ const src = (name) => ({
               module: 'index.js',
               main: 'index.cjs',
               'react-native': 'index.js',
+              exports: {
+                './package.json': './package.json',
+                '.': {
+                  import: {
+                    types: './index.d.ts',
+                    default: './index.js',
+                  },
+                  require: {
+                    types: './index.d.cts',
+                    default: './index.cjs',
+                  },
+                },
+              },
             },
           }
     ),
@@ -226,14 +299,14 @@ const cjsdts = (name) => ({
   input: `${SRC}/${name}index.ts`,
   output: [
     {
-      file: `${BUILD}/${name}index.cjs.d.ts`,
+      file: `${BUILD}/${name}index.d.cts`,
       format: 'es',
     },
   ],
   external,
   plugins: [
     generateDts({ respectExternal: true }),
-    command([`pnpm exec prettier --write ${BUILD}/${name}index.cjs.d.ts`], {
+    command([`pnpm exec prettier --write ${BUILD}/${name}index.d.cts`], {
       wait: true,
     }),
   ],
