@@ -9,7 +9,7 @@ const tryDependency: string | undefined = process.env.INPUT_EFFECTOR
 //
 
 test('effector should be mocked', () => {
-  const tryVersion = tryDependency?.match(/(\d+\.\d+\.\d+)/)?.[1]
+  const tryVersion = tryDependency?.match(/(\d+\.\d+\.\d+).*$/)?.[0]
   if (tryVersion) {
     assert.is(version, tryVersion)
   } else {
