@@ -54,7 +54,7 @@
     "@playwright/test": "^1.38.1",
     "@rollup/plugin-babel": "^6.0.3",
     "@rollup/plugin-node-resolve": "^15.2.1",
-    "@rollup/plugin-terser": "^0.4.3",
+    "@rollup/plugin-terser": "^0.4.4",
     "@sinonjs/fake-timers": "^11.1.0",
     "@size-limit/preset-small-lib": "^9.0.0",
     "@types/node": "^20.8.2",
