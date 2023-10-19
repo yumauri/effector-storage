@@ -90,5 +90,5 @@
     "vite": "^4.4.10",
     "yaspeller": "^8.0.1"
   },
-  "packageManager": "pnpm@8.8.0"
+  "packageManager": "pnpm@8.9.2"
 }
