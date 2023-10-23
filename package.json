@@ -49,7 +49,7 @@
     "@babel/plugin-transform-block-scoping": "^7.23.0",
     "@babel/preset-typescript": "^7.23.0",
     "@esbuild-kit/esm-loader": "^2.6.5",
-    "@farfetched/core": "^0.10.1",
+    "@farfetched/core": "^0.10.4",
     "@farfetched/runtypes": "^0.10.1",
     "@playwright/test": "^1.38.1",
     "@rollup/plugin-babel": "^6.0.3",
