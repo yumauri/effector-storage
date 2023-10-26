@@ -31,8 +31,8 @@ jobs:
     strategy:
       matrix:
         node-version:
-          - 16
           - 18
+          - 20
 
     name: Node ${{ matrix.node-version }} / ${{ inputs.effector }} / ${{ inputs.effector-storage || 'latest' }}
 
@@ -62,7 +62,7 @@ jobs:
       - name: 📦 Use PNPM
         uses: pnpm/action-setup@v2
         with:
-          version: 8.8.0
+          version: 8.9.2
 
       - name: 🐧 Use Node ${{ matrix.node-version }}
         uses: actions/setup-node@v3
