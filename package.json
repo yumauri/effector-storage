@@ -58,7 +58,7 @@
     "@sinonjs/fake-timers": "^11.2.2",
     "@size-limit/preset-small-lib": "^10.0.2",
     "@types/node": "^20.8.10",
-    "@types/sinonjs__fake-timers": "^8.1.4",
+    "@types/sinonjs__fake-timers": "^8.1.5",
     "@typescript-eslint/eslint-plugin": "^6.9.1",
     "@typescript-eslint/parser": "^6.9.1",
     "c8": "^8.0.1",
