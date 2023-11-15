@@ -135,8 +135,8 @@ devDependencies:
     specifier: ^4.5.0
     version: 4.5.0(@types/node@20.8.10)
   yaspeller:
-    specifier: ^9.1.0
-    version: 9.1.0
+    specifier: ^10.0.1
+    version: 10.0.1
 
 packages:
 
@@ -3224,9 +3224,9 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /marked@9.1.5:
-    resolution: {integrity: sha512-14QG3shv8Kg/xc0Yh6TNkMj90wXH9mmldi5941I2OevfJ/FQAFLEwtwU2/FfgSAOMlWHrEukWSGQf8MiVYNG2A==}
-    engines: {node: '>= 16'}
+  /marked@10.0.0:
+    resolution: {integrity: sha512-YiGcYcWj50YrwBgNzFoYhQ1hT6GmQbFG8SksnYJX1z4BXTHSOrz1GB5/Jm2yQvMg4nN1FHP4M6r03R10KrVUiA==}
+    engines: {node: '>= 18'}
     hasBin: true
     dev: true
 
@@ -4630,9 +4630,9 @@ packages:
     resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==}
     dev: true
 
-  /yandex-speller@4.1.0:
-    resolution: {integrity: sha512-z13o3GCMxm5g/MU28JCIdu9SXsAoShroqAheFciS3K0wa2JRkA1y5qASZuavJuaCl0KG5RhTjo8gdkbyp6QC+w==}
-    engines: {node: '>=4'}
+  /yandex-speller@6.0.0:
+    resolution: {integrity: sha512-tX7GG3qHnb4C9N6Ns+lN6SIKc3R3pPqnxMX5mmNkbUKunwdF6Whl7DMczXP3uUV4BZ0OKX3DHR4gziq4mvcY3w==}
+    engines: {node: '>=16'}
     dev: true
 
   /yargs-parser@20.2.9:
@@ -4658,8 +4658,8 @@ packages:
       yargs-parser: 21.1.1
     dev: true
 
-  /yaspeller@9.1.0:
-    resolution: {integrity: sha512-HVYIePJ/mklWSzD2eAm1HwX4JBCNy/6MA9TJkI201GXfT8i6E0E9bU1CLDT3aRnCWwC0V5JmmuyJs02A6PeqBQ==}
+  /yaspeller@10.0.1:
+    resolution: {integrity: sha512-jz9Vf/Q9TnpX7Lz1UqKzR6uM5rBkvvGCngWPvYHXPN6rHHNzqNbC7GIhYvtVcWNXQK/brqXj7Y8olOQiunC0HA==}
     engines: {node: '>=16'}
     hasBin: true
     dependencies:
@@ -4671,14 +4671,14 @@ packages:
       glob: 10.3.10
       isutf8: 4.0.0
       lilconfig: 2.1.0
-      marked: 9.1.5
+      marked: 10.0.0
       minimatch: 9.0.3
       node-fetch: 2.7.0
       picocolors: 1.0.0
       secure-json-parse: 2.7.0
       strip-json-comments: 3.1.1
       xml2js: 0.6.2
-      yandex-speller: 4.1.0
+      yandex-speller: 6.0.0
     transitivePeerDependencies:
       - encoding
     dev: true
