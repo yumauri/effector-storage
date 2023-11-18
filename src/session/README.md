@@ -80,6 +80,8 @@ persist({
 
 ### Can I debounce updates, `sessionStorage` is too slow?
 
+Since version **6.0.0** there is a `timeout` option, which will throttle writes to `sessionStorage`, so you can specify it. Or you can use older approach, which is described below.
+
 Since version **4.3.0**, you can use `clock` option and `debounce` from [patronum](https://github.com/effector/patronum/tree/main/debounce), to reach that goal:
 
 ```javascript
