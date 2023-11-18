@@ -41,8 +41,8 @@ export function either<
     ? StorageAdapterFactory<T1 & T2>
     : StorageAdapterFactory<T1>
   : A2 extends StorageAdapterFactory<infer T2>
-  ? StorageAdapterFactory<T2>
-  : StorageAdapter
+    ? StorageAdapterFactory<T2>
+    : StorageAdapter
 
 export function either<T1, T2>(
   one: StorageAdapter | StorageAdapterFactory<T1>,

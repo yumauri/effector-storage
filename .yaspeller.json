@@ -19,6 +19,7 @@
     "debounce",
     "desynchronization",
     "EncryptedStorage",
+    "Farfetched",
     "idb",
     "IndexedDB",
     "io-ts",
@@ -26,6 +27,7 @@
     "keyArea",
     "keyval",
     "localStorage",
+    "no-op",
     "noop",
     "patronum",
     "Payload",
@@ -44,7 +46,6 @@
   ],
   "ignoreText": [],
   "ignoreUrls": true,
-  "ignoreUppercase": true,
   "findRepeatWords": false,
   "maxRequests": 5
 }
