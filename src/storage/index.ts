@@ -23,7 +23,7 @@ export function storage({
 }: StorageConfig): StorageAdapter {
   const adapter: StorageAdapter = <State>(
     key: string,
-    update: (raw?: any) => any
+    update: (raw?: any) => void
   ) => {
     let scheduled: ReturnType<typeof setTimeout> | undefined
     let unsaved: State

@@ -75,7 +75,7 @@ export function adapter({
 }: QueryConfig): StorageAdapter {
   const adapter: StorageAdapter = <State>(
     key: string,
-    update: (raw?: any) => any
+    update: (raw?: any) => void
   ) => {
     if (typeof addEventListener !== 'undefined') {
       addEventListener('popstate', () => setTimeout(update, 0))

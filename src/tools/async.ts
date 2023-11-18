@@ -21,7 +21,7 @@ export function async<T>(
 
     const asyncAdapter: StorageAdapter = <State>(
       key: string,
-      update: (raw?: any) => any
+      update: (raw?: any) => void
     ) => {
       const { get, set } = adapter<State>(key, update)
       return {

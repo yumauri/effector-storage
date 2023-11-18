@@ -136,7 +136,9 @@ export function persist<State, Err = Error>(
   withRegion(region, () => {
     const ctx = createStore<[any?]>([], { serialize: 'ignore' })
 
-    const value = adapter<State>(keyPrefix + key, (x) => bindedGet(x))
+    const value = adapter<State>(keyPrefix + key, (x) => {
+      update(x)
+    })
 
     const getFx = attach({
       source: ctx,
@@ -154,9 +156,9 @@ export function persist<State, Err = Error>(
 
     const trigger = createEvent<State>()
 
-    let bindedGet: (raw?: any) => any = getFx
+    let update: (raw?: any) => any = getFx
     ctx.updates.watch(() => {
-      bindedGet = scopeBind(getFx as any, { safe: true })
+      update = scopeBind(getFx as any, { safe: true })
     })
 
     sample({

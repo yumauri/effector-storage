@@ -21,7 +21,7 @@ export function adapter({
 
   const adapter: StorageAdapter = <State>(
     key: string,
-    update: (raw?: any) => any
+    update: (raw?: any) => void
   ) => {
     bus.addEventListener('message', ({ data }) => {
       // according to e2e tests, chromium can call `message`
