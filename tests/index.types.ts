@@ -1,5 +1,6 @@
 import type { StorageAdapter } from '../src/types'
 import type { Event, Store, Subscription } from 'effector'
+import { createStore, createEvent } from 'effector'
 import { test } from 'uvu'
 import { expectType } from 'tsd'
 
@@ -176,6 +177,29 @@ test('Should not accept any arbitrary argument in core persist with adapter fact
 
   // @ts-expect-error should fail on wrong arguments
   persist({ store, adapter: local, blablabla: 0 })
+})
+
+test('Should accept targetables', async () => {
+  const { persist } = await import('../src/local')
+  const store = createStore(0)
+  const source1 = createEvent()
+  const source2 = source1.map((_) => _)
+  const target = createEvent()
+  persist({ store })
+  persist({ source: source1, target })
+  persist({ source: source2, target })
+})
+
+test('Should accept non targetables (should be fixed after drop version 22)', async () => {
+  const { persist } = await import('../src/local')
+  const store = createStore(0).map((_) => _)
+  const source = createEvent()
+  const target = createEvent().map((_) => _)
+
+  // both following persist will fail in runtime,
+  // and should be failing by types also
+  persist({ store })
+  persist({ source, target })
 })
 
 //
