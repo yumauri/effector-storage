@@ -18,14 +18,14 @@ devDependencies:
     specifier: ^2.6.5
     version: 2.6.5
   '@farfetched/core':
-    specifier: ^0.10.6
-    version: 0.10.6(effector@23.0.0)
+    specifier: ^0.11.0
+    version: 0.11.0(effector@23.0.0)
   '@farfetched/runtypes':
-    specifier: ^0.10.6
-    version: 0.10.6(@farfetched/core@0.10.6)(runtypes@6.7.0)
+    specifier: ^0.11.0
+    version: 0.11.0(@farfetched/core@0.11.0)(runtypes@6.7.0)
   '@playwright/test':
-    specifier: ^1.40.0
-    version: 1.40.0
+    specifier: ^1.40.1
+    version: 1.40.1
   '@rollup/plugin-babel':
     specifier: ^6.0.4
     version: 6.0.4(@babel/core@7.23.3)(rollup@4.6.0)
@@ -934,21 +934,21 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
 
-  /@farfetched/core@0.10.6(effector@23.0.0):
-    resolution: {integrity: sha512-WSnQjftZ6ZfCFq+SOLvJpc52+xN4ND5azPPcuwOcygSZhKWs+P5wNH9WNpJ0KdP9ExOuol3JITze5LK2hLh+3g==}
+  /@farfetched/core@0.11.0(effector@23.0.0):
+    resolution: {integrity: sha512-/Keno/WOZWkUocGYaxI5Wwx65zlEP+sKMqwLPSCneFc4Y2/Mf/jET41iFJtILnIf7zh6R4CF/dI605BtV3Lqtw==}
     peerDependencies:
-      effector: ^22.5.0
+      effector: ^23.0.0
     dependencies:
       effector: 23.0.0
     dev: true
 
-  /@farfetched/runtypes@0.10.6(@farfetched/core@0.10.6)(runtypes@6.7.0):
-    resolution: {integrity: sha512-c7+WfJXi1eKy98B2ysaEgaDQMKIQB7dPoU21vB6fwDWD8hxU45z8/eUpRMA7DzRXZZWIytF8Rt0tMvMshL476g==}
+  /@farfetched/runtypes@0.11.0(@farfetched/core@0.11.0)(runtypes@6.7.0):
+    resolution: {integrity: sha512-dCf0KezvH5iyKrTxDrYtIeWV1fxem24UeIzqCyJalOU6Y4SYoVyh9mO21oI8ZMTtKo4wB0Wal0IMKvMhukX0MA==}
     peerDependencies:
-      '@farfetched/core': 0.10.6
+      '@farfetched/core': 0.11.0
       runtypes: ^6.6.0
     dependencies:
-      '@farfetched/core': 0.10.6(effector@23.0.0)
+      '@farfetched/core': 0.11.0(effector@23.0.0)
       runtypes: 6.7.0
     dev: true
 
@@ -1068,12 +1068,12 @@ packages:
     dev: true
     optional: true
 
-  /@playwright/test@1.40.0:
-    resolution: {integrity: sha512-PdW+kn4eV99iP5gxWNSDQCbhMaDVej+RXL5xr6t04nbKLCBwYtA046t7ofoczHOm8u6c+45hpDKQVZqtqwkeQg==}
+  /@playwright/test@1.40.1:
+    resolution: {integrity: sha512-EaaawMTOeEItCRvfmkI9v6rBkF1svM8wjl/YPRrg2N2Wmp+4qJYkWtJsbew1szfKKDm6fPLy4YAanBhIlf9dWw==}
     engines: {node: '>=16'}
     hasBin: true
     dependencies:
-      playwright: 1.40.0
+      playwright: 1.40.1
     dev: true
 
   /@rollup/plugin-babel@6.0.4(@babel/core@7.23.3)(rollup@4.6.0):
@@ -3647,18 +3647,18 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /playwright-core@1.40.0:
-    resolution: {integrity: sha512-fvKewVJpGeca8t0ipM56jkVSU6Eo0RmFvQ/MaCQNDYm+sdvKkMBBWTE1FdeMqIdumRaXXjZChWHvIzCGM/tA/Q==}
+  /playwright-core@1.40.1:
+    resolution: {integrity: sha512-+hkOycxPiV534c4HhpfX6yrlawqVUzITRKwHAmYfmsVreltEl6fAZJ3DPfLMOODw0H3s1Itd6MDCWmP1fl/QvQ==}
     engines: {node: '>=16'}
     hasBin: true
     dev: true
 
-  /playwright@1.40.0:
-    resolution: {integrity: sha512-gyHAgQjiDf1m34Xpwzaqb76KgfzYrhK7iih+2IzcOCoZWr/8ZqmdBw+t0RU85ZmfJMgtgAiNtBQ/KS2325INXw==}
+  /playwright@1.40.1:
+    resolution: {integrity: sha512-2eHI7IioIpQ0bS1Ovg/HszsN/XKNwEG1kbzSDDmADpclKc7CyqkHw7Mg2JCz/bbCxg25QUPcjksoMW7JcIFQmw==}
     engines: {node: '>=16'}
     hasBin: true
     dependencies:
-      playwright-core: 1.40.0
+      playwright-core: 1.40.1
     optionalDependencies:
       fsevents: 2.3.2
     dev: true
