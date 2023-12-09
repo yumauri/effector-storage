@@ -39,8 +39,8 @@ devDependencies:
     specifier: ^11.2.2
     version: 11.2.2
   '@size-limit/preset-small-lib':
-    specifier: ^11.0.0
-    version: 11.0.0(size-limit@11.0.0)
+    specifier: ^11.0.1
+    version: 11.0.1(size-limit@11.0.0)
   '@types/node':
     specifier: ^20.10.0
     version: 20.10.0
@@ -1260,33 +1260,33 @@ packages:
       '@sinonjs/commons': 3.0.0
     dev: true
 
-  /@size-limit/esbuild@11.0.0(size-limit@11.0.0):
-    resolution: {integrity: sha512-OOmba2ZuMpaUhmBXgCfgrO7L6zkUDwvFFfW8T+dK08968LQ79Q+kNgEXQAd+dhj9TlTkHyyEDczWmx16e9cXoQ==}
+  /@size-limit/esbuild@11.0.1(size-limit@11.0.0):
+    resolution: {integrity: sha512-JXxzmDW7Rch6yxd4u8g6uE21g34oT7fk7Ex2gfDwN4TtciOghI3By4fqxXOwGYkDueEcIw3LXNGjHnTS8Dz5nA==}
     engines: {node: ^18.0.0 || >=20.0.0}
     peerDependencies:
-      size-limit: 11.0.0
+      size-limit: 11.0.1
     dependencies:
       esbuild: 0.19.8
-      nanoid: 5.0.3
+      nanoid: 5.0.4
       size-limit: 11.0.0
     dev: true
 
-  /@size-limit/file@11.0.0(size-limit@11.0.0):
-    resolution: {integrity: sha512-tTg6sSiFbiogiof3GV4iIRCPS4+46Hvq4QWXGXp00Be/tOnpglXF62xNpCfFwefx9YCXxCyeYSqqaRBjpRCsmQ==}
+  /@size-limit/file@11.0.1(size-limit@11.0.0):
+    resolution: {integrity: sha512-ioSYJ1WY66kc9+3dgTHi5mT/gcaNNCJ22xU87cjzfKiNxmol+lGsNKbplmrJf+QezvPH9kRIFOWxBjGY+DOt3g==}
     engines: {node: ^18.0.0 || >=20.0.0}
     peerDependencies:
-      size-limit: 11.0.0
+      size-limit: 11.0.1
     dependencies:
       size-limit: 11.0.0
     dev: true
 
-  /@size-limit/preset-small-lib@11.0.0(size-limit@11.0.0):
-    resolution: {integrity: sha512-B4KDPbx5E8Vsn/aXilt2iAeofRBJdT8svQRSylTQPw5RkrumXUBKioM1dmWUXcnuHR2zUveJXlMxGmbdmxbJpQ==}
+  /@size-limit/preset-small-lib@11.0.1(size-limit@11.0.0):
+    resolution: {integrity: sha512-c1N5/wN5FRQ03aOpoCw9ed2TP/1cmjt8vKAeTxO40OSfj6ImkpkMarl7e7pCnBElMULc993aUP5UjFhDN6bU4w==}
     peerDependencies:
-      size-limit: 11.0.0
+      size-limit: 11.0.1
     dependencies:
-      '@size-limit/esbuild': 11.0.0(size-limit@11.0.0)
-      '@size-limit/file': 11.0.0(size-limit@11.0.0)
+      '@size-limit/esbuild': 11.0.1(size-limit@11.0.0)
+      '@size-limit/file': 11.0.1(size-limit@11.0.0)
       size-limit: 11.0.0
     dev: true
 
@@ -3344,8 +3344,8 @@ packages:
     hasBin: true
     dev: true
 
-  /nanoid@5.0.3:
-    resolution: {integrity: sha512-I7X2b22cxA4LIHXPSqbBCEQSL+1wv8TuoefejsX4HFWyC6jc5JG7CEaxOltiKjc1M+YCS2YkrZZcj4+dytw9GA==}
+  /nanoid@5.0.4:
+    resolution: {integrity: sha512-vAjmBf13gsmhXSgBrtIclinISzFFy22WwCYoyilZlsrRXNIHSwgFQ1bEdjRwMT3aoadeIF6HMuDRlOxzfXV8ig==}
     engines: {node: ^18 || >=20}
     hasBin: true
     dev: true
