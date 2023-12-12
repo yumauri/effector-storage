@@ -18,11 +18,11 @@ devDependencies:
     specifier: ^2.6.5
     version: 2.6.5
   '@farfetched/core':
-    specifier: ^0.11.0
-    version: 0.11.0(effector@23.0.0)
+    specifier: ^0.11.2
+    version: 0.11.2(effector@23.0.0)
   '@farfetched/runtypes':
     specifier: ^0.11.0
-    version: 0.11.0(@farfetched/core@0.11.0)(runtypes@6.7.0)
+    version: 0.11.0(@farfetched/core@0.11.2)(runtypes@6.7.0)
   '@playwright/test':
     specifier: ^1.40.1
     version: 1.40.1
@@ -934,21 +934,21 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
 
-  /@farfetched/core@0.11.0(effector@23.0.0):
-    resolution: {integrity: sha512-/Keno/WOZWkUocGYaxI5Wwx65zlEP+sKMqwLPSCneFc4Y2/Mf/jET41iFJtILnIf7zh6R4CF/dI605BtV3Lqtw==}
+  /@farfetched/core@0.11.2(effector@23.0.0):
+    resolution: {integrity: sha512-pvdWjEzZwbtGPD+FDap9a+P1wlBZ9ZHnYlvIrVhJer0G8GXJlGDtUHIm519bELV6iMFYRFidC8RBFWWgcnwCWw==}
     peerDependencies:
       effector: ^23.0.0
     dependencies:
       effector: 23.0.0
     dev: true
 
-  /@farfetched/runtypes@0.11.0(@farfetched/core@0.11.0)(runtypes@6.7.0):
+  /@farfetched/runtypes@0.11.0(@farfetched/core@0.11.2)(runtypes@6.7.0):
     resolution: {integrity: sha512-dCf0KezvH5iyKrTxDrYtIeWV1fxem24UeIzqCyJalOU6Y4SYoVyh9mO21oI8ZMTtKo4wB0Wal0IMKvMhukX0MA==}
     peerDependencies:
       '@farfetched/core': 0.11.0
       runtypes: ^6.6.0
     dependencies:
-      '@farfetched/core': 0.11.0(effector@23.0.0)
+      '@farfetched/core': 0.11.2(effector@23.0.0)
       runtypes: 6.7.0
     dev: true
 
