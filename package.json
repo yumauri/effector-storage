@@ -50,7 +50,7 @@
     "@babel/preset-typescript": "^7.23.3",
     "@esbuild-kit/esm-loader": "^2.6.5",
     "@farfetched/core": "^0.11.0",
-    "@farfetched/runtypes": "^0.11.0",
+    "@farfetched/runtypes": "^0.11.2",
     "@playwright/test": "^1.40.1",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-node-resolve": "^15.2.3",
