@@ -93,8 +93,8 @@ devDependencies:
     specifier: ^3.1.0
     version: 3.1.0
   publint:
-    specifier: ^0.2.5
-    version: 0.2.5
+    specifier: ^0.2.7
+    version: 0.2.7
   rollup:
     specifier: ^4.6.0
     version: 4.6.0
@@ -3705,8 +3705,8 @@ packages:
       react-is: 18.2.0
     dev: true
 
-  /publint@0.2.5:
-    resolution: {integrity: sha512-eoQiP0WXkxkpth1fMLoS1I/6BQoxKNZxTAAnFjPgURFrJulC5D5Uifk49a9kfNCYmcza9E/ZkbFhQQdjkmKAbg==}
+  /publint@0.2.7:
+    resolution: {integrity: sha512-tLU4ee3110BxWfAmCZggJmCUnYWgPTr0QLnx08sqpLYa8JHRiOudd+CgzdpfU5x5eOaW2WMkpmOrFshRFYK7Mw==}
     engines: {node: '>=16'}
     hasBin: true
     dependencies:
