@@ -132,8 +132,8 @@ devDependencies:
     specifier: 0.5.6
     version: 0.5.6
   vite:
-    specifier: ^5.0.10
-    version: 5.0.10(@types/node@20.10.5)
+    specifier: ^5.0.11
+    version: 5.0.11(@types/node@20.10.5)
   yaspeller:
     specifier: ^10.0.1
     version: 10.0.1
@@ -4513,8 +4513,8 @@ packages:
       spdx-expression-parse: 3.0.1
     dev: true
 
-  /vite@5.0.10(@types/node@20.10.5):
-    resolution: {integrity: sha512-2P8J7WWgmc355HUMlFrwofacvr98DAjoE52BfdbwQtyLH06XKwaL/FMnmKM2crF0iX4MpmMKoDlNCB1ok7zHCw==}
+  /vite@5.0.11(@types/node@20.10.5):
+    resolution: {integrity: sha512-XBMnDjZcNAw/G1gEiskiM1v6yzM4GE5aMGvhWTlHAYYhxb7S3/V1s3m2LDHa8Vh6yIWYYB0iJwsEaS523c4oYA==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
     peerDependencies:
