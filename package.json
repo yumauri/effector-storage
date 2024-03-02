@@ -51,7 +51,7 @@
     "@esbuild-kit/esm-loader": "^2.6.5",
     "@farfetched/core": "^0.11.4",
     "@farfetched/runtypes": "^0.11.4",
-    "@playwright/test": "^1.41.2",
+    "@playwright/test": "^1.42.0",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.4",
