@@ -176,7 +176,7 @@ export function persist<State, Err = Error>(
     })
 
     sample({
-      clock: [getFx.doneData, setFx],
+      clock: [getFx.doneData, sample(setFx, setFx.done)],
       filter: <T>(x?: T | undefined): x is T => x !== undefined,
       target: storage as any,
     })
