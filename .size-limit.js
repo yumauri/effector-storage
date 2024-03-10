@@ -3,7 +3,7 @@ module.exports = [
   {
     name: 'root persist, es module',
     path: 'build/index.js',
-    limit: '959 B',
+    limit: '963 B',
     import: '{ persist }',
     ignore: ['effector'],
     gzip: true,
@@ -11,7 +11,7 @@ module.exports = [
   {
     name: 'root persist, cjs module',
     path: 'build/index.cjs',
-    limit: '3145 B',
+    limit: '3151 B',
     // import: '{ persist }', // tree-shaking is not working with cjs
     ignore: ['effector'],
     gzip: true,
@@ -21,7 +21,7 @@ module.exports = [
   {
     name: 'core persist, es module',
     path: 'build/core/index.js',
-    limit: '953 B',
+    limit: '958 B',
     import: '{ persist }',
     ignore: ['effector'],
     gzip: true,
@@ -29,7 +29,7 @@ module.exports = [
   {
     name: 'core persist, cjs module',
     path: 'build/core/index.cjs',
-    limit: '1141 B',
+    limit: '1145 B',
     // import: '{ persist }', // tree-shaking is not working with cjs
     ignore: ['effector'],
     gzip: true,
@@ -111,7 +111,7 @@ module.exports = [
   {
     name: '`localStorage` persist, es module',
     path: 'build/local/index.js',
-    limit: '1389 B',
+    limit: '1393 B',
     import: '{ persist }',
     ignore: ['effector'],
     gzip: true,
@@ -119,7 +119,7 @@ module.exports = [
   {
     name: '`localStorage` persist, cjs module',
     path: 'build/local/index.cjs',
-    limit: '1666 B',
+    limit: '1670 B',
     // import: '{ persist }', // tree-shaking is not working with cjs
     ignore: ['effector'],
     gzip: true,
@@ -130,7 +130,7 @@ module.exports = [
   {
     name: 'core adapter, es module',
     path: 'build/index.js',
-    limit: '1395 B',
+    limit: '1399 B',
     import: '{ persist, local }',
     ignore: ['effector'],
     gzip: true,
@@ -138,7 +138,7 @@ module.exports = [
   {
     name: 'core adapter factory, es module',
     path: ['build/index.js', 'build/local/index.js'],
-    limit: '1397 B',
+    limit: '1402 B',
     import: {
       'build/index.js': '{ persist }',
       'build/local/index.js': '{ local }',
@@ -151,7 +151,7 @@ module.exports = [
   {
     name: '`sessionStorage` persist, es module',
     path: 'build/session/index.js',
-    limit: '1383 B',
+    limit: '1387 B',
     import: '{ persist }',
     ignore: ['effector'],
     gzip: true,
@@ -159,7 +159,7 @@ module.exports = [
   {
     name: '`sessionStorage` persist, cjs module',
     path: 'build/session/index.cjs',
-    limit: '1663 B',
+    limit: '1668 B',
     // import: '{ persist }', // tree-shaking is not working with cjs
     ignore: ['effector'],
     gzip: true,
@@ -169,7 +169,7 @@ module.exports = [
   {
     name: 'query string persist, es module',
     path: 'build/query/index.js',
-    limit: '1449 B',
+    limit: '1452 B',
     import: '{ persist }',
     ignore: ['effector'],
     gzip: true,
@@ -177,7 +177,7 @@ module.exports = [
   {
     name: 'query string persist, cjs module',
     path: 'build/query/index.cjs',
-    limit: '1745 B',
+    limit: '1749 B',
     // import: '{ persist }', // tree-shaking is not working with cjs
     ignore: ['effector'],
     gzip: true,
@@ -187,7 +187,7 @@ module.exports = [
   {
     name: 'memory adapter, es module',
     path: 'build/memory/index.js',
-    limit: '1046 B',
+    limit: '1051 B',
     import: '{ persist }',
     ignore: ['effector'],
     gzip: true,
@@ -195,7 +195,7 @@ module.exports = [
   {
     name: 'memory adapter, cjs module',
     path: 'build/memory/index.cjs',
-    limit: '1279 B',
+    limit: '1284 B',
     // import: '{ persist }', // tree-shaking is not working with cjs
     ignore: ['effector'],
     gzip: true,
@@ -223,7 +223,7 @@ module.exports = [
   {
     name: 'broadcast channel adapter, es module',
     path: 'build/broadcast/index.js',
-    limit: '1255 B',
+    limit: '1260 B',
     import: '{ broadcast }',
     ignore: ['effector'],
     gzip: true,
@@ -231,7 +231,7 @@ module.exports = [
   {
     name: 'broadcast channel adapter, cjs module',
     path: 'build/broadcast/index.cjs',
-    limit: '1510 B',
+    limit: '1514 B',
     // import: '{ broadcast }', // tree-shaking is not working with cjs
     ignore: ['effector'],
     gzip: true,
