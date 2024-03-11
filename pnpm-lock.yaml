@@ -21,8 +21,8 @@ devDependencies:
     specifier: ^0.12.0
     version: 0.12.0(effector@23.2.0)
   '@farfetched/runtypes':
-    specifier: ^0.12.0
-    version: 0.12.0(@farfetched/core@0.12.0)(runtypes@6.7.0)
+    specifier: ^0.12.2
+    version: 0.12.2(@farfetched/core@0.12.0)(runtypes@6.7.0)
   '@playwright/test':
     specifier: ^1.42.1
     version: 1.42.1
@@ -951,10 +951,10 @@ packages:
       effector: 23.2.0
     dev: true
 
-  /@farfetched/runtypes@0.12.0(@farfetched/core@0.12.0)(runtypes@6.7.0):
-    resolution: {integrity: sha512-/L7xp4wy8KdKgU9vb1olaSGEpl/N46K5MY7sQXCLRgG49q/R0Hk0adPUSCn35DFj4LHC1V3dfHcvv6l1lgVQGQ==}
+  /@farfetched/runtypes@0.12.2(@farfetched/core@0.12.0)(runtypes@6.7.0):
+    resolution: {integrity: sha512-LBmCYDKkXh2qMBXt8W78G+sLsJ2nfabxpT70uIE6mmo/ET2QcOLLylcF/fNZdA3S4F/Npe2kgs4OL9RA/GlkEw==}
     peerDependencies:
-      '@farfetched/core': 0.12.0
+      '@farfetched/core': 0.12.2
       runtypes: ^6.6.0
     dependencies:
       '@farfetched/core': 0.12.0(effector@23.2.0)
