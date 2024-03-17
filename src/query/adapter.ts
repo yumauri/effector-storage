@@ -77,11 +77,19 @@ export function adapter({
     key: string,
     update: (raw?: any) => void
   ) => {
+    const updated = () => setTimeout(update, 0)
+
     if (typeof addEventListener !== 'undefined') {
-      addEventListener('popstate', () => setTimeout(update, 0))
+      addEventListener('popstate', updated)
     }
 
-    return {
+    const dispose = () => {
+      if (typeof removeEventListener !== 'undefined') {
+        removeEventListener('popstate', updated)
+      }
+    }
+
+    return Object.assign(dispose, {
       get() {
         const params = new URLSearchParams(location.search)
         const value = params.get(key)
@@ -103,7 +111,7 @@ export function adapter({
           timeoutId = setTimeout(flush, timeout, method, state)
         }
       },
-    }
+    })
   }
 
   adapter.keyArea = keyArea

@@ -10,6 +10,8 @@ export type {
   Fail,
   Finally,
   Persist,
+  Adapter,
+  DisposableAdapter,
   StorageAdapter,
   StorageAdapterFactory,
 } from './types'

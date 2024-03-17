@@ -15,7 +15,7 @@ import {
   inMemoryCache,
 } from '@farfetched/core'
 import { createStorageMock } from './mocks/storage.mock'
-import { createEventsMock } from './mocks/events.mock'
+import { type Events, createEventsMock } from './mocks/events.mock'
 import { persist, farcached } from '../src'
 
 //
@@ -25,7 +25,7 @@ import { persist, farcached } from '../src'
 const NOW = 1_000_000_000_000 // 2001-09-09T01:46:40.000Z
 
 declare let global: any
-let events: ReturnType<typeof createEventsMock>
+let events: Events
 
 test.before(() => {
   global.clock = installFakeTimers({ now: NOW })

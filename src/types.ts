@@ -1,13 +1,19 @@
 import type { Event, Effect, Store, Unit, Subscription } from 'effector'
 
+export interface Adapter<State> {
+  get(raw?: any, ctx?: any): State | Promise<State | undefined> | undefined
+  set(value: State, ctx?: any): void
+}
+
+export interface DisposableAdapter<State> extends Adapter<State> {
+  (): void
+}
+
 export interface StorageAdapter {
   <State>(
     key: string,
     update: (raw?: any) => void
-  ): {
-    get(raw?: any, ctx?: any): State | Promise<State | undefined> | undefined
-    set(value: State, ctx?: any): void
-  }
+  ): Adapter<State> | DisposableAdapter<State>
   keyArea?: any
   noop?: boolean
 }

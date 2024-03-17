@@ -12,6 +12,8 @@ export type {
   Done,
   Fail,
   Finally,
+  Adapter,
+  DisposableAdapter,
   StorageAdapter,
   StorageAdapterFactory,
 } from '../types'

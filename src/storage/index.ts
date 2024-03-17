@@ -28,6 +28,7 @@ export function storage({
     let scheduled: ReturnType<typeof setTimeout> | undefined
     let unsaved: State
     let to: Storage
+    let beforeunload: 0 | 1
 
     // flush unsaved changes to Storage
     const flush = () => to.setItem(key, serialize(unsaved))
@@ -40,8 +41,8 @@ export function storage({
       // according to documentation, it is recommended to remove 'beforeunload' listener
       // as soon as possible to minimize the effect on performance
       // https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event
-      if (typeof removeEventListener !== 'undefined') {
-        removeEventListener('beforeunload', postponed)
+      if (beforeunload && typeof removeEventListener !== 'undefined') {
+        beforeunload = (removeEventListener('beforeunload', postponed), 0)
       }
     }
 
@@ -53,12 +54,13 @@ export function storage({
       // ONLY when it is necessary, when there are actually unsaved changes
       // https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event
       if (typeof addEventListener !== 'undefined') {
-        addEventListener('beforeunload', postponed)
+        beforeunload = (addEventListener('beforeunload', postponed), 1)
       }
     }
 
+    let updated: ((e: StorageEvent) => void) | undefined
     if (sync && typeof addEventListener !== 'undefined') {
-      addEventListener('storage', (e) => {
+      updated = (e) => {
         // I hope storage is accessible in case 'storage' event is happening
         // so calling `storage()` should not throw security exception here
         if (e.storageArea === storage()) {
@@ -68,10 +70,18 @@ export function storage({
           // `key` attribute is `null` when the change is caused by the storage `clear()` method
           if (e.key === null) update(null)
         }
-      })
+      }
+      addEventListener('storage', updated)
     }
 
-    return {
+    const dispose = () => {
+      if (beforeunload) postponed(1) // flush unsaved changes
+      if (updated && typeof removeEventListener !== 'undefined') {
+        removeEventListener('storage', updated)
+      }
+    }
+
+    return Object.assign(dispose, {
       get(raw?: string | null) {
         postponed() // cancel postponed flush
         const item = raw !== undefined ? raw : storage().getItem(key)
@@ -91,7 +101,7 @@ export function storage({
           schedule()
         }
       },
-    }
+    })
   }
 
   try {

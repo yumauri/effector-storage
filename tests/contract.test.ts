@@ -8,7 +8,7 @@ import { runtypeContract } from '@farfetched/runtypes'
 import { persist } from '../src/core'
 import { storage } from '../src/storage'
 import { createStorageMock } from './mocks/storage.mock'
-import { createEventsMock } from './mocks/events.mock'
+import { type Events, createEventsMock } from './mocks/events.mock'
 
 //
 // Mock abstract Storage adapter
@@ -18,7 +18,7 @@ declare let global: any
 
 const mockStorage = createStorageMock()
 let storageAdapter: StorageAdapter
-let events: ReturnType<typeof createEventsMock>
+let events: Events
 
 test.before(() => {
   events = createEventsMock()

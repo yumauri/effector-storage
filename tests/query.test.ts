@@ -5,7 +5,7 @@ import { snoop } from 'snoop'
 import { createStore, createEvent } from 'effector'
 import { createHistoryMock } from './mocks/history.mock'
 import { createLocationMock } from './mocks/location.mock'
-import { createEventsMock } from './mocks/events.mock'
+import { type Events, createEventsMock } from './mocks/events.mock'
 import {
   persist,
   query,
@@ -20,7 +20,7 @@ import {
 //
 
 declare let global: any
-let events: ReturnType<typeof createEventsMock>
+let events: Events
 
 test.before(() => {
   global.clock = installFakeTimers()
@@ -33,12 +33,14 @@ test.before.each(() => {
   global.location._history(global.history)
   events = createEventsMock()
   global.addEventListener = events.addEventListener
+  global.removeEventListener = events.removeEventListener
 })
 
 test.after.each(() => {
   delete global.history
   delete global.location
   delete global.addEventListener
+  delete global.removeEventListener
 })
 
 test.after(() => {
@@ -543,6 +545,25 @@ test('store value should be serialized and deserialized', () => {
   //
   ;($id as any).setState(12)
   assert.is(global.location.search, '?id=12')
+})
+
+test('should stop react on history back after desist', async () => {
+  const $id = createStore('12345', { name: 'id' })
+  const desist = persist({ store: $id })
+  assert.is(global.location.search, '')
+  ;($id as any).setState('54321')
+  assert.is(global.location.search, '?id=54321')
+
+  // stop persisting
+  desist()
+
+  global.history.back()
+
+  events.dispatchEvent('popstate', null)
+  await global.clock.runAllAsync()
+
+  assert.is(global.location.search, '')
+  assert.is($id.getState(), '54321') // <- not changed
 })
 
 //
