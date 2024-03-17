@@ -23,7 +23,7 @@ export function adapter({
     key: string,
     update: (raw?: any) => void
   ) => {
-    bus.addEventListener('message', ({ data }) => {
+    const onmessage = ({ data }: MessageEvent) => {
       // according to e2e tests, chromium can call `message`
       // instead of `messageerror`, with `null` as message's data
       if (data == null) {
@@ -35,18 +35,26 @@ export function adapter({
           return data.value
         })
       }
-    })
+    }
 
     // I know only one case when this event can be fired:
     // if message was sent from page to shared worker, and it contains `SharedArrayBuffer`
     // https://bugs.webkit.org/show_bug.cgi?id=171216
-    bus.addEventListener('messageerror', () => {
+    const onmessageerror = () => {
       update(() => {
         throw new Error('Unable to deserialize message')
       })
-    })
+    }
 
-    return {
+    bus.addEventListener('message', onmessage)
+    bus.addEventListener('messageerror', onmessageerror)
+
+    const dispose = () => {
+      bus.removeEventListener('message', onmessage)
+      bus.removeEventListener('messageerror', onmessageerror)
+    }
+
+    return Object.assign(dispose, {
       get(box?: () => State | undefined) {
         if (box) return box()
       },
@@ -54,7 +62,7 @@ export function adapter({
       set(value: State) {
         bus.postMessage({ key, value })
       },
-    }
+    })
   }
 
   adapter.keyArea = bus

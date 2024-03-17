@@ -4,7 +4,7 @@ import * as assert from 'uvu/assert'
 import { snoop } from 'snoop'
 import { createEvent, createStore } from 'effector'
 import { createStorageMock } from './mocks/storage.mock'
-import { createEventsMock } from './mocks/events.mock'
+import { type Events, createEventsMock } from './mocks/events.mock'
 import { persist, local, async } from '../src'
 
 //
@@ -12,7 +12,7 @@ import { persist, local, async } from '../src'
 //
 
 declare let global: any
-let events: ReturnType<typeof createEventsMock>
+let events: Events
 
 test.before(() => {
   global.localStorage = createStorageMock()

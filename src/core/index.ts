@@ -109,7 +109,8 @@ export function persist<State, Err = Error>(
     keyPrefix + key
   )
   const region = createNode()
-  const desist = () => clearNode(region)
+  let disposable: (_: any) => void = () => {}
+  const desist = () => disposable(clearNode(region))
 
   const op =
     (operation: 'get' | 'set' | 'validate') =>
@@ -139,6 +140,10 @@ export function persist<State, Err = Error>(
     const value = adapter<State>(keyPrefix + key, (x) => {
       update(x)
     })
+
+    if (typeof value === 'function') {
+      disposable = value
+    }
 
     const getFx = attach({
       source: ctx,

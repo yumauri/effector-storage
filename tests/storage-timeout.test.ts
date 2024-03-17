@@ -6,7 +6,7 @@ import { snoop } from 'snoop'
 // import { createStore, createEvent } from 'effector'
 import { createStore } from 'effector'
 import { createStorageMock } from './mocks/storage.mock'
-import { createEventsMock } from './mocks/events.mock'
+import { type Events, createEventsMock } from './mocks/events.mock'
 import { persist } from '../src/core'
 import { storage } from '../src/storage'
 
@@ -17,7 +17,7 @@ import { storage } from '../src/storage'
 declare let global: any
 
 const mockStorage = createStorageMock()
-let events: ReturnType<typeof createEventsMock>
+let events: Events
 
 test.before(() => {
   global.clock = installFakeTimers()

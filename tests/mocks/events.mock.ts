@@ -1,15 +1,15 @@
-interface EventListener {
+export interface EventListener {
   (event: any): void
 }
 
-interface Events {
+export interface Events {
   dispatchEvent(name: string, event: any): Promise<any>
   addEventListener(name: string, listener: EventListener): void
   removeEventListener(name: string, listener: EventListener): void
 }
 
 export class EventsMock implements Events {
-  private listeners = new Map<string, EventListener[]>()
+  public listeners = new Map<string, EventListener[]>()
 
   public async dispatchEvent(
     name: string,
