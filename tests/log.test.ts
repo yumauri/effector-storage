@@ -3,10 +3,15 @@ import * as assert from 'uvu/assert'
 import { snoop } from 'snoop'
 import { createStore } from 'effector'
 import { persist, log } from '../src'
+import { log as logNested } from '../src/log'
 
 //
 // Tests
 //
+
+test('should be exported from package root', () => {
+  assert.is(log, logNested)
+})
 
 test('store should ignore initial `undefined` from storage value', () => {
   const logger = snoop(() => undefined)

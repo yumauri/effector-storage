@@ -8,6 +8,7 @@ import { BroadcastChannel, Worker } from 'node:worker_threads'
 import { createEffect, createStore, sample } from 'effector'
 import { createEventsMock } from './mocks/events.mock'
 import { broadcast, persist } from '../src/broadcast'
+import { broadcast as broadcastIndex } from '../src'
 import { either } from '../src/tools'
 import { log } from '../src/log'
 
@@ -79,6 +80,10 @@ test.after(() => {
 test('should export adapter and `persist` function', () => {
   assert.type(broadcast, 'function')
   assert.type(persist, 'function')
+})
+
+test('should be exported from package root', () => {
+  assert.is(broadcast, broadcastIndex)
 })
 
 test('should be ok on good parameters', () => {

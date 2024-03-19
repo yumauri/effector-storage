@@ -3,6 +3,7 @@ import * as assert from 'uvu/assert'
 import { snoop } from 'snoop'
 import { createStore } from 'effector'
 import { memory, persist } from '../src/memory'
+import { memory as memoryIndex } from '../src'
 
 //
 // Tests
@@ -11,6 +12,10 @@ import { memory, persist } from '../src/memory'
 test('should export adapter and `persist` function', () => {
   assert.type(memory, 'function')
   assert.type(persist, 'function')
+})
+
+test('should be exported from package root', () => {
+  assert.is(memory, memoryIndex)
 })
 
 test('should be ok on good parameters', () => {

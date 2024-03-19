@@ -4,6 +4,7 @@ import { createStore } from 'effector'
 import { createStorageMock } from './mocks/storage.mock'
 import { persist } from '../src/core'
 import { nil } from '../src/nil'
+import { nil as nilIndex } from '../src'
 import { persist as local } from '../src/local'
 import { persist as session } from '../src/session'
 
@@ -12,6 +13,10 @@ declare let global: any
 //
 // Tests
 //
+
+test('should be exported from package root', () => {
+  assert.is(nil, nilIndex)
+})
 
 test('store should ignore initial `undefined` from storage value', () => {
   const $counter0 = createStore(42, { name: 'nil::counter0' })

@@ -14,6 +14,7 @@ import {
   locationAssign,
   locationReplace,
 } from '../src/query'
+import { query as queryIndex } from '../src'
 
 //
 // Mock history, location and events
@@ -59,6 +60,10 @@ test('should export adapter and `persist` function', () => {
   assert.type(replaceState, 'function')
   assert.type(locationAssign, 'function')
   assert.type(locationReplace, 'function')
+})
+
+test('should be exported from package root', () => {
+  assert.is(query, queryIndex)
 })
 
 test('should be ok on good parameters', () => {

@@ -4,6 +4,7 @@ import { snoop } from 'snoop'
 import { createStore, createEvent } from 'effector'
 import { persist } from '../src/core'
 import { asyncStorage } from '../src/async-storage'
+import { asyncStorage as asyncStorageIndex } from '../src'
 import { createAsyncStorageMock } from './mocks/async-storage.mock'
 
 //
@@ -18,6 +19,10 @@ const timeout = (t: number) => new Promise((resolve) => setTimeout(resolve, t))
 //
 // Tests
 //
+
+test('should be exported from package root', () => {
+  assert.is(asyncStorage, asyncStorageIndex)
+})
 
 test('store initial value should NOT be saved to storage', async () => {
   const $counter1 = createStore(0, { name: 'counter1' })

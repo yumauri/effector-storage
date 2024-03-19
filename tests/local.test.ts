@@ -5,6 +5,7 @@ import { createEvent, createStore } from 'effector'
 import { createStorageMock } from './mocks/storage.mock'
 import { type Events, createEventsMock } from './mocks/events.mock'
 import { local, persist } from '../src/local'
+import { local as localIndex } from '../src'
 
 //
 // Mock `localStorage` and events
@@ -31,6 +32,10 @@ test.after(() => {
 test('should export adapter and `persist` function', () => {
   assert.type(local, 'function')
   assert.type(persist, 'function')
+})
+
+test('should be exported from package root', () => {
+  assert.is(local, localIndex)
 })
 
 test('should be ok on good parameters', () => {

@@ -5,6 +5,7 @@ import { createEvent, createStore } from 'effector'
 import { createStorageMock } from './mocks/storage.mock'
 import { type Events, createEventsMock } from './mocks/events.mock'
 import { session, persist } from '../src/session'
+import { session as sessionIndex } from '../src'
 
 //
 // Mock `sessionStorage`
@@ -31,6 +32,10 @@ test.after(() => {
 test('should export adapter and `persist` function', () => {
   assert.type(session, 'function')
   assert.type(persist, 'function')
+})
+
+test('should be exported from package root', () => {
+  assert.is(session, sessionIndex)
 })
 
 test('should be ok on good parameters', () => {

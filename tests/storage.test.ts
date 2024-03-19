@@ -4,6 +4,7 @@ import { snoop } from 'snoop'
 import { createStore, createEvent } from 'effector'
 import { persist } from '../src/core'
 import { storage } from '../src/storage'
+import { storage as storageIndex } from '../src'
 import { createStorageMock } from './mocks/storage.mock'
 
 //
@@ -16,6 +17,10 @@ const storageAdapter = storage({ storage: () => mockStorage })
 //
 // Tests
 //
+
+test('should be exported from package root', () => {
+  assert.is(storage, storageIndex)
+})
 
 test('store initial value should NOT be saved to storage', () => {
   const $counter1 = createStore(0, { name: 'counter1' })
