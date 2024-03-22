@@ -39,8 +39,8 @@ devDependencies:
     specifier: ^11.2.2
     version: 11.2.2
   '@size-limit/preset-small-lib':
-    specifier: ^11.1.1
-    version: 11.1.1(size-limit@11.1.1)
+    specifier: ^11.1.2
+    version: 11.1.2(size-limit@11.1.1)
   '@types/node':
     specifier: ^20.11.28
     version: 20.11.28
@@ -1484,33 +1484,33 @@ packages:
       '@sinonjs/commons': 3.0.1
     dev: true
 
-  /@size-limit/esbuild@11.1.1(size-limit@11.1.1):
-    resolution: {integrity: sha512-+lWZbLc0X3c8uh6wdYv/5CGn58x1IgYAhCLQXvojxgn/j3TP72H2EigXLMcDXOgN3aps44yV3Qb2HIJppE+jYw==}
+  /@size-limit/esbuild@11.1.2(size-limit@11.1.1):
+    resolution: {integrity: sha512-IGQNaZsS4kP4hwU9C8P+3VvPhtW9PQ9OrwKJsvHDgMsbGX01hz39b9KkVwoI29wOXdwtj0aETaJUZPqoJq588w==}
     engines: {node: ^18.0.0 || >=20.0.0}
     peerDependencies:
-      size-limit: 11.1.1
+      size-limit: 11.1.2
     dependencies:
       esbuild: 0.20.2
       nanoid: 5.0.6
       size-limit: 11.1.1
     dev: true
 
-  /@size-limit/file@11.1.1(size-limit@11.1.1):
-    resolution: {integrity: sha512-c4XXp2CLvfx2RfzAqIAlxV6OWAQSVquLMNKKD6x9urJD7knjnTesPkbMcf3SkQbjCY4PlLL6kYhaO9drCWGM6g==}
+  /@size-limit/file@11.1.2(size-limit@11.1.1):
+    resolution: {integrity: sha512-zktWwhO7MxVwQXbrZzy0VKfM5mZK3Aza1G3XbWRP8q+/3+irPKCz2fmyYJqJAJVwC9U1jAs6xEPlTJzxKgEAmw==}
     engines: {node: ^18.0.0 || >=20.0.0}
     peerDependencies:
-      size-limit: 11.1.1
+      size-limit: 11.1.2
     dependencies:
       size-limit: 11.1.1
     dev: true
 
-  /@size-limit/preset-small-lib@11.1.1(size-limit@11.1.1):
-    resolution: {integrity: sha512-GW3T//znZXnk+a0VxkP241GCYZUn/RDr8Pn8p6pjdFqQy3PFrKiMq2QHyJLtGT/eRoYHL8e32mkNciQtQjZ4sQ==}
+  /@size-limit/preset-small-lib@11.1.2(size-limit@11.1.1):
+    resolution: {integrity: sha512-fxZW3woI6SOYyvq44QhlnYdcYfOfiW7zqFCPf+1Ox0OHbrug7YuMz74JNFlHJcnvB4Z6aErED+afkoYJ7vxohQ==}
     peerDependencies:
-      size-limit: 11.1.1
+      size-limit: 11.1.2
     dependencies:
-      '@size-limit/esbuild': 11.1.1(size-limit@11.1.1)
-      '@size-limit/file': 11.1.1(size-limit@11.1.1)
+      '@size-limit/esbuild': 11.1.2(size-limit@11.1.1)
+      '@size-limit/file': 11.1.2(size-limit@11.1.1)
       size-limit: 11.1.1
     dev: true
 
