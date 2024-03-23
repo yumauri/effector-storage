@@ -45,9 +45,9 @@
     "size": "size-limit --highlight-less"
   },
   "devDependencies": {
-    "@babel/core": "^7.24.0",
-    "@babel/plugin-transform-block-scoping": "^7.23.4",
-    "@babel/preset-typescript": "^7.23.3",
+    "@babel/core": "^7.24.3",
+    "@babel/plugin-transform-block-scoping": "^7.24.1",
+    "@babel/preset-typescript": "^7.24.1",
     "@esbuild-kit/esm-loader": "^2.6.5",
     "@farfetched/core": "^0.12.2",
     "@farfetched/runtypes": "^0.12.2",
