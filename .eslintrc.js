@@ -13,5 +13,10 @@ module.exports = {
         allowArgumentsExplicitlyTypedAsAny: true,
       },
     ],
+    'spaced-comment': [
+      'warn',
+      'always',
+      { exceptions: ['-', '+', '#__PURE__'] },
+    ],
   },
 }
