@@ -3,8 +3,10 @@ import type {
   ConfigPersist as BaseConfigPersist,
   ConfigStore as BaseConfigStore,
   ConfigSourceTarget as BaseConfigSourceTarget,
+  ConfigCreateStorage as BaseConfigCreateStorage,
+  StorageHandles,
 } from '../types'
-import { persist as base } from '../core'
+import { persist as base, createStorage as baseCreateStorage } from '../core'
 import { adapter } from './adapter'
 
 export type {
@@ -32,6 +34,19 @@ export interface Persist {
   <State, Err = Error>(config: ConfigStore<State, Err>): Subscription
 }
 
+export interface ConfigCreateStorage<State>
+  extends BaseConfigCreateStorage<State> {}
+
+export interface CreateStorage {
+  <State, Err = Error>(
+    key: string,
+    config?: BaseConfigCreateStorage<State>
+  ): StorageHandles<State, Err>
+  <State, Err = Error>(
+    config: BaseConfigCreateStorage<State> & { key: string }
+  ): StorageHandles<State, Err>
+}
+
 /**
  * Returns memory adapter
  */
@@ -54,3 +69,19 @@ export function createPersist(defaults?: ConfigPersist): Persist {
  * Default partially applied `persist`
  */
 export const persist = createPersist()
+
+/**
+ * Creates custom partially applied `createStorage`
+ * with predefined `memory` adapter
+ */
+export function createStorageFactory(
+  defaults?: ConfigCreateStorage<any>
+): CreateStorage {
+  return (...configs: any[]) =>
+    baseCreateStorage({ adapter: adapter() }, defaults, ...configs)
+}
+
+/**
+ * Default partially applied `createStorage`
+ */
+export const createStorage = createStorageFactory()

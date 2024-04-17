@@ -300,8 +300,8 @@ interface StorageAdapter {
     key: string,
     update: (raw?: any) => void
   ): {
-    get(raw?: any, ctx?: any): State | Promise<State | undefined> | undefined
-    set(value: State, ctx?: any): void
+    get(raw?: any, ctx?: any): State | undefined | Promise<State | undefined>
+    set(value: State, ctx?: any): void | Promise<void>
   }
   keyArea?: any
   noop?: boolean

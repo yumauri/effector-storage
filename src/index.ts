@@ -1,5 +1,13 @@
-import type { ConfigPersist, Persist } from './types'
-import { persist as base } from './core'
+import type {
+  ConfigPersist,
+  Persist,
+  CreateStorage,
+  ConfigCreateStorage,
+} from './types'
+import {
+  persist as basePersist,
+  createStorage as baseCreateStorage,
+} from './core'
 
 export type {
   ConfigPersist,
@@ -12,8 +20,11 @@ export type {
   Persist,
   Adapter,
   DisposableAdapter,
+  StorageHandles,
   StorageAdapter,
   StorageAdapterFactory,
+  CreateStorage,
+  ConfigCreateStorage,
 } from './types'
 
 //
@@ -51,7 +62,7 @@ export { async, either, farcached } from './tools'
  */
 export function createPersist(defaults?: ConfigPersist): Persist {
   return (config: any) =>
-    base({
+    basePersist({
       ...defaults,
       ...config,
     })
@@ -60,4 +71,18 @@ export function createPersist(defaults?: ConfigPersist): Persist {
 /**
  * Default `persist`
  */
-export const persist: Persist = base
+export const persist: Persist = basePersist
+
+/**
+ * Creates custom `createStorage`
+ */
+export function createStorageFactory(
+  defaults?: ConfigCreateStorage<any>
+): CreateStorage {
+  return (...configs: any[]) => baseCreateStorage(defaults, ...configs)
+}
+
+/**
+ * Default `createStorage`
+ */
+export const createStorage: CreateStorage = baseCreateStorage

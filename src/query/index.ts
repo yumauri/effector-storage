@@ -3,10 +3,12 @@ import type {
   ConfigPersist as BaseConfigPersist,
   ConfigStore as BaseConfigStore,
   ConfigSourceTarget as BaseConfigSourceTarget,
+  ConfigCreateStorage as BaseConfigCreateStorage,
   StorageAdapter,
+  StorageHandles,
 } from '../types'
 import type { ChangeMethod, StateBehavior, QueryConfig } from './adapter'
-import { persist as base } from '../core'
+import { persist as base, createStorage as baseCreateStorage } from '../core'
 import { nil } from '../nil'
 import { adapter } from './adapter'
 
@@ -47,6 +49,19 @@ export interface Persist {
   <State, Err = Error>(config: ConfigStore<State, Err>): Subscription
 }
 
+export interface ConfigCreateStorage<State>
+  extends BaseConfigCreateStorage<State> {}
+
+export interface CreateStorage {
+  <State, Err = Error>(
+    key: string,
+    config?: QueryConfig & BaseConfigCreateStorage<State>
+  ): StorageHandles<State, Err>
+  <State, Err = Error>(
+    config: QueryConfig & BaseConfigCreateStorage<State> & { key: string }
+  ): StorageHandles<State, Err>
+}
+
 /**
  * Function, checking if `history` and `location` exists and accessible
  */
@@ -83,3 +98,19 @@ export function createPersist(defaults?: ConfigPersist): Persist {
  * Default partially applied `persist`
  */
 export const persist = createPersist()
+
+/**
+ * Creates custom partially applied `createStorage`
+ * with predefined `query` adapter
+ */
+export function createStorageFactory(
+  defaults?: ConfigCreateStorage<any>
+): CreateStorage {
+  return (...configs: any[]) =>
+    baseCreateStorage({ adapter: query }, defaults, ...configs)
+}
+
+/**
+ * Default partially applied `createStorage`
+ */
+export const createStorage = createStorageFactory()

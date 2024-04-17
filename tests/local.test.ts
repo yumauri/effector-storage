@@ -4,7 +4,7 @@ import { snoop } from 'snoop'
 import { createEvent, createStore } from 'effector'
 import { createStorageMock } from './mocks/storage.mock'
 import { type Events, createEventsMock } from './mocks/events.mock'
-import { local, persist } from '../src/local'
+import { local, persist, createStorage } from '../src/local'
 import { local as localIndex } from '../src'
 
 //
@@ -32,6 +32,7 @@ test.after(() => {
 test('should export adapter and `persist` function', () => {
   assert.type(local, 'function')
   assert.type(persist, 'function')
+  assert.type(createStorage, 'function')
 })
 
 test('should be exported from package root', () => {
@@ -41,6 +42,8 @@ test('should be exported from package root', () => {
 test('should be ok on good parameters', () => {
   const $store = createStore(0, { name: 'local::store' })
   assert.not.throws(() => persist({ store: $store }))
+  assert.not.throws(() => createStorage('local::store'))
+  assert.not.throws(() => createStorage({ key: 'local::store' }))
 })
 
 test('persisted store shoult reset value on init to default', async () => {

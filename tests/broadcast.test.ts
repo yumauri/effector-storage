@@ -7,7 +7,7 @@ import * as assert from 'uvu/assert'
 import { BroadcastChannel, Worker } from 'node:worker_threads'
 import { createEffect, createStore, sample } from 'effector'
 import { createEventsMock } from './mocks/events.mock'
-import { broadcast, persist } from '../src/broadcast'
+import { broadcast, persist, createStorage } from '../src/broadcast'
 import { broadcast as broadcastIndex } from '../src'
 import { either } from '../src/tools'
 import { log } from '../src/log'
@@ -80,6 +80,7 @@ test.after(() => {
 test('should export adapter and `persist` function', () => {
   assert.type(broadcast, 'function')
   assert.type(persist, 'function')
+  assert.type(createStorage, 'function')
 })
 
 test('should be exported from package root', () => {
@@ -89,6 +90,8 @@ test('should be exported from package root', () => {
 test('should be ok on good parameters', () => {
   const $store = createStore(0, { name: 'broadcast' })
   assert.not.throws(() => persist({ store: $store }))
+  assert.not.throws(() => createStorage('broadcast'))
+  assert.not.throws(() => createStorage({ key: 'broadcast' }))
 })
 
 test('should post message to broadcast channel on updates', async () => {
