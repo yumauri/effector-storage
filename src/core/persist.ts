@@ -8,6 +8,8 @@ import type {
   Done,
   Fail,
   Finally,
+  FinallyDone,
+  FinallyFail,
 } from '../types'
 import {
   attach,
@@ -207,7 +209,8 @@ export function persist<State, Err = Error>(
     if (done) {
       sample({
         clock: complete,
-        filter: ({ status }) => status === 'done',
+        filter: (payload: Finally<State, Err>): payload is FinallyDone<State> =>
+          payload.status === 'done',
         fn: ({ key, keyPrefix, operation, value }): Done<State> => ({
           key,
           keyPrefix,
@@ -220,8 +223,9 @@ export function persist<State, Err = Error>(
 
     sample({
       clock: complete,
-      filter: ({ status }) => status === 'fail',
-      fn: ({ key, keyPrefix, operation, error, value }: any): Fail<Err> => ({
+      filter: (payload: Finally<State, Err>): payload is FinallyFail<Err> =>
+        payload.status === 'fail',
+      fn: ({ key, keyPrefix, operation, error, value }): Fail<Err> => ({
         key,
         keyPrefix,
         operation,

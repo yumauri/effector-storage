@@ -1,7 +1,7 @@
 import { test } from 'uvu'
 import * as assert from 'uvu/assert'
 import { snoop } from 'snoop'
-import { createStore } from 'effector'
+import { createStore, createEvent } from 'effector'
 import {
   createStorage,
   createStorageFactory,
@@ -331,6 +331,175 @@ test('should sync with `persist` for the same adapter-key', async () => {
   ]) // getFx result
 
   assert.is(await getFx(), 33)
+})
+
+test('should handle synchronous error in `get` and `set` effects', () => {
+  const watch = snoop(() => undefined)
+
+  const { get: getFx, set: setFx } = createStorage<number>('test-sync-throw', {
+    adapter: () => ({
+      get: () => {
+        throw 'get test error'
+      },
+      set: () => {
+        throw 'set test error'
+      },
+    }),
+  })
+
+  getFx.watch(watch.fn)
+  setFx.watch(watch.fn)
+  getFx.finally.watch(watch.fn)
+  setFx.finally.watch(watch.fn)
+
+  assert.is(watch.callCount, 0)
+
+  getFx()
+
+  assert.is(watch.callCount, 2)
+  assert.equal(watch.calls[0].arguments, [undefined]) // getFx trigger
+  assert.equal(watch.calls[1].arguments, [
+    {
+      status: 'fail',
+      params: undefined,
+      error: {
+        key: 'test-sync-throw',
+        keyPrefix: '',
+        operation: 'get',
+        error: 'get test error',
+        value: undefined,
+      },
+    },
+  ]) // getFx fail
+
+  setFx(1)
+
+  assert.is(watch.callCount, 4)
+  assert.equal(watch.calls[2].arguments, [1]) // setFx trigger
+  assert.equal(watch.calls[3].arguments, [
+    {
+      status: 'fail',
+      params: 1,
+      error: {
+        key: 'test-sync-throw',
+        keyPrefix: '',
+        operation: 'set',
+        error: 'set test error',
+        value: 1,
+      },
+    },
+  ]) // setFx fail
+})
+
+test('should handle asynchronous error in `get` and `set` effects', async () => {
+  const watch = snoop(() => undefined)
+
+  const { get: getFx, set: setFx } = createStorage<number>('test-async-throw', {
+    adapter: () => ({
+      get: async () => Promise.reject('get test error'),
+      set: async () => Promise.reject('set test error'),
+    }),
+  })
+
+  getFx.watch(watch.fn)
+  setFx.watch(watch.fn)
+  getFx.finally.watch(watch.fn)
+  setFx.finally.watch(watch.fn)
+
+  assert.is(watch.callCount, 0)
+
+  try {
+    await getFx()
+    assert.unreachable('getFx should have thrown')
+  } catch (e) {}
+
+  assert.is(watch.callCount, 2)
+  assert.equal(watch.calls[0].arguments, [undefined]) // getFx trigger
+  assert.equal(watch.calls[1].arguments, [
+    {
+      status: 'fail',
+      params: undefined,
+      error: {
+        key: 'test-async-throw',
+        keyPrefix: '',
+        operation: 'get',
+        error: 'get test error',
+        value: undefined,
+      },
+    },
+  ]) // getFx fail
+
+  try {
+    await setFx(1)
+    assert.unreachable('setFx should have thrown')
+  } catch (e) {}
+
+  assert.is(watch.callCount, 4)
+  assert.equal(watch.calls[2].arguments, [1]) // setFx trigger
+  assert.equal(watch.calls[3].arguments, [
+    {
+      status: 'fail',
+      params: 1,
+      error: {
+        key: 'test-async-throw',
+        keyPrefix: '',
+        operation: 'set',
+        error: 'set test error',
+        value: 1,
+      },
+    },
+  ]) // setFx fail
+})
+
+test('should hide internal <error in "box"> implementation with `get` effect', () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const watch = snoop((_) => undefined)
+  const fail = createEvent()
+
+  const { get: getFx, set: setFx } = createStorage<number>('test-throw-box', {
+    adapter: (_, update) => {
+      fail.watch(() => {
+        update(() => {
+          throw 'get box test error'
+        })
+      })
+
+      return {
+        get: (box?: () => any) => {
+          if (box) return box()
+        },
+        set: () => {},
+      }
+    },
+  })
+
+  getFx.watch(watch.fn)
+  setFx.watch(watch.fn)
+  getFx.finally.watch(watch.fn)
+  setFx.finally.watch(watch.fn)
+
+  assert.is(watch.callCount, 0)
+
+  fail()
+
+  assert.is(watch.callCount, 2)
+
+  const arg1 = watch.calls[0].arguments[0]
+  assert.instance(arg1, Function) // getFx trigger - "box"ed error, don't know how to hide it here
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { params, ...arg2 } = watch.calls[1].arguments[0]
+  assert.equal(arg2, {
+    status: 'fail',
+    // params: Function, // "box"ed error...
+    error: {
+      key: 'test-throw-box',
+      keyPrefix: '',
+      operation: 'get',
+      error: 'get box test error',
+      value: undefined,
+    },
+  }) // getFx fail
 })
 
 //

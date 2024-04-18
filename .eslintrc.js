@@ -18,5 +18,7 @@ module.exports = {
       'always',
       { exceptions: ['-', '+', '#__PURE__'] },
     ],
+    'no-throw-literal': 'off',
+    'prefer-promise-reject-errors': 'off',
   },
 }

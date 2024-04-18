@@ -5,6 +5,7 @@ import type {
   StorageHandles,
   ConfigCreateStorage,
   Contract,
+  Fail,
 } from '../types'
 import {
   attach,
@@ -24,7 +25,7 @@ function validate<T>(raw: unknown, contract?: Contract<T>) {
     !contract || // no contract -> data is valid
     ('isData' in contract ? contract.isData(raw) : contract(raw))
   ) return raw as T // prettier-ignore
-  throw (contract as any).getErrorMessages?.(raw) ?? ['Invalid data'] // TODO: add validation error, with raw value from storage
+  throw (contract as any).getErrorMessages?.(raw) ?? ['Invalid data']
 }
 
 type Config<State> = Partial<
@@ -86,25 +87,59 @@ export function createStorage<State, Err = Error>(
   //   disposable = value
   // }
 
+  const fail = (
+    operation: 'get' | 'set' | 'validate',
+    error: unknown,
+    value?: any
+  ) =>
+    ({
+      key,
+      keyPrefix,
+      operation,
+      error,
+      value: typeof value === 'function' ? undefined : value, // hide internal "box" implementation
+    }) as Fail<Err>
+
+  const op = <T>(
+    operation: 'get' | 'set' | 'validate',
+    fn: (value: any, arg: any) => T,
+    value: any,
+    arg: any
+  ): T => {
+    try {
+      return fn(value, arg)
+    } catch (error) {
+      throw fail(operation, error, value)
+    }
+  }
+
   const getFx = attach({
     source: ctx,
     effect([ref], raw?: void) {
-      const result = value.get(raw, ref) as any
+      const result = op('get', value.get, raw, ref) as any
       return typeof result?.then === 'function'
-        ? Promise.resolve(result).then((x) => validate(x, contract))
-        : validate(result, contract)
+        ? Promise.resolve(result)
+            .then((result) => op('validate', validate, result, contract))
+            .catch((error) => {
+              throw fail('get', error, raw)
+            })
+        : op('validate', validate, result, contract)
     },
-  }) as Effect<void, State, Err>
+  }) as Effect<void, State, any> // as Effect<void, State, Fail<Err>>
 
   const setFx = attach({
     source: ctx,
     effect([ref], state: State) {
-      const result = value.set(state, ref)
+      const result = op('set', value.set, state, ref)
       if (typeof result?.then === 'function') {
-        return Promise.resolve(result).then(() => undefined)
+        return Promise.resolve(result)
+          .then(() => undefined)
+          .catch((error) => {
+            throw fail('set', error, state)
+          })
       }
     },
-  }) as Effect<State, void, Err>
+  }) as Effect<State, void, any> // as Effect<State, void, Fail<Err>>
 
   let update: (raw?: any) => any = getFx
   ctx.updates.watch(() => {
@@ -140,7 +175,7 @@ export function createStorage<State, Err = Error>(
   return {
     get: getFx,
     set: setFx,
-    remove: createEffect<void, void, Err>(() => {}), // TODO
-    clear: createEffect<void, void, Err>(() => {}), // TODO
+    remove: createEffect<void, void, Fail<Err>>(() => {}), // TODO
+    clear: createEffect<void, void, Fail<Err>>(() => {}), // TODO
   }
 }

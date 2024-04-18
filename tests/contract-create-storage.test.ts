@@ -84,7 +84,13 @@ test('shoult fail on invalid initial storage value with simple contract', () => 
     {
       status: 'fail',
       params: undefined,
-      error: ['Invalid data'],
+      error: {
+        key: 'number2',
+        keyPrefix: '',
+        operation: 'validate',
+        error: ['Invalid data'],
+        value: 'invalid',
+      },
     },
   ]) // getFx result
 
@@ -139,7 +145,13 @@ test('should handle sync effects with same key and different validators', () => 
     {
       status: 'fail',
       params: undefined,
-      error: ['Invalid data'],
+      error: {
+        key: 'contract-same-key-1',
+        keyPrefix: '',
+        operation: 'validate',
+        error: ['Invalid data'],
+        value: 'plain value',
+      },
     },
   ]) // getBase64Fx result
 
@@ -199,7 +211,13 @@ test('should handle sync with `persist` with different validators, update from s
     {
       status: 'fail',
       params: undefined,
-      error: ['Invalid data'],
+      error: {
+        key: 'contract-same-key-2',
+        keyPrefix: '',
+        operation: 'validate',
+        error: ['Invalid data'],
+        value: 'plain value',
+      },
     },
   ]) // getFx result
 })
@@ -333,9 +351,15 @@ test('shoult validate storage value on get with complex contract (invalid undefi
     {
       status: 'fail',
       params: undefined,
-      error: [
-        'Expected { type: "asteroid"; mass: number; }, but was undefined',
-      ],
+      error: {
+        key: 'asteroid1',
+        keyPrefix: '',
+        operation: 'validate',
+        error: [
+          'Expected { type: "asteroid"; mass: number; }, but was undefined',
+        ],
+        value: undefined,
+      },
     },
   ]) // getFx result
 })
@@ -367,7 +391,13 @@ test('shoult validate storage value on get with complex contract (invalid)', () 
     {
       status: 'fail',
       params: undefined,
-      error: ['Expected { type: "asteroid"; mass: number; }, but was number'],
+      error: {
+        key: 'asteroid2',
+        keyPrefix: '',
+        operation: 'validate',
+        error: ['Expected { type: "asteroid"; mass: number; }, but was number'],
+        value: 42,
+      },
     },
   ]) // getFx result
 
@@ -418,7 +448,13 @@ test('should validate value on storage external update', async () => {
     {
       status: 'fail',
       params: '"invalid"', // raw value from adapter
-      error: ['Expected number, but was string'],
+      error: {
+        key: 'storage-contract-counter-1',
+        keyPrefix: '',
+        operation: 'validate',
+        error: ['Expected number, but was string'],
+        value: 'invalid',
+      },
     },
   ]) // getFx result
 })

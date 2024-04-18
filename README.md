@@ -174,7 +174,7 @@ In order to synchronize _something_, you need to specify effector units. Dependi
   - `keyPrefix` ([_string_]): Prefix, used in adapter, to be concatenated to `key`. By default = `''`.
   - `operation` (_`'set'`_ | _`'get'`_ | _`'validate'`_): Type of operation, read (get), write (set) or validation against contract (validate).
   - `error` ([_Error_]): Error instance
-  - `value`? (_any_): In case of _'set'_ operation — value from `store`. In case of _'get'_ operation could contain raw value from storage or could be empty.
+  - `value`? (_any_): In case of _'set'_ operation — value from `store`. In case of _'get'_ and _'validate'_ operations could contain raw value from storage or could be empty.
 - `finally`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which will be triggered either in case of success or error.<br>
   Payload structure:
   - `key` ([_string_]): Same `key` as above.

@@ -41,14 +41,14 @@ export type Done<State> = {
 export type Fail<Err> = {
   key: string
   keyPrefix: string
-  operation: 'set' | 'get'
+  operation: 'set' | 'get' | 'validate'
   error: Err
   value?: any
 }
 
-export type Finally<State, Err> =
-  | (Done<State> & { status: 'done' })
-  | (Fail<Err> & { status: 'fail' })
+export type FinallyDone<State> = Done<State> & { status: 'done' }
+export type FinallyFail<Err> = Fail<Err> & { status: 'fail' }
+export type Finally<State, Err> = FinallyDone<State> | FinallyFail<Err>
 
 export interface ConfigPersist {
   pickup?: Unit<any>
@@ -114,10 +114,10 @@ export interface Persist {
 }
 
 export interface StorageHandles<State, Err> {
-  get: Effect<void, State, Err>
-  set: Effect<State, void, Err>
-  remove: Effect<void, void, Err>
-  clear: Effect<void, void, Err>
+  get: Effect<void, State, Fail<Err>>
+  set: Effect<State, void, Fail<Err>>
+  remove: Effect<void, void, Fail<Err>>
+  clear: Effect<void, void, Fail<Err>>
 }
 
 export interface ConfigCreateStorage<State> {
