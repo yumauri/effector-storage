@@ -25,10 +25,7 @@ export default tseslint.config(
       '@typescript-eslint/no-empty-function': 'off',
       '@typescript-eslint/unified-signatures': 'off',
       '@typescript-eslint/consistent-type-definitions': 'off',
-      '@typescript-eslint/no-invalid-void-type': [
-        'error',
-        { allowAsThisParameter: true },
-      ],
+      '@typescript-eslint/no-invalid-void-type': 'off',
       '@typescript-eslint/explicit-module-boundary-types': [
         'error',
         { allowArgumentsExplicitlyTypedAsAny: true },
