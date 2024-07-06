@@ -48,7 +48,6 @@
     "@babel/core": "^7.24.7",
     "@babel/plugin-transform-block-scoping": "^7.24.7",
     "@babel/preset-typescript": "^7.24.7",
-    "@esbuild-kit/esm-loader": "^2.6.5",
     "@eslint/js": "^9.6.0",
     "@farfetched/core": "^0.12.4",
     "@farfetched/runtypes": "^0.12.4",
@@ -87,5 +86,10 @@
     "vite": "^5.3.3",
     "yaspeller": "^10.0.1"
   },
-  "packageManager": "pnpm@9.4.0"
+  "packageManager": "pnpm@9.4.0",
+  "pnpm": {
+    "overrides": {
+      "is-core-module": "npm:@nolyfill/is-core-module@^1"
+    }
+  }
 }
