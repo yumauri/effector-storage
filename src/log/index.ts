@@ -15,14 +15,14 @@ export function log({
   logger = console.log,
 }: LogConfig = {}): StorageAdapter {
   const adapter: StorageAdapter = (key: string) =>
-    <any>{
+    ({
       set(value: any) {
         logger(`[log adapter] set value "${value}" with key "${key}"`)
       },
       get() {
         logger(`[log adapter] get value for key "${key}"`)
       },
-    }
+    }) as any
 
   adapter.keyArea = keyArea
   adapter.noop = true

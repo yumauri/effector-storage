@@ -11,18 +11,18 @@ import { persist } from '../src/core'
 
 const syncErrorAdapter: StorageAdapter = () => ({
   get: (): never => {
-    throw 'get' // eslint-disable-line no-throw-literal
+    throw 'get'
   },
   set: (): never => {
-    throw 'set' // eslint-disable-line no-throw-literal
+    throw 'set'
   },
 })
 
 const asyncErrorAdapter: StorageAdapter = (_, update) => {
   setTimeout(update, 10)
   return {
-    get: () => Promise.reject('get'), // eslint-disable-line prefer-promise-reject-errors
-    set: () => Promise.reject('set'), // eslint-disable-line prefer-promise-reject-errors
+    get: () => Promise.reject('get'),
+    set: () => Promise.reject('set'),
   }
 }
 
