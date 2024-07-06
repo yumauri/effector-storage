@@ -16,7 +16,7 @@ export interface QueryConfig {
   def?: any
 }
 
-const keyArea = Symbol() // eslint-disable-line symbol-description
+const keyArea = Symbol()
 
 const buffer = new Map<string, any>()
 let timeoutId: ReturnType<typeof setTimeout> | undefined

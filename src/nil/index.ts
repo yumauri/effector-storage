@@ -10,10 +10,10 @@ export interface NilConfig {
 nil.factory = true as const
 export function nil({ keyArea = '' }: NilConfig = {}): StorageAdapter {
   const adapter: StorageAdapter = () =>
-    <any>{
-      get() {}, // eslint-disable-line @typescript-eslint/no-empty-function
-      set() {}, // eslint-disable-line @typescript-eslint/no-empty-function
-    }
+    ({
+      get() {},
+      set() {},
+    }) as any
 
   adapter.keyArea = keyArea
   adapter.noop = true
