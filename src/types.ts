@@ -1,8 +1,16 @@
 import type { Event, Effect, Store, Unit, Subscription } from 'effector'
 
 export interface Adapter<State> {
-  get(raw?: any, ctx?: any): State | undefined | Promise<State | undefined>
-  set(value: State, ctx?: any): void | Promise<void>
+  get( //
+    this: void,
+    raw?: any,
+    ctx?: any
+  ): State | undefined | Promise<State | undefined>
+  set( //
+    this: void,
+    value: State,
+    ctx?: any
+  ): void | Promise<void>
   // remove?(ctx?: any): void | Promise<void>
 }
 
