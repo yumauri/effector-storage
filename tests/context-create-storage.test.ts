@@ -14,7 +14,7 @@ test('context store value should be passed to adapter', async () => {
 
   const context = createEvent<number>()
 
-  const { get: getFx, set: setFx } = createStorage('test-context-1', {
+  const { getFx, setFx } = createStorage('test-context-1', {
     adapter: () => ({ get: watch.fn, set: watch.fn }),
     context: createStore(42).on(context, (_, ctx) => ctx),
   })
@@ -48,7 +48,7 @@ test('context event value should be passed to adapter', async () => {
 
   const context = createEvent<string>()
 
-  const { get: getFx, set: setFx } = createStorage('test-context-2', {
+  const { getFx, setFx } = createStorage('test-context-2', {
     adapter: () => ({ get: watch.fn, set: watch.fn }),
     context,
   })
@@ -82,7 +82,7 @@ test('contexts in different scopes should be different', async () => {
 
   const context = createEvent<{ name: string }>()
 
-  const { get: getFx, set: setFx } = createStorage('test-context-3', {
+  const { getFx, setFx } = createStorage('test-context-3', {
     adapter: () => ({ get: watch.fn, set: watch.fn }),
     context,
   })
@@ -159,7 +159,7 @@ test('contexts should update scope / also works with adapter factory', async () 
 
   const context = createEvent()
 
-  const { get: getFx } = createStorage('test-context-4', {
+  const { getFx } = createStorage('test-context-4', {
     adapter: adapterFactory,
     context,
     contract: (raw: unknown): raw is number => typeof raw === 'number',
