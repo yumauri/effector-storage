@@ -26,7 +26,6 @@ test('should exports effects', () => {
   assert.type(ret.get, 'function')
   assert.type(ret.set, 'function')
   assert.type(ret.remove, 'function')
-  assert.type(ret.clear, 'function')
 })
 
 test('should be ok on good parameters', () => {
@@ -135,6 +134,20 @@ test('should get and set value from storage', async () => {
   ]) // setFx result
 
   assert.is(await getFx(), 1)
+})
+
+test('should remove value from storage', async () => {
+  const { set, get, remove } = createStorage<number>('test-get-set-1', {
+    adapter,
+  })
+
+  await set(1)
+
+  assert.is(await get(), 1)
+
+  await remove()
+
+  assert.is(await get(), undefined)
 })
 
 test('should get and set value from storage (with adapter factory)', async () => {

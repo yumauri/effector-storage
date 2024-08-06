@@ -10,7 +10,6 @@ import type {
 import {
   attach,
   // clearNode,
-  createEffect,
   // createNode,
   createStore,
   is,
@@ -45,9 +44,6 @@ export function createStorage<State, Err = Error>(
 
   const {
     adapter: adapterOrFactory,
-    // done,
-    // fail = sink,
-    // finally: anyway,
     context,
     key: keyName,
     keyPrefix = '',
@@ -141,6 +137,11 @@ export function createStorage<State, Err = Error>(
     },
   }) as Effect<State, void, any> // as Effect<State, void, Fail<Err>>
 
+  const removeFx = attach({
+    mapParams: () => undefined as any,
+    effect: setFx,
+  }) as Effect<void, void, Fail<Err>>
+
   let update: (raw?: any) => any = getFx
   ctx.updates.watch(() => {
     update = scopeBind(getFx as any, { safe: true })
@@ -175,7 +176,6 @@ export function createStorage<State, Err = Error>(
   return {
     get: getFx,
     set: setFx,
-    remove: createEffect<void, void, Fail<Err>>(() => {}), // TODO
-    clear: createEffect<void, void, Fail<Err>>(() => {}), // TODO
+    remove: removeFx,
   }
 }

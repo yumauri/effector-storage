@@ -125,7 +125,6 @@ export interface StorageHandles<State, Err> {
   get: Effect<void, State, Fail<Err>>
   set: Effect<State, void, Fail<Err>>
   remove: Effect<void, void, Fail<Err>>
-  clear: Effect<void, void, Fail<Err>>
 }
 
 export interface ConfigCreateStorage<State> {
