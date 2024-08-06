@@ -71,6 +71,7 @@ const src = (name) => ({
         },
         format: {
           comments: false,
+          preserve_annotations: true,
         },
       }),
 

@@ -2,7 +2,7 @@ import { test } from 'uvu'
 import * as assert from 'uvu/assert'
 import { snoop } from 'snoop'
 import { createStore } from 'effector'
-import { memory, persist } from '../src/memory'
+import { memory, persist, createStorage } from '../src/memory'
 import { memory as memoryIndex } from '../src'
 
 //
@@ -12,6 +12,7 @@ import { memory as memoryIndex } from '../src'
 test('should export adapter and `persist` function', () => {
   assert.type(memory, 'function')
   assert.type(persist, 'function')
+  assert.type(createStorage, 'function')
 })
 
 test('should be exported from package root', () => {
@@ -21,6 +22,8 @@ test('should be exported from package root', () => {
 test('should be ok on good parameters', () => {
   const $store = createStore(0, { name: 'memory::store' })
   assert.not.throws(() => persist({ store: $store }))
+  assert.not.throws(() => createStorage('memory::store'))
+  assert.not.throws(() => createStorage({ key: 'memory::store' }))
 })
 
 test('should sync stores, persisted with memory adapter', () => {
