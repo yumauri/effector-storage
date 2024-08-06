@@ -174,8 +174,8 @@ export function createStorage<State, Err = Error>(
   }
 
   return {
-    get: getFx,
-    set: setFx,
-    remove: removeFx,
+    getFx,
+    setFx,
+    removeFx,
   }
 }

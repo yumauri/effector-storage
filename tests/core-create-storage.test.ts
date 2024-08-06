@@ -23,9 +23,9 @@ test('should exports effects', () => {
   assert.type(createStorage, 'function')
   const ret = createStorage('test-key', { adapter })
   assert.type(ret, 'object')
-  assert.type(ret.get, 'function')
-  assert.type(ret.set, 'function')
-  assert.type(ret.remove, 'function')
+  assert.type(ret.getFx, 'function')
+  assert.type(ret.setFx, 'function')
+  assert.type(ret.removeFx, 'function')
 })
 
 test('should be ok on good parameters', () => {
@@ -98,7 +98,7 @@ test('should handle wrong parameters', () => {
 test('should get and set value from storage', async () => {
   const watch = snoop(() => undefined)
 
-  const { get: getFx, set: setFx } = createStorage<number>('test-get-set-1', {
+  const { getFx, setFx } = createStorage<number>('test-get-set-1', {
     adapter,
   })
 
@@ -137,24 +137,24 @@ test('should get and set value from storage', async () => {
 })
 
 test('should remove value from storage', async () => {
-  const { set, get, remove } = createStorage<number>('test-get-set-1', {
+  const { setFx, getFx, removeFx } = createStorage<number>('test-get-set-1', {
     adapter,
   })
 
-  await set(1)
+  await setFx(1)
 
-  assert.is(await get(), 1)
+  assert.is(await getFx(), 1)
 
-  await remove()
+  await removeFx()
 
-  assert.is(await get(), undefined)
+  assert.is(await getFx(), undefined)
 })
 
 test('should get and set value from storage (with adapter factory)', async () => {
   const watch = snoop(() => undefined)
 
   const area = new Map<string, number>()
-  const { get: getFx, set: setFx } = createStorage('test-get-set-2', {
+  const { getFx, setFx } = createStorage('test-get-set-2', {
     adapter: memory,
     area,
   })
@@ -197,7 +197,7 @@ test('should get and set value from storage (with adapter factory)', async () =>
 test('should get and set value from async storage', async () => {
   const watch = snoop(() => undefined)
 
-  const { get: getFx, set: setFx } = createStorage('test-get-set-3', {
+  const { getFx, setFx } = createStorage('test-get-set-3', {
     adapter: async(adapter),
   })
 
@@ -239,11 +239,11 @@ test('should sync effects for the same adapter-key', () => {
   const watchSet = snoop(() => undefined)
   const watchGet = snoop(() => undefined)
 
-  const { set: setFx } = createStorage({
+  const { setFx } = createStorage({
     adapter,
     key: 'test-sync-same-key-1',
   })
-  const { get: getFx } = createStorage({
+  const { getFx } = createStorage({
     adapter,
     key: 'test-sync-same-key-1',
   })
@@ -298,7 +298,7 @@ test('should sync with `persist` for the same adapter-key', async () => {
   assert.is($store.getState(), 11) // did not change
   assert.is(watch.callCount, 1) // did not trigger
 
-  const { get: getFx, set: setFx } = createStorage({
+  const { getFx, setFx } = createStorage({
     adapter,
     key: 'test-sync-same-key-2',
   })
@@ -349,7 +349,7 @@ test('should sync with `persist` for the same adapter-key', async () => {
 test('should handle synchronous error in `get` and `set` effects', () => {
   const watch = snoop(() => undefined)
 
-  const { get: getFx, set: setFx } = createStorage<number>('test-sync-throw', {
+  const { getFx, setFx } = createStorage<number>('test-sync-throw', {
     adapter: () => ({
       get: () => {
         throw 'get test error'
@@ -407,7 +407,7 @@ test('should handle synchronous error in `get` and `set` effects', () => {
 test('should handle asynchronous error in `get` and `set` effects', async () => {
   const watch = snoop(() => undefined)
 
-  const { get: getFx, set: setFx } = createStorage<number>('test-async-throw', {
+  const { getFx, setFx } = createStorage<number>('test-async-throw', {
     adapter: () => ({
       get: async () => Promise.reject('get test error'),
       set: async () => Promise.reject('set test error'),
@@ -424,7 +424,9 @@ test('should handle asynchronous error in `get` and `set` effects', async () => 
   try {
     await getFx()
     assert.unreachable('getFx should have thrown')
-  } catch (e) {}
+  } catch (e) {
+    // ok
+  }
 
   assert.is(watch.callCount, 2)
   assert.equal(watch.calls[0].arguments, [undefined]) // getFx trigger
@@ -445,7 +447,9 @@ test('should handle asynchronous error in `get` and `set` effects', async () => 
   try {
     await setFx(1)
     assert.unreachable('setFx should have thrown')
-  } catch (e) {}
+  } catch (e) {
+    // ok
+  }
 
   assert.is(watch.callCount, 4)
   assert.equal(watch.calls[2].arguments, [1]) // setFx trigger
@@ -469,7 +473,7 @@ test('should hide internal <error in "box"> implementation with `get` effect', (
   const watch = snoop((_) => undefined)
   const fail = createEvent()
 
-  const { get: getFx, set: setFx } = createStorage<number>('test-throw-box', {
+  const { getFx, setFx } = createStorage<number>('test-throw-box', {
     adapter: (_, update) => {
       fail.watch(() => {
         update(() => {

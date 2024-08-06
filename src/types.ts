@@ -122,9 +122,9 @@ export interface Persist {
 }
 
 export interface StorageHandles<State, Err> {
-  get: Effect<void, State, Fail<Err>>
-  set: Effect<State, void, Fail<Err>>
-  remove: Effect<void, void, Fail<Err>>
+  getFx: Effect<void, State, Fail<Err>>
+  setFx: Effect<State, void, Fail<Err>>
+  removeFx: Effect<void, void, Fail<Err>>
 }
 
 export interface ConfigCreateStorage<State> {

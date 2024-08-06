@@ -292,12 +292,12 @@ const userWantToLoad = createEvent()
 sample({
   clock: userWantToSave,
   fn: () => 'some data'
-  target: persist.set,
+  target: persist.setFx,
 })
 
 sample({
   source: userWantToLoad,
-  target: persist.get,
+  target: persist.getFx,
 })
 ```
 
@@ -312,15 +312,15 @@ sample({
 
 An object with fields:
 
-- `get` (_Effect_): to get value from storage.
-- `set` (_Effect_): to set value to storage.
-- `remove` (_Effect_): to remove value from storage.
+- `getFx` (_Effect_): to get value from storage.
+- `setFx` (_Effect_): to set value to storage.
+- `removeFx` (_Effect_): to remove value from storage.
 
 All fields of returned object are _Effects_ units, so you can use them in `sample` as any other _Effects_. For example, you can add logging on failed storage operations:
 
 ```javascript
 sample({
-  clock: get.fail,
+  clock: getFx.fail,
   target: sendLogToSentry,
 })
 ```
