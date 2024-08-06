@@ -38,7 +38,7 @@ test('shoult validate storage value on get', () => {
 
   mockStorage.setItem('number1', '42')
 
-  const { get: getFx } = createStorage({
+  const { getFx } = createStorage({
     adapter: storageAdapter,
     key: 'number1',
     contract: (raw): raw is number => typeof raw === 'number',
@@ -67,7 +67,7 @@ test('shoult fail on invalid initial storage value with simple contract', () => 
 
   mockStorage.setItem('number2', '"invalid"') // valid JSON, but invalid number
 
-  const { get: getFx } = createStorage({
+  const { getFx } = createStorage({
     adapter: storageAdapter,
     key: 'number2',
     contract: (raw): raw is number => typeof raw === 'number',
@@ -101,12 +101,12 @@ test('should handle sync effects with same key and different validators', () => 
   const watchPlain = snoop(() => undefined)
   const watchBase64 = snoop(() => undefined)
 
-  const { get: getPlainFx, set: setPlainFx } = createStorage({
+  const { getFx: getPlainFx, setFx: setPlainFx } = createStorage({
     adapter: storageAdapter,
     key: 'contract-same-key-1',
     contract: (raw): raw is string => typeof raw === 'string',
   })
-  const { get: getBase64Fx, set: setBase64Fx } = createStorage({
+  const { getFx: getBase64Fx, setFx: setBase64Fx } = createStorage({
     adapter: storageAdapter,
     key: 'contract-same-key-1',
     contract: (raw): raw is string =>
@@ -189,7 +189,7 @@ test('should handle sync with `persist` with different validators, update from s
     key: 'contract-same-key-2',
   })
 
-  const { get: getFx, set: setFx } = createStorage({
+  const { getFx, setFx } = createStorage({
     adapter: storageAdapter,
     key: 'contract-same-key-2',
     contract: (raw): raw is string =>
@@ -238,7 +238,7 @@ test('should handle sync with `persist` with different validators, update from s
     fail,
   })
 
-  const { set: setFx } = createStorage({
+  const { setFx } = createStorage({
     adapter: storageAdapter,
     key: 'contract-same-key-3',
     contract: (raw): raw is string =>
@@ -272,7 +272,7 @@ test('shoult validate storage value on get with complex contract (valid)', () =>
 
   mockStorage.setItem('asteroid0', '{"type":"asteroid","mass":42}')
 
-  const { get: getFx } = createStorage({
+  const { getFx } = createStorage({
     adapter: storageAdapter,
     key: 'asteroid0',
     contract: runtypeContract(Asteroid),
@@ -304,7 +304,7 @@ test('shoult validate storage value on get with complex contract (valid undefine
     })
   )
 
-  const { get: getFx } = createStorage({
+  const { getFx } = createStorage({
     adapter: storageAdapter,
     key: 'asteroid1',
     contract: runtypeContract(Asteroid),
@@ -334,7 +334,7 @@ test('shoult validate storage value on get with complex contract (invalid undefi
     mass: Number,
   })
 
-  const { get: getFx } = createStorage({
+  const { getFx } = createStorage({
     adapter: storageAdapter,
     key: 'asteroid1',
     contract: runtypeContract(Asteroid),
@@ -374,7 +374,7 @@ test('shoult validate storage value on get with complex contract (invalid)', () 
 
   mockStorage.setItem('asteroid2', '42')
 
-  const { get: getFx } = createStorage({
+  const { getFx } = createStorage({
     adapter: storageAdapter,
     key: 'asteroid2',
     contract: runtypeContract(Asteroid),
@@ -407,7 +407,7 @@ test('shoult validate storage value on get with complex contract (invalid)', () 
 test('should validate value on storage external update', async () => {
   const watch = snoop(() => undefined)
 
-  const { get: getFx } = createStorage({
+  const { getFx } = createStorage({
     adapter: storageAdapter,
     key: 'storage-contract-counter-1',
     contract: runtypeContract(Number),
