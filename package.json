@@ -50,7 +50,7 @@
     "@eslint/js": "^9.6.0",
     "@farfetched/core": "^0.12.4",
     "@farfetched/runtypes": "^0.12.4",
-    "@playwright/test": "^1.45.1",
+    "@playwright/test": "^1.46.0",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.4",
