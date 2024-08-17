@@ -68,7 +68,7 @@ export interface CreateStorage {
 function supports() {
   try {
     return typeof localStorage !== 'undefined'
-  } catch (error) {
+  } catch (_error) {
     // accessing `localStorage` could throw an exception only in one case -
     // when `localStorage` IS supported, but blocked by security policies
     return true

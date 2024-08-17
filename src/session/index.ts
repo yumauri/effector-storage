@@ -68,7 +68,7 @@ export interface CreateStorage {
 function supports() {
   try {
     return typeof sessionStorage !== 'undefined'
-  } catch (error) {
+  } catch (_error) {
     // accessing `sessionStorage` could throw an exception only in one case -
     // when `sessionStorage` IS supported, but blocked by security policies
     return true

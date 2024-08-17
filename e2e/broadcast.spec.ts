@@ -162,11 +162,7 @@ test('should sync store values between tab and worker', async ({ context }) => {
   ])
 })
 
-test('should fail on `messageerror`', async ({ context, browserName }) => {
-  // SharedArrayBuffer currently disabled in webkit
-  // https://github.com/microsoft/playwright/issues/14043
-  test.fail(browserName === 'webkit', 'no shared array buffer on webkit')
-
+test('should fail on `messageerror`', async ({ context }) => {
   // open tab
   const tab = await context.newPage()
   await tab.goto('/')
@@ -243,5 +239,5 @@ test('should fail on `messageerror`', async ({ context, browserName }) => {
     status: 'fail',
     value: undefined,
   })
-  expect(error).toMatch(/Unable to deserialize message/)
+  expect(String(error)).toMatch(/Unable to deserialize message/)
 })
