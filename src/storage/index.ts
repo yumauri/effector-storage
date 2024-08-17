@@ -106,7 +106,7 @@ export function storage({
 
   try {
     adapter.keyArea = storage()
-  } catch (error) {
+  } catch (_error) {
     // do nothing
   }
 

@@ -33,7 +33,7 @@ export function asyncStorage({
 
   try {
     adapter.keyArea = storage()
-  } catch (error) {
+  } catch (_error) {
     // do nothing
   }
 

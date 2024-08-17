@@ -23,6 +23,7 @@ export default tseslint.config(
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-empty-interface': 'off',
       '@typescript-eslint/no-empty-function': 'off',
+      '@typescript-eslint/no-empty-object-type': 'off',
       '@typescript-eslint/unified-signatures': 'off',
       '@typescript-eslint/consistent-type-definitions': 'off',
       '@typescript-eslint/no-invalid-void-type': [
@@ -32,6 +33,18 @@ export default tseslint.config(
       '@typescript-eslint/explicit-module-boundary-types': [
         'error',
         { allowArgumentsExplicitlyTypedAsAny: true },
+      ],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          args: 'all',
+          argsIgnorePattern: '^_',
+          caughtErrors: 'all',
+          caughtErrorsIgnorePattern: '^_',
+          destructuredArrayIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          ignoreRestSiblings: true,
+        },
       ],
       // '@typescript-eslint/only-throw-error': 'off',
       // '@typescript-eslint/no-unsafe-return': 'off',
