@@ -54,7 +54,7 @@
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.4",
-    "@sinonjs/fake-timers": "^11.2.2",
+    "@sinonjs/fake-timers": "^11.3.1",
     "@size-limit/preset-small-lib": "^11.1.4",
     "@types/eslint__js": "^8.42.3",
     "@types/node": "^20.15.0",
