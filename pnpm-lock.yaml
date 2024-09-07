@@ -24,11 +24,11 @@ importers:
         specifier: ^9.9.0
         version: 9.9.0
       '@farfetched/core':
-        specifier: ^0.12.5
-        version: 0.12.5(effector@23.2.2)
+        specifier: ^0.12.8
+        version: 0.12.8(effector@23.2.2)
       '@farfetched/runtypes':
         specifier: ^0.12.5
-        version: 0.12.5(@farfetched/core@0.12.5(effector@23.2.2))(runtypes@6.7.0)
+        version: 0.12.5(@farfetched/core@0.12.8(effector@23.2.2))(runtypes@6.7.0)
       '@playwright/test':
         specifier: ^1.46.1
         version: 1.46.1
@@ -436,8 +436,8 @@ packages:
     resolution: {integrity: sha512-BsWiH1yFGjXXS2yvrf5LyuoSIIbPrGUWob917o+BTKuZ7qJdxX8aJLRxs1fS9n6r7vESrq1OUqb68dANcFXuQQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@farfetched/core@0.12.5':
-    resolution: {integrity: sha512-MmeV/OmeMw0uHQ9RcLHi4N6nYoSdptnnLqws21JncE79n2ALg7UujKbPe4HYPXjpE4rT8Rn19Y9KFZLDU5wVyA==}
+  '@farfetched/core@0.12.8':
+    resolution: {integrity: sha512-fufM7W8YfYBbL3uwoei3akicun68ru4AQCPp4GT2PBD/g8S9ztL7nE+pI0YDLiDxnbRwI6pnmSz92Mmp3aA8rA==}
     peerDependencies:
       effector: ^23.0.0
 
@@ -2342,13 +2342,13 @@ snapshots:
 
   '@eslint/object-schema@2.1.4': {}
 
-  '@farfetched/core@0.12.5(effector@23.2.2)':
+  '@farfetched/core@0.12.8(effector@23.2.2)':
     dependencies:
       effector: 23.2.2
 
-  '@farfetched/runtypes@0.12.5(@farfetched/core@0.12.5(effector@23.2.2))(runtypes@6.7.0)':
+  '@farfetched/runtypes@0.12.5(@farfetched/core@0.12.8(effector@23.2.2))(runtypes@6.7.0)':
     dependencies:
-      '@farfetched/core': 0.12.5(effector@23.2.2)
+      '@farfetched/core': 0.12.8(effector@23.2.2)
       runtypes: 6.7.0
 
   '@humanwhocodes/module-importer@1.0.1': {}
