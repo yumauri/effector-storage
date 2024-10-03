@@ -72,7 +72,7 @@
     "rollup-plugin-dts": "^6.1.1",
     "rollup-plugin-generate-package-json": "^3.2.0",
     "runtypes": "^6.7.0",
-    "size-limit": "^11.1.4",
+    "size-limit": "^11.1.6",
     "snoop": "^1.0.4",
     "ts-node": "^10.9.2",
     "tsd": "^0.31.2",
