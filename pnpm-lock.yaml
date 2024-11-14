@@ -117,8 +117,8 @@ importers:
         specifier: ^0.5.6
         version: 0.5.6
       vite:
-        specifier: ^5.4.3
-        version: 5.4.3(@types/node@20.16.5)(terser@5.31.6)
+        specifier: ^5.4.11
+        version: 5.4.11(@types/node@20.16.5)(terser@5.31.6)
 
 packages:
 
@@ -1935,8 +1935,8 @@ packages:
   validate-npm-package-license@3.0.4:
     resolution: {integrity: sha512-DpKm2Ui/xN7/HQKCtpZxoRWBhZ9Z0kqtygG8XCgNQ8ZlDnxuQmWhj566j8fN4Cu3/JmbhsDo7fcAJq4s9h27Ew==}
 
-  vite@5.4.3:
-    resolution: {integrity: sha512-IH+nl64eq9lJjFqU+/yrRnrHPVTlgy42/+IzbOdaFDVlyLgI/wDlf+FCobXLX1cT0X5+7LMyH1mIy2xJdLfo8Q==}
+  vite@5.4.11:
+    resolution: {integrity: sha512-c7jFQRklXua0mTzneGW9QVyxFjUgwcihC4bXEtujIo2ouWCe1Ajt/amn2PCxYnhYfd5k09JX3SB7OYWFKYqj8Q==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
     peerDependencies:
@@ -3792,7 +3792,7 @@ snapshots:
       spdx-correct: 3.2.0
       spdx-expression-parse: 3.0.1
 
-  vite@5.4.3(@types/node@20.16.5)(terser@5.31.6):
+  vite@5.4.11(@types/node@20.16.5)(terser@5.31.6):
     dependencies:
       esbuild: 0.21.5
       postcss: 8.4.45
