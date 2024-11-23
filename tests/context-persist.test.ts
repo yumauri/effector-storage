@@ -9,7 +9,7 @@ import { persist } from '../src/core'
 //
 
 test('context from pickup should be passed to adapter', async () => {
-  const watch = snoop((_value, _ctx) => undefined as any) // eslint-disable-line @typescript-eslint/no-unused-vars
+  const watch = snoop(() => undefined as any)
 
   const pickup = createEvent<number>()
   const $store = createStore(0)
@@ -33,8 +33,30 @@ test('context from pickup should be passed to adapter', async () => {
   assert.equal(watch.calls[1].arguments, [54, 42])
 })
 
+test('context from store should be passed to adapter', async () => {
+  const watch = snoop(() => undefined as any)
+
+  const $store = createStore(0)
+
+  persist({
+    store: $store,
+    adapter: () => ({ get: watch.fn, set: watch.fn }),
+    key: 'store',
+    context: createStore(42),
+  })
+
+  assert.is(watch.callCount, 1)
+  assert.equal(watch.calls[0].arguments, [undefined, 42])
+
+  //
+  ;($store as any).setState(54) // <- update store to trigger `set`
+
+  assert.is(watch.callCount, 2)
+  assert.equal(watch.calls[1].arguments, [54, 42])
+})
+
 test('context from context should be passed to adapter', async () => {
-  const watch = snoop((_value, _ctx) => undefined as any) // eslint-disable-line @typescript-eslint/no-unused-vars
+  const watch = snoop(() => undefined as any)
 
   const context = createEvent<string>()
   const $store = createStore(0)
@@ -67,7 +89,7 @@ test('context from context should be passed to adapter', async () => {
 })
 
 test('pickup should set different contexts in different scopes', async () => {
-  const watch = snoop((_value, _ctx) => undefined as any) // eslint-disable-line @typescript-eslint/no-unused-vars
+  const watch = snoop(() => undefined as any)
 
   const pickup = createEvent<{ name: string }>()
   const $store = createStore('')
@@ -109,7 +131,7 @@ test('pickup should set different contexts in different scopes', async () => {
 })
 
 test('context should change scope for async adapter', async () => {
-  const watch = snoop((value, _ctx) => value) // eslint-disable-line @typescript-eslint/no-unused-vars
+  const watch = snoop((value) => value)
 
   const pickup = createEvent<string>()
   const context = createEvent()
