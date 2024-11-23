@@ -15,7 +15,7 @@ jobs:
           - npm:effector@22.4.0
           - npm:effector@22.8.8
           - npm:effector@23.0.0
-          - npm:effector@23.2.2
+          - npm:effector@23.2.3
 
     name: ${{ matrix.effector-version }}
 
