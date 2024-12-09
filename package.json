@@ -65,7 +65,7 @@
     "eslint": "^9.15.0",
     "eslint-config-prettier": "^9.1.0",
     "patronum": "^2.3.0",
-    "prettier": "^3.3.3",
+    "prettier": "^3.4.2",
     "publint": "^0.2.12",
     "rollup": "^4.27.4",
     "rollup-plugin-command": "^1.1.3",
