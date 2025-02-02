@@ -3,8 +3,8 @@ import { test } from 'uvu'
 import * as assert from 'uvu/assert'
 import { snoop } from 'snoop'
 import { createEvent, createStore } from 'effector'
-import { Record, Literal, Number, Static } from 'runtypes'
-import { runtypeContract } from '@farfetched/runtypes'
+import * as s from 'superstruct'
+import { superstructContract } from '@farfetched/superstruct'
 import { persist } from '../src/core'
 import { storage } from '../src/storage'
 import { createStorageMock } from './mocks/storage.mock'
@@ -178,19 +178,19 @@ test('shoult validate initial storage value with complex contract (valid)', () =
   const fail = createEvent<any>()
   fail.watch(watch.fn)
 
-  const Asteroid = Record({
-    type: Literal('asteroid'),
-    mass: Number,
+  const Asteroid = s.type({
+    type: s.literal('asteroid'),
+    mass: s.number(),
   })
 
   mockStorage.setItem('asteroid0', '{"type":"asteroid","mass":42}')
-  const $asteroid0 = createStore<null | Static<typeof Asteroid>>(null)
+  const $asteroid0 = createStore<null | s.Infer<typeof Asteroid>>(null)
 
   persist({
     adapter: storageAdapter,
     store: $asteroid0,
     key: 'asteroid0',
-    contract: runtypeContract(Asteroid),
+    contract: superstructContract(Asteroid),
     fail,
   })
 
@@ -203,18 +203,18 @@ test('shoult validate initial storage value with complex contract (valid undefin
   const fail = createEvent<any>()
   fail.watch(watch.fn)
 
-  const Asteroid = Record({
-    type: Literal('asteroid'),
-    mass: Number,
+  const Asteroid = s.type({
+    type: s.literal('asteroid'),
+    mass: s.number(),
   })
 
-  const $asteroid1 = createStore<null | Static<typeof Asteroid>>(null)
+  const $asteroid1 = createStore<null | s.Infer<typeof Asteroid>>(null)
 
   persist({
     adapter: storageAdapter,
     store: $asteroid1,
     key: 'asteroid1',
-    contract: runtypeContract(Asteroid),
+    contract: superstructContract(Asteroid),
     fail,
   })
 
@@ -226,19 +226,19 @@ test('shoult validate initial storage value with complex contract (invalid)', ()
   const fail = createEvent<any>()
   fail.watch(watch.fn)
 
-  const Asteroid = Record({
-    type: Literal('asteroid'),
-    mass: Number,
+  const Asteroid = s.type({
+    type: s.literal('asteroid'),
+    mass: s.number(),
   })
 
   mockStorage.setItem('asteroid2', '42')
-  const $asteroid2 = createStore<null | Static<typeof Asteroid>>(null)
+  const $asteroid2 = createStore<null | s.Infer<typeof Asteroid>>(null)
 
   persist({
     adapter: storageAdapter,
     store: $asteroid2,
     key: 'asteroid2',
-    contract: runtypeContract(Asteroid),
+    contract: superstructContract(Asteroid),
     fail,
   })
 
@@ -251,7 +251,7 @@ test('shoult validate initial storage value with complex contract (invalid)', ()
       key: 'asteroid2',
       keyPrefix: '',
       operation: 'validate',
-      error: ['Expected { type: "asteroid"; mass: number; }, but was number'],
+      error: ['Expected an object, but received: 42'],
       value: 42,
     },
   ])
@@ -266,7 +266,7 @@ test('should validate value on storage external update', async () => {
   persist({
     store: $counter1,
     adapter: storageAdapter,
-    contract: runtypeContract(Number),
+    contract: superstructContract(s.number()),
     fail,
   })
 
@@ -298,7 +298,7 @@ test('should validate value on storage external update', async () => {
       key: 'counter1',
       keyPrefix: '',
       operation: 'validate',
-      error: ['Expected number, but was string'],
+      error: ['Expected a number, but received: "invalid"'],
       value: 'invalid',
     },
   ])
