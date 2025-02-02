@@ -45,7 +45,7 @@ function supports() {
 }
 
 /**
- * Creates BroadcastChannel string adapter
+ * Creates BroadcastChannel adapter
  */
 broadcast.factory = true as const
 export function broadcast(config?: BroadcastConfig): StorageAdapter {
@@ -72,4 +72,4 @@ export function createPersist(defaults?: ConfigPersist): Persist {
 /**
  * Default partially applied `persist`
  */
-export const persist = createPersist()
+export const persist = /*#__PURE__*/ createPersist()

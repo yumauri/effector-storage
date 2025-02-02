@@ -13,7 +13,7 @@ adapter.factory = true as const
 export function adapter({ area = data }: MemoryConfig = {}): StorageAdapter {
   const adapter: StorageAdapter = <State>(key: string) => ({
     get: () => area.get(key),
-    set: (value: State) => area.set(key, value),
+    set: (value: State) => void area.set(key, value),
   })
 
   adapter.keyArea = area

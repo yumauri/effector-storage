@@ -1,5 +1,5 @@
 import type { ConfigPersist, Persist } from './types'
-import { persist as base } from './core'
+import { persist as basePersist } from './core'
 
 export type {
   ConfigPersist,
@@ -51,7 +51,7 @@ export { async, either, farcached } from './tools'
  */
 export function createPersist(defaults?: ConfigPersist): Persist {
   return (config: any) =>
-    base({
+    basePersist({
       ...defaults,
       ...config,
     })
@@ -60,4 +60,4 @@ export function createPersist(defaults?: ConfigPersist): Persist {
 /**
  * Default `persist`
  */
-export const persist: Persist = base
+export const persist: Persist = basePersist

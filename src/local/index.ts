@@ -89,4 +89,4 @@ export function createPersist(defaults?: ConfigPersist): Persist {
 /**
  * Default partially applied `persist`
  */
-export const persist = createPersist()
+export const persist = /*#__PURE__*/ createPersist()

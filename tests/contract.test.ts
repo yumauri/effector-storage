@@ -74,7 +74,7 @@ test('shoult fail on invalid initial storage value with simple contract', () => 
       key: 'number2',
       keyPrefix: '',
       operation: 'validate',
-      error: undefined,
+      error: ['Invalid data'],
       value: 'invalid',
     },
   ])
@@ -118,7 +118,7 @@ test('should not break sync stores with same key and different validators', () =
       key: 'same-key-3',
       keyPrefix: '',
       operation: 'validate',
-      error: undefined,
+      error: ['Invalid data'],
       value: 'plain value',
     },
   ])
@@ -167,7 +167,7 @@ test('validation should not prevent persisting state', () => {
       key: 'string1',
       keyPrefix: '',
       operation: 'validate',
-      error: undefined,
+      error: ['Invalid data'],
       value: 42,
     },
   ])

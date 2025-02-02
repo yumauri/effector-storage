@@ -1,14 +1,15 @@
-import type { Effect, Subscription } from 'effector'
+import type { Event, Effect, Subscription } from 'effector'
 import type {
   ConfigAdapter,
   ConfigAdapterFactory,
   ConfigPersist,
   ConfigSourceTarget,
   ConfigStore,
-  Contract,
   Done,
   Fail,
   Finally,
+  FinallyDone,
+  FinallyFail,
 } from '../types'
 import {
   attach,
@@ -23,27 +24,6 @@ import {
   withRegion,
 } from 'effector'
 import { getAreaStorage } from './area'
-
-// helper function to swap two function arguments
-// end extract current context from ref-box
-const contextual =
-  <T, C, R>(fn: (value: T, ctx?: C) => R) =>
-  ([ref]: [C?], value: T) =>
-    fn(value, ref)
-
-// helper function to validate data with contract
-const contracted =
-  <T>(contract?: Contract<T>) =>
-  (raw: unknown) =>
-    !contract || // no contract -> data is valid
-    raw === undefined || // `undefined` is always valid
-    ('isData' in contract ? contract.isData(raw) : contract(raw))
-      ? (raw as T)
-      : (() => {
-          throw 'getErrorMessages' in contract
-            ? contract.getErrorMessages(raw)
-            : undefined
-        })()
 
 /**
  * Default sink for unhandled errors
@@ -135,7 +115,10 @@ export function persist<State, Err = Error>(
   // create all auxiliary units and nodes within the region,
   // to be able to remove them all at once on unsubscription
   withRegion(region, () => {
-    const ctx = createStore<[any?]>([], { serialize: 'ignore' })
+    const ctx = createStore<[any?]>(
+      [is.store(context) ? context.defaultState : undefined],
+      { serialize: 'ignore' }
+    )
 
     const value = adapter<State>(keyPrefix + key, (x) => {
       update(x)
@@ -147,15 +130,22 @@ export function persist<State, Err = Error>(
 
     const getFx = attach({
       source: ctx,
-      effect: contextual(value.get),
-    }) as any as Effect<void, State, Err>
+      effect: ([ref], raw?: any) => value.get(raw, ref),
+    }) as Effect<void, State, Err>
 
     const setFx = attach({
       source: ctx,
-      effect: contextual(value.set),
-    }) as any as Effect<State, void, Err>
+      effect: ([ref], state: State) => value.set(state, ref),
+    }) as Effect<State, void, Err>
 
-    const validateFx = createEffect<unknown, State>(contracted(contract))
+    const validateFx = createEffect<unknown, State>((raw) => {
+      if (
+        !contract || // no contract -> data is valid
+        raw === undefined || // `undefined` is always valid
+        ('isData' in contract ? contract.isData(raw) : contract(raw))
+      ) return raw as State // prettier-ignore
+      throw (contract as any).getErrorMessages?.(raw) ?? ['Invalid data']
+    })
 
     const complete = createEvent<Finally<State, Err>>()
 
@@ -163,7 +153,7 @@ export function persist<State, Err = Error>(
 
     let update: (raw?: any) => any = getFx
     ctx.updates.watch(() => {
-      update = scopeBind(getFx as any, { safe: true })
+      update = scopeBind(getFx, { safe: true })
     })
 
     sample({
@@ -181,19 +171,19 @@ export function persist<State, Err = Error>(
     })
 
     sample({
-      clock: [getFx.doneData, sample(setFx, setFx.done)],
-      filter: <T>(x?: T | undefined): x is T => x !== undefined,
-      target: storage as any,
+      clock: [getFx.doneData as Event<any>, sample(setFx, setFx.done)],
+      filter: (x) => x !== undefined,
+      target: storage,
     })
 
     sample({
-      clock: [getFx.doneData, storage],
-      target: validateFx as any,
+      clock: [getFx.doneData as Event<any>, storage],
+      target: validateFx,
     })
 
     sample({
       clock: validateFx.doneData,
-      filter: <T>(x?: T | undefined): x is T => x !== undefined,
+      filter: (x) => x !== undefined,
       target: target as any,
     })
 
@@ -219,7 +209,8 @@ export function persist<State, Err = Error>(
     if (done) {
       sample({
         clock: complete,
-        filter: ({ status }) => status === 'done',
+        filter: (payload: Finally<State, Err>): payload is FinallyDone<State> =>
+          payload.status === 'done',
         fn: ({ key, keyPrefix, operation, value }): Done<State> => ({
           key,
           keyPrefix,
@@ -232,8 +223,9 @@ export function persist<State, Err = Error>(
 
     sample({
       clock: complete,
-      filter: ({ status }) => status === 'fail',
-      fn: ({ key, keyPrefix, operation, error, value }: any): Fail<Err> => ({
+      filter: (payload: Finally<State, Err>): payload is FinallyFail<Err> =>
+        payload.status === 'fail',
+      fn: ({ key, keyPrefix, operation, error, value }): Fail<Err> => ({
         key,
         keyPrefix,
         operation,

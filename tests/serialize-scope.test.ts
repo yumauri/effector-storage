@@ -13,7 +13,7 @@ const dumbAdapter: StorageAdapter = <T>() => {
   let __: T = 42 as any
   return {
     get: (): T => __,
-    set: (value: T) => (__ = value),
+    set: (value: T) => void (__ = value),
   }
 }
 
@@ -118,6 +118,34 @@ test('persist usage should not warn', async () => {
 
   // should fill scoped store value
   assert.is(scope.getState($store), 42)
+  assert.is($store.getState(), 0)
+
+  serialize(scope)
+
+  assert.equal(fn.calls[0]?.arguments, undefined)
+  assert.is(fn.callCount, 0)
+})
+
+test('setting value to persisted store should not warn', async () => {
+  const fn: MockErrorFn = (console.error as any).mock
+
+  const set = createEvent<number>()
+  const pickup = createEvent()
+  const $store = createStore(0, { sid: 'y' }).on(set, (_, x) => x)
+
+  persist({
+    store: $store,
+    pickup,
+    adapter: dumbAdapter,
+    key: 'store_y',
+  })
+
+  const scope = fork()
+  await allSettled(pickup, { scope })
+  await allSettled(set, { scope, params: 24 })
+
+  // should fill scoped store value
+  assert.is(scope.getState($store), 24)
   assert.is($store.getState(), 0)
 
   serialize(scope)
