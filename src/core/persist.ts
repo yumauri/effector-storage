@@ -24,6 +24,7 @@ import {
   withRegion,
 } from 'effector'
 import { getAreaStorage } from './area'
+import { validate } from './validate'
 
 /**
  * Default sink for unhandled errors
@@ -138,14 +139,11 @@ export function persist<State, Err = Error>(
       effect: ([ref], state: State) => value.set(state, ref),
     }) as Effect<State, void, Err>
 
-    const validateFx = createEffect<unknown, State>((raw) => {
-      if (
-        !contract || // no contract -> data is valid
-        raw === undefined || // `undefined` is always valid
-        ('isData' in contract ? contract.isData(raw) : contract(raw))
-      ) return raw as State // prettier-ignore
-      throw (contract as any).getErrorMessages?.(raw) ?? ['Invalid data']
-    })
+    const validateFx = createEffect<unknown, State>((raw) =>
+      raw === undefined // `undefined` is always valid
+        ? raw
+        : validate(raw, contract)
+    )
 
     const complete = createEvent<Finally<State, Err>>()
 
