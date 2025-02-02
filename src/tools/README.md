@@ -46,7 +46,7 @@ Note, that `either` will not fallback to second adapter in case of read/write er
 
 ## `farcached`
 
-Wraps [`@farfetched/core`](https://farfetched.pages.dev/api/operators/cache.html) cache adapter to be used as `persist` adapter :)
+Wraps [`@farfetched/core`](https://ff.effector.dev/api/operators/cache.html) cache adapter to be used as `persist` adapter :)
 
 ```javascript
 import { persist, farcached } from 'effector-storage'
@@ -68,4 +68,4 @@ Out of the box Farfetched provides 4 cache adapters:
 
 From real usage point of view, using Farfetched cache adapters could be useful, when you need logic for cache invalidation, because all of provided adapters have `maxAge` option.
 
-Also, you could use Farfetched cache adapters to inject different cache adapters with `fork` using [`cache.__.$instance`](https://farfetched.pages.dev/recipes/server_cache.html#inject-adapter) internal store.
+Also, you could use Farfetched cache adapters to inject different cache adapters with `fork` using [`cache.__.$instance`](https://ff.effector.dev/recipes/server_cache.html#inject-adapter) internal store.
