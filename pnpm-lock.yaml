@@ -24,11 +24,11 @@ importers:
         specifier: ^9.15.0
         version: 9.15.0
       '@farfetched/core':
-        specifier: ^0.12.8
-        version: 0.12.8(effector@23.2.3)
+        specifier: ^0.13.1
+        version: 0.13.1(effector@23.2.3)
       '@farfetched/runtypes':
         specifier: ^0.12.8
-        version: 0.12.8(@farfetched/core@0.12.8(effector@23.2.3))(runtypes@6.7.0)
+        version: 0.12.8(@farfetched/core@0.13.1(effector@23.2.3))(runtypes@6.7.0)
       '@playwright/test':
         specifier: ^1.49.0
         version: 1.49.0
@@ -584,8 +584,8 @@ packages:
     resolution: {integrity: sha512-2b/g5hRmpbb1o4GnTZax9N9m0FXzz9OV42ZzI4rDDMDuHUqigAiQCEWChBWCY4ztAGVRjoWT19v0yMmc5/L5kA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@farfetched/core@0.12.8':
-    resolution: {integrity: sha512-fufM7W8YfYBbL3uwoei3akicun68ru4AQCPp4GT2PBD/g8S9ztL7nE+pI0YDLiDxnbRwI6pnmSz92Mmp3aA8rA==}
+  '@farfetched/core@0.13.1':
+    resolution: {integrity: sha512-b0v3W+Z/uerIG8iz5IKfGxh2bC8L36eYQvozzBEtydCb8NshvyBrZ+exAzB7yL5Qm6PhIhD5K6POvvCq+0Cc9w==}
     peerDependencies:
       effector: ^23.0.0
 
@@ -2529,13 +2529,13 @@ snapshots:
     dependencies:
       levn: 0.4.1
 
-  '@farfetched/core@0.12.8(effector@23.2.3)':
+  '@farfetched/core@0.13.1(effector@23.2.3)':
     dependencies:
       effector: 23.2.3
 
-  '@farfetched/runtypes@0.12.8(@farfetched/core@0.12.8(effector@23.2.3))(runtypes@6.7.0)':
+  '@farfetched/runtypes@0.12.8(@farfetched/core@0.13.1(effector@23.2.3))(runtypes@6.7.0)':
     dependencies:
-      '@farfetched/core': 0.12.8(effector@23.2.3)
+      '@farfetched/core': 0.13.1(effector@23.2.3)
       runtypes: 6.7.0
 
   '@humanfs/core@0.19.1': {}

@@ -48,7 +48,7 @@
     "@babel/plugin-transform-block-scoping": "^7.25.9",
     "@babel/preset-typescript": "^7.26.0",
     "@eslint/js": "^9.15.0",
-    "@farfetched/core": "^0.12.8",
+    "@farfetched/core": "^0.13.1",
     "@farfetched/runtypes": "^0.12.8",
     "@playwright/test": "^1.49.0",
     "@rollup/plugin-babel": "^6.0.4",
