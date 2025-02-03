@@ -2,29 +2,29 @@ import { Contract } from '../types'
 
 export function validate<Data>(
   raw: unknown,
-  schema?: Contract<Data>
+  contract?: Contract<Data>
 ): Data | Promise<Data> {
   // no contract -> data is valid
-  if (!schema) {
+  if (!contract) {
     return raw as Data
   }
 
   // contract is not a function nor object
-  if (typeof schema !== 'function' && typeof schema !== 'object') {
+  if (typeof contract !== 'function' && typeof contract !== 'object') {
     throw ['Invalid contract']
   }
 
   // contract is a Contract protocol
-  if ('isData' in schema) {
-    if (schema.isData(raw)) {
+  if ('isData' in contract) {
+    if (contract.isData(raw)) {
       return raw as Data
     }
-    throw schema.getErrorMessages(raw)
+    throw contract.getErrorMessages(raw)
   }
 
   // contract is a Standard Schema
-  if ('~standard' in schema) {
-    const result = schema['~standard'].validate(raw)
+  if ('~standard' in contract) {
+    const result = contract['~standard'].validate(raw)
     const check = (result: any) => {
       if (result.issues) throw result.issues
       return result.value as Data
@@ -35,8 +35,8 @@ export function validate<Data>(
   }
 
   // contract is a simple 'type guard'-like function
-  if (typeof schema === 'function') {
-    if (schema(raw)) {
+  if (typeof contract === 'function') {
+    if (contract(raw)) {
       return raw as Data
     }
     throw ['Invalid data']
