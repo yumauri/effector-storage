@@ -3,8 +3,8 @@ import { test } from 'uvu'
 import * as assert from 'uvu/assert'
 import { snoop } from 'snoop'
 import { createStore, createEvent } from 'effector'
-import { Record, Literal, Number, Optional } from 'runtypes'
-import { runtypeContract } from '@farfetched/runtypes'
+import * as s from 'superstruct'
+import { superstructContract } from '@farfetched/superstruct'
 import { createStorage, storage, persist } from '../src'
 import { createStorageMock } from './mocks/storage.mock'
 import { type Events, createEventsMock } from './mocks/events.mock'
@@ -265,9 +265,9 @@ test('should handle sync with `persist` with different validators, update from s
 test('shoult validate storage value on get with complex contract (valid)', () => {
   const watch = snoop(() => undefined)
 
-  const Asteroid = Record({
-    type: Literal('asteroid'),
-    mass: Number,
+  const Asteroid = s.type({
+    type: s.literal('asteroid'),
+    mass: s.number(),
   })
 
   mockStorage.setItem('asteroid0', '{"type":"asteroid","mass":42}')
@@ -275,7 +275,7 @@ test('shoult validate storage value on get with complex contract (valid)', () =>
   const { getFx } = createStorage({
     adapter: storageAdapter,
     key: 'asteroid0',
-    contract: runtypeContract(Asteroid),
+    contract: superstructContract(Asteroid),
   })
 
   getFx.watch(watch.fn)
@@ -297,17 +297,17 @@ test('shoult validate storage value on get with complex contract (valid)', () =>
 test('shoult validate storage value on get with complex contract (valid undefined)', () => {
   const watch = snoop(() => undefined)
 
-  const Asteroid = Optional(
-    Record({
-      type: Literal('asteroid'),
-      mass: Number,
+  const Asteroid = s.optional(
+    s.type({
+      type: s.literal('asteroid'),
+      mass: s.number(),
     })
   )
 
   const { getFx } = createStorage({
     adapter: storageAdapter,
     key: 'asteroid1',
-    contract: runtypeContract(Asteroid),
+    contract: superstructContract(Asteroid),
   })
 
   getFx.watch(watch.fn)
@@ -329,15 +329,15 @@ test('shoult validate storage value on get with complex contract (valid undefine
 test('shoult validate storage value on get with complex contract (invalid undefined)', () => {
   const watch = snoop(() => undefined)
 
-  const Asteroid = Record({
-    type: Literal('asteroid'),
-    mass: Number,
+  const Asteroid = s.type({
+    type: s.literal('asteroid'),
+    mass: s.number(),
   })
 
   const { getFx } = createStorage({
     adapter: storageAdapter,
     key: 'asteroid1',
-    contract: runtypeContract(Asteroid),
+    contract: superstructContract(Asteroid),
   })
 
   getFx.watch(watch.fn)
@@ -355,9 +355,7 @@ test('shoult validate storage value on get with complex contract (invalid undefi
         key: 'asteroid1',
         keyPrefix: '',
         operation: 'validate',
-        error: [
-          'Expected { type: "asteroid"; mass: number; }, but was undefined',
-        ],
+        error: ['Expected an object, but received: undefined'],
         value: undefined,
       },
     },
@@ -367,9 +365,9 @@ test('shoult validate storage value on get with complex contract (invalid undefi
 test('shoult validate storage value on get with complex contract (invalid)', () => {
   const watch = snoop(() => undefined)
 
-  const Asteroid = Record({
-    type: Literal('asteroid'),
-    mass: Number,
+  const Asteroid = s.type({
+    type: s.literal('asteroid'),
+    mass: s.number(),
   })
 
   mockStorage.setItem('asteroid2', '42')
@@ -377,7 +375,7 @@ test('shoult validate storage value on get with complex contract (invalid)', () 
   const { getFx } = createStorage({
     adapter: storageAdapter,
     key: 'asteroid2',
-    contract: runtypeContract(Asteroid),
+    contract: superstructContract(Asteroid),
   })
 
   getFx.watch(watch.fn)
@@ -395,7 +393,7 @@ test('shoult validate storage value on get with complex contract (invalid)', () 
         key: 'asteroid2',
         keyPrefix: '',
         operation: 'validate',
-        error: ['Expected { type: "asteroid"; mass: number; }, but was number'],
+        error: ['Expected an object, but received: 42'],
         value: 42,
       },
     },
@@ -410,7 +408,7 @@ test('should validate value on storage external update', async () => {
   const { getFx } = createStorage({
     adapter: storageAdapter,
     key: 'storage-contract-counter-1',
-    contract: runtypeContract(Number),
+    contract: superstructContract(s.number()),
   })
 
   getFx.watch(watch.fn)
@@ -452,7 +450,7 @@ test('should validate value on storage external update', async () => {
         key: 'storage-contract-counter-1',
         keyPrefix: '',
         operation: 'validate',
-        error: ['Expected number, but was string'],
+        error: ['Expected a number, but received: "invalid"'],
         value: 'invalid',
       },
     },

@@ -4,7 +4,6 @@ import type {
   ConfigAdapterFactory,
   StorageHandles,
   ConfigCreateStorage,
-  Contract,
   Fail,
 } from '../types'
 import {
@@ -17,15 +16,7 @@ import {
   scopeBind,
 } from 'effector'
 import { getAreaStorage } from './area'
-
-// helper function to validate data with contract
-function validate<T>(raw: unknown, contract?: Contract<T>) {
-  if (
-    !contract || // no contract -> data is valid
-    ('isData' in contract ? contract.isData(raw) : contract(raw))
-  ) return raw as T // prettier-ignore
-  throw (contract as any).getErrorMessages?.(raw) ?? ['Invalid data']
-}
+import { validate } from './validate'
 
 type Config<State> = Partial<
   ConfigCreateStorage<State> & { key: string } & (

@@ -217,7 +217,9 @@ test('should validate against contract protocol (invalid)', () => {
       key: 'data',
       keyPrefix: '',
       operation: 'validate',
-      error: ['type: Expected the literal `"asteroid"`, but received: "not asteroid"'],
+      error: [
+        'type: Expected the literal `"asteroid"`, but received: "not asteroid"',
+      ],
       value: { type: 'not asteroid', mass: Infinity },
     },
   ])
