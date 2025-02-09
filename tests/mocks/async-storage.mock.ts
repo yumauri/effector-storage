@@ -22,7 +22,7 @@ export class AsyncStorageMock implements AsyncStorage {
     await Promise.resolve()
     key = String(key)
     this.getCallback(key)
-    return this.storage.has(key) ? this.storage.get(key) ?? null : null
+    return this.storage.has(key) ? (this.storage.get(key) ?? null) : null
   }
 
   public async removeItem(key: string): Promise<void> {

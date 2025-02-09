@@ -36,7 +36,7 @@ export class StorageMock implements Storage {
   public getItem(key: string): string | null {
     key = String(key)
     this.getCallback(key)
-    return this.storage.has(key) ? this.storage.get(key) ?? null : null
+    return this.storage.has(key) ? (this.storage.get(key) ?? null) : null
   }
 
   public removeItem(key: string): void {
