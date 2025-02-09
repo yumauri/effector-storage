@@ -34,7 +34,7 @@ test.after(() => {
 // Tests
 //
 
-test('shoult validate initial storage value with simple contract', () => {
+test('should validate initial storage value with simple contract', () => {
   mockStorage.setItem('number1', '42')
   const $number1 = createStore(0)
 
@@ -49,7 +49,7 @@ test('shoult validate initial storage value with simple contract', () => {
   assert.is($number1.getState(), 42)
 })
 
-test('shoult fail on invalid initial storage value with simple contract', () => {
+test('should fail on invalid initial storage value with simple contract', () => {
   const watch = snoop(() => undefined)
   const fail = createEvent<any>()
   fail.watch(watch.fn)
@@ -74,7 +74,7 @@ test('shoult fail on invalid initial storage value with simple contract', () => 
       key: 'number2',
       keyPrefix: '',
       operation: 'validate',
-      error: undefined,
+      error: ['Invalid data'],
       value: 'invalid',
     },
   ])
@@ -118,7 +118,7 @@ test('should not break sync stores with same key and different validators', () =
       key: 'same-key-3',
       keyPrefix: '',
       operation: 'validate',
-      error: undefined,
+      error: ['Invalid data'],
       value: 'plain value',
     },
   ])
@@ -167,13 +167,13 @@ test('validation should not prevent persisting state', () => {
       key: 'string1',
       keyPrefix: '',
       operation: 'validate',
-      error: undefined,
+      error: ['Invalid data'],
       value: 42,
     },
   ])
 })
 
-test('shoult validate initial storage value with complex contract (valid)', () => {
+test('should validate initial storage value with complex contract (valid)', () => {
   const watch = snoop(() => undefined)
   const fail = createEvent<any>()
   fail.watch(watch.fn)
@@ -198,7 +198,7 @@ test('shoult validate initial storage value with complex contract (valid)', () =
   assert.is(watch.callCount, 0) // no errors
 })
 
-test('shoult validate initial storage value with complex contract (valid undefined)', () => {
+test('should validate initial storage value with complex contract (valid undefined)', () => {
   const watch = snoop(() => undefined)
   const fail = createEvent<any>()
   fail.watch(watch.fn)
@@ -221,7 +221,7 @@ test('shoult validate initial storage value with complex contract (valid undefin
   assert.is(watch.callCount, 0) // no errors, because `undefined` is valid value by contract
 })
 
-test('shoult validate initial storage value with complex contract (invalid)', () => {
+test('should validate initial storage value with complex contract (invalid)', () => {
   const watch = snoop(() => undefined)
   const fail = createEvent<any>()
   fail.watch(watch.fn)

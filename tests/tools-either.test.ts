@@ -16,7 +16,7 @@ const dumbAdapter: StorageAdapter = <T>() => {
   let __: T = 0 as any
   return {
     get: (): T => __,
-    set: (value: T) => (__ = value),
+    set: (value: T) => void (__ = value),
   }
 }
 

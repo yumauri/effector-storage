@@ -1,16 +1,18 @@
 import type { Event, Effect, Store, Unit, Subscription } from 'effector'
+import type { StandardSchemaV1 } from './types-standard-schema'
+import type { Contract as ContractProtocol } from './types-contract'
 
 export interface Adapter<State> {
   get( //
     this: void,
     raw?: any,
     ctx?: any
-  ): State | Promise<State | undefined> | undefined
+  ): State | undefined | Promise<State | undefined>
   set( //
     this: void,
     value: State,
     ctx?: any
-  ): void
+  ): void | Promise<void>
 }
 
 export interface DisposableAdapter<State> extends Adapter<State> {
@@ -33,10 +35,8 @@ export interface StorageAdapterFactory<AdapterConfig> {
 
 export type Contract<Data> =
   | ((raw: unknown) => raw is Data)
-  | {
-      isData: (raw: unknown) => raw is Data
-      getErrorMessages: (raw: unknown) => string[]
-    }
+  | StandardSchemaV1<unknown, Data>
+  | ContractProtocol<unknown, Data>
 
 export type Done<State> = {
   key: string
@@ -53,9 +53,9 @@ export type Fail<Err> = {
   value?: any
 }
 
-export type Finally<State, Err> =
-  | (Done<State> & { status: 'done' })
-  | (Fail<Err> & { status: 'fail' })
+export type FinallyDone<State> = Done<State> & { status: 'done' }
+export type FinallyFail<Err> = Fail<Err> & { status: 'fail' }
+export type Finally<State, Err> = FinallyDone<State> | FinallyFail<Err>
 
 export interface ConfigPersist {
   pickup?: Unit<any>
