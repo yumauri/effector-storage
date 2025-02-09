@@ -46,7 +46,7 @@ test('should be ok on good parameters', () => {
   assert.not.throws(() => createStorage({ key: 'session::store' }))
 })
 
-test('persisted store shoult reset value on init to default', async () => {
+test('persisted store should reset value on init to default', async () => {
   const $counter00 = createStore(0, { name: 'counter00' })
   persist({ store: $counter00, def: 42 })
   assert.is($counter00.getState(), 42)

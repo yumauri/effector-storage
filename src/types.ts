@@ -1,4 +1,6 @@
 import type { Event, Effect, Store, Unit, Subscription } from 'effector'
+import type { StandardSchemaV1 } from './types-standard-schema'
+import type { Contract as ContractProtocol } from './types-contract'
 
 export interface Adapter<State> {
   get( //
@@ -34,10 +36,8 @@ export interface StorageAdapterFactory<AdapterConfig> {
 
 export type Contract<Data> =
   | ((raw: unknown) => raw is Data)
-  | {
-      isData: (raw: unknown) => raw is Data
-      getErrorMessages: (raw: unknown) => string[]
-    }
+  | StandardSchemaV1<unknown, Data>
+  | ContractProtocol<unknown, Data>
 
 export type Done<State> = {
   key: string

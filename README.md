@@ -201,7 +201,7 @@ export type Contract<Data> =
     }
 ```
 
-So, it could be simple type guard function in trivial use cases, or more complex object with `isData` type guard and `getErrorMessages` function, which returns array of error messages. This format is fully compatible with [Farfetched contracts](https://farfetched.pages.dev/api/primitives/contract.html), so you can use any adapter from Farfetched ([runtypes](https://farfetched.pages.dev/api/contracts/runtypes.html), [zod](https://farfetched.pages.dev/api/contracts/zod.html), [io-ts](https://farfetched.pages.dev/api/contracts/io-ts.html), [superstruct](https://farfetched.pages.dev/api/contracts/superstruct.html), [typed-contracts](https://farfetched.pages.dev/api/contracts/typed-contracts.html)) with `persist` and `contract` option:
+So, it could be simple type guard function in trivial use cases, or more complex object with `isData` type guard and `getErrorMessages` function, which returns array of error messages. This format is fully compatible with [Farfetched contracts](https://withease.effector.dev/protocols/contract.html), so you can use any adapter from Farfetched ([runtypes](https://ff.effector.dev/api/contracts/runtypes.html), [zod](https://ff.effector.dev/api/contracts/zod.html), [io-ts](https://ff.effector.dev/api/contracts/io-ts.html), [superstruct](https://ff.effector.dev/api/contracts/superstruct.html), [typed-contracts](https://ff.effector.dev/api/contracts/typed-contracts.html), [valibot](https://ff.effector.dev/api/contracts/valibot.html)) with `persist` and `contract` option:
 
 ```typescript
 // simple type guard
@@ -214,18 +214,18 @@ persist({
 
 ```typescript
 // complex contract with Farfetched adapter
-import { Record, Literal, Number } from 'runtypes'
-import { runtypeContract } from '@farfetched/runtypes'
+import * as s from 'superstruct'
+import { superstructContract } from '@farfetched/superstruct'
 
-const Asteroid = Record({
-  type: Literal('asteroid'),
-  mass: Number,
+const Asteroid = s.type({
+  type: s.literal('asteroid'),
+  mass: s.number(),
 })
 
 persist({
   store: $asteroid,
   key: 'asteroid',
-  contract: runtypeContract(Asteroid),
+  contract: superstructContract(Asteroid),
 })
 ```
 

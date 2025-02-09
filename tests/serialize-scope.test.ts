@@ -51,10 +51,20 @@ test('store without sid should warn', async () => {
 
   serialize(scope)
 
-  assert.equal(fn.calls[0]?.arguments, [
-    'There is a store without sid in this scope, its value is omitted',
-  ])
-  assert.is(fn.callCount, 1)
+  // error message prior to effector 23.3.0
+  const oldMsg =
+    'There is a store without sid in this scope, its value is omitted'
+
+  // error message after effector 23.3.0
+  const newMsg =
+    'serialize: One or more stores dont have sids, their values are omitted'
+
+  assert.is(fn.calls[0]?.arguments.length, 1)
+  const msg = fn.calls[0]?.arguments[0]
+  assert.ok(msg === oldMsg || msg === newMsg)
+
+  // in effector after 23.3.0, there are two calls to console.error
+  assert.is(fn.callCount, msg === oldMsg ? 1 : 2)
 })
 
 test('store with sid should not warn', async () => {
