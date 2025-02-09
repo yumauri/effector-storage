@@ -1,123 +1,295 @@
+import type { StorageAdapter } from '../src'
 import { test } from 'uvu'
 import * as assert from 'uvu/assert'
+import { snoop } from 'snoop'
+import { createEvent, createStore } from 'effector'
 import * as s from 'superstruct'
 import { type } from 'arktype'
 import { superstructContract } from '@farfetched/superstruct'
-import { validate } from '../src/core/validate'
+import { persist } from '../src/core'
+
+//
+// Dumb fake adapter
+//
+
+const dumbAdapter = (initial: any): StorageAdapter => {
+  return <T>() => {
+    let __: T = initial
+    return {
+      get: (): T => __,
+      set: (value: T) => void (__ = value),
+    }
+  }
+}
+
+//
+// Tests
+//
 
 test('should allow undefined schema for validation (valid)', () => {
-  const data = { any: 'data' }
-  assert.not.throws(() => validate(data))
-  assert.equal(validate(data), data)
+  const watch = snoop(() => undefined)
+  const $data = createStore(null)
+  const fail = createEvent<any>()
+  fail.watch(watch.fn)
+
+  persist({
+    adapter: dumbAdapter({ any: 'data' }),
+    store: $data,
+    key: 'data',
+    fail,
+  })
+
+  assert.equal($data.getState(), { any: 'data' })
+
+  assert.is(watch.callCount, 0)
 })
 
 test('should fail on invalid schema (string)', () => {
-  const data = { any: 'data' }
-  const contract = 'invalid schema' as any
+  const watch = snoop(() => undefined)
+  const $data = createStore(null)
+  const fail = createEvent<any>()
+  fail.watch(watch.fn)
 
-  try {
-    validate(data, contract)
-    assert.unreachable('should have thrown')
-  } catch (err) {
-    assert.equal(err, ['Invalid contract'])
-  }
+  persist({
+    adapter: dumbAdapter({ any: 'data' }),
+    store: $data,
+    key: 'data',
+    contract: 'invalid schema' as any,
+    fail,
+  })
+
+  assert.is($data.getState(), null)
+
+  assert.is(watch.callCount, 1)
+  assert.equal(watch.calls[0].arguments, [
+    {
+      key: 'data',
+      keyPrefix: '',
+      operation: 'validate',
+      error: ['Invalid contract'],
+      value: { any: 'data' },
+    },
+  ])
 })
 
 test('should fail on invalid schema (object)', () => {
-  const data = { any: 'data' }
-  const contract = {} as any
+  const watch = snoop(() => undefined)
+  const $data = createStore(null)
+  const fail = createEvent<any>()
+  fail.watch(watch.fn)
 
-  try {
-    validate(data, contract)
-    assert.unreachable('should have thrown')
-  } catch (err) {
-    assert.equal(err, ['Invalid contract'])
-  }
+  persist({
+    adapter: dumbAdapter({ any: 'data' }),
+    store: $data,
+    key: 'data',
+    contract: {} as any,
+    fail,
+  })
+
+  assert.is($data.getState(), null)
+
+  assert.is(watch.callCount, 1)
+  assert.equal(watch.calls[0].arguments, [
+    {
+      key: 'data',
+      keyPrefix: '',
+      operation: 'validate',
+      error: ['Invalid contract'],
+      value: { any: 'data' },
+    },
+  ])
 })
 
 test('should validate with function (valid)', () => {
-  const data = 'any data'
-  const contract = (x: any): x is string => typeof x === 'string'
-  assert.not.throws(() => validate(data, contract))
-  assert.equal(validate(data, contract), data)
+  const watch = snoop(() => undefined)
+  const $data = createStore(null)
+  const fail = createEvent<any>()
+  fail.watch(watch.fn)
+
+  persist({
+    adapter: dumbAdapter('any data'),
+    store: $data,
+    key: 'data',
+    contract: (raw): raw is string => typeof raw === 'string',
+    fail,
+  })
+
+  assert.is($data.getState(), 'any data')
+
+  assert.is(watch.callCount, 0)
 })
 
 test('should validate with function (invalid)', () => {
-  const data = 'any data'
-  const contract = (x: any): x is number => typeof x === 'number'
+  const watch = snoop(() => undefined)
+  const $data = createStore(null)
+  const fail = createEvent<any>()
+  fail.watch(watch.fn)
 
-  try {
-    validate(data, contract)
-    assert.unreachable('should have thrown')
-  } catch (err) {
-    assert.equal(err, ['Invalid data'])
-  }
+  persist({
+    adapter: dumbAdapter('any data'),
+    store: $data,
+    key: 'data',
+    contract: (raw): raw is number => typeof raw === 'number',
+    fail,
+  })
+
+  assert.is($data.getState(), null)
+
+  assert.is(watch.callCount, 1)
+  assert.equal(watch.calls[0].arguments, [
+    {
+      key: 'data',
+      keyPrefix: '',
+      operation: 'validate',
+      error: ['Invalid data'],
+      value: 'any data',
+    },
+  ])
 })
 
 test('should validate against contract protocol (simple, valid)', () => {
-  const data = 'any data'
-  assert.not.throws(() => validate(data, superstructContract(s.string())))
-  assert.equal(validate(data, superstructContract(s.string())), data)
+  const watch = snoop(() => undefined)
+  const $data = createStore(null)
+  const fail = createEvent<any>()
+  fail.watch(watch.fn)
+
+  persist({
+    adapter: dumbAdapter('any data'),
+    store: $data,
+    key: 'data',
+    contract: superstructContract(s.string()),
+    fail,
+  })
+
+  assert.is($data.getState(), 'any data')
+
+  assert.is(watch.callCount, 0)
 })
 
 test('should validate against contract protocol (complex, valid)', () => {
+  const watch = snoop(() => undefined)
+  const $data = createStore(null)
+  const fail = createEvent<any>()
+  fail.watch(watch.fn)
+
   const Asteroid = s.type({
     type: s.literal('asteroid'),
     mass: s.number(),
   })
 
-  const data = { type: 'asteroid', mass: 42 }
-  assert.not.throws(() => validate(data, superstructContract(Asteroid)))
-  assert.equal(validate(data, superstructContract(Asteroid)), data)
+  persist({
+    adapter: dumbAdapter({ type: 'asteroid', mass: 42 }),
+    store: $data,
+    key: 'data',
+    contract: superstructContract(Asteroid),
+    fail,
+  })
+
+  assert.equal($data.getState(), { type: 'asteroid', mass: 42 })
+
+  assert.is(watch.callCount, 0)
 })
 
 test('should validate against contract protocol (invalid)', () => {
+  const watch = snoop(() => undefined)
+  const $data = createStore(null)
+  const fail = createEvent<any>()
+  fail.watch(watch.fn)
+
   const Asteroid = s.type({
     type: s.literal('asteroid'),
     mass: s.number(),
   })
 
-  const data = { type: 'not asteroid', mass: Infinity }
+  persist({
+    adapter: dumbAdapter({ type: 'not asteroid', mass: Infinity }),
+    store: $data,
+    key: 'data',
+    contract: superstructContract(Asteroid),
+    fail,
+  })
 
-  try {
-    validate(data, superstructContract(Asteroid))
-    assert.unreachable('should have thrown')
-  } catch (err) {
-    assert.equal(err, [
-      'type: Expected the literal `"asteroid"`, but received: "not asteroid"',
-    ])
-  }
+  assert.is($data.getState(), null)
+
+  assert.is(watch.callCount, 1)
+  assert.equal(watch.calls[0].arguments, [
+    {
+      key: 'data',
+      keyPrefix: '',
+      operation: 'validate',
+      error: ['type: Expected the literal `"asteroid"`, but received: "not asteroid"'],
+      value: { type: 'not asteroid', mass: Infinity },
+    },
+  ])
 })
 
 test('should validate against standard schema (simple, valid)', () => {
-  const schema = type('string')
-  const data = 'any data'
-  assert.not.throws(() => validate(data, schema))
-  assert.equal(validate(data, schema), data)
+  const watch = snoop(() => undefined)
+  const $data = createStore(null)
+  const fail = createEvent<any>()
+  fail.watch(watch.fn)
+
+  persist({
+    adapter: dumbAdapter('any data'),
+    store: $data,
+    key: 'data',
+    contract: type('string'),
+    fail,
+  })
+
+  assert.is($data.getState(), 'any data')
+
+  assert.is(watch.callCount, 0)
 })
 
 test('should validate against standard schema (complex, valid)', () => {
+  const watch = snoop(() => undefined)
+  const $data = createStore(null)
+  const fail = createEvent<any>()
+  fail.watch(watch.fn)
+
   const schema = type({
     type: 'string',
     mass: 'number',
   })
 
-  const data = { type: 'asteroid', mass: 42 }
-  assert.not.throws(() => validate(data, schema))
-  assert.equal(validate(data, schema), data)
+  persist({
+    adapter: dumbAdapter({ type: 'asteroid', mass: 42 }),
+    store: $data,
+    key: 'data',
+    contract: schema,
+    fail,
+  })
+
+  assert.equal($data.getState(), { type: 'asteroid', mass: 42 })
+
+  assert.is(watch.callCount, 0)
 })
 
 test('should validate against standard schema (invalid)', () => {
-  const schema = type('string')
-  const data = 42
+  const watch = snoop(() => undefined)
+  const $data = createStore(null)
+  const fail = createEvent<any>()
+  fail.watch(watch.fn)
 
-  try {
-    validate(data, schema)
-    assert.unreachable('should have thrown')
-  } catch (err) {
-    assert.ok(err instanceof type.errors)
-    assert.equal(err.summary, 'must be a string (was a number)')
-  }
+  const schema = type('string')
+
+  persist({
+    adapter: dumbAdapter(42),
+    store: $data,
+    key: 'data',
+    contract: schema,
+    fail,
+  })
+
+  assert.is($data.getState(), null)
+
+  assert.is(watch.callCount, 1)
+
+  // do not compare full equality, because error is a complex ArkErrors object
+  // so we just check if the summary
+  const args = watch.calls[0]?.arguments as any[]
+  assert.equal(args?.[0]?.error?.summary, 'must be a string (was a number)')
 })
 
 test.skip('should validate against async schema (valid)', () => {
