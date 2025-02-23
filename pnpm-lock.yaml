@@ -81,8 +81,8 @@ importers:
         specifier: ^3.5.0
         version: 3.5.0
       publint:
-        specifier: ^0.3.4
-        version: 0.3.4
+        specifier: ^0.3.6
+        version: 0.3.6
       rollup:
         specifier: ^4.34.6
         version: 4.34.6
@@ -1571,8 +1571,8 @@ packages:
     resolution: {integrity: sha512-Pdlw/oPxN+aXdmM9R00JVC9WVFoCLTKJvDVLgmJ+qAffBMxsV85l/Lu7sNx4zSzPyoL2euImuEwHhOXdEgNFZQ==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
 
-  publint@0.3.4:
-    resolution: {integrity: sha512-szQCgQXxLgrI2P+3Znv/KUiglp3YA+A2MeI+9Izjs01Ol5KXKCkdbmz69bM/ivPKMYKHhtKOKkib9VJ6JL3H/w==}
+  publint@0.3.6:
+    resolution: {integrity: sha512-f6mQw/RsX8GiUaUliYWJsivveYuwIozFLe4wCWE3NGj3vBamr816pxQGN0ycVwFIoTnIeqIJb9wsN7XAS8wRCA==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -3355,7 +3355,7 @@ snapshots:
       ansi-styles: 5.2.0
       react-is: 18.3.1
 
-  publint@0.3.4:
+  publint@0.3.6:
     dependencies:
       '@publint/pack': 0.1.1
       package-manager-detector: 0.2.9
