@@ -78,7 +78,7 @@
     "ts-node": "^10.9.2",
     "tsd": "^0.31.2",
     "typescript": "^5.7.3",
-    "typescript-eslint": "^8.23.0",
+    "typescript-eslint": "^8.33.1",
     "uvu": "^0.5.6",
     "vite": "^6.1.0"
   },
