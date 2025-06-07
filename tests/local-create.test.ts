@@ -19,8 +19,8 @@ test.before(() => {
 })
 
 test.after(() => {
-  delete global.localStorage
-  delete global.addEventListener
+  global.localStorage = undefined
+  global.addEventListener = undefined
 })
 
 //

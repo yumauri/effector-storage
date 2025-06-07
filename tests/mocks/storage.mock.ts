@@ -9,6 +9,7 @@ export class StorageMock implements Storage {
   private clearCallback: () => void = noop
 
   constructor() {
+    // biome-ignore lint/correctness/noConstructorReturn: this is a escape hatch for testing purposes
     return new Proxy(this, {
       get(target, property, receiver) {
         if (property in target) {
@@ -27,22 +28,22 @@ export class StorageMock implements Storage {
   }
 
   public setItem(key: string, value: string): void {
-    key = String(key)
-    value = String(value)
-    this.setCallback(key, value)
-    this.storage.set(key, value)
+    const k = String(key)
+    const v = String(value)
+    this.setCallback(k, v)
+    this.storage.set(k, v)
   }
 
   public getItem(key: string): string | null {
-    key = String(key)
-    this.getCallback(key)
-    return this.storage.has(key) ? (this.storage.get(key) ?? null) : null
+    const k = String(key)
+    this.getCallback(k)
+    return this.storage.has(k) ? (this.storage.get(k) ?? null) : null
   }
 
   public removeItem(key: string): void {
-    key = String(key)
-    this.removeCallback(key)
-    this.storage.delete(key)
+    const k = String(key)
+    this.removeCallback(k)
+    this.storage.delete(k)
   }
 
   public clear(): void {
@@ -55,8 +56,8 @@ export class StorageMock implements Storage {
   }
 
   public key(n: number): string | null {
-    const key = Array.from(this.storage.keys())[n]
-    return key === undefined ? null : key
+    const k = Array.from(this.storage.keys())[n]
+    return k === undefined ? null : k
   }
 
   public _callbacks({

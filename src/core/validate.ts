@@ -1,4 +1,4 @@
-import { Contract } from '../types'
+import type { Contract } from '../types'
 
 export function validate<Data>(
   raw: unknown,

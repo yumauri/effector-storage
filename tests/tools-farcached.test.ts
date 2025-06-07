@@ -40,11 +40,11 @@ test.before.each(() => {
 })
 
 test.after(() => {
-  delete global.addEventListener
-  delete global.sessionStorage
-  delete global.localStorage
+  global.addEventListener = undefined
+  global.sessionStorage = undefined
+  global.localStorage = undefined
   global.clock.uninstall()
-  delete global.clock
+  global.clock = undefined
 })
 
 //

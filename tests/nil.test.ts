@@ -51,8 +51,8 @@ test('stores in browser environment should not be synced', () => {
     assert.is($store2.getState(), 0) // <- should not change
   } finally {
     // remove fake `localStorage` and `sessionStorage`
-    delete global.localStorage
-    delete global.sessionStorage
+    global.localStorage = undefined
+    global.sessionStorage = undefined
   }
 })
 

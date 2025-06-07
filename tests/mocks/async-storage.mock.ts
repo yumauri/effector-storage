@@ -12,24 +12,24 @@ export class AsyncStorageMock implements AsyncStorage {
 
   public async setItem(key: string, value: string): Promise<void> {
     await Promise.resolve()
-    key = String(key)
-    value = String(value)
-    this.setCallback(key, value)
-    this.storage.set(key, value)
+    const k = String(key)
+    const v = String(value)
+    this.setCallback(k, v)
+    this.storage.set(k, v)
   }
 
   public async getItem(key: string): Promise<string | null> {
     await Promise.resolve()
-    key = String(key)
-    this.getCallback(key)
-    return this.storage.has(key) ? (this.storage.get(key) ?? null) : null
+    const k = String(key)
+    this.getCallback(k)
+    return this.storage.has(k) ? (this.storage.get(k) ?? null) : null
   }
 
   public async removeItem(key: string): Promise<void> {
     await Promise.resolve()
-    key = String(key)
-    this.removeCallback(key)
-    this.storage.delete(key)
+    const k = String(key)
+    this.removeCallback(k)
+    this.storage.delete(k)
   }
 
   public async clear(): Promise<void> {

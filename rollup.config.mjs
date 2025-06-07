@@ -284,12 +284,7 @@ const dts = (name) => ({
     },
   ],
   external,
-  plugins: [
-    generateDts({ respectExternal: true }),
-    command([`pnpm exec prettier --write ${BUILD}/${name}index.d.ts`], {
-      wait: true,
-    }),
-  ],
+  plugins: [generateDts({ respectExternal: true })],
 })
 
 const cjsdts = (name) => ({
@@ -301,12 +296,7 @@ const cjsdts = (name) => ({
     },
   ],
   external,
-  plugins: [
-    generateDts({ respectExternal: true }),
-    command([`pnpm exec prettier --write ${BUILD}/${name}index.d.cts`], {
-      wait: true,
-    }),
-  ],
+  plugins: [generateDts({ respectExternal: true })],
 })
 
 const entry = (name) => [src(name), dts(name), cjsdts(name)]
@@ -328,10 +318,10 @@ export default [
 
 function dual() {
   const index = (str, name, extension) =>
-    str.replace(name, name.slice(0, -1) + '/index.' + extension + name[0])
+    str.replace(name, `${name.slice(0, -1)}/index.${extension}${name[0]}`)
 
-  const es = (code) =>
-    code
+  const es = (src) =>
+    src
       .replace(
         /(?:^|\n)import\s+?(?:(?:(?:[\w*\s{},$_]*)\s+from\s+?)|)((?:".*?")|(?:'.*?'))[\s]*?(?:;|$|)/g,
         (str, name) => (name.indexOf('.') === 1 ? index(str, name, 'js') : str)
@@ -341,15 +331,16 @@ function dual() {
         (str, name) => (name.indexOf('.') === 1 ? index(str, name, 'js') : str)
       )
 
-  const cjs = (code) =>
-    code.replace(
+  const cjs = (src) =>
+    src.replace(
       /(?:^|\n)(?:let|const|var)\s+(?:{[^}]+}|\S+)\s*=\s*require\(([^)]+)\)/g,
       (str, name) => (name.indexOf('.') === 1 ? index(str, name, 'cjs') : str)
     )
 
   return {
     name: 'rollup-plugin-dual',
-    renderChunk(code, _chunk, { format }) {
+    renderChunk(src, _chunk, { format }) {
+      let code = src
       if (format === 'cjs' || format === 'commonjs') {
         code = cjs(code)
       } else if (format === 'es' || format === 'esm' || format === 'module') {

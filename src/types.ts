@@ -3,13 +3,13 @@ import type { StandardSchemaV1 } from './types-standard-schema'
 import type { Contract as ContractProtocol } from './types-contract'
 
 export interface Adapter<State> {
-  get( //
-    this: void,
+  get(
+    this: void, //
     raw?: any,
     ctx?: any
   ): State | undefined | Promise<State | undefined>
-  set( //
-    this: void,
+  set(
+    this: void, //
     value: State,
     ctx?: any
   ): void | Promise<void>

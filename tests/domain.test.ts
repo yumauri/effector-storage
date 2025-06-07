@@ -60,7 +60,8 @@ test('should call watcher once if persisted in domain hook', () => {
 test('should throw error in case of missing name in named domain', async () => {
   const root = createDomain('root')
 
-  let rs: any, rj: any
+  let rs: any
+  let rj: any
   const defer = new Promise((resolve, reject) => {
     rs = resolve
     rj = reject

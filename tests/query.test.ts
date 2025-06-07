@@ -39,15 +39,15 @@ test.before.each(() => {
 })
 
 test.after.each(() => {
-  delete global.history
-  delete global.location
-  delete global.addEventListener
-  delete global.removeEventListener
+  global.history = undefined
+  global.location = undefined
+  global.addEventListener = undefined
+  global.removeEventListener = undefined
 })
 
 test.after(() => {
   global.clock.uninstall()
-  delete global.clock
+  global.clock = undefined
 })
 
 //
