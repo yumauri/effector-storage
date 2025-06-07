@@ -26,10 +26,10 @@
     "build:dev": "rollup --config",
     "check:lint": "biome lint",
     "check:types": "tsc --noEmit",
-    "check:format": "prettier --check src",
+    "check:format": "biome format .",
     "lint": "pnpm run /^check:/",
     "publint": "publint build",
-    "format": "prettier --write src tests",
+    "format": "biome format --verbose --write .",
     "test": "pnpm run /^test:/",
     "test:node": "c8 --src=src --all --include=**/*.ts --include=!src/types.ts --reporter=lcov --reporter=text uvu -r ts-node/register -i mock -i types tests",
     "test:types": "uvu -r ts-node/register tests types",
@@ -63,7 +63,6 @@
     "effector": "^23.3.0",
     "esbuild-register": "^3.6.0",
     "patronum": "^2.3.0",
-    "prettier": "^3.5.3",
     "publint": "^0.3.12",
     "rollup": "^4.42.0",
     "rollup-plugin-command": "^1.1.3",
@@ -83,9 +82,6 @@
     "overrides": {
       "is-core-module": "npm:@nolyfill/is-core-module@^1"
     },
-    "onlyBuiltDependencies": [
-      "@biomejs/biome",
-      "esbuild"
-    ]
+    "onlyBuiltDependencies": ["@biomejs/biome", "esbuild"]
   }
 }

@@ -7,10 +7,7 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "ignore": [
-      "build/",
-      "coverage/"
-    ]
+    "ignore": ["build/", "coverage/"]
   },
   "formatter": {
     "enabled": true,
@@ -39,7 +36,7 @@
   "javascript": {
     "formatter": {
       "quoteStyle": "single",
-      "trailingCommas": "all",
+      "trailingCommas": "es5",
       "semicolons": "asNeeded",
       "arrowParentheses": "always"
     }

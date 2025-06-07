@@ -284,12 +284,7 @@ const dts = (name) => ({
     },
   ],
   external,
-  plugins: [
-    generateDts({ respectExternal: true }),
-    command([`pnpm exec prettier --write ${BUILD}/${name}index.d.ts`], {
-      wait: true,
-    }),
-  ],
+  plugins: [generateDts({ respectExternal: true })],
 })
 
 const cjsdts = (name) => ({
@@ -301,12 +296,7 @@ const cjsdts = (name) => ({
     },
   ],
   external,
-  plugins: [
-    generateDts({ respectExternal: true }),
-    command([`pnpm exec prettier --write ${BUILD}/${name}index.d.cts`], {
-      wait: true,
-    }),
-  ],
+  plugins: [generateDts({ respectExternal: true })],
 })
 
 const entry = (name) => [src(name), dts(name), cjsdts(name)]
