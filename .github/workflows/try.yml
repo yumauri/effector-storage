@@ -7,7 +7,7 @@ on:
       effector:
         description: effector dependency
         required: false
-        default: "npm:effector@23.2.3"
+        default: "npm:effector@23.3.0"
         type: string
       effector-storage:
         description: effector-storage dependency
@@ -31,9 +31,9 @@ jobs:
     strategy:
       matrix:
         node-version:
-          - 18
           - 20
           - 22
+          - 24
 
     name: Node ${{ matrix.node-version }} / ${{ inputs.effector }} / ${{ inputs.effector-storage || 'latest' }}
 
