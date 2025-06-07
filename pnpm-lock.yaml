@@ -6,7 +6,7 @@ settings:
 
 overrides:
   is-core-module: npm:@nolyfill/is-core-module@^1
-  safe-buffer: npm:@nolyfill/safe-buffer@^1
+  safe-buffer: npm:@nolyfill/safe-buffer@^1.0.44
 
 importers:
 
