@@ -342,9 +342,9 @@ function dual() {
     renderChunk(src, _chunk, { format }) {
       let code = src
       if (format === 'cjs' || format === 'commonjs') {
-        code = cjs(src)
+        code = cjs(code)
       } else if (format === 'es' || format === 'esm' || format === 'module') {
-        code = es(src)
+        code = es(code)
       }
       return { code, map: null }
     },
