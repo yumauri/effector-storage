@@ -13,6 +13,10 @@ export interface Adapter<State> {
     value: State,
     ctx?: any
   ): void | Promise<void>
+  remove?(
+    this: void, //
+    ctx?: any
+  ): void | Promise<void>
 }
 
 export interface DisposableAdapter<State> extends Adapter<State> {
@@ -48,7 +52,7 @@ export type Done<State> = {
 export type Fail<Err> = {
   key: string
   keyPrefix: string
-  operation: 'set' | 'get'
+  operation: 'set' | 'get' | 'validate'
   error: Err
   value?: any
 }
@@ -118,4 +122,37 @@ export interface Persist {
       ConfigStore<State, Err> &
       AdapterConfig
   ): Subscription
+}
+
+export interface StorageHandles<State, Err> {
+  getFx: Effect<void, State, Fail<Err>>
+  setFx: Effect<State, void, Fail<Err>>
+  removeFx: Effect<void, void, Fail<Err>>
+}
+
+export interface ConfigCreateStorage<State> {
+  context?: Unit<any>
+  keyPrefix?: string
+  contract?: Contract<State | undefined>
+}
+
+export interface CreateStorage {
+  <State, AdapterConfig, Err = Error>(
+    key: string,
+    config: ConfigAdapterFactory<AdapterConfig> &
+      ConfigCreateStorage<State> &
+      AdapterConfig
+  ): StorageHandles<State, Err>
+  <State, AdapterConfig, Err = Error>(
+    config: ConfigAdapterFactory<AdapterConfig> &
+      ConfigCreateStorage<State> &
+      AdapterConfig & { key: string }
+  ): StorageHandles<State, Err>
+  <State, Err = Error>(
+    key: string,
+    config: ConfigAdapter & ConfigCreateStorage<State>
+  ): StorageHandles<State, Err>
+  <State, Err = Error>(
+    config: ConfigAdapter & ConfigCreateStorage<State> & { key: string }
+  ): StorageHandles<State, Err>
 }
