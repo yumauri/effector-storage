@@ -21,8 +21,8 @@ test.before(() => {
 })
 
 test.after(() => {
-  delete global.localStorage
-  delete global.addEventListener
+  global.localStorage = undefined
+  global.addEventListener = undefined
 })
 
 const timeout = (t: number) => new Promise((resolve) => setTimeout(resolve, t))
@@ -159,8 +159,8 @@ test("should accept adapter's arguments in core persist", async () => {
 })
 
 test('should preserve context', async () => {
-  const get = snoop((_value, _ctx) => undefined as any) // eslint-disable-line @typescript-eslint/no-unused-vars
-  const set = snoop((_value, _ctx) => undefined as any) // eslint-disable-line @typescript-eslint/no-unused-vars
+  const get = snoop((_value, _ctx) => undefined as any)
+  const set = snoop((_value, _ctx) => undefined as any)
 
   const update = createEvent<number>()
   const pickup = createEvent<string>()

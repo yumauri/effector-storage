@@ -9,14 +9,17 @@ globalThis.lib = libMod
 
 // create broadcast channel for command messages
 const channel = (globalThis.channel = new BroadcastChannel('command'))
-const eval2 = eval // eslint-disable-line no-eval
 
-channel.addEventListener('message', async function ({ data }) {
+// biome-ignore lint/security/noGlobalEval: this is an escape hatch for testing purposes
+const eval2 = eval
+
+channel.addEventListener('message', async ({ data }) => {
   if (data == null || typeof data !== 'object') return
 
   const { src, dst, type, payload } = data
   if (dst === 'worker' && type === 'eval') {
-    let result: any, error: any
+    let result: any
+    let error: any
     try {
       result = await Promise.resolve(eval2(payload))
     } catch (err) {

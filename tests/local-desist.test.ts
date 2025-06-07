@@ -31,9 +31,9 @@ test.before.each(() => {
 })
 
 test.after.each(() => {
-  delete global.localStorage
-  delete global.addEventListener
-  delete global.removeEventListener
+  global.localStorage = undefined
+  global.addEventListener = undefined
+  global.removeEventListener = undefined
 })
 
 //

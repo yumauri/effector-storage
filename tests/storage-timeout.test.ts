@@ -27,10 +27,10 @@ test.before(() => {
 })
 
 test.after(() => {
-  delete global.removeEventListener
-  delete global.addEventListener
+  global.removeEventListener = undefined
+  global.addEventListener = undefined
   global.clock.uninstall()
-  delete global.clock
+  global.clock = undefined
 })
 
 //

@@ -13,7 +13,7 @@ let storage: Storage
 
 test.before(() => {
   storage = global.sessionStorage
-  delete global.sessionStorage
+  global.sessionStorage = undefined
 })
 
 test.after(() => {

@@ -21,8 +21,8 @@ test.before(() => {
 })
 
 test.after(() => {
-  delete global.sessionStorage
-  delete global.addEventListener
+  global.sessionStorage = undefined
+  global.addEventListener = undefined
 })
 
 //

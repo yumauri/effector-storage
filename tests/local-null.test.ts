@@ -29,7 +29,7 @@ test.before(() => {
 })
 
 test.after(() => {
-  delete global.localStorage
+  global.localStorage = undefined
 })
 
 //

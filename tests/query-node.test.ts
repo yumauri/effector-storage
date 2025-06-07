@@ -19,8 +19,8 @@ test.before.each(() => {
 })
 
 test.after.each(() => {
-  delete global.history
-  delete global.location
+  global.history = undefined
+  global.location = undefined
 })
 
 //
@@ -36,22 +36,22 @@ test('should not fail if there is no `addEventListener`', () => {
 })
 
 test('should not fail if there is no `location`', () => {
-  delete global.location
+  global.location = undefined
   const $id = createStore('0', { name: 'id' })
   persist({ store: $id })
   ;($id as any).setState('9876')
 })
 
 test('should not fail if there is no `history`', () => {
-  delete global.history
+  global.history = undefined
   const $id = createStore('0', { name: 'id' })
   persist({ store: $id })
   ;($id as any).setState('9876')
 })
 
 test('should not fail if there is no `history` and `location`', () => {
-  delete global.history
-  delete global.location
+  global.history = undefined
+  global.location = undefined
   const $id = createStore('0', { name: 'id' })
   persist({ store: $id })
   ;($id as any).setState('9876')

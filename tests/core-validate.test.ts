@@ -202,7 +202,10 @@ test('should validate against contract protocol (invalid)', () => {
   })
 
   persist({
-    adapter: dumbAdapter({ type: 'not asteroid', mass: Infinity }),
+    adapter: dumbAdapter({
+      type: 'not asteroid',
+      mass: Number.POSITIVE_INFINITY,
+    }),
     store: $data,
     key: 'data',
     contract: superstructContract(Asteroid),
@@ -217,8 +220,10 @@ test('should validate against contract protocol (invalid)', () => {
       key: 'data',
       keyPrefix: '',
       operation: 'validate',
-      error: ['type: Expected the literal `"asteroid"`, but received: "not asteroid"'],
-      value: { type: 'not asteroid', mass: Infinity },
+      error: [
+        'type: Expected the literal `"asteroid"`, but received: "not asteroid"',
+      ],
+      value: { type: 'not asteroid', mass: Number.POSITIVE_INFINITY },
     },
   ])
 })
