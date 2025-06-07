@@ -29,11 +29,11 @@ test.before(() => {
 })
 
 test.after(() => {
-  delete global.localStorage
-  delete global.sessionStorage
-  delete global.addEventListener
-  delete global.history
-  delete global.location
+  global.localStorage = undefined
+  global.sessionStorage = undefined
+  global.addEventListener = undefined
+  global.history = undefined
+  global.location = undefined
 })
 
 //

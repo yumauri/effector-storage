@@ -27,7 +27,7 @@ test.before(() => {
 })
 
 test.after(() => {
-  delete global.addEventListener
+  global.addEventListener = undefined
 })
 
 //

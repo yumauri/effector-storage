@@ -4,8 +4,6 @@
  * https://github.com/standard-schema/standard-schema
  */
 
-/* eslint-disable @typescript-eslint/array-type, @typescript-eslint/no-namespace */
-
 /** The Standard Schema interface. */
 export interface StandardSchemaV1<Input = unknown, Output = Input> {
   /** The Standard Schema properties. */

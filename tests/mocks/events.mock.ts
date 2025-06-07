@@ -1,6 +1,4 @@
-export interface EventListener {
-  (event: any): void
-}
+export type EventListener = (event: any) => void
 
 export interface Events {
   dispatchEvent(name: string, event: any): Promise<any>

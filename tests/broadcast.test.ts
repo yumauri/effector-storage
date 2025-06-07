@@ -69,7 +69,9 @@ test.before(() => {
 
 test.after(() => {
   // close all channels after tests, so node will not hang
-  channels.forEach((channel) => channel.close())
+  for (const channel of channels) {
+    channel.close()
+  }
 })
 
 //
@@ -238,7 +240,7 @@ test('should fail on `messageerror`', async () => {
 
 test('should be nil adapter in unsupported environment', async () => {
   const _BroadcastChannel = global.BroadcastChannel
-  delete global.BroadcastChannel
+  global.BroadcastChannel = undefined
   try {
     const logger = snoop(() => undefined)
 

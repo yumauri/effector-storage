@@ -18,7 +18,6 @@
   "include": [
     "src",
     "tests",
-    "./eslint.config.mjs",
     "./playwright.config.ts"
   ],
   "exclude": [

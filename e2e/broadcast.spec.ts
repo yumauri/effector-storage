@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test'
 import { snoop } from 'snoop'
-import * as effectorMod from 'effector'
-import * as libMod from '../src'
+import type * as effectorMod from 'effector'
+import type * as libMod from '../src'
 
 // this variables available globally in e2e/empty-app
 // I just declare them here to make TS happy

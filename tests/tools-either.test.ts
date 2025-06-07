@@ -43,7 +43,7 @@ test('should return localStorage adapter if localStorage is supported', () => {
     const another = dumbAdapter
     assert.equal(either(one, another), one)
   } finally {
-    delete global.localStorage
+    global.localStorage = undefined
   }
 })
 
