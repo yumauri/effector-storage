@@ -11,7 +11,7 @@ module.exports = [
   {
     name: 'root persist, cjs module',
     path: 'build/index.cjs',
-    limit: '3938 B',
+    limit: '3979 B',
     // import: '{ persist }', // tree-shaking is not working with cjs
     ignore: ['effector'],
     gzip: true,
@@ -29,7 +29,7 @@ module.exports = [
   {
     name: 'core persist, cjs module',
     path: 'build/core/index.cjs',
-    limit: '1712 B',
+    limit: '1738 B',
     // import: '{ persist }', // tree-shaking is not working with cjs
     ignore: ['effector'],
     gzip: true,
@@ -119,7 +119,7 @@ module.exports = [
   {
     name: '`localStorage` persist, cjs module',
     path: 'build/local/index.cjs',
-    limit: '2304 B',
+    limit: '2330 B',
     // import: '{ persist }', // tree-shaking is not working with cjs
     ignore: ['effector'],
     gzip: true,
@@ -159,7 +159,7 @@ module.exports = [
   {
     name: '`sessionStorage` persist, cjs module',
     path: 'build/session/index.cjs',
-    limit: '2298 B',
+    limit: '2324 B',
     // import: '{ persist }', // tree-shaking is not working with cjs
     ignore: ['effector'],
     gzip: true,
@@ -177,7 +177,7 @@ module.exports = [
   {
     name: 'query string persist, cjs module',
     path: 'build/query/index.cjs',
-    limit: '2364 B',
+    limit: '2393 B',
     // import: '{ persist }', // tree-shaking is not working with cjs
     ignore: ['effector'],
     gzip: true,
@@ -187,7 +187,7 @@ module.exports = [
   {
     name: 'memory adapter, es module',
     path: 'build/memory/index.js',
-    limit: '1188 B',
+    limit: '1207 B',
     import: '{ persist }',
     ignore: ['effector'],
     gzip: true,
@@ -195,7 +195,7 @@ module.exports = [
   {
     name: 'memory adapter, cjs module',
     path: 'build/memory/index.cjs',
-    limit: '1886 B',
+    limit: '1932 B',
     // import: '{ persist }', // tree-shaking is not working with cjs
     ignore: ['effector'],
     gzip: true,
@@ -231,7 +231,7 @@ module.exports = [
   {
     name: 'broadcast channel adapter, cjs module',
     path: 'build/broadcast/index.cjs',
-    limit: '2145 B',
+    limit: '2169 B',
     // import: '{ broadcast }', // tree-shaking is not working with cjs
     ignore: ['effector'],
     gzip: true,

@@ -75,7 +75,7 @@ export function createStorage<State, Err = Error>(
   // }
 
   const fail = (
-    operation: 'get' | 'set' | 'validate',
+    operation: 'get' | 'set' | 'remove' | 'validate',
     error: unknown,
     value?: any
   ) =>
@@ -88,7 +88,7 @@ export function createStorage<State, Err = Error>(
     }) as Fail<Err>
 
   const op = <T>(
-    operation: 'get' | 'set' | 'validate',
+    operation: 'get' | 'set' | 'remove' | 'validate',
     fn: (value: any, arg: any) => T,
     value: any,
     arg: any
@@ -102,7 +102,7 @@ export function createStorage<State, Err = Error>(
 
   const getFx = attach({
     source: ctx,
-    effect([ref], raw?: void) {
+    effect([ref], raw?: any) {
       const result = op('get', value.get, raw, ref) as any
       return typeof result?.then === 'function'
         ? Promise.resolve(result)
@@ -129,9 +129,18 @@ export function createStorage<State, Err = Error>(
   }) as Effect<State, void, any> // as Effect<State, void, Fail<Err>>
 
   const removeFx = attach({
-    mapParams: () => undefined as any,
-    effect: setFx,
-  }) as Effect<void, void, Fail<Err>>
+    source: ctx,
+    effect([ref]) {
+      const result = op('remove', value.remove ?? value.set, null, ref)
+      if (typeof result?.then === 'function') {
+        return Promise.resolve(result)
+          .then(() => undefined)
+          .catch((error) => {
+            throw fail('remove', error)
+          })
+      }
+    },
+  }) as Effect<void, void, any>
 
   let update: (raw?: any) => any = getFx
   ctx.updates.watch(() => {
@@ -148,7 +157,7 @@ export function createStorage<State, Err = Error>(
   })
 
   sample({
-    clock: storage,
+    clock: [storage, removeFx.finally],
     filter: external,
     fn: () => undefined,
     target: getFx,

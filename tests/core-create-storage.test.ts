@@ -346,6 +346,57 @@ test('should sync with `persist` for the same adapter-key', async () => {
   assert.is(await getFx(), 33)
 })
 
+test('should sync with `persist` for the same adapter-key when removing value', async () => {
+  const watch = snoop(() => undefined)
+  const watchFx = snoop(() => undefined)
+
+  const storageArea = new Map<string, any>()
+  const adapter = memory({ area: storageArea, def: 0 })
+  storageArea.set('test-sync-same-key-3', -123)
+
+  const $store = createStore(0)
+  $store.watch(watch.fn)
+
+  assert.is($store.getState(), 0)
+  assert.is(watch.callCount, 1)
+  assert.equal(watch.calls[0].arguments, [0])
+
+  persist({
+    store: $store,
+    adapter,
+    key: 'test-sync-same-key-3',
+  })
+
+  assert.is($store.getState(), -123) // got from storage
+  assert.is(watch.callCount, 2) // store got updated from storage
+
+  const { removeFx } = createStorage({
+    adapter,
+    key: 'test-sync-same-key-3',
+  })
+
+  removeFx.watch(watchFx.fn)
+  removeFx.finally.watch(watchFx.fn)
+
+  assert.is(watchFx.callCount, 0) // did not trigger
+
+  removeFx()
+
+  assert.is(watchFx.callCount, 2)
+  assert.equal(watchFx.calls[0].arguments, [undefined]) // removeFx trigger
+  assert.equal(watchFx.calls[1].arguments, [
+    {
+      status: 'done',
+      params: undefined,
+      result: undefined,
+    },
+  ]) // removeFx result
+
+  assert.is($store.getState(), 0) // <- changed to default state
+  assert.is(watch.callCount, 3)
+  assert.equal(watch.calls[2].arguments, [0])
+})
+
 test('should handle synchronous error in `get` and `set` effects', () => {
   const watch = snoop(() => undefined)
 

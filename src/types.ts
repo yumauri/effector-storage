@@ -13,7 +13,10 @@ export interface Adapter<State> {
     value: State,
     ctx?: any
   ): void | Promise<void>
-  // remove?(ctx?: any): void | Promise<void>
+  remove?(
+    this: void, //
+    ctx?: any
+  ): void | Promise<void>
 }
 
 export interface DisposableAdapter<State> extends Adapter<State> {
