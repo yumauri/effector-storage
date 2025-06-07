@@ -6,6 +6,7 @@ settings:
 
 overrides:
   is-core-module: npm:@nolyfill/is-core-module@^1
+  safe-buffer: npm:@nolyfill/safe-buffer@^1
 
 importers:
 
@@ -523,6 +524,10 @@ packages:
 
   '@nolyfill/is-core-module@1.0.39':
     resolution: {integrity: sha512-nn5ozdjYQpUCZlWGuxcJY/KpxkWQs4DcbMCmKojjyrYDEAGy4Ce19NN4v5MduafTwJlbKc99UA8YhSVqq9yPZA==}
+    engines: {node: '>=12.4.0'}
+
+  '@nolyfill/safe-buffer@1.0.44':
+    resolution: {integrity: sha512-SqlKXtlhNTDMeZKey9jnnuPhi8YTl1lJuEcY9zbm5i4Pqe79UJJ8IJ9oiD6DhgI8KjYc+HtLzpQJNRdNYqb/hw==}
     engines: {node: '>=12.4.0'}
 
   '@pkgjs/parseargs@0.11.0':
@@ -1421,9 +1426,6 @@ packages:
     resolution: {integrity: sha512-xal3CZX1Xlo/k4ApwCFrHVACi9fBqJ7V+mwhBsuf/1IOKbBy098Fex+Wa/5QMubw09pSZ/u8EY8PWgevJsXp1A==}
     engines: {node: '>=6'}
 
-  safe-buffer@5.2.1:
-    resolution: {integrity: sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ==}
-
   semver@5.7.2:
     resolution: {integrity: sha512-cBznnQ9KjJqU67B52RMC65CMarK2600WFnbkcaiwWq3xy/5haFJlshgnpjovMVJ+Hff49d8GEn0b87C5pDQ10g==}
     hasBin: true
@@ -2102,6 +2104,8 @@ snapshots:
       fastq: 1.19.1
 
   '@nolyfill/is-core-module@1.0.39': {}
+
+  '@nolyfill/safe-buffer@1.0.44': {}
 
   '@pkgjs/parseargs@0.11.0':
     optional: true
@@ -2827,7 +2831,7 @@ snapshots:
 
   randombytes@2.1.0:
     dependencies:
-      safe-buffer: 5.2.1
+      safe-buffer: '@nolyfill/safe-buffer@1.0.44'
 
   react-is@18.3.1: {}
 
@@ -2910,8 +2914,6 @@ snapshots:
   sade@1.8.1:
     dependencies:
       mri: 1.2.0
-
-  safe-buffer@5.2.1: {}
 
   semver@5.7.2: {}
 
