@@ -1,7 +1,6 @@
 import type { StorageAdapter } from '../src/types'
-import { test } from 'uvu'
-import * as assert from 'uvu/assert'
-import { snoop } from 'snoop'
+import { test, mock } from 'node:test'
+import * as assert from 'node:assert/strict'
 import { createStore, createDomain } from 'effector'
 import { persist } from '../src/core'
 
@@ -22,24 +21,24 @@ const dumbAdapter: StorageAdapter = <T>() => {
 //
 
 test('should call watcher twice', () => {
-  const watch = snoop(() => undefined)
+  const watch = mock.fn()
 
   const $store = createStore(1)
-  $store.watch(watch.fn)
+  $store.watch(watch)
 
   persist({ store: $store, adapter: dumbAdapter, key: 'domain::store0' })
 
-  assert.is($store.getState(), 0)
-  assert.is($store.defaultState, 1)
+  assert.strictEqual($store.getState(), 0)
+  assert.strictEqual($store.defaultState, 1)
 
   // call watcher twice
-  assert.is(watch.callCount, 2)
-  assert.equal(watch.calls[0].arguments, [1])
-  assert.equal(watch.calls[1].arguments, [0])
+  assert.strictEqual(watch.mock.callCount(), 2)
+  assert.deepEqual(watch.mock.calls[0].arguments, [1])
+  assert.deepEqual(watch.mock.calls[1].arguments, [0])
 })
 
 test('should call watcher once if persisted in domain hook', () => {
-  const watch = snoop(() => undefined)
+  const watch = mock.fn()
   const root = createDomain()
 
   root.onCreateStore((store) => {
@@ -47,14 +46,14 @@ test('should call watcher once if persisted in domain hook', () => {
   })
 
   const $store = root.createStore(1, { name: 'domain::store1' })
-  $store.watch(watch.fn)
+  $store.watch(watch)
 
-  assert.is($store.getState(), 0)
-  assert.is($store.defaultState, 1)
+  assert.strictEqual($store.getState(), 0)
+  assert.strictEqual($store.defaultState, 1)
 
   // call watcher once
-  assert.is(watch.callCount, 1)
-  assert.equal(watch.calls[0].arguments, [0])
+  assert.strictEqual(watch.mock.callCount(), 1)
+  assert.deepEqual(watch.mock.calls[0].arguments, [0])
 })
 
 test('should throw error in case of missing name in named domain', async () => {
@@ -80,15 +79,9 @@ test('should throw error in case of missing name in named domain', async () => {
 
   try {
     await defer
-    assert.unreachable()
+    assert.fail()
   } catch (err) {
-    assert.instance(err, Error)
-    assert.match(String(err), /Key or name is not defined/)
+    assert.ok(err instanceof Error)
+    assert.match(err.message, /Key or name is not defined/)
   }
 })
-
-//
-// Launch tests
-//
-
-test.run()

@@ -3,9 +3,13 @@ import type {
   StorageAdapterFactory,
   LocalStorageConfig,
 } from '../src'
-import { test } from 'uvu'
 import { local, async } from '../src'
 import { expectType } from 'tsd'
+
+// fake `test` function which will not be runned
+// TypeScript will do the job for us, by checking the syntax
+// without actual execution
+function test(_name: string, _test: () => any) {}
 
 //
 // Tests
@@ -29,8 +33,3 @@ test('should infer correct type', () => {
   expectType<StorageAdapter>(async(local()))
   expectType<StorageAdapterFactory<LocalStorageConfig>>(async(local))
 })
-
-//
-// DO NOT launch tests, because they will fail in runtime
-// TypeScript will do the job for us, by checking the syntax
-//

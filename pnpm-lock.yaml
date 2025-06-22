@@ -42,18 +42,12 @@ importers:
       '@rollup/plugin-terser':
         specifier: ^0.4.4
         version: 0.4.4(rollup@4.44.0)
-      '@sinonjs/fake-timers':
-        specifier: ^14.0.0
-        version: 14.0.0
       '@size-limit/preset-small-lib':
         specifier: ^11.2.0
         version: 11.2.0(size-limit@11.2.0)
       '@types/node':
         specifier: ^22.15.32
         version: 22.15.32
-      '@types/sinonjs__fake-timers':
-        specifier: ^8.1.5
-        version: 8.1.5
       arktype:
         specifier: ^2.1.20
         version: 2.1.20
@@ -63,6 +57,9 @@ importers:
       effector:
         specifier: ^23.3.0
         version: 23.3.0
+      esbuild:
+        specifier: ^0.25.5
+        version: 0.25.5
       esbuild-register:
         specifier: ^3.6.0
         version: 3.6.0(esbuild@0.25.5)
@@ -87,9 +84,6 @@ importers:
       size-limit:
         specifier: ^11.2.0
         version: 11.2.0
-      snoop:
-        specifier: ^1.0.4
-        version: 1.0.4
       superstruct:
         specifier: ^2.0.2
         version: 2.0.2
@@ -102,9 +96,6 @@ importers:
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
-      uvu:
-        specifier: ^0.5.6
-        version: 0.5.6
       vite:
         specifier: ^6.3.5
         version: 6.3.5(@types/node@22.15.32)(jiti@2.4.2)(terser@5.43.1)
@@ -686,12 +677,6 @@ packages:
   '@sinclair/typebox@0.27.8':
     resolution: {integrity: sha512-+Fj43pSMwJs4KRrH/938Uf+uAELIgVBmQzg/q1YG10djyfA3TnrU8N8XzqCh/okZdszqBQTZf96idMfE5lnwTA==}
 
-  '@sinonjs/commons@3.0.1':
-    resolution: {integrity: sha512-K3mCHKQ9sVh8o1C9cxkwxaOmXoAMlDxC1mYyHrjqOWEcBjYr76t96zL2zlj5dUGZ3HSw240X1qgH3Mjf1yJWpQ==}
-
-  '@sinonjs/fake-timers@14.0.0':
-    resolution: {integrity: sha512-QfoXRaUTjMVVn/ZbnD4LS3TPtqOkOdKIYCKldIVPnuClcwRKat6LI2mRZ2s5qiBfO6Fy03An35dSls/2/FEc0Q==}
-
   '@size-limit/esbuild@11.2.0':
     resolution: {integrity: sha512-vSg9H0WxGQPRzDnBzeDyD9XT0Zdq0L+AI3+77/JhxznbSCMJMMr8ndaWVQRhOsixl97N0oD4pRFw2+R1Lcvi6A==}
     engines: {node: ^18.0.0 || >=20.0.0}
@@ -748,9 +733,6 @@ packages:
 
   '@types/resolve@1.20.2':
     resolution: {integrity: sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==}
-
-  '@types/sinonjs__fake-timers@8.1.5':
-    resolution: {integrity: sha512-mQkU2jY8jJEF7YHjHvsQO8+3ughTL1mcnn96igfhONmR+fUPSKIkefQYpSe8bsly2Ep7oQbn/6VG5/9/0qcArQ==}
 
   acorn-walk@8.3.4:
     resolution: {integrity: sha512-ueEepnujpqee2o5aIYnvHU6C0A42MNdsIDeqy5BydrkuC5R1ZuUFnm27EeFJGoEHJQgn3uleRvmTXaJgfXbt4g==}
@@ -895,10 +877,6 @@ packages:
     resolution: {integrity: sha512-3sUqbMEc77XqpdNO7FRyRog+eW3ph+GYCbj+rK+uYyRMuwsVy0rMiVtPn+QJlKFvWP/1PYpapqYn0Me2knFn+A==}
     engines: {node: '>=0.10.0'}
 
-  dequal@2.0.3:
-    resolution: {integrity: sha512-0je+qPKHEMohvfRTCEo3CrPG6cAzAYgmzKyxRiYSSDkS6eGJdyVJm7WaYA5ECaAD9wLB2T4EEeymA5aFVcYXCA==}
-    engines: {node: '>=6'}
-
   detect-indent@5.0.0:
     resolution: {integrity: sha512-rlpvsxUtM0PQvy9iZe640/IWwWYyBsTApREbA1pHOpmOUIl9MkP/U4z7vTtg4Oaojvqhxt7sdufnT0EzGaR31g==}
     engines: {node: '>=4'}
@@ -909,10 +887,6 @@ packages:
 
   diff@4.0.2:
     resolution: {integrity: sha512-58lmxKSA4BNyLz+HHMUzlOEpg09FV+ev6ZMe3vJihgdxzgcwZ8VoEEPmALCZG9LmqfVoNMMKpttIYTVG6uDY7A==}
-    engines: {node: '>=0.3.1'}
-
-  diff@5.2.0:
-    resolution: {integrity: sha512-uIFDxqpRZGZ6ThOk84hEfqWoHx2devRFvpTZcTHur85vImfaxUbTW9Ryh4CpCuDnToOP1CEtXKIgytHBPVff5A==}
     engines: {node: '>=0.3.1'}
 
   dir-glob@3.0.1:
@@ -1143,10 +1117,6 @@ packages:
   kind-of@6.0.3:
     resolution: {integrity: sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==}
     engines: {node: '>=0.10.0'}
-
-  kleur@4.1.5:
-    resolution: {integrity: sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ==}
-    engines: {node: '>=6'}
 
   lilconfig@3.1.3:
     resolution: {integrity: sha512-/vlFKAoH5Cgt3Ie+JLhRbwOsCQePABiU3tJ1egGvyQ+33R/vcwM2Zl2QR/LzjsBeItPt3oSVXapn+m4nQDvpzw==}
@@ -1466,9 +1436,6 @@ packages:
   smob@1.5.0:
     resolution: {integrity: sha512-g6T+p7QO8npa+/hNx9ohv1E5pVCmWrVCUzUXJyLdMmftX6ER0oiWY/w9knEonLpnOp6b6FenKnMfR8gqwWdwig==}
 
-  snoop@1.0.4:
-    resolution: {integrity: sha512-VgTDhcpNDEf63CMPWh/J/kr2mTKDYsonG6Kpd9kXCpoMyUMZoe+3NkkbMKIcu7dUwmX4OeeQQ0m/uQfTjMY8bw==}
-
   sort-keys@2.0.0:
     resolution: {integrity: sha512-/dPCrG1s3ePpWm6yBbxZq5Be1dXGLyLn9Z791chDC3NFrpkVbWGzkBwPN1knaciexFXgRJ7hzdnwZ4stHSDmjg==}
     engines: {node: '>=4'}
@@ -1572,10 +1539,6 @@ packages:
     engines: {node: '>=14.16'}
     hasBin: true
 
-  type-detect@4.0.8:
-    resolution: {integrity: sha512-0fr/mIH1dlO+x7TlcMy+bIDqKPsw/70tVyeHW787goQjhmqaZe10uwLujubK9q9Lg6Fiho1KUKDYz0Z7k7g5/g==}
-    engines: {node: '>=4'}
-
   type-fest@0.18.1:
     resolution: {integrity: sha512-OIAYXk8+ISY+qTOwkHtKqzAuxchoMiD9Udx+FSGQDuiRR+PJKJHc2NJAXlbhkGwTt/4/nKZxELY1w3ReWOL8mw==}
     engines: {node: '>=10'}
@@ -1609,11 +1572,6 @@ packages:
     hasBin: true
     peerDependencies:
       browserslist: '>= 4.21.0'
-
-  uvu@0.5.6:
-    resolution: {integrity: sha512-+g8ENReyr8YsOc6fv/NVJs2vFdHBnBNdfE49rshrTzDWOlUx4Gq7KOS2GD8eqhy2j+Ejq29+SbKH8yjkAqXqoA==}
-    engines: {node: '>=8'}
-    hasBin: true
 
   v8-compile-cache-lib@3.0.1:
     resolution: {integrity: sha512-wa7YjyUGfNZngI/vtK0UHAN+lgDCxBPCylVXGp0zu59Fz5aiGtNXaq3DhIov063MorB+VfufLh3JlF2KdTK3xg==}
@@ -2211,14 +2169,6 @@ snapshots:
 
   '@sinclair/typebox@0.27.8': {}
 
-  '@sinonjs/commons@3.0.1':
-    dependencies:
-      type-detect: 4.0.8
-
-  '@sinonjs/fake-timers@14.0.0':
-    dependencies:
-      '@sinonjs/commons': 3.0.1
-
   '@size-limit/esbuild@11.2.0(size-limit@11.2.0)':
     dependencies:
       esbuild: 0.25.5
@@ -2265,8 +2215,6 @@ snapshots:
   '@types/normalize-package-data@2.4.4': {}
 
   '@types/resolve@1.20.2': {}
-
-  '@types/sinonjs__fake-timers@8.1.5': {}
 
   acorn-walk@8.3.4:
     dependencies:
@@ -2392,15 +2340,11 @@ snapshots:
 
   deepmerge@4.3.1: {}
 
-  dequal@2.0.3: {}
-
   detect-indent@5.0.0: {}
 
   diff-sequences@29.6.3: {}
 
   diff@4.0.2: {}
-
-  diff@5.2.0: {}
 
   dir-glob@3.0.1:
     dependencies:
@@ -2622,8 +2566,6 @@ snapshots:
   json5@2.2.3: {}
 
   kind-of@6.0.3: {}
-
-  kleur@4.1.5: {}
 
   lilconfig@3.1.3: {}
 
@@ -2944,8 +2886,6 @@ snapshots:
 
   smob@1.5.0: {}
 
-  snoop@1.0.4: {}
-
   sort-keys@2.0.0:
     dependencies:
       is-plain-obj: 1.1.0
@@ -3062,8 +3002,6 @@ snapshots:
       path-exists: 4.0.0
       read-pkg-up: 7.0.1
 
-  type-detect@4.0.8: {}
-
   type-fest@0.18.1: {}
 
   type-fest@0.21.3: {}
@@ -3083,13 +3021,6 @@ snapshots:
       browserslist: 4.25.0
       escalade: 3.2.0
       picocolors: 1.1.1
-
-  uvu@0.5.6:
-    dependencies:
-      dequal: 2.0.3
-      diff: 5.2.0
-      kleur: 4.1.5
-      sade: 1.8.1
 
   v8-compile-cache-lib@3.0.1: {}
 

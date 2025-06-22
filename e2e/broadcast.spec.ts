@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { snoop } from 'snoop'
+import { mock } from 'node:test'
 import type * as effectorMod from 'effector'
 import type * as libMod from '../src'
 
@@ -16,14 +16,14 @@ declare const watchFn: (...args: any[]) => any
 declare const messageFn: (...args: any[]) => any
 
 test('should sync store values between tabs', async ({ context }) => {
-  const watch = snoop(() => undefined)
+  const watch = mock.fn()
 
   // open two tabs
   const tab1 = await context.newPage()
   const tab2 = await context.newPage()
 
   // expose `watchFn` to the tab1
-  await tab1.exposeFunction('watchFn', watch.fn)
+  await tab1.exposeFunction('watchFn', watch)
 
   // promise to wait for console.log in tab1
   const consoleLog = tab1.waitForEvent('console', {
@@ -66,8 +66,8 @@ test('should sync store values between tabs', async ({ context }) => {
 
   // check that store was updated in tab1
   expect(msg.text()).toBe('new_token')
-  expect(watch.callCount).toBe(2)
-  expect(watch.calls[0].arguments).toEqual([
+  expect(watch.mock.callCount()).toBe(2)
+  expect(watch.mock.calls[0].arguments).toEqual([
     {
       key: 'token',
       keyPrefix: '',
@@ -76,7 +76,7 @@ test('should sync store values between tabs', async ({ context }) => {
       value: undefined,
     },
   ])
-  expect(watch.calls[1].arguments).toEqual([
+  expect(watch.mock.calls[1].arguments).toEqual([
     {
       key: 'token',
       keyPrefix: '',
@@ -88,13 +88,13 @@ test('should sync store values between tabs', async ({ context }) => {
 })
 
 test('should sync store values between tab and worker', async ({ context }) => {
-  const watch = snoop(() => undefined)
+  const watch = mock.fn()
 
   // open tab
   const tab = await context.newPage()
 
   // expose `watchFn` to the tab
-  await tab.exposeFunction('watchFn', watch.fn)
+  await tab.exposeFunction('watchFn', watch)
 
   // promise to wait for console.log in tab1
   const consoleLog = tab.waitForEvent('console', {
@@ -141,8 +141,8 @@ test('should sync store values between tab and worker', async ({ context }) => {
 
   // check that store was updated in tab
   expect(msg.text()).toBe('new_token')
-  expect(watch.callCount).toBe(2)
-  expect(watch.calls[0].arguments).toEqual([
+  expect(watch.mock.callCount()).toBe(2)
+  expect(watch.mock.calls[0].arguments).toEqual([
     {
       key: 'token',
       keyPrefix: '',
@@ -151,7 +151,7 @@ test('should sync store values between tab and worker', async ({ context }) => {
       value: undefined,
     },
   ])
-  expect(watch.calls[1].arguments).toEqual([
+  expect(watch.mock.calls[1].arguments).toEqual([
     {
       key: 'token',
       keyPrefix: '',
@@ -175,8 +175,8 @@ test('should fail on `messageerror`', async ({ context }) => {
   ).toBe('true|function')
 
   // expose spy functions
-  const message = snoop(() => undefined)
-  await tab.exposeFunction('messageFn', message.fn)
+  const message = mock.fn()
+  await tab.exposeFunction('messageFn', message)
 
   // promise to wait for console.log in tab1
   const consoleLog = tab.waitForEvent('console', {
@@ -230,8 +230,8 @@ test('should fail on `messageerror`', async ({ context }) => {
   await consoleLog
 
   // check that `fail` was called
-  expect(message.callCount).toBe(1)
-  const { error, ...rest } = message.calls[0].arguments[0 as any] as any
+  expect(message.mock.callCount()).toBe(1)
+  const { error, ...rest } = message.mock.calls[0].arguments[0 as any] as any
   expect(rest).toEqual({
     key: 'store',
     keyPrefix: '',

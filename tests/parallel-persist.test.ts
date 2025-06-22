@@ -1,5 +1,5 @@
 import type { StorageAdapter } from '../src/types'
-import { test } from 'uvu'
+import { test } from 'node:test'
 import {
   allSettled,
   createEffect,
@@ -69,9 +69,3 @@ test('(scope) parallel persists should not stuck in dead lock', async () => {
   // this test just working already asserts absense of dead lock,
   // no need for extra assert checks
 })
-
-//
-// Launch tests
-//
-
-test.run()

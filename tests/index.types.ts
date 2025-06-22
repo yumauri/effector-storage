@@ -1,8 +1,12 @@
 import type { StorageAdapter } from '../src/types'
 import type { Event, Store, Subscription } from 'effector'
 import { createStore, createEvent } from 'effector'
-import { test } from 'uvu'
 import { expectType } from 'tsd'
+
+// fake `test` function which will not be runned
+// TypeScript will do the job for us, by checking the syntax
+// without actual execution
+function test(_name: string, _test: () => any) {}
 
 //
 // Tests
@@ -201,8 +205,3 @@ test('Should accept non targetables (should be fixed after drop version 22)', as
   persist({ store })
   persist({ source, target })
 })
-
-//
-// DO NOT launch tests, because they will fail in runtime
-// TypeScript will do the job for us, by checking the syntax
-//

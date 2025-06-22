@@ -1,5 +1,5 @@
-import { test } from 'uvu'
-import * as assert from 'uvu/assert'
+import { test, before, after } from 'node:test'
+import * as assert from 'node:assert/strict'
 import { createStore } from 'effector'
 import { createStorageMock } from './mocks/storage.mock'
 import { type Events, createEventsMock } from './mocks/events.mock'
@@ -17,7 +17,7 @@ import { query } from '../src/query'
 declare let global: any
 let events: Events
 
-test.before(() => {
+before(() => {
   global.localStorage = createStorageMock()
   global.sessionStorage = createStorageMock()
   events = createEventsMock()
@@ -28,7 +28,7 @@ test.before(() => {
   global.location._history(global.history)
 })
 
-test.after(() => {
+after(() => {
   global.localStorage = undefined
   global.sessionStorage = undefined
   global.addEventListener = undefined
@@ -45,7 +45,7 @@ test('should be possible to use different adapters', async () => {
   persist({ adapter: local(), store: $counter })
   persist({ adapter: session(), store: $counter })
   persist({ adapter: query({ def: 0 }), store: $counter })
-  assert.is($counter.getState(), 0)
+  assert.strictEqual($counter.getState(), 0)
 
   global.localStorage.setItem('counter', '1')
   await events.dispatchEvent('storage', {
@@ -55,18 +55,12 @@ test('should be possible to use different adapters', async () => {
     newValue: '1',
   })
 
-  assert.is($counter.getState(), 1)
+  assert.strictEqual($counter.getState(), 1)
 
   // should update `sessionStorage`
   // because store got updated from `localStorage`
-  assert.is(global.sessionStorage.getItem('counter'), '1')
+  assert.strictEqual(global.sessionStorage.getItem('counter'), '1')
 
   // should update query string as well
-  assert.is(global.location.search, '?counter=1')
+  assert.strictEqual(global.location.search, '?counter=1')
 })
-
-//
-// Launch tests
-//
-
-test.run()

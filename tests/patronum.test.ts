@@ -1,9 +1,7 @@
 import type { StorageAdapter } from '../src/types'
-import type { Snoop } from 'snoop'
 import { debounce } from 'patronum/debounce'
-import { test } from 'uvu'
-import * as assert from 'uvu/assert'
-import { snoop } from 'snoop'
+import { test, mock, type Mock } from 'node:test'
+import * as assert from 'node:assert/strict'
 import { createEvent, createStore, sample } from 'effector'
 import { persist } from '../src/core'
 
@@ -12,18 +10,18 @@ import { persist } from '../src/core'
 //
 
 const createAdapter = (): {
-  set: Snoop<any>
-  get: Snoop<any>
+  set: Mock<any>
+  get: Mock<any>
   adapter: StorageAdapter
 } => {
-  const set = snoop((value: any) => value)
-  const get = snoop((_raw: any, value: any) => value)
+  const set = mock.fn((value: any) => value)
+  const get = mock.fn((_raw: any, value: any) => value)
 
   const adapter: StorageAdapter = <T>() => {
     let __: T = undefined as any
     return {
-      get: (raw: any): T => get.fn(raw, __),
-      set: (value: T) => (__ = set.fn(value)),
+      get: (raw: any): T => get(raw, __),
+      set: (value: T) => (__ = set(value)),
     }
   }
 
@@ -35,21 +33,21 @@ const createAdapter = (): {
 //
 
 test('storage updates should be debounced', async () => {
-  const incrementWatch = snoop(() => undefined)
-  const debouncedWatch = snoop(() => undefined)
-  const storeWatch = snoop(() => undefined)
+  const incrementWatch = mock.fn()
+  const debouncedWatch = mock.fn()
+  const storeWatch = mock.fn()
 
   const increment = createEvent()
-  increment.watch(incrementWatch.fn)
+  increment.watch(incrementWatch)
 
   const debounced = debounce({ source: increment, timeout: 10 })
-  debounced.watch(debouncedWatch.fn)
+  debounced.watch(debouncedWatch)
 
   const $store = createStore(0, { name: 'debounced' }).on(
     increment,
     (state) => state + 1
   )
-  $store.watch(storeWatch.fn)
+  $store.watch(storeWatch)
 
   const { set, get, adapter } = createAdapter()
   persist({
@@ -59,90 +57,115 @@ test('storage updates should be debounced', async () => {
   })
 
   // after `persist`
-  assert.is(set.callCount, 0)
-  assert.is(get.callCount, 1) // <- get undefined value from storage
-  assert.is(incrementWatch.callCount, 0)
-  assert.is(debouncedWatch.callCount, 0)
-  assert.is(storeWatch.callCount, 1) // <- first watch on store
+  assert.strictEqual(set.mock.callCount(), 0)
+  assert.strictEqual(get.mock.callCount(), 1) // <- get undefined value from storage
+  assert.strictEqual(incrementWatch.mock.callCount(), 0)
+  assert.strictEqual(debouncedWatch.mock.callCount(), 0)
+  assert.strictEqual(storeWatch.mock.callCount(), 1) // <- first watch on store
 
   // let's go
 
   // 1
   increment()
-  assert.is(set.callCount, 0) // <- did not change
-  assert.is(get.callCount, 1)
-  assert.is(incrementWatch.callCount, 1)
-  assert.is(debouncedWatch.callCount, 0) // <- did not change
-  assert.is(storeWatch.callCount, 2)
+  assert.strictEqual(set.mock.callCount(), 0) // <- did not change
+  assert.strictEqual(get.mock.callCount(), 1)
+  assert.strictEqual(incrementWatch.mock.callCount(), 1)
+  assert.strictEqual(debouncedWatch.mock.callCount(), 0) // <- did not change
+  assert.strictEqual(storeWatch.mock.callCount(), 2)
 
   // 2
   increment()
-  assert.is(set.callCount, 0) // <- did not change
-  assert.is(get.callCount, 1)
-  assert.is(incrementWatch.callCount, 2)
-  assert.is(debouncedWatch.callCount, 0) // <- did not change
-  assert.is(storeWatch.callCount, 3)
+  assert.strictEqual(set.mock.callCount(), 0) // <- did not change
+  assert.strictEqual(get.mock.callCount(), 1)
+  assert.strictEqual(incrementWatch.mock.callCount(), 2)
+  assert.strictEqual(debouncedWatch.mock.callCount(), 0) // <- did not change
+  assert.strictEqual(storeWatch.mock.callCount(), 3)
 
   // 3
   increment()
-  assert.is(set.callCount, 0) // <- did not change
-  assert.is(get.callCount, 1)
-  assert.is(incrementWatch.callCount, 3)
-  assert.is(debouncedWatch.callCount, 0) // <- did not change
-  assert.is(storeWatch.callCount, 4)
+  assert.strictEqual(set.mock.callCount(), 0) // <- did not change
+  assert.strictEqual(get.mock.callCount(), 1)
+  assert.strictEqual(incrementWatch.mock.callCount(), 3)
+  assert.strictEqual(debouncedWatch.mock.callCount(), 0) // <- did not change
+  assert.strictEqual(storeWatch.mock.callCount(), 4)
 
   // 4
   increment()
-  assert.is(set.callCount, 0) // <- did not change
-  assert.is(get.callCount, 1)
-  assert.is(incrementWatch.callCount, 4)
-  assert.is(debouncedWatch.callCount, 0) // <- did not change
-  assert.is(storeWatch.callCount, 5)
+  assert.strictEqual(set.mock.callCount(), 0) // <- did not change
+  assert.strictEqual(get.mock.callCount(), 1)
+  assert.strictEqual(incrementWatch.mock.callCount(), 4)
+  assert.strictEqual(debouncedWatch.mock.callCount(), 0) // <- did not change
+  assert.strictEqual(storeWatch.mock.callCount(), 5)
 
   // wait for debounced
   await new Promise((resolve) => setTimeout(resolve, 15))
 
-  assert.is(set.callCount, 1) // <- called
-  assert.is(get.callCount, 1)
-  assert.is(incrementWatch.callCount, 4)
-  assert.is(debouncedWatch.callCount, 1) // <- called
-  assert.is(storeWatch.callCount, 5)
+  assert.strictEqual(set.mock.callCount(), 1) // <- called
+  assert.strictEqual(get.mock.callCount(), 1)
+  assert.strictEqual(incrementWatch.mock.callCount(), 4)
+  assert.strictEqual(debouncedWatch.mock.callCount(), 1) // <- called
+  assert.strictEqual(storeWatch.mock.callCount(), 5)
 
   // check all arguments
-  assert.equal(set.calls, [{ result: 4, arguments: [4], error: undefined }])
-  assert.equal(get.calls, [
-    { result: undefined, arguments: [undefined, undefined], error: undefined },
-  ])
-  assert.equal(incrementWatch.calls, [
-    { result: undefined, arguments: [undefined], error: undefined },
-    { result: undefined, arguments: [undefined], error: undefined },
-    { result: undefined, arguments: [undefined], error: undefined },
-    { result: undefined, arguments: [undefined], error: undefined },
-  ])
-  assert.equal(debouncedWatch.calls, [
-    { result: undefined, arguments: [undefined], error: undefined },
-  ])
-  assert.equal(storeWatch.calls, [
-    { result: undefined, arguments: [0], error: undefined },
-    { result: undefined, arguments: [1], error: undefined },
-    { result: undefined, arguments: [2], error: undefined },
-    { result: undefined, arguments: [3], error: undefined },
-    { result: undefined, arguments: [4], error: undefined },
-  ])
+  assert.strictEqual(set.mock.calls.length, 1)
+  assert.strictEqual(set.mock.calls[0].result, 4)
+  assert.deepEqual(set.mock.calls[0].arguments, [4])
+  assert.strictEqual(set.mock.calls[0].error, undefined)
+
+  assert.strictEqual(get.mock.calls.length, 1)
+  assert.strictEqual(get.mock.calls[0].result, undefined)
+  assert.deepEqual(get.mock.calls[0].arguments, [undefined, undefined])
+  assert.strictEqual(get.mock.calls[0].error, undefined)
+
+  assert.strictEqual(incrementWatch.mock.calls.length, 4)
+  assert.strictEqual(incrementWatch.mock.calls[0].result, undefined)
+  assert.deepEqual(incrementWatch.mock.calls[0].arguments, [undefined])
+  assert.strictEqual(incrementWatch.mock.calls[0].error, undefined)
+  assert.strictEqual(incrementWatch.mock.calls[1].result, undefined)
+  assert.deepEqual(incrementWatch.mock.calls[1].arguments, [undefined])
+  assert.strictEqual(incrementWatch.mock.calls[1].error, undefined)
+  assert.strictEqual(incrementWatch.mock.calls[2].result, undefined)
+  assert.deepEqual(incrementWatch.mock.calls[2].arguments, [undefined])
+  assert.strictEqual(incrementWatch.mock.calls[2].error, undefined)
+  assert.strictEqual(incrementWatch.mock.calls[3].result, undefined)
+  assert.deepEqual(incrementWatch.mock.calls[3].arguments, [undefined])
+  assert.strictEqual(incrementWatch.mock.calls[3].error, undefined)
+
+  assert.strictEqual(debouncedWatch.mock.calls.length, 1)
+  assert.strictEqual(debouncedWatch.mock.calls[0].result, undefined)
+  assert.deepEqual(debouncedWatch.mock.calls[0].arguments, [undefined])
+  assert.strictEqual(debouncedWatch.mock.calls[0].error, undefined)
+
+  assert.strictEqual(storeWatch.mock.calls.length, 5)
+  assert.strictEqual(storeWatch.mock.calls[0].result, undefined)
+  assert.deepEqual(storeWatch.mock.calls[0].arguments, [0])
+  assert.strictEqual(storeWatch.mock.calls[0].error, undefined)
+  assert.strictEqual(storeWatch.mock.calls[1].result, undefined)
+  assert.deepEqual(storeWatch.mock.calls[1].arguments, [1])
+  assert.strictEqual(storeWatch.mock.calls[1].error, undefined)
+  assert.strictEqual(storeWatch.mock.calls[2].result, undefined)
+  assert.deepEqual(storeWatch.mock.calls[2].arguments, [2])
+  assert.strictEqual(storeWatch.mock.calls[2].error, undefined)
+  assert.strictEqual(storeWatch.mock.calls[3].result, undefined)
+  assert.deepEqual(storeWatch.mock.calls[3].arguments, [3])
+  assert.strictEqual(storeWatch.mock.calls[3].error, undefined)
+  assert.strictEqual(storeWatch.mock.calls[4].result, undefined)
+  assert.deepEqual(storeWatch.mock.calls[4].arguments, [4])
+  assert.strictEqual(storeWatch.mock.calls[4].error, undefined)
 })
 
 test('storage updates should be debounced, using clock', async () => {
-  const incrementWatch = snoop(() => undefined)
-  const storeWatch = snoop(() => undefined)
+  const incrementWatch = mock.fn()
+  const storeWatch = mock.fn()
 
   const increment = createEvent()
-  increment.watch(incrementWatch.fn)
+  increment.watch(incrementWatch)
 
   const $store = createStore(0, { name: 'debounced' }).on(
     increment,
     (state) => state + 1
   )
-  $store.watch(storeWatch.fn)
+  $store.watch(storeWatch)
 
   const { set, get, adapter } = createAdapter()
   persist({
@@ -152,71 +175,88 @@ test('storage updates should be debounced, using clock', async () => {
   })
 
   // after `persist`
-  assert.is(set.callCount, 0)
-  assert.is(get.callCount, 1) // <- get undefined value from storage
-  assert.is(incrementWatch.callCount, 0)
-  assert.is(storeWatch.callCount, 1) // <- first watch on store
+  assert.strictEqual(set.mock.callCount(), 0)
+  assert.strictEqual(get.mock.callCount(), 1) // <- get undefined value from storage
+  assert.strictEqual(incrementWatch.mock.callCount(), 0)
+  assert.strictEqual(storeWatch.mock.callCount(), 1) // <- first watch on store
 
   // let's go
 
   // 1
   increment()
-  assert.is(set.callCount, 0) // <- did not change
-  assert.is(get.callCount, 1)
-  assert.is(incrementWatch.callCount, 1)
-  assert.is(storeWatch.callCount, 2)
+  assert.strictEqual(set.mock.callCount(), 0) // <- did not change
+  assert.strictEqual(get.mock.callCount(), 1)
+  assert.strictEqual(incrementWatch.mock.callCount(), 1)
+  assert.strictEqual(storeWatch.mock.callCount(), 2)
 
   // 2
   increment()
-  assert.is(set.callCount, 0) // <- did not change
-  assert.is(get.callCount, 1)
-  assert.is(incrementWatch.callCount, 2)
-  assert.is(storeWatch.callCount, 3)
+  assert.strictEqual(set.mock.callCount(), 0) // <- did not change
+  assert.strictEqual(get.mock.callCount(), 1)
+  assert.strictEqual(incrementWatch.mock.callCount(), 2)
+  assert.strictEqual(storeWatch.mock.callCount(), 3)
 
   // 3
   increment()
-  assert.is(set.callCount, 0) // <- did not change
-  assert.is(get.callCount, 1)
-  assert.is(incrementWatch.callCount, 3)
-  assert.is(storeWatch.callCount, 4)
+  assert.strictEqual(set.mock.callCount(), 0) // <- did not change
+  assert.strictEqual(get.mock.callCount(), 1)
+  assert.strictEqual(incrementWatch.mock.callCount(), 3)
+  assert.strictEqual(storeWatch.mock.callCount(), 4)
 
   // 4
   increment()
-  assert.is(set.callCount, 0) // <- did not change
-  assert.is(get.callCount, 1)
-  assert.is(incrementWatch.callCount, 4)
-  assert.is(storeWatch.callCount, 5)
+  assert.strictEqual(set.mock.callCount(), 0) // <- did not change
+  assert.strictEqual(get.mock.callCount(), 1)
+  assert.strictEqual(incrementWatch.mock.callCount(), 4)
+  assert.strictEqual(storeWatch.mock.callCount(), 5)
 
   // wait for debounced
   await new Promise((resolve) => setTimeout(resolve, 15))
 
-  assert.is(set.callCount, 1) // <- called
-  assert.is(get.callCount, 1)
-  assert.is(incrementWatch.callCount, 4)
-  assert.is(storeWatch.callCount, 5)
+  assert.strictEqual(set.mock.callCount(), 1) // <- called
+  assert.strictEqual(get.mock.callCount(), 1)
+  assert.strictEqual(incrementWatch.mock.callCount(), 4)
+  assert.strictEqual(storeWatch.mock.callCount(), 5)
 
   // check all arguments
-  assert.equal(set.calls, [{ result: 4, arguments: [4], error: undefined }])
-  assert.equal(get.calls, [
-    { result: undefined, arguments: [undefined, undefined], error: undefined },
-  ])
-  assert.equal(incrementWatch.calls, [
-    { result: undefined, arguments: [undefined], error: undefined },
-    { result: undefined, arguments: [undefined], error: undefined },
-    { result: undefined, arguments: [undefined], error: undefined },
-    { result: undefined, arguments: [undefined], error: undefined },
-  ])
-  assert.equal(storeWatch.calls, [
-    { result: undefined, arguments: [0], error: undefined },
-    { result: undefined, arguments: [1], error: undefined },
-    { result: undefined, arguments: [2], error: undefined },
-    { result: undefined, arguments: [3], error: undefined },
-    { result: undefined, arguments: [4], error: undefined },
-  ])
+  assert.strictEqual(set.mock.calls.length, 1)
+  assert.strictEqual(set.mock.calls[0].result, 4)
+  assert.deepEqual(set.mock.calls[0].arguments, [4])
+  assert.strictEqual(set.mock.calls[0].error, undefined)
+
+  assert.strictEqual(get.mock.calls.length, 1)
+  assert.strictEqual(get.mock.calls[0].result, undefined)
+  assert.deepEqual(get.mock.calls[0].arguments, [undefined, undefined])
+  assert.strictEqual(get.mock.calls[0].error, undefined)
+
+  assert.strictEqual(incrementWatch.mock.calls.length, 4)
+  assert.strictEqual(incrementWatch.mock.calls[0].result, undefined)
+  assert.deepEqual(incrementWatch.mock.calls[0].arguments, [undefined])
+  assert.strictEqual(incrementWatch.mock.calls[0].error, undefined)
+  assert.strictEqual(incrementWatch.mock.calls[1].result, undefined)
+  assert.deepEqual(incrementWatch.mock.calls[1].arguments, [undefined])
+  assert.strictEqual(incrementWatch.mock.calls[1].error, undefined)
+  assert.strictEqual(incrementWatch.mock.calls[2].result, undefined)
+  assert.deepEqual(incrementWatch.mock.calls[2].arguments, [undefined])
+  assert.strictEqual(incrementWatch.mock.calls[2].error, undefined)
+  assert.strictEqual(incrementWatch.mock.calls[3].result, undefined)
+  assert.deepEqual(incrementWatch.mock.calls[3].arguments, [undefined])
+  assert.strictEqual(incrementWatch.mock.calls[3].error, undefined)
+
+  assert.strictEqual(storeWatch.mock.calls.length, 5)
+  assert.strictEqual(storeWatch.mock.calls[0].result, undefined)
+  assert.deepEqual(storeWatch.mock.calls[0].arguments, [0])
+  assert.strictEqual(storeWatch.mock.calls[0].error, undefined)
+  assert.strictEqual(storeWatch.mock.calls[1].result, undefined)
+  assert.deepEqual(storeWatch.mock.calls[1].arguments, [1])
+  assert.strictEqual(storeWatch.mock.calls[1].error, undefined)
+  assert.strictEqual(storeWatch.mock.calls[2].result, undefined)
+  assert.deepEqual(storeWatch.mock.calls[2].arguments, [2])
+  assert.strictEqual(storeWatch.mock.calls[2].error, undefined)
+  assert.strictEqual(storeWatch.mock.calls[3].result, undefined)
+  assert.deepEqual(storeWatch.mock.calls[3].arguments, [3])
+  assert.strictEqual(storeWatch.mock.calls[3].error, undefined)
+  assert.strictEqual(storeWatch.mock.calls[4].result, undefined)
+  assert.deepEqual(storeWatch.mock.calls[4].arguments, [4])
+  assert.strictEqual(storeWatch.mock.calls[4].error, undefined)
 })
-
-//
-// Launch tests
-//
-
-test.run()

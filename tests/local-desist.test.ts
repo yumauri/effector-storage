@@ -1,6 +1,5 @@
-import { test } from 'uvu'
-import * as assert from 'uvu/assert'
-import { type Snoop, snoop } from 'snoop'
+import { test, beforeEach, afterEach, mock, type Mock } from 'node:test'
+import * as assert from 'node:assert/strict'
 import { createStore } from 'effector'
 import { createStorageMock } from './mocks/storage.mock'
 import {
@@ -16,21 +15,21 @@ import { persist } from '../src/local'
 
 declare let global: any
 let events: EventsMock
-let addListener: Snoop<Events['addEventListener']>
-let removeListener: Snoop<Events['removeEventListener']>
+let addListener: Mock<Events['addEventListener']>
+let removeListener: Mock<Events['removeEventListener']>
 
-test.before.each(() => {
+beforeEach(() => {
   global.localStorage = createStorageMock()
   events = createEventsMock() as EventsMock
 
-  addListener = snoop(events.addEventListener)
-  global.addEventListener = addListener.fn
+  addListener = mock.fn(events.addEventListener)
+  global.addEventListener = addListener
 
-  removeListener = snoop(events.removeEventListener)
-  global.removeEventListener = removeListener.fn
+  removeListener = mock.fn(events.removeEventListener)
+  global.removeEventListener = removeListener
 })
 
-test.after.each(() => {
+afterEach(() => {
   global.localStorage = undefined
   global.addEventListener = undefined
   global.removeEventListener = undefined
@@ -52,18 +51,18 @@ test('should stop persisting on desist', async () => {
     oldValue: null,
     newValue: '1',
   })
-  assert.is($counter.getState(), 1)
+  assert.strictEqual($counter.getState(), 1)
 
   // update storage via store change
   ;($counter as any).setState(2)
-  assert.is(global.localStorage.getItem('counter'), '2')
+  assert.strictEqual(global.localStorage.getItem('counter'), '2')
 
   // stop persisting
   desist()
 
   // should not update storage via store change
   ;($counter as any).setState(3)
-  assert.is(global.localStorage.getItem('counter'), '2') // <- not updated
+  assert.strictEqual(global.localStorage.getItem('counter'), '2') // <- not updated
 
   // should not update store via `storage` event
   global.localStorage.setItem('counter', '4')
@@ -73,63 +72,63 @@ test('should stop persisting on desist', async () => {
     oldValue: '2',
     newValue: '4',
   })
-  assert.is($counter.getState(), 3) // <- not updated
+  assert.strictEqual($counter.getState(), 3) // <- not updated
 })
 
 test('should remove `storage` event listener on desist', async () => {
   const $counter = createStore(0, { name: 'counter' })
   const desist = persist({ store: $counter })
 
-  assert.is(addListener.callCount, 1)
-  assert.equal(addListener.calls[0].arguments[0], 'storage')
-  const listener = addListener.calls[0].arguments[1]
+  assert.strictEqual(addListener.mock.callCount(), 1)
+  assert.strictEqual(addListener.mock.calls[0].arguments[0], 'storage')
+  const listener = addListener.mock.calls[0].arguments[1]
 
-  assert.is(events.listeners.size, 1)
-  assert.is(events.listeners.get('storage')?.length, 1)
+  assert.strictEqual(events.listeners.size, 1)
+  assert.strictEqual(events.listeners.get('storage')?.length, 1)
 
   // stop persisting
   desist()
 
-  assert.is(removeListener.callCount, 1)
-  assert.equal(removeListener.calls[0].arguments[0], 'storage')
-  assert.is(removeListener.calls[0].arguments[1], listener)
+  assert.strictEqual(removeListener.mock.callCount(), 1)
+  assert.strictEqual(removeListener.mock.calls[0].arguments[0], 'storage')
+  assert.strictEqual(removeListener.mock.calls[0].arguments[1], listener)
 
-  assert.is(events.listeners.size, 1)
-  assert.is(events.listeners.get('storage')?.length, 0)
+  assert.strictEqual(events.listeners.size, 1)
+  assert.strictEqual(events.listeners.get('storage')?.length, 0)
 })
 
 test('should not remove other store `storage` event listener on desist', async () => {
   const $counter1 = createStore(0, { name: 'counter' })
   const desist1 = persist({ store: $counter1 })
 
-  assert.is(addListener.callCount, 1)
-  assert.equal(addListener.calls[0].arguments[0], 'storage')
-  const listener1 = addListener.calls[0].arguments[1]
+  assert.strictEqual(addListener.mock.callCount(), 1)
+  assert.strictEqual(addListener.mock.calls[0].arguments[0], 'storage')
+  const listener1 = addListener.mock.calls[0].arguments[1]
 
   const $counter2 = createStore(0, { name: 'counter' })
   persist({ store: $counter2 })
 
-  assert.is(addListener.callCount, 2)
-  assert.equal(addListener.calls[1].arguments[0], 'storage')
-  const listener2 = addListener.calls[1].arguments[1]
+  assert.strictEqual(addListener.mock.callCount(), 2)
+  assert.strictEqual(addListener.mock.calls[1].arguments[0], 'storage')
+  const listener2 = addListener.mock.calls[1].arguments[1]
 
-  assert.is.not(listener1, listener2)
+  assert.notStrictEqual(listener1, listener2)
 
-  assert.is(events.listeners.size, 1)
-  assert.is(events.listeners.get('storage')?.length, 2)
-  assert.is(events.listeners.get('storage')?.[0], listener1)
-  assert.is(events.listeners.get('storage')?.[1], listener2)
+  assert.strictEqual(events.listeners.size, 1)
+  assert.strictEqual(events.listeners.get('storage')?.length, 2)
+  assert.strictEqual(events.listeners.get('storage')?.[0], listener1)
+  assert.strictEqual(events.listeners.get('storage')?.[1], listener2)
 
   // stop persisting
   desist1()
 
-  assert.is(removeListener.callCount, 1)
-  assert.equal(removeListener.calls[0].arguments[0], 'storage')
-  assert.is(removeListener.calls[0].arguments[1], listener1)
+  assert.strictEqual(removeListener.mock.callCount(), 1)
+  assert.strictEqual(removeListener.mock.calls[0].arguments[0], 'storage')
+  assert.strictEqual(removeListener.mock.calls[0].arguments[1], listener1)
 
-  assert.is(events.listeners.size, 1)
-  assert.is(events.listeners.get('storage')?.length, 1)
-  assert.is(events.listeners.get('storage')?.[0], listener2)
+  assert.strictEqual(events.listeners.size, 1)
+  assert.strictEqual(events.listeners.get('storage')?.length, 1)
+  assert.strictEqual(events.listeners.get('storage')?.[0], listener2)
 })
 
 test('should flush unsaved changes on desist', async () => {
@@ -138,17 +137,11 @@ test('should flush unsaved changes on desist', async () => {
 
   //
   ;($counter as any).setState(1)
-  assert.is($counter.getState(), 1)
-  assert.is(global.localStorage.getItem('counter'), null) // <- not changed yet
+  assert.strictEqual($counter.getState(), 1)
+  assert.strictEqual(global.localStorage.getItem('counter'), null) // <- not changed yet
 
   // stop persisting
   desist()
 
-  assert.is(global.localStorage.getItem('counter'), '1') // changed immediately
+  assert.strictEqual(global.localStorage.getItem('counter'), '1') // changed immediately
 })
-
-//
-// Launch tests
-//
-
-test.run()
