@@ -133,6 +133,8 @@ export function persist<State, Err = Error>(
       source: ctx,
       effect: ([ref], raw?: any) => value.get(raw, ref),
     }) as Effect<void, State, Err>
+    getFx.watch((_) => console.log('🔻getFx.watch', _))
+    getFx.finally.watch((_) => console.log('🔻getFx.finally.watch', _))
 
     const setFx = attach({
       source: ctx,

@@ -142,6 +142,12 @@ export function createStorage<State, Err = Error>(
     },
   }) as Effect<void, void, any>
 
+  removeFx.watch((_) => console.log('▼ removeFx.watch', _))
+  removeFx.finally.watch((_) => console.log('▼ removeFx.finally.watch', _))
+  getFx.watch((_) => console.log('▼ getFx.watch', _))
+  getFx.finally.watch((_) => console.log('▼ getFx.finally.watch', _))
+  storage.watch((_) => console.log('🚩 storage.watch', _))
+
   let update: (raw?: any) => any = getFx
   ctx.updates.watch(() => {
     update = scopeBind(getFx as any, { safe: true })
@@ -152,7 +158,8 @@ export function createStorage<State, Err = Error>(
 
   sample({
     clock: [getFx.doneData as Event<any>, sample(setFx, setFx.done)],
-    filter: (x) => x !== undefined,
+    // filter: (x) => x !== undefined,
+    fn: (x) => x ?? null,
     target: storage,
   })
 
