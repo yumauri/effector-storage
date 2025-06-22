@@ -20,7 +20,6 @@ test.before(() => {
 })
 
 test.after(() => {
-  // biome-ignore lint/performance/noDelete: cannot assign `undefined` to defined property
   delete global.localStorage
 })
 
