@@ -1,11 +1,14 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:base", ":gitSignOff", ":disableDependencyDashboard"],
+  "extends": [
+    "config:recommended",
+    ":gitSignOff",
+    ":disableDependencyDashboard"
+  ],
   "enabled": true,
   "automerge": false,
   "enabledManagers": ["npm"],
   "rangeStrategy": "bump",
-  "lockFileMaintenance": { "enabled": true },
   "assignees": ["yumauri"],
   "labels": ["dependencies"],
   "packageRules": [
@@ -14,7 +17,7 @@
       "minimumReleaseAge": "3 days"
     },
     {
-      "matchPackagePatterns": ["^effector", "@types/node"],
+      "matchPackageNames": ["/^effector/", "/@types/node/"],
       "enabled": false
     },
     {
