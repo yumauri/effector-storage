@@ -1,7 +1,6 @@
 import type { StorageAdapter } from '../src/types'
-import { test } from 'uvu'
-import * as assert from 'uvu/assert'
-import { snoop } from 'snoop'
+import { test, mock } from 'node:test'
+import * as assert from 'node:assert/strict'
 import { createEvent, createStore } from 'effector'
 import { persist, createPersist } from '../src'
 
@@ -22,10 +21,10 @@ const dumbAdapter: StorageAdapter = <T>() => {
 //
 
 test('should exports function', () => {
-  assert.type(persist, 'function')
-  assert.type(createPersist, 'function')
-  assert.type(createPersist(), 'function')
-  assert.type(createPersist({ keyPrefix: 'app' }), 'function')
+  assert.ok(typeof persist === 'function')
+  assert.ok(typeof createPersist === 'function')
+  assert.ok(typeof createPersist() === 'function')
+  assert.ok(typeof createPersist({ keyPrefix: 'app' }) === 'function')
 })
 
 test('should be ok on good parameters', () => {
@@ -33,10 +32,10 @@ test('should be ok on good parameters', () => {
   const $store1 = createStore(0)
   const $store0named = createStore(0, { name: '_store0named_' })
   const $store1named = createStore(0, { name: '_store1named_' })
-  assert.not.throws(() =>
+  assert.doesNotThrow(() =>
     persist({ adapter: dumbAdapter, store: $store0, key: '_store0_' })
   )
-  assert.not.throws(() =>
+  assert.doesNotThrow(() =>
     persist({
       adapter: dumbAdapter,
       source: $store1,
@@ -44,10 +43,10 @@ test('should be ok on good parameters', () => {
       key: '_store1_',
     })
   )
-  assert.not.throws(() =>
+  assert.doesNotThrow(() =>
     persist({ adapter: dumbAdapter, store: $store0named })
   )
-  assert.not.throws(() =>
+  assert.doesNotThrow(() =>
     persist({
       adapter: dumbAdapter,
       source: $store1named,
@@ -99,8 +98,8 @@ test('should return Subscription', () => {
     adapter: dumbAdapter,
     key: 'test',
   })
-  assert.type(unsubscribe, 'function')
-  assert.type(unsubscribe.unsubscribe, 'function')
+  assert.ok(typeof unsubscribe === 'function')
+  assert.ok(typeof unsubscribe.unsubscribe === 'function')
 
   const persistApp = createPersist({ keyPrefix: 'app' })
   const unsubscribeApp = persistApp({
@@ -108,73 +107,73 @@ test('should return Subscription', () => {
     adapter: dumbAdapter,
     key: 'test',
   })
-  assert.type(unsubscribeApp, 'function')
-  assert.type(unsubscribeApp.unsubscribe, 'function')
+  assert.ok(typeof unsubscribeApp === 'function')
+  assert.ok(typeof unsubscribeApp.unsubscribe === 'function')
 })
 
 test('should restore value from adapter on store', () => {
-  const watch = snoop(() => undefined)
+  const watch = mock.fn()
 
   const $store = createStore(1)
-  $store.watch(watch.fn)
+  $store.watch(watch)
 
-  assert.is($store.getState(), 1)
-  assert.is(watch.callCount, 1)
-  assert.equal(watch.calls[0].arguments, [1])
+  assert.strictEqual($store.getState(), 1)
+  assert.strictEqual(watch.mock.callCount(), 1)
+  assert.deepEqual(watch.mock.calls[0].arguments, [1])
 
   persist({ store: $store, adapter: dumbAdapter, key: 'test' })
 
-  assert.is($store.getState(), 0)
-  assert.is(watch.callCount, 2)
-  assert.equal(watch.calls[1].arguments, [0])
+  assert.strictEqual($store.getState(), 0)
+  assert.strictEqual(watch.mock.callCount(), 2)
+  assert.deepEqual(watch.mock.calls[1].arguments, [0])
 })
 
 test('should sync stores, persisted to the same adapter-key', () => {
-  const watch = snoop(() => undefined)
+  const watch = mock.fn()
 
   const $store0 = createStore(1)
   const $store1 = createStore(2)
-  $store0.watch(watch.fn)
-  $store1.watch(watch.fn)
+  $store0.watch(watch)
+  $store1.watch(watch)
 
-  assert.is($store0.getState(), 1)
-  assert.is($store1.getState(), 2)
-  assert.is(watch.callCount, 2)
-  assert.equal(watch.calls[0].arguments, [1])
-  assert.equal(watch.calls[1].arguments, [2])
+  assert.strictEqual($store0.getState(), 1)
+  assert.strictEqual($store1.getState(), 2)
+  assert.strictEqual(watch.mock.callCount(), 2)
+  assert.deepEqual(watch.mock.calls[0].arguments, [1])
+  assert.deepEqual(watch.mock.calls[1].arguments, [2])
 
   persist({ store: $store0, adapter: dumbAdapter, key: 'same-key-1' })
   persist({ store: $store1, adapter: dumbAdapter, key: 'same-key-1' })
 
-  assert.is($store0.getState(), 0)
-  assert.is($store1.getState(), 0)
-  assert.is(watch.callCount, 4)
-  assert.equal(watch.calls[2].arguments, [0])
-  assert.equal(watch.calls[3].arguments, [0])
+  assert.strictEqual($store0.getState(), 0)
+  assert.strictEqual($store1.getState(), 0)
+  assert.strictEqual(watch.mock.callCount(), 4)
+  assert.deepEqual(watch.mock.calls[2].arguments, [0])
+  assert.deepEqual(watch.mock.calls[3].arguments, [0])
 
   //
   ;($store0 as any).setState(3)
 
-  assert.is($store0.getState(), 3)
-  assert.is($store1.getState(), 3) // <- also changes
-  assert.is(watch.callCount, 6)
-  assert.equal(watch.calls[4].arguments, [3])
-  assert.equal(watch.calls[5].arguments, [3])
+  assert.strictEqual($store0.getState(), 3)
+  assert.strictEqual($store1.getState(), 3) // <- also changes
+  assert.strictEqual(watch.mock.callCount(), 6)
+  assert.deepEqual(watch.mock.calls[4].arguments, [3])
+  assert.deepEqual(watch.mock.calls[5].arguments, [3])
 })
 
 test('should unsubscribe stores', () => {
-  const watch = snoop(() => undefined)
+  const watch = mock.fn()
 
   const $store0 = createStore(1)
   const $store1 = createStore(2)
-  $store0.watch(watch.fn)
-  $store1.watch(watch.fn)
+  $store0.watch(watch)
+  $store1.watch(watch)
 
-  assert.is($store0.getState(), 1)
-  assert.is($store1.getState(), 2)
-  assert.is(watch.callCount, 2)
-  assert.equal(watch.calls[0].arguments, [1])
-  assert.equal(watch.calls[1].arguments, [2])
+  assert.strictEqual($store0.getState(), 1)
+  assert.strictEqual($store1.getState(), 2)
+  assert.strictEqual(watch.mock.callCount(), 2)
+  assert.deepEqual(watch.mock.calls[0].arguments, [1])
+  assert.deepEqual(watch.mock.calls[1].arguments, [2])
 
   persist({ store: $store0, adapter: dumbAdapter, key: 'same-key-2' })
   const unsubscribe = persist({
@@ -183,25 +182,19 @@ test('should unsubscribe stores', () => {
     key: 'same-key-2',
   })
 
-  assert.is($store0.getState(), 0)
-  assert.is($store1.getState(), 0)
-  assert.is(watch.callCount, 4)
-  assert.equal(watch.calls[2].arguments, [0])
-  assert.equal(watch.calls[3].arguments, [0])
+  assert.strictEqual($store0.getState(), 0)
+  assert.strictEqual($store1.getState(), 0)
+  assert.strictEqual(watch.mock.callCount(), 4)
+  assert.deepEqual(watch.mock.calls[2].arguments, [0])
+  assert.deepEqual(watch.mock.calls[3].arguments, [0])
 
   unsubscribe()
 
   //
   ;($store0 as any).setState(3)
 
-  assert.is($store0.getState(), 3)
-  assert.is($store1.getState(), 0) // <- same as before
-  assert.is(watch.callCount, 5)
-  assert.equal(watch.calls[4].arguments, [3])
+  assert.strictEqual($store0.getState(), 3)
+  assert.strictEqual($store1.getState(), 0) // <- same as before
+  assert.strictEqual(watch.mock.callCount(), 5)
+  assert.deepEqual(watch.mock.calls[4].arguments, [3])
 })
-
-//
-// Launch tests
-//
-
-test.run()

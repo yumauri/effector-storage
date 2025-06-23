@@ -1,9 +1,5 @@
-// import type { StorageAdapter } from '../src'
-import { test } from 'uvu'
-import { install as installFakeTimers } from '@sinonjs/fake-timers'
-import * as assert from 'uvu/assert'
-import { snoop } from 'snoop'
-// import { createStore, createEvent } from 'effector'
+import { test, before, after, mock } from 'node:test'
+import * as assert from 'node:assert/strict'
 import { createStore } from 'effector'
 import { createStorageMock } from './mocks/storage.mock'
 import { type Events, createEventsMock } from './mocks/events.mock'
@@ -19,18 +15,17 @@ declare let global: any
 const mockStorage = createStorageMock()
 let events: Events
 
-test.before(() => {
-  global.clock = installFakeTimers()
+before(() => {
+  mock.timers.enable()
   events = createEventsMock()
   global.addEventListener = events.addEventListener
   global.removeEventListener = events.removeEventListener
 })
 
-test.after(() => {
+after(() => {
   global.removeEventListener = undefined
   global.addEventListener = undefined
-  global.clock.uninstall()
-  global.clock = undefined
+  mock.timers.reset()
 })
 
 //
@@ -46,24 +41,24 @@ test('value should be stored to storage after timeout', async () => {
       timeout: 100,
     }),
   })
-  assert.is($counter1.getState(), 0)
+  assert.strictEqual($counter1.getState(), 0)
 
   //
   ;($counter1 as any).setState(1)
-  assert.is($counter1.getState(), 1)
-  assert.is(mockStorage.getItem('counter1'), null) // not changed yet
+  assert.strictEqual($counter1.getState(), 1)
+  assert.strictEqual(mockStorage.getItem('counter1'), null) // not changed yet
 
-  await global.clock.tickAsync(60)
-  assert.is(mockStorage.getItem('counter1'), null) // not changed yet
+  mock.timers.tick(60)
+  assert.strictEqual(mockStorage.getItem('counter1'), null) // not changed yet
 
-  await global.clock.tickAsync(60)
-  assert.is(mockStorage.getItem('counter1'), '1')
+  mock.timers.tick(60)
+  assert.strictEqual(mockStorage.getItem('counter1'), '1')
 })
 
 test('multiple store updates without timeout should call multiple storage update', () => {
-  const setItem = snoop(() => undefined)
+  const setItem = mock.fn()
   const mockStorage = createStorageMock()
-  mockStorage._callbacks({ setItem: setItem.fn })
+  mockStorage._callbacks({ setItem })
 
   const $counter2 = createStore(0, { name: 'counter2' })
   persist({
@@ -74,20 +69,23 @@ test('multiple store updates without timeout should call multiple storage update
   for (let i = 1; i <= 10; i++) {
     ;($counter2 as any).setState(i)
   }
-  assert.is($counter2.getState(), 10)
-  assert.is(mockStorage.getItem('counter2'), '10')
+  assert.strictEqual($counter2.getState(), 10)
+  assert.strictEqual(mockStorage.getItem('counter2'), '10')
 
-  assert.is(setItem.callCount, 10)
+  assert.strictEqual(setItem.mock.callCount(), 10)
   for (let i = 1; i <= 10; i++) {
-    assert.is(setItem.calls[i - 1].arguments[0 as any], 'counter2')
-    assert.is(setItem.calls[i - 1].arguments[1 as any], String(i))
+    assert.strictEqual(
+      setItem.mock.calls[i - 1].arguments[0 as any],
+      'counter2'
+    )
+    assert.strictEqual(setItem.mock.calls[i - 1].arguments[1 as any], String(i))
   }
 })
 
 test('multiple store updates with timeout should call single storage update', async () => {
-  const setItem = snoop(() => undefined)
+  const setItem = mock.fn()
   const mockStorage = createStorageMock()
-  mockStorage._callbacks({ setItem: setItem.fn })
+  mockStorage._callbacks({ setItem })
 
   const $counter3 = createStore(0, { name: 'counter3' })
   persist({
@@ -101,15 +99,15 @@ test('multiple store updates with timeout should call single storage update', as
   for (let i = 1; i <= 10; i++) {
     ;($counter3 as any).setState(i)
   }
-  assert.is($counter3.getState(), 10)
+  assert.strictEqual($counter3.getState(), 10)
 
-  assert.is(mockStorage.getItem('counter3'), null) // not changed yet
-  assert.is(setItem.callCount, 0) // not called yet
+  assert.strictEqual(mockStorage.getItem('counter3'), null) // not changed yet
+  assert.strictEqual(setItem.mock.callCount(), 0) // not called yet
 
-  await global.clock.tickAsync(0)
-  assert.is(mockStorage.getItem('counter3'), '10')
-  assert.is(setItem.callCount, 1) // called once
-  assert.equal(setItem.calls[0].arguments, ['counter3', '10'])
+  mock.timers.tick(0)
+  assert.strictEqual(mockStorage.getItem('counter3'), '10')
+  assert.strictEqual(setItem.mock.callCount(), 1) // called once
+  assert.deepEqual(setItem.mock.calls[0].arguments, ['counter3', '10'])
 })
 
 test('should flush earlier on tab close', async () => {
@@ -124,12 +122,12 @@ test('should flush earlier on tab close', async () => {
 
   //
   ;($counter4 as any).setState(1)
-  assert.is($counter4.getState(), 1)
-  assert.is(mockStorage.getItem('counter4'), null) // not changed yet
+  assert.strictEqual($counter4.getState(), 1)
+  assert.strictEqual(mockStorage.getItem('counter4'), null) // not changed yet
 
   events.dispatchEvent('beforeunload', {})
-  await global.clock.tickAsync(0)
-  assert.is(mockStorage.getItem('counter4'), '1') // changed immediately
+  mock.timers.tick(0)
+  assert.strictEqual(mockStorage.getItem('counter4'), '1') // changed immediately
 })
 
 test('should not override value in case it came from other tab', async () => {
@@ -145,8 +143,8 @@ test('should not override value in case it came from other tab', async () => {
 
   //
   ;($counter5 as any).setState(1)
-  assert.is($counter5.getState(), 1)
-  assert.is(mockStorage.getItem('counter5'), null) // not changed yet
+  assert.strictEqual($counter5.getState(), 1)
+  assert.strictEqual(mockStorage.getItem('counter5'), null) // not changed yet
 
   mockStorage.setItem('counter5', '2')
   events.dispatchEvent('storage', {
@@ -155,18 +153,12 @@ test('should not override value in case it came from other tab', async () => {
     oldValue: null,
     newValue: '2',
   })
-  await global.clock.tickAsync(0)
+  mock.timers.tick(0)
 
-  assert.is($counter5.getState(), 2) // updated from storage
-  assert.is(mockStorage.getItem('counter5'), '2')
+  assert.strictEqual($counter5.getState(), 2) // updated from storage
+  assert.strictEqual(mockStorage.getItem('counter5'), '2')
 
   // await for 150 ms
-  await global.clock.tickAsync(150)
-  assert.is(mockStorage.getItem('counter5'), '2') // should not be changed
+  mock.timers.tick(150)
+  assert.strictEqual(mockStorage.getItem('counter5'), '2') // should not be changed
 })
-
-//
-// Launch tests
-//
-
-test.run()

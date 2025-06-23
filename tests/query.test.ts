@@ -1,7 +1,5 @@
-import { test } from 'uvu'
-import { install as installFakeTimers } from '@sinonjs/fake-timers'
-import * as assert from 'uvu/assert'
-import { snoop } from 'snoop'
+import { test, before, beforeEach, after, afterEach, mock } from 'node:test'
+import * as assert from 'node:assert/strict'
 import { createStore, createEvent } from 'effector'
 import { createHistoryMock } from './mocks/history.mock'
 import { createLocationMock } from './mocks/location.mock'
@@ -23,11 +21,11 @@ import { query as queryIndex } from '../src'
 declare let global: any
 let events: Events
 
-test.before(() => {
-  global.clock = installFakeTimers()
+before(() => {
+  mock.timers.enable()
 })
 
-test.before.each(() => {
+beforeEach(() => {
   global.history = createHistoryMock(null, '', 'http://domain.test')
   global.location = createLocationMock('http://domain.test')
   global.history._location(global.location)
@@ -37,16 +35,15 @@ test.before.each(() => {
   global.removeEventListener = events.removeEventListener
 })
 
-test.after.each(() => {
+afterEach(() => {
   global.history = undefined
   global.location = undefined
   global.addEventListener = undefined
   global.removeEventListener = undefined
 })
 
-test.after(() => {
-  global.clock.uninstall()
-  global.clock = undefined
+after(() => {
+  mock.timers.reset()
 })
 
 //
@@ -54,50 +51,50 @@ test.after(() => {
 //
 
 test('should export adapter and `persist` function', () => {
-  assert.type(query, 'function')
-  assert.type(persist, 'function')
-  assert.type(pushState, 'function')
-  assert.type(replaceState, 'function')
-  assert.type(locationAssign, 'function')
-  assert.type(locationReplace, 'function')
+  assert.ok(typeof query === 'function')
+  assert.ok(typeof persist === 'function')
+  assert.ok(typeof pushState === 'function')
+  assert.ok(typeof replaceState === 'function')
+  assert.ok(typeof locationAssign === 'function')
+  assert.ok(typeof locationReplace === 'function')
 })
 
 test('should be exported from package root', () => {
-  assert.is(query, queryIndex)
+  assert.strictEqual(query, queryIndex)
 })
 
 test('should be ok on good parameters', () => {
   const $store = createStore('0', { name: 'query::store' })
-  assert.not.throws(() => persist({ store: $store }))
+  assert.doesNotThrow(() => persist({ store: $store }))
 })
 
 test('store initial value should NOT be put in query string', () => {
   const $id = createStore('0', { name: 'id' })
   persist({ store: $id })
-  assert.is(global.location.search, '')
+  assert.strictEqual(global.location.search, '')
 })
 
 test('store new value should be put in query string', () => {
   const $id = createStore('0', { name: 'id' })
   persist({ store: $id })
-  assert.is(global.location.search, '')
+  assert.strictEqual(global.location.search, '')
   ;($id as any).setState('42')
-  assert.is(global.location.search, '?id=42')
+  assert.strictEqual(global.location.search, '?id=42')
 })
 
 test('should change store value to default, in case history go back', async () => {
   const $id = createStore('1212', { name: 'id' })
   persist({ store: $id })
-  assert.is(global.location.search, '')
+  assert.strictEqual(global.location.search, '')
   ;($id as any).setState('4242')
-  assert.is(global.location.search, '?id=4242')
+  assert.strictEqual(global.location.search, '?id=4242')
   global.history.back()
 
   events.dispatchEvent('popstate', null)
-  await global.clock.runAllAsync()
+  mock.timers.runAll()
 
-  assert.is(global.location.search, '')
-  assert.is($id.getState(), '1212')
+  assert.strictEqual(global.location.search, '')
+  assert.strictEqual($id.getState(), '1212')
 })
 
 test('store value should be set from query string', () => {
@@ -108,7 +105,7 @@ test('store value should be set from query string', () => {
 
   const $id = createStore('0', { name: 'id' })
   persist({ store: $id })
-  assert.is($id.getState(), '111')
+  assert.strictEqual($id.getState(), '111')
 })
 
 test('store delete query string parameter in case of store null value', () => {
@@ -119,9 +116,9 @@ test('store delete query string parameter in case of store null value', () => {
 
   const $id = createStore('0', { name: 'id' })
   persist({ store: $id })
-  assert.is($id.getState(), '7777')
+  assert.strictEqual($id.getState(), '7777')
   ;($id as any).setState(null)
-  assert.is(global.location.search, '')
+  assert.strictEqual(global.location.search, '')
 })
 
 test('should preserve url hash part', () => {
@@ -134,46 +131,50 @@ test('should preserve url hash part', () => {
   global.history._location(global.location)
   global.location._history(global.history)
 
-  assert.is(global.location.hash, '#test')
+  assert.strictEqual(global.location.hash, '#test')
   const $id = createStore('0', { name: 'id' })
   persist({ store: $id })
-  assert.is($id.getState(), '8888')
+  assert.strictEqual($id.getState(), '8888')
   ;($id as any).setState(null)
-  assert.is(global.location.search, '')
-  assert.is(global.location.hash, '#test')
+  assert.strictEqual(global.location.search, '')
+  assert.strictEqual(global.location.hash, '#test')
   ;($id as any).setState('9999')
-  assert.is(global.location.search, '?id=9999')
-  assert.is(global.location.hash, '#test')
+  assert.strictEqual(global.location.search, '?id=9999')
+  assert.strictEqual(global.location.hash, '#test')
 })
 
 test('should use `pushState` by default', () => {
-  const snoopPushState = snoop(() => undefined)
-  const snoopReplaceState = snoop(() => undefined)
-  const snoopLocationAssign = snoop(() => undefined)
-  const snoopLocationReplace = snoop(() => undefined)
+  const mockPushState = mock.fn()
+  const mockReplaceState = mock.fn()
+  const mockLocationAssign = mock.fn()
+  const mockLocationReplace = mock.fn()
   global.history._callbacks({
-    pushState: snoopPushState.fn,
-    replaceState: snoopReplaceState.fn,
+    pushState: mockPushState,
+    replaceState: mockReplaceState,
   })
   global.location._callbacks({
-    assign: snoopLocationAssign.fn,
-    replace: snoopLocationReplace.fn,
+    assign: mockLocationAssign,
+    replace: mockLocationReplace,
   })
 
   const $id = createStore('0', { name: 'id' })
   persist({ store: $id })
-  assert.is(global.location.search, '')
-  assert.is(global.history.length, 1)
+  assert.strictEqual(global.location.search, '')
+  assert.strictEqual(global.history.length, 1)
   ;($id as any).setState('123')
-  assert.is(global.location.search, '?id=123')
-  assert.is(global.history.length, 2)
+  assert.strictEqual(global.location.search, '?id=123')
+  assert.strictEqual(global.history.length, 2)
 
-  assert.is(snoopPushState.callCount, 1)
-  assert.is(snoopReplaceState.callCount, 0)
-  assert.is(snoopLocationAssign.callCount, 0)
-  assert.is(snoopLocationReplace.callCount, 0)
+  assert.strictEqual(mockPushState.mock.callCount(), 1)
+  assert.strictEqual(mockReplaceState.mock.callCount(), 0)
+  assert.strictEqual(mockLocationAssign.mock.callCount(), 0)
+  assert.strictEqual(mockLocationReplace.mock.callCount(), 0)
 
-  assert.equal(snoopPushState.calls[0].arguments, [null, '', '/?id=123'])
+  assert.deepEqual(mockPushState.mock.calls[0].arguments, [
+    null,
+    '',
+    '/?id=123',
+  ])
 })
 
 test('should preserve state by default', () => {
@@ -182,33 +183,33 @@ test('should preserve state by default', () => {
   global.history._location(global.location)
   global.location._history(global.history)
 
-  const snoopPushState = snoop(() => undefined)
-  const snoopReplaceState = snoop(() => undefined)
-  const snoopLocationAssign = snoop(() => undefined)
-  const snoopLocationReplace = snoop(() => undefined)
+  const mockPushState = mock.fn()
+  const mockReplaceState = mock.fn()
+  const mockLocationAssign = mock.fn()
+  const mockLocationReplace = mock.fn()
   global.history._callbacks({
-    pushState: snoopPushState.fn,
-    replaceState: snoopReplaceState.fn,
+    pushState: mockPushState,
+    replaceState: mockReplaceState,
   })
   global.location._callbacks({
-    assign: snoopLocationAssign.fn,
-    replace: snoopLocationReplace.fn,
+    assign: mockLocationAssign,
+    replace: mockLocationReplace,
   })
 
   const $id = createStore('0', { name: 'id' })
   persist({ store: $id })
-  assert.is(global.location.search, '')
-  assert.is(global.history.length, 1)
+  assert.strictEqual(global.location.search, '')
+  assert.strictEqual(global.history.length, 1)
   ;($id as any).setState('111')
-  assert.is(global.location.search, '?id=111')
-  assert.is(global.history.length, 2)
+  assert.strictEqual(global.location.search, '?id=111')
+  assert.strictEqual(global.history.length, 2)
 
-  assert.is(snoopPushState.callCount, 1)
-  assert.is(snoopReplaceState.callCount, 0)
-  assert.is(snoopLocationAssign.callCount, 0)
-  assert.is(snoopLocationReplace.callCount, 0)
+  assert.strictEqual(mockPushState.mock.callCount(), 1)
+  assert.strictEqual(mockReplaceState.mock.callCount(), 0)
+  assert.strictEqual(mockLocationAssign.mock.callCount(), 0)
+  assert.strictEqual(mockLocationReplace.mock.callCount(), 0)
 
-  assert.equal(snoopPushState.calls[0].arguments, [
+  assert.deepEqual(mockPushState.mock.calls[0].arguments, [
     { test: 'test' },
     '',
     '/?id=111',
@@ -221,93 +222,105 @@ test('should erase state if state="erase"', () => {
   global.history._location(global.location)
   global.location._history(global.history)
 
-  const snoopPushState = snoop(() => undefined)
-  const snoopReplaceState = snoop(() => undefined)
-  const snoopLocationAssign = snoop(() => undefined)
-  const snoopLocationReplace = snoop(() => undefined)
+  const mockPushState = mock.fn()
+  const mockReplaceState = mock.fn()
+  const mockLocationAssign = mock.fn()
+  const mockLocationReplace = mock.fn()
   global.history._callbacks({
-    pushState: snoopPushState.fn,
-    replaceState: snoopReplaceState.fn,
+    pushState: mockPushState,
+    replaceState: mockReplaceState,
   })
   global.location._callbacks({
-    assign: snoopLocationAssign.fn,
-    replace: snoopLocationReplace.fn,
+    assign: mockLocationAssign,
+    replace: mockLocationReplace,
   })
 
   const $id = createStore('0', { name: 'id' })
   persist({ store: $id, state: 'erase' })
-  assert.is(global.location.search, '')
-  assert.is(global.history.length, 1)
+  assert.strictEqual(global.location.search, '')
+  assert.strictEqual(global.history.length, 1)
   ;($id as any).setState('222')
-  assert.is(global.location.search, '?id=222')
-  assert.is(global.history.length, 2)
+  assert.strictEqual(global.location.search, '?id=222')
+  assert.strictEqual(global.history.length, 2)
 
-  assert.is(snoopPushState.callCount, 1)
-  assert.is(snoopReplaceState.callCount, 0)
-  assert.is(snoopLocationAssign.callCount, 0)
-  assert.is(snoopLocationReplace.callCount, 0)
+  assert.strictEqual(mockPushState.mock.callCount(), 1)
+  assert.strictEqual(mockReplaceState.mock.callCount(), 0)
+  assert.strictEqual(mockLocationAssign.mock.callCount(), 0)
+  assert.strictEqual(mockLocationReplace.mock.callCount(), 0)
 
-  assert.equal(snoopPushState.calls[0].arguments, [null, '', '/?id=222'])
+  assert.deepEqual(mockPushState.mock.calls[0].arguments, [
+    null,
+    '',
+    '/?id=222',
+  ])
 })
 
 test('use `pushState` explicitly', () => {
-  const snoopPushState = snoop(() => undefined)
-  const snoopReplaceState = snoop(() => undefined)
-  const snoopLocationAssign = snoop(() => undefined)
-  const snoopLocationReplace = snoop(() => undefined)
+  const mockPushState = mock.fn()
+  const mockReplaceState = mock.fn()
+  const mockLocationAssign = mock.fn()
+  const mockLocationReplace = mock.fn()
   global.history._callbacks({
-    pushState: snoopPushState.fn,
-    replaceState: snoopReplaceState.fn,
+    pushState: mockPushState,
+    replaceState: mockReplaceState,
   })
   global.location._callbacks({
-    assign: snoopLocationAssign.fn,
-    replace: snoopLocationReplace.fn,
+    assign: mockLocationAssign,
+    replace: mockLocationReplace,
   })
 
   const $id = createStore('0', { name: 'id' })
   persist({ store: $id, method: pushState })
-  assert.is(global.location.search, '')
-  assert.is(global.history.length, 1)
+  assert.strictEqual(global.location.search, '')
+  assert.strictEqual(global.history.length, 1)
   ;($id as any).setState('987')
-  assert.is(global.location.search, '?id=987')
-  assert.is(global.history.length, 2)
+  assert.strictEqual(global.location.search, '?id=987')
+  assert.strictEqual(global.history.length, 2)
 
-  assert.is(snoopPushState.callCount, 1)
-  assert.is(snoopReplaceState.callCount, 0)
-  assert.is(snoopLocationAssign.callCount, 0)
-  assert.is(snoopLocationReplace.callCount, 0)
+  assert.strictEqual(mockPushState.mock.callCount(), 1)
+  assert.strictEqual(mockReplaceState.mock.callCount(), 0)
+  assert.strictEqual(mockLocationAssign.mock.callCount(), 0)
+  assert.strictEqual(mockLocationReplace.mock.callCount(), 0)
 
-  assert.equal(snoopPushState.calls[0].arguments, [null, '', '/?id=987'])
+  assert.deepEqual(mockPushState.mock.calls[0].arguments, [
+    null,
+    '',
+    '/?id=987',
+  ])
 })
 
 test('use of `replaceState` explicitly', () => {
-  const snoopPushState = snoop(() => undefined)
-  const snoopReplaceState = snoop(() => undefined)
-  const snoopLocationAssign = snoop(() => undefined)
-  const snoopLocationReplace = snoop(() => undefined)
+  const mockPushState = mock.fn()
+  const mockReplaceState = mock.fn()
+  const mockLocationAssign = mock.fn()
+  const mockLocationReplace = mock.fn()
   global.history._callbacks({
-    pushState: snoopPushState.fn,
-    replaceState: snoopReplaceState.fn,
+    pushState: mockPushState,
+    replaceState: mockReplaceState,
   })
   global.location._callbacks({
-    assign: snoopLocationAssign.fn,
-    replace: snoopLocationReplace.fn,
+    assign: mockLocationAssign,
+    replace: mockLocationReplace,
   })
 
   const $id = createStore('0', { name: 'id' })
   persist({ store: $id, method: replaceState })
-  assert.is(global.location.search, '')
-  assert.is(global.history.length, 1)
+  assert.strictEqual(global.location.search, '')
+  assert.strictEqual(global.history.length, 1)
   ;($id as any).setState('321')
-  assert.is(global.location.search, '?id=321')
-  assert.is(global.history.length, 1)
+  assert.strictEqual(global.location.search, '?id=321')
+  assert.strictEqual(global.history.length, 1)
 
-  assert.is(snoopPushState.callCount, 0)
-  assert.is(snoopReplaceState.callCount, 1)
-  assert.is(snoopLocationAssign.callCount, 0)
-  assert.is(snoopLocationReplace.callCount, 0)
+  assert.strictEqual(mockPushState.mock.callCount(), 0)
+  assert.strictEqual(mockReplaceState.mock.callCount(), 1)
+  assert.strictEqual(mockLocationAssign.mock.callCount(), 0)
+  assert.strictEqual(mockLocationReplace.mock.callCount(), 0)
 
-  assert.equal(snoopReplaceState.calls[0].arguments, [null, '', '/?id=321'])
+  assert.deepEqual(mockReplaceState.mock.calls[0].arguments, [
+    null,
+    '',
+    '/?id=321',
+  ])
 })
 
 test('`replaceState` should erase state if state="erase"', () => {
@@ -316,98 +329,102 @@ test('`replaceState` should erase state if state="erase"', () => {
   global.history._location(global.location)
   global.location._history(global.history)
 
-  const snoopPushState = snoop(() => undefined)
-  const snoopReplaceState = snoop(() => undefined)
-  const snoopLocationAssign = snoop(() => undefined)
-  const snoopLocationReplace = snoop(() => undefined)
+  const mockPushState = mock.fn()
+  const mockReplaceState = mock.fn()
+  const mockLocationAssign = mock.fn()
+  const mockLocationReplace = mock.fn()
   global.history._callbacks({
-    pushState: snoopPushState.fn,
-    replaceState: snoopReplaceState.fn,
+    pushState: mockPushState,
+    replaceState: mockReplaceState,
   })
   global.location._callbacks({
-    assign: snoopLocationAssign.fn,
-    replace: snoopLocationReplace.fn,
+    assign: mockLocationAssign,
+    replace: mockLocationReplace,
   })
 
   const $id = createStore('0', { name: 'id' })
   persist({ store: $id, method: replaceState, state: 'erase' })
-  assert.is(global.location.search, '')
-  assert.is(global.history.length, 1)
+  assert.strictEqual(global.location.search, '')
+  assert.strictEqual(global.history.length, 1)
   ;($id as any).setState('123123')
-  assert.is(global.location.search, '?id=123123')
-  assert.is(global.history.length, 1)
+  assert.strictEqual(global.location.search, '?id=123123')
+  assert.strictEqual(global.history.length, 1)
 
-  assert.is(snoopPushState.callCount, 0)
-  assert.is(snoopReplaceState.callCount, 1)
-  assert.is(snoopLocationAssign.callCount, 0)
-  assert.is(snoopLocationReplace.callCount, 0)
+  assert.strictEqual(mockPushState.mock.callCount(), 0)
+  assert.strictEqual(mockReplaceState.mock.callCount(), 1)
+  assert.strictEqual(mockLocationAssign.mock.callCount(), 0)
+  assert.strictEqual(mockLocationReplace.mock.callCount(), 0)
 
-  assert.equal(snoopReplaceState.calls[0].arguments, [null, '', '/?id=123123'])
+  assert.deepEqual(mockReplaceState.mock.calls[0].arguments, [
+    null,
+    '',
+    '/?id=123123',
+  ])
 })
 
 test('use of `locationAssign` explicitly', () => {
-  const snoopPushState = snoop(() => undefined)
-  const snoopReplaceState = snoop(() => undefined)
-  const snoopLocationAssign = snoop(() => undefined)
-  const snoopLocationReplace = snoop(() => undefined)
+  const mockPushState = mock.fn()
+  const mockReplaceState = mock.fn()
+  const mockLocationAssign = mock.fn()
+  const mockLocationReplace = mock.fn()
   global.history._callbacks({
-    pushState: snoopPushState.fn,
-    replaceState: snoopReplaceState.fn,
+    pushState: mockPushState,
+    replaceState: mockReplaceState,
   })
   global.location._callbacks({
-    assign: snoopLocationAssign.fn,
-    replace: snoopLocationReplace.fn,
+    assign: mockLocationAssign,
+    replace: mockLocationReplace,
   })
 
   const $id = createStore('0', { name: 'id' })
   persist({ store: $id, method: locationAssign })
-  assert.is(global.location.search, '')
-  assert.is(global.history.length, 1)
+  assert.strictEqual(global.location.search, '')
+  assert.strictEqual(global.history.length, 1)
   ;($id as any).setState('345')
-  assert.is(global.location.search, '?id=345')
-  assert.is(global.history.length, 2)
+  assert.strictEqual(global.location.search, '?id=345')
+  assert.strictEqual(global.history.length, 2)
 
-  assert.is(snoopPushState.callCount, 0)
-  assert.is(snoopReplaceState.callCount, 0)
-  assert.is(snoopLocationAssign.callCount, 1)
-  assert.is(snoopLocationReplace.callCount, 0)
+  assert.strictEqual(mockPushState.mock.callCount(), 0)
+  assert.strictEqual(mockReplaceState.mock.callCount(), 0)
+  assert.strictEqual(mockLocationAssign.mock.callCount(), 1)
+  assert.strictEqual(mockLocationReplace.mock.callCount(), 0)
 
-  assert.equal(snoopLocationAssign.calls[0].arguments, ['/?id=345'])
+  assert.deepEqual(mockLocationAssign.mock.calls[0].arguments, ['/?id=345'])
 })
 
 test('use of `locationReplace` explicitly', () => {
-  const snoopPushState = snoop(() => undefined)
-  const snoopReplaceState = snoop(() => undefined)
-  const snoopLocationAssign = snoop(() => undefined)
-  const snoopLocationReplace = snoop(() => undefined)
+  const mockPushState = mock.fn()
+  const mockReplaceState = mock.fn()
+  const mockLocationAssign = mock.fn()
+  const mockLocationReplace = mock.fn()
   global.history._callbacks({
-    pushState: snoopPushState.fn,
-    replaceState: snoopReplaceState.fn,
+    pushState: mockPushState,
+    replaceState: mockReplaceState,
   })
   global.location._callbacks({
-    assign: snoopLocationAssign.fn,
-    replace: snoopLocationReplace.fn,
+    assign: mockLocationAssign,
+    replace: mockLocationReplace,
   })
 
   const $id = createStore('0', { name: 'id' })
   persist({ store: $id, method: locationReplace })
-  assert.is(global.location.search, '')
-  assert.is(global.history.length, 1)
+  assert.strictEqual(global.location.search, '')
+  assert.strictEqual(global.history.length, 1)
   ;($id as any).setState('555')
-  assert.is(global.location.search, '?id=555')
-  assert.is(global.history.length, 1)
+  assert.strictEqual(global.location.search, '?id=555')
+  assert.strictEqual(global.history.length, 1)
 
-  assert.is(snoopPushState.callCount, 0)
-  assert.is(snoopReplaceState.callCount, 0)
-  assert.is(snoopLocationAssign.callCount, 0)
-  assert.is(snoopLocationReplace.callCount, 1)
+  assert.strictEqual(mockPushState.mock.callCount(), 0)
+  assert.strictEqual(mockReplaceState.mock.callCount(), 0)
+  assert.strictEqual(mockLocationAssign.mock.callCount(), 0)
+  assert.strictEqual(mockLocationReplace.mock.callCount(), 1)
 
-  assert.equal(snoopLocationReplace.calls[0].arguments, ['/?id=555'])
+  assert.deepEqual(mockLocationReplace.mock.calls[0].arguments, ['/?id=555'])
 })
 
 test('should work with source/target (issue #20)', () => {
-  const watchSource = snoop(() => undefined)
-  const watchTarget = snoop(() => undefined)
+  const watchSource = mock.fn()
+  const watchTarget = mock.fn()
 
   global.history = createHistoryMock(null, '', 'http://domain.test?id=20_1_1')
   global.location = createLocationMock('http://domain.test?id=20_1_1')
@@ -416,8 +433,8 @@ test('should work with source/target (issue #20)', () => {
 
   const source = createEvent<string>()
   const target = createEvent<string>()
-  source.watch(watchSource.fn)
-  target.watch(watchTarget.fn)
+  source.watch(watchSource)
+  target.watch(watchTarget)
 
   persist({
     source,
@@ -426,23 +443,23 @@ test('should work with source/target (issue #20)', () => {
   })
 
   // pass initial query state to target
-  assert.is(global.location.search, '?id=20_1_1')
-  assert.is(watchSource.callCount, 0)
-  assert.is(watchTarget.callCount, 1)
-  assert.equal(watchTarget.calls[0].arguments, ['20_1_1'])
+  assert.strictEqual(global.location.search, '?id=20_1_1')
+  assert.strictEqual(watchSource.mock.callCount(), 0)
+  assert.strictEqual(watchTarget.mock.callCount(), 1)
+  assert.deepEqual(watchTarget.mock.calls[0].arguments, ['20_1_1'])
 
   // set new value to source -> should pass to query state
   source('20_1_2')
 
-  assert.is(global.location.search, '?id=20_1_2')
-  assert.is(watchSource.callCount, 1)
-  assert.is(watchTarget.callCount, 2)
-  assert.equal(watchSource.calls[0].arguments, ['20_1_2'])
-  assert.equal(watchTarget.calls[1].arguments, ['20_1_2'])
+  assert.strictEqual(global.location.search, '?id=20_1_2')
+  assert.strictEqual(watchSource.mock.callCount(), 1)
+  assert.strictEqual(watchTarget.mock.callCount(), 2)
+  assert.deepEqual(watchSource.mock.calls[0].arguments, ['20_1_2'])
+  assert.deepEqual(watchTarget.mock.calls[1].arguments, ['20_1_2'])
 })
 
 test('should work with source/target with default state (issue #20)', () => {
-  const watchTarget = snoop(() => undefined)
+  const watchTarget = mock.fn()
 
   global.history = createHistoryMock(null, '', 'http://domain.test')
   global.location = createLocationMock('http://domain.test')
@@ -451,7 +468,7 @@ test('should work with source/target with default state (issue #20)', () => {
 
   const source = createEvent<string | null>()
   const target = createEvent<string | null>()
-  target.watch(watchTarget.fn)
+  target.watch(watchTarget)
 
   persist({
     source,
@@ -461,15 +478,15 @@ test('should work with source/target with default state (issue #20)', () => {
   })
 
   // pass default value to target
-  assert.is(global.location.search, '')
-  assert.is(watchTarget.callCount, 1)
-  assert.equal(watchTarget.calls[0].arguments, ['20_2_0'])
+  assert.strictEqual(global.location.search, '')
+  assert.strictEqual(watchTarget.mock.callCount(), 1)
+  assert.deepEqual(watchTarget.mock.calls[0].arguments, ['20_2_0'])
 })
 
 test('should batch location updates (issue #23)', async () => {
-  const snoopPushState = snoop(() => undefined)
+  const mockPushState = mock.fn()
   global.history._callbacks({
-    pushState: snoopPushState.fn,
+    pushState: mockPushState,
   })
 
   const $page = createStore('1')
@@ -478,18 +495,18 @@ test('should batch location updates (issue #23)', async () => {
   persist({ store: $page, key: 'page', timeout: 0 })
   persist({ store: $count, key: 'count', timeout: 0 })
 
-  assert.is(global.location.search, '')
-  assert.is(global.history.length, 1)
+  assert.strictEqual(global.location.search, '')
+  assert.strictEqual(global.history.length, 1)
 
   //
   ;($page as any).setState('2')
   ;($count as any).setState('20')
 
-  await global.clock.runAllAsync()
-  assert.is(global.location.search, '?page=2&count=20')
-  assert.is(global.history.length, 2) // <- sigle history record added
-  assert.is(snoopPushState.callCount, 1) // <- single pushState call expecuted
-  assert.equal(snoopPushState.calls[0].arguments, [
+  mock.timers.runAll()
+  assert.strictEqual(global.location.search, '?page=2&count=20')
+  assert.strictEqual(global.history.length, 2) // <- sigle history record added
+  assert.strictEqual(mockPushState.mock.callCount(), 1) // <- single pushState call expecuted
+  assert.deepEqual(mockPushState.mock.calls[0].arguments, [
     null,
     '',
     '/?page=2&count=20',
@@ -497,9 +514,9 @@ test('should batch location updates (issue #23)', async () => {
 })
 
 test('shortest timeout should take precedence (issue #23)', async () => {
-  const snoopPushState = snoop(() => undefined)
+  const mockPushState = mock.fn()
   global.history._callbacks({
-    pushState: snoopPushState.fn,
+    pushState: mockPushState,
   })
 
   const $page = createStore('1')
@@ -508,29 +525,29 @@ test('shortest timeout should take precedence (issue #23)', async () => {
   persist({ store: $page, key: 'page', timeout: 1000 })
   persist({ store: $count, key: 'count', timeout: 100 })
 
-  assert.is(global.location.search, '')
-  assert.is(global.history.length, 1)
+  assert.strictEqual(global.location.search, '')
+  assert.strictEqual(global.history.length, 1)
 
   //
   ;($page as any).setState('2')
   ;($count as any).setState('20')
 
-  await global.clock.tickAsync(70)
-  assert.is(global.location.search, '') // still nothing
-  assert.is(global.history.length, 1)
+  mock.timers.tick(70)
+  assert.strictEqual(global.location.search, '') // still nothing
+  assert.strictEqual(global.history.length, 1)
 
-  await global.clock.tickAsync(70)
-  assert.is(global.location.search, '?page=2&count=20')
-  assert.is(global.history.length, 2) // <- sigle history record added
-  assert.is(snoopPushState.callCount, 1) // <- single pushState call expecuted
-  assert.equal(snoopPushState.calls[0].arguments, [
+  mock.timers.tick(70)
+  assert.strictEqual(global.location.search, '?page=2&count=20')
+  assert.strictEqual(global.history.length, 2) // <- sigle history record added
+  assert.strictEqual(mockPushState.mock.callCount(), 1) // <- single pushState call expecuted
+  assert.deepEqual(mockPushState.mock.calls[0].arguments, [
     null,
     '',
     '/?page=2&count=20',
   ])
 
-  await global.clock.tickAsync(5000)
-  assert.is(snoopPushState.callCount, 1) // <- wasn't called again
+  mock.timers.tick(5000)
+  assert.strictEqual(mockPushState.mock.callCount(), 1) // <- wasn't called again
 })
 
 test('store value should be serialized and deserialized', () => {
@@ -545,19 +562,19 @@ test('store value should be serialized and deserialized', () => {
     serialize: (id) => String(id),
     deserialize: (id) => Number(id),
   })
-  assert.is($id.getState(), 42)
+  assert.strictEqual($id.getState(), 42)
 
   //
   ;($id as any).setState(12)
-  assert.is(global.location.search, '?id=12')
+  assert.strictEqual(global.location.search, '?id=12')
 })
 
 test('should stop react on history back after desist', async () => {
   const $id = createStore('12345', { name: 'id' })
   const desist = persist({ store: $id })
-  assert.is(global.location.search, '')
+  assert.strictEqual(global.location.search, '')
   ;($id as any).setState('54321')
-  assert.is(global.location.search, '?id=54321')
+  assert.strictEqual(global.location.search, '?id=54321')
 
   // stop persisting
   desist()
@@ -565,14 +582,8 @@ test('should stop react on history back after desist', async () => {
   global.history.back()
 
   events.dispatchEvent('popstate', null)
-  await global.clock.runAllAsync()
+  mock.timers.runAll()
 
-  assert.is(global.location.search, '')
-  assert.is($id.getState(), '54321') // <- not changed
+  assert.strictEqual(global.location.search, '')
+  assert.strictEqual($id.getState(), '54321') // <- not changed
 })
-
-//
-// Launch tests
-//
-
-test.run()

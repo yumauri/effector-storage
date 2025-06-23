@@ -1,6 +1,5 @@
-import { test } from 'uvu'
-import { snoop } from 'snoop'
-import * as assert from 'uvu/assert'
+import { test, before, after, mock } from 'node:test'
+import * as assert from 'node:assert/strict'
 import { createEvent, createStore } from 'effector'
 import { persist } from '../src/local'
 
@@ -24,11 +23,11 @@ import { persist } from '../src/local'
 
 declare let global: any
 
-test.before(() => {
+before(() => {
   global.localStorage = null
 })
 
-test.after(() => {
+after(() => {
   global.localStorage = undefined
 })
 
@@ -37,28 +36,22 @@ test.after(() => {
 //
 
 test('should still work in case localStorage is null', async () => {
-  const watch = snoop(() => undefined)
+  const watch = mock.fn()
 
   const fail = createEvent<any>()
-  fail.watch(watch.fn)
+  fail.watch(watch)
 
   const $counter = createStore(0, { name: 'counter' })
-  assert.not.throws(() => persist({ store: $counter, fail }))
+  assert.doesNotThrow(() => persist({ store: $counter, fail }))
 
-  assert.is(watch.callCount, 1)
-  const { error, ...args } = watch.calls[0].arguments[0 as any] as any
-  assert.equal(args, {
+  assert.strictEqual(watch.mock.callCount(), 1)
+  const { error, ...args } = watch.mock.calls[0].arguments[0 as any] as any
+  assert.deepEqual(args, {
     key: 'counter',
     keyPrefix: '',
     operation: 'get',
     value: undefined,
   })
-  assert.instance(error, TypeError)
-  assert.match(error, /Cannot read properties of null/)
+  assert.ok(error instanceof TypeError)
+  assert.match(error.message, /Cannot read properties of null/)
 })
-
-//
-// Launch tests
-//
-
-test.run()

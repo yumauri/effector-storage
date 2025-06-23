@@ -19,10 +19,6 @@
     {
       "matchPackageNames": ["/^effector/", "/@types/node/"],
       "enabled": false
-    },
-    {
-      "matchPackageNames": ["uvu"],
-      "labels": ["manual"]
     }
   ]
 }

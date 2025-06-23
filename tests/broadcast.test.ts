@@ -1,8 +1,5 @@
-/// <reference types="node" />
-
-import { test } from 'uvu'
-import { snoop } from 'snoop'
-import * as assert from 'uvu/assert'
+import { test, before, after, mock } from 'node:test'
+import * as assert from 'node:assert/strict'
 import { BroadcastChannel, Worker } from 'node:worker_threads'
 import { createEffect, createStore, sample } from 'effector'
 import { createEventsMock } from './mocks/events.mock'
@@ -56,7 +53,7 @@ function createWorker(script: string): Worker {
 declare let global: any
 const channels: BroadcastChannel[] = []
 
-test.before(() => {
+before(() => {
   // mock BroadcastChannel in order to save all created instances of BroadcastChannel
   class BroadcastChannelMock extends BroadcastChannel {
     constructor(name: string) {
@@ -67,7 +64,7 @@ test.before(() => {
   global.BroadcastChannel = BroadcastChannelMock
 })
 
-test.after(() => {
+after(() => {
   // close all channels after tests, so node will not hang
   for (const channel of channels) {
     channel.close()
@@ -79,17 +76,17 @@ test.after(() => {
 //
 
 test('should export adapter and `persist` function', () => {
-  assert.type(broadcast, 'function')
-  assert.type(persist, 'function')
+  assert.ok(typeof broadcast === 'function')
+  assert.ok(typeof persist === 'function')
 })
 
 test('should be exported from package root', () => {
-  assert.is(broadcast, broadcastIndex)
+  assert.strictEqual(broadcast, broadcastIndex)
 })
 
 test('should be ok on good parameters', () => {
   const $store = createStore(0, { name: 'broadcast' })
-  assert.not.throws(() => persist({ store: $store }))
+  assert.doesNotThrow(() => persist({ store: $store }))
 })
 
 test('should post message to broadcast channel on updates', async () => {
@@ -111,26 +108,26 @@ test('should post message to broadcast channel on updates', async () => {
   const got = await recieve
   channel.close()
 
-  assert.equal(got, { key: 'counter', value: 42 })
+  assert.deepEqual(got, { key: 'counter', value: 42 })
 })
 
 // this is REAL test in node environment
 // which spawns worker and checks communication between worker and main thread
 // via BroadcastChannel adapter
 test('should syncronize store state with worker', async () => {
-  const watchFinally = snoop(() => undefined)
-  const watchTarget = snoop(() => undefined)
+  const watchFinally = mock.fn()
+  const watchTarget = mock.fn()
 
   // create store in main thread
   const $token = createStore('old_token')
   persist({
     store: $token,
     key: 'token',
-    finally: createEffect<any, any>(watchFinally.fn),
+    finally: createEffect<any, any>(watchFinally),
   })
   sample({
     clock: $token,
-    target: createEffect<any, any>(watchTarget.fn),
+    target: createEffect<any, any>(watchTarget),
   })
 
   const worker = createWorker(
@@ -148,10 +145,10 @@ test('should syncronize store state with worker', async () => {
     worker.once('exit', resolve)
   })
 
-  assert.is(watchTarget.callCount, 1)
-  assert.equal(watchTarget.calls[0].arguments, ['new_token'])
-  assert.is(watchFinally.callCount, 2)
-  assert.equal(watchFinally.calls[0].arguments, [
+  assert.strictEqual(watchTarget.mock.callCount(), 1)
+  assert.deepEqual(watchTarget.mock.calls[0].arguments, ['new_token'])
+  assert.strictEqual(watchFinally.mock.callCount(), 2)
+  assert.deepEqual(watchFinally.mock.calls[0].arguments, [
     {
       key: 'token',
       keyPrefix: '',
@@ -160,7 +157,7 @@ test('should syncronize store state with worker', async () => {
       value: undefined,
     },
   ])
-  assert.equal(watchFinally.calls[1].arguments, [
+  assert.deepEqual(watchFinally.mock.calls[1].arguments, [
     {
       key: 'token',
       keyPrefix: '',
@@ -194,28 +191,31 @@ test('should fail on `messageerror`', async () => {
   }
 
   try {
-    const watchFail = snoop(() => undefined)
+    const watchFail = mock.fn()
 
     const $test = createStore('')
     persist({
       store: $test,
       key: 'test',
       channel: 'test',
-      fail: createEffect<any, any>(watchFail.fn),
+      fail: createEffect<any, any>(watchFail),
     })
 
     {
       await events.dispatchEvent('messageerror', { data: null })
 
-      assert.is(watchFail.callCount, 1)
-      const { error, ...rest } = watchFail.calls[0].arguments[0 as any] as any
-      assert.equal(rest, {
+      assert.strictEqual(watchFail.mock.callCount(), 1)
+      const { error, ...rest } = watchFail.mock.calls[0].arguments[
+        0 as any
+      ] as any
+      assert.deepEqual(rest, {
         key: 'test',
         keyPrefix: '',
         operation: 'get',
         value: undefined,
       })
-      assert.match(error, /Unable to deserialize message/)
+      assert.ok(error instanceof Error)
+      assert.match(error.message, /Unable to deserialize message/)
     }
 
     {
@@ -223,15 +223,18 @@ test('should fail on `messageerror`', async () => {
       // so, cover this case too
       await events.dispatchEvent('message', { data: null })
 
-      assert.is(watchFail.callCount, 2)
-      const { error, ...rest } = watchFail.calls[1].arguments[0 as any] as any
-      assert.equal(rest, {
+      assert.strictEqual(watchFail.mock.callCount(), 2)
+      const { error, ...rest } = watchFail.mock.calls[1].arguments[
+        0 as any
+      ] as any
+      assert.deepEqual(rest, {
         key: 'test',
         keyPrefix: '',
         operation: 'get',
         value: undefined,
       })
-      assert.match(error, /Unable to deserialize message/)
+      assert.ok(error instanceof Error)
+      assert.match(error.message, /Unable to deserialize message/)
     }
   } finally {
     global.BroadcastChannel = _BroadcastChannel
@@ -242,21 +245,15 @@ test('should be nil adapter in unsupported environment', async () => {
   const _BroadcastChannel = global.BroadcastChannel
   global.BroadcastChannel = undefined
   try {
-    const logger = snoop(() => undefined)
+    const logger = mock.fn()
 
-    const adapter = either(broadcast, log({ logger: logger.fn }))()
+    const adapter = either(broadcast, log({ logger }))()
     adapter('unsupported', () => undefined).get()
 
-    assert.equal(logger.calls[0].arguments, [
+    assert.deepEqual(logger.mock.calls[0].arguments, [
       '[log adapter] get value for key "unsupported"',
     ])
   } finally {
     global.BroadcastChannel = _BroadcastChannel
   }
 })
-
-//
-// Launch tests
-//
-
-test.run()
