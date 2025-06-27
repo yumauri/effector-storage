@@ -73,7 +73,7 @@
     "typescript": "^5.8.3",
     "vite": "^6.3.5"
   },
-  "packageManager": "pnpm@10.12.1",
+  "packageManager": "pnpm@10.12.3",
   "pnpm": {
     "overrides": {
       "is-core-module": "npm:@nolyfill/is-core-module@^1",
