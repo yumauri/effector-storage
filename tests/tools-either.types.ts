@@ -4,9 +4,13 @@ import type {
   LocalStorageConfig,
   LogConfig,
 } from '../src'
-import { test } from 'uvu'
 import { local, log, either } from '../src'
 import { expectType } from 'tsd'
+
+// fake `test` function which will not be runned
+// TypeScript will do the job for us, by checking the syntax
+// without actual execution
+function test(_name: string, _test: () => any) {}
 
 //
 // Tests
@@ -37,8 +41,3 @@ test('should infer correct type', () => {
     either(local, log)
   )
 })
-
-//
-// DO NOT launch tests, because they will fail in runtime
-// TypeScript will do the job for us, by checking the syntax
-//

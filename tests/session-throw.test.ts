@@ -1,6 +1,5 @@
-import { test } from 'uvu'
-import { snoop } from 'snoop'
-import * as assert from 'uvu/assert'
+import { test, before, after, mock } from 'node:test'
+import * as assert from 'node:assert/strict'
 import { createStore, createEvent } from 'effector'
 import { persist } from '../src/session'
 
@@ -10,7 +9,7 @@ import { persist } from '../src/session'
 
 declare let global: any
 
-test.before(() => {
+before(() => {
   Object.defineProperty(global, 'sessionStorage', {
     configurable: true,
     get() {
@@ -19,8 +18,7 @@ test.before(() => {
   })
 })
 
-test.after(() => {
-  // biome-ignore lint/performance/noDelete: cannot assign `undefined` to defined property
+after(() => {
   delete global.sessionStorage
 })
 
@@ -29,28 +27,22 @@ test.after(() => {
 //
 
 test('should not fail on forbidden sessionStorage', async () => {
-  const watch = snoop(() => undefined)
+  const watch = mock.fn()
 
   const fail = createEvent<any>()
-  fail.watch(watch.fn)
+  fail.watch(watch)
 
   const $counter = createStore(0, { name: 'counter' })
-  assert.not.throws(() => persist({ store: $counter, fail }))
+  assert.doesNotThrow(() => persist({ store: $counter, fail }))
 
-  assert.is(watch.callCount, 1)
-  const { error, ...args } = watch.calls[0].arguments[0 as any] as any
-  assert.equal(args, {
+  assert.strictEqual(watch.mock.callCount(), 1)
+  const { error, ...args } = watch.mock.calls[0].arguments[0 as any] as any
+  assert.deepEqual(args, {
     key: 'counter',
     keyPrefix: '',
     operation: 'get',
     value: undefined,
   })
-  assert.instance(error, Error)
-  assert.match(error, /Access denied/)
+  assert.ok(error instanceof Error)
+  assert.match(error.message, /Access denied/)
 })
-
-//
-// Launch tests
-//
-
-test.run()

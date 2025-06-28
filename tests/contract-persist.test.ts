@@ -1,7 +1,6 @@
 import type { StorageAdapter } from '../src'
-import { test } from 'uvu'
-import * as assert from 'uvu/assert'
-import { snoop } from 'snoop'
+import { test, before, after, mock } from 'node:test'
+import * as assert from 'node:assert/strict'
 import { createEvent, createStore } from 'effector'
 import * as s from 'superstruct'
 import { superstructContract } from '@farfetched/superstruct'
@@ -20,13 +19,13 @@ const mockStorage = createStorageMock()
 let storageAdapter: StorageAdapter
 let events: Events
 
-test.before(() => {
+before(() => {
   events = createEventsMock()
   global.addEventListener = events.addEventListener
   storageAdapter = storage({ storage: () => mockStorage, sync: true })
 })
 
-test.after(() => {
+after(() => {
   global.addEventListener = undefined
 })
 
@@ -45,14 +44,14 @@ test('should validate initial storage value with simple contract', () => {
     contract: (raw): raw is number => typeof raw === 'number',
   })
 
-  assert.is(mockStorage.getItem('number1'), '42')
-  assert.is($number1.getState(), 42)
+  assert.strictEqual(mockStorage.getItem('number1'), '42')
+  assert.strictEqual($number1.getState(), 42)
 })
 
 test('should fail on invalid initial storage value with simple contract', () => {
-  const watch = snoop(() => undefined)
+  const watch = mock.fn()
   const fail = createEvent<any>()
-  fail.watch(watch.fn)
+  fail.watch(watch)
 
   mockStorage.setItem('number2', '"invalid"') // valid JSON, but invalid number
   const $number2 = createStore(0)
@@ -65,11 +64,11 @@ test('should fail on invalid initial storage value with simple contract', () => 
     fail,
   })
 
-  assert.is(mockStorage.getItem('number2'), '"invalid"') // didn't change
-  assert.is($number2.getState(), 0) // didn't change
+  assert.strictEqual(mockStorage.getItem('number2'), '"invalid"') // didn't change
+  assert.strictEqual($number2.getState(), 0) // didn't change
 
-  assert.is(watch.callCount, 1)
-  assert.equal(watch.calls[0].arguments, [
+  assert.strictEqual(watch.mock.callCount(), 1)
+  assert.deepEqual(watch.mock.calls[0].arguments, [
     {
       key: 'number2',
       keyPrefix: '',
@@ -81,9 +80,9 @@ test('should fail on invalid initial storage value with simple contract', () => 
 })
 
 test('should not break sync stores with same key and different validators', () => {
-  const watch = snoop(() => undefined)
+  const watch = mock.fn()
   const fail = createEvent<any>()
-  fail.watch(watch.fn)
+  fail.watch(watch)
 
   const $string = createStore('')
   const $base64 = createStore('')
@@ -107,13 +106,13 @@ test('should not break sync stores with same key and different validators', () =
 
   //
   ;($string as any).setState('plain value')
-  assert.is(mockStorage.getItem('same-key-3'), '"plain value"')
+  assert.strictEqual(mockStorage.getItem('same-key-3'), '"plain value"')
 
-  assert.is($string.getState(), 'plain value')
-  assert.is($base64.getState(), '') // <- didn't change
+  assert.strictEqual($string.getState(), 'plain value')
+  assert.strictEqual($base64.getState(), '') // <- didn't change
 
-  assert.is(watch.callCount, 1)
-  assert.equal(watch.calls[0].arguments, [
+  assert.strictEqual(watch.mock.callCount(), 1)
+  assert.deepEqual(watch.mock.calls[0].arguments, [
     {
       key: 'same-key-3',
       keyPrefix: '',
@@ -125,18 +124,18 @@ test('should not break sync stores with same key and different validators', () =
 
   //
   ;($string as any).setState('YmFzZTY0IHZhbHVl')
-  assert.is(mockStorage.getItem('same-key-3'), '"YmFzZTY0IHZhbHVl"')
+  assert.strictEqual(mockStorage.getItem('same-key-3'), '"YmFzZTY0IHZhbHVl"')
 
-  assert.is($string.getState(), 'YmFzZTY0IHZhbHVl')
-  assert.is($base64.getState(), 'YmFzZTY0IHZhbHVl')
-  assert.is(watch.callCount, 1) // no more errors
+  assert.strictEqual($string.getState(), 'YmFzZTY0IHZhbHVl')
+  assert.strictEqual($base64.getState(), 'YmFzZTY0IHZhbHVl')
+  assert.strictEqual(watch.mock.callCount(), 1) // no more errors
 })
 
 // TODO: is this correct behavior?
 test('validation should not prevent persisting state', () => {
-  const watch = snoop(() => undefined)
+  const watch = mock.fn()
   const fail = createEvent<any>()
-  fail.watch(watch.fn)
+  fail.watch(watch)
 
   mockStorage.setItem('string1', '"string value"')
   const $string1 = createStore('')
@@ -149,20 +148,20 @@ test('validation should not prevent persisting state', () => {
     fail,
   })
 
-  assert.is(mockStorage.getItem('string1'), '"string value"')
-  assert.is($string1.getState(), 'string value')
-  assert.is(watch.callCount, 0) // no errors
+  assert.strictEqual(mockStorage.getItem('string1'), '"string value"')
+  assert.strictEqual($string1.getState(), 'string value')
+  assert.strictEqual(watch.mock.callCount(), 0) // no errors
 
   //
   ;($string1 as any).setState(42)
-  assert.is(mockStorage.getItem('string1'), '42')
-  assert.is($string1.getState(), 42)
+  assert.strictEqual(mockStorage.getItem('string1'), '42')
+  assert.strictEqual($string1.getState(), 42)
 
   // validation error, but state persisted anyway
   // this is because each `set` is followed by `validate` (and then `get`)
   // TODO: is this correct behavior?
-  assert.is(watch.callCount, 1)
-  assert.equal(watch.calls[0].arguments, [
+  assert.strictEqual(watch.mock.callCount(), 1)
+  assert.deepEqual(watch.mock.calls[0].arguments, [
     {
       key: 'string1',
       keyPrefix: '',
@@ -174,9 +173,9 @@ test('validation should not prevent persisting state', () => {
 })
 
 test('should validate initial storage value with complex contract (valid)', () => {
-  const watch = snoop(() => undefined)
+  const watch = mock.fn()
   const fail = createEvent<any>()
-  fail.watch(watch.fn)
+  fail.watch(watch)
 
   const Asteroid = s.type({
     type: s.literal('asteroid'),
@@ -194,14 +193,14 @@ test('should validate initial storage value with complex contract (valid)', () =
     fail,
   })
 
-  assert.equal($asteroid0.getState(), { type: 'asteroid', mass: 42 })
-  assert.is(watch.callCount, 0) // no errors
+  assert.deepEqual($asteroid0.getState(), { type: 'asteroid', mass: 42 })
+  assert.strictEqual(watch.mock.callCount(), 0) // no errors
 })
 
 test('should validate initial storage value with complex contract (valid undefined)', () => {
-  const watch = snoop(() => undefined)
+  const watch = mock.fn()
   const fail = createEvent<any>()
-  fail.watch(watch.fn)
+  fail.watch(watch)
 
   const Asteroid = s.type({
     type: s.literal('asteroid'),
@@ -218,13 +217,13 @@ test('should validate initial storage value with complex contract (valid undefin
     fail,
   })
 
-  assert.is(watch.callCount, 0) // no errors, because `undefined` is valid value by contract
+  assert.strictEqual(watch.mock.callCount(), 0) // no errors, because `undefined` is valid value by contract
 })
 
 test('should validate initial storage value with complex contract (invalid)', () => {
-  const watch = snoop(() => undefined)
+  const watch = mock.fn()
   const fail = createEvent<any>()
-  fail.watch(watch.fn)
+  fail.watch(watch)
 
   const Asteroid = s.type({
     type: s.literal('asteroid'),
@@ -242,11 +241,11 @@ test('should validate initial storage value with complex contract (invalid)', ()
     fail,
   })
 
-  assert.is(mockStorage.getItem('asteroid2'), '42')
-  assert.is($asteroid2.getState(), null) // <- didn't change
+  assert.strictEqual(mockStorage.getItem('asteroid2'), '42')
+  assert.strictEqual($asteroid2.getState(), null) // <- didn't change
 
-  assert.is(watch.callCount, 1)
-  assert.equal(watch.calls[0].arguments, [
+  assert.strictEqual(watch.mock.callCount(), 1)
+  assert.deepEqual(watch.mock.calls[0].arguments, [
     {
       key: 'asteroid2',
       keyPrefix: '',
@@ -258,9 +257,9 @@ test('should validate initial storage value with complex contract (invalid)', ()
 })
 
 test('should validate value on storage external update', async () => {
-  const watch = snoop(() => undefined)
+  const watch = mock.fn()
   const fail = createEvent<any>()
-  fail.watch(watch.fn)
+  fail.watch(watch)
 
   const $counter1 = createStore(0, { name: 'counter1' })
   persist({
@@ -270,7 +269,7 @@ test('should validate value on storage external update', async () => {
     fail,
   })
 
-  assert.is($counter1.getState(), 0)
+  assert.strictEqual($counter1.getState(), 0)
 
   mockStorage.setItem('counter1', '1')
   await events.dispatchEvent('storage', {
@@ -280,8 +279,8 @@ test('should validate value on storage external update', async () => {
     newValue: '1',
   })
 
-  assert.is($counter1.getState(), 1)
-  assert.is(watch.callCount, 0) // no errors
+  assert.strictEqual($counter1.getState(), 1)
+  assert.strictEqual(watch.mock.callCount(), 0) // no errors
 
   mockStorage.setItem('counter1', '"invalid"')
   await events.dispatchEvent('storage', {
@@ -291,9 +290,9 @@ test('should validate value on storage external update', async () => {
     newValue: '"invalid"',
   })
 
-  assert.is($counter1.getState(), 1) // <- didn't change
-  assert.is(watch.callCount, 1)
-  assert.equal(watch.calls[0].arguments, [
+  assert.strictEqual($counter1.getState(), 1) // <- didn't change
+  assert.strictEqual(watch.mock.callCount(), 1)
+  assert.deepEqual(watch.mock.calls[0].arguments, [
     {
       key: 'counter1',
       keyPrefix: '',
@@ -303,9 +302,3 @@ test('should validate value on storage external update', async () => {
     },
   ])
 })
-
-//
-// Launch tests
-//
-
-test.run()

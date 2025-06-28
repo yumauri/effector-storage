@@ -1,7 +1,6 @@
 import type { StorageAdapter } from '../src/types'
-import { test } from 'uvu'
-import * as assert from 'uvu/assert'
-import { type Snoop, snoop } from 'snoop'
+import { test, beforeEach, afterEach, mock, type Mock } from 'node:test'
+import * as assert from 'node:assert/strict'
 import { createStore, createEvent, fork, allSettled, serialize } from 'effector'
 import { persist } from '../src/core'
 
@@ -22,17 +21,15 @@ const dumbAdapter: StorageAdapter = <T>() => {
 //
 
 type ErrorFn = typeof console.error
-type MockErrorFn = Snoop<ErrorFn>
 let errorFn: ErrorFn
 
-test.before.each(() => {
+beforeEach(() => {
   errorFn = console.error
-  const mock = snoop(() => undefined)
-  console.error = mock.fn
-  ;(console.error as any).mock = mock
+  const error = mock.fn()
+  console.error = error
 })
 
-test.after.each(() => {
+afterEach(() => {
   console.error = errorFn
 })
 
@@ -41,7 +38,7 @@ test.after.each(() => {
 //
 
 test('store without sid should warn', async () => {
-  const fn: MockErrorFn = (console.error as any).mock
+  const fn = (console.error as Mock<ErrorFn>).mock
 
   const event = createEvent()
   createStore(0).on(event, () => 42)
@@ -59,16 +56,16 @@ test('store without sid should warn', async () => {
   const newMsg =
     'serialize: One or more stores dont have sids, their values are omitted'
 
-  assert.is(fn.calls[0]?.arguments.length, 1)
+  assert.strictEqual(fn.calls[0]?.arguments.length, 1)
   const msg = fn.calls[0]?.arguments[0]
   assert.ok(msg === oldMsg || msg === newMsg)
 
   // in effector after 23.3.0, there are two calls to console.error
-  assert.is(fn.callCount, msg === oldMsg ? 1 : 2)
+  assert.strictEqual(fn.callCount(), msg === oldMsg ? 1 : 2)
 })
 
 test('store with sid should not warn', async () => {
-  const fn: MockErrorFn = (console.error as any).mock
+  const fn = (console.error as Mock<ErrorFn>).mock
 
   const event = createEvent()
   createStore(0, { sid: 'x' }).on(event, () => 42)
@@ -78,12 +75,12 @@ test('store with sid should not warn', async () => {
 
   serialize(scope)
 
-  assert.equal(fn.calls[0]?.arguments, undefined)
-  assert.is(fn.callCount, 0)
+  assert.deepEqual(fn.calls[0]?.arguments, undefined)
+  assert.strictEqual(fn.callCount(), 0)
 })
 
 test('not serializable store should not warn', async () => {
-  const fn: MockErrorFn = (console.error as any).mock
+  const fn = (console.error as Mock<ErrorFn>).mock
 
   const event = createEvent()
   createStore(0, { serialize: 'ignore' }).on(event, () => 42)
@@ -93,12 +90,12 @@ test('not serializable store should not warn', async () => {
 
   serialize(scope)
 
-  assert.equal(fn.calls[0]?.arguments, undefined)
-  assert.is(fn.callCount, 0)
+  assert.deepEqual(fn.calls[0]?.arguments, undefined)
+  assert.strictEqual(fn.callCount(), 0)
 })
 
 test('persist usage should not warn', async () => {
-  const fn: MockErrorFn = (console.error as any).mock
+  const fn = (console.error as Mock<ErrorFn>).mock
 
   const event = createEvent()
   const $store = createStore(0, { sid: 'x' })
@@ -111,23 +108,23 @@ test('persist usage should not warn', async () => {
   })
 
   // do not pickup value from adapter until `pickup` is triggered
-  assert.is($store.getState(), 0)
+  assert.strictEqual($store.getState(), 0)
 
   const scope = fork()
   await allSettled(event, { scope })
 
   // should fill scoped store value
-  assert.is(scope.getState($store), 42)
-  assert.is($store.getState(), 0)
+  assert.strictEqual(scope.getState($store), 42)
+  assert.strictEqual($store.getState(), 0)
 
   serialize(scope)
 
-  assert.equal(fn.calls[0]?.arguments, undefined)
-  assert.is(fn.callCount, 0)
+  assert.deepEqual(fn.calls[0]?.arguments, undefined)
+  assert.strictEqual(fn.callCount(), 0)
 })
 
 test('setting value to persisted store should not warn', async () => {
-  const fn: MockErrorFn = (console.error as any).mock
+  const fn = (console.error as Mock<ErrorFn>).mock
 
   const set = createEvent<number>()
   const pickup = createEvent()
@@ -145,17 +142,11 @@ test('setting value to persisted store should not warn', async () => {
   await allSettled(set, { scope, params: 24 })
 
   // should fill scoped store value
-  assert.is(scope.getState($store), 24)
-  assert.is($store.getState(), 0)
+  assert.strictEqual(scope.getState($store), 24)
+  assert.strictEqual($store.getState(), 0)
 
   serialize(scope)
 
-  assert.equal(fn.calls[0]?.arguments, undefined)
-  assert.is(fn.callCount, 0)
+  assert.deepEqual(fn.calls[0]?.arguments, undefined)
+  assert.strictEqual(fn.callCount(), 0)
 })
-
-//
-// Launch tests
-//
-
-test.run()

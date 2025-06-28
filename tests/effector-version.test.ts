@@ -1,5 +1,5 @@
-import { test } from 'uvu'
-import * as assert from 'uvu/assert'
+import { test } from 'node:test'
+import * as assert from 'node:assert/strict'
 import { version } from 'effector'
 
 const tryDependency: string | undefined = process.env.INPUT_EFFECTOR
@@ -11,15 +11,9 @@ const tryDependency: string | undefined = process.env.INPUT_EFFECTOR
 test('effector should be mocked', () => {
   const tryVersion = tryDependency?.match(/(\d+\.\d+\.\d+).*$/)?.[0]
   if (tryVersion) {
-    assert.is(version, tryVersion)
+    assert.strictEqual(version, tryVersion)
   } else {
     console.log('unknown try version:', tryDependency)
     console.log('effector version:', version)
   }
 })
-
-//
-// Launch tests
-//
-
-test.run()

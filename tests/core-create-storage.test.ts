@@ -1,6 +1,5 @@
-import { test } from 'uvu'
-import * as assert from 'uvu/assert'
-import { snoop } from 'snoop'
+import { test, mock } from 'node:test'
+import * as assert from 'node:assert/strict'
 import { createStore, createEvent } from 'effector'
 import {
   createStorage,
@@ -18,48 +17,48 @@ const adapter = memory({ area: new Map<string, any>() })
 //
 
 test('should exports effects', () => {
-  assert.type(createStorageFactory, 'function')
-  assert.type(createStorageFactory(), 'function')
-  assert.type(createStorage, 'function')
+  assert.ok(typeof createStorageFactory === 'function')
+  assert.ok(typeof createStorageFactory() === 'function')
+  assert.ok(typeof createStorage === 'function')
   const ret = createStorage('test-key', { adapter })
-  assert.type(ret, 'object')
-  assert.type(ret.getFx, 'function')
-  assert.type(ret.setFx, 'function')
-  assert.type(ret.removeFx, 'function')
+  assert.ok(typeof ret === 'object')
+  assert.ok(typeof ret.getFx === 'function')
+  assert.ok(typeof ret.setFx === 'function')
+  assert.ok(typeof ret.removeFx === 'function')
 })
 
 test('should be ok on good parameters', () => {
-  assert.not.throws(() => {
+  assert.doesNotThrow(() => {
     createStorage('test-1', {
       adapter,
     })
   })
-  assert.not.throws(() => {
+  assert.doesNotThrow(() => {
     createStorage({
       adapter,
       key: 'test-2',
     })
   })
-  assert.not.throws(() => {
+  assert.doesNotThrow(() => {
     createStorage('test-3', {
       adapter,
       keyPrefix: 'prefix-3',
     })
   })
-  assert.not.throws(() => {
+  assert.doesNotThrow(() => {
     createStorage({
       adapter,
       key: 'tets-4',
       keyPrefix: 'prefix-3',
     })
   })
-  assert.not.throws(() => {
+  assert.doesNotThrow(() => {
     createStorage('test-1', {
       adapter,
       context: createStore(0),
     })
   })
-  assert.not.throws(() => {
+  assert.doesNotThrow(() => {
     createStorage('test-1', {
       adapter,
       contract: (x): x is number => typeof x === 'number',
@@ -96,24 +95,24 @@ test('should handle wrong parameters', () => {
 })
 
 test('should get and set value from storage', async () => {
-  const watch = snoop(() => undefined)
+  const watch = mock.fn()
 
   const { getFx, setFx } = createStorage<number>('test-get-set-1', {
     adapter,
   })
 
-  getFx.watch(watch.fn)
-  setFx.watch(watch.fn)
-  getFx.finally.watch(watch.fn)
-  setFx.finally.watch(watch.fn)
+  getFx.watch(watch)
+  setFx.watch(watch)
+  getFx.finally.watch(watch)
+  setFx.finally.watch(watch)
 
-  assert.is(watch.callCount, 0)
+  assert.strictEqual(watch.mock.callCount(), 0)
 
   getFx()
 
-  assert.is(watch.callCount, 2)
-  assert.equal(watch.calls[0].arguments, [undefined]) // getFx trigger
-  assert.equal(watch.calls[1].arguments, [
+  assert.strictEqual(watch.mock.callCount(), 2)
+  assert.deepEqual(watch.mock.calls[0].arguments, [undefined]) // getFx trigger
+  assert.deepEqual(watch.mock.calls[1].arguments, [
     {
       status: 'done',
       params: undefined,
@@ -123,9 +122,9 @@ test('should get and set value from storage', async () => {
 
   setFx(1)
 
-  assert.is(watch.callCount, 4)
-  assert.equal(watch.calls[2].arguments, [1]) // setFx trigger
-  assert.equal(watch.calls[3].arguments, [
+  assert.strictEqual(watch.mock.callCount(), 4)
+  assert.deepEqual(watch.mock.calls[2].arguments, [1]) // setFx trigger
+  assert.deepEqual(watch.mock.calls[3].arguments, [
     {
       status: 'done',
       params: 1,
@@ -133,7 +132,7 @@ test('should get and set value from storage', async () => {
     },
   ]) // setFx result
 
-  assert.is(await getFx(), 1)
+  assert.strictEqual(await getFx(), 1)
 })
 
 test('should remove value from storage', async () => {
@@ -143,15 +142,15 @@ test('should remove value from storage', async () => {
 
   await setFx(1)
 
-  assert.is(await getFx(), 1)
+  assert.strictEqual(await getFx(), 1)
 
   await removeFx()
 
-  assert.is(await getFx(), undefined)
+  assert.strictEqual(await getFx(), undefined)
 })
 
 test('should get and set value from storage (with adapter factory)', async () => {
-  const watch = snoop(() => undefined)
+  const watch = mock.fn()
 
   const area = new Map<string, number>()
   const { getFx, setFx } = createStorage('test-get-set-2', {
@@ -159,18 +158,18 @@ test('should get and set value from storage (with adapter factory)', async () =>
     area,
   })
 
-  getFx.watch(watch.fn)
-  setFx.watch(watch.fn)
-  getFx.finally.watch(watch.fn)
-  setFx.finally.watch(watch.fn)
+  getFx.watch(watch)
+  setFx.watch(watch)
+  getFx.finally.watch(watch)
+  setFx.finally.watch(watch)
 
-  assert.is(watch.callCount, 0)
+  assert.strictEqual(watch.mock.callCount(), 0)
 
   getFx()
 
-  assert.is(watch.callCount, 2)
-  assert.equal(watch.calls[0].arguments, [undefined]) // getFx trigger
-  assert.equal(watch.calls[1].arguments, [
+  assert.strictEqual(watch.mock.callCount(), 2)
+  assert.deepEqual(watch.mock.calls[0].arguments, [undefined]) // getFx trigger
+  assert.deepEqual(watch.mock.calls[1].arguments, [
     {
       status: 'done',
       params: undefined,
@@ -180,9 +179,9 @@ test('should get and set value from storage (with adapter factory)', async () =>
 
   setFx(1)
 
-  assert.is(watch.callCount, 4)
-  assert.equal(watch.calls[2].arguments, [1]) // setFx trigger
-  assert.equal(watch.calls[3].arguments, [
+  assert.strictEqual(watch.mock.callCount(), 4)
+  assert.deepEqual(watch.mock.calls[2].arguments, [1]) // setFx trigger
+  assert.deepEqual(watch.mock.calls[3].arguments, [
     {
       status: 'done',
       params: 1,
@@ -190,29 +189,29 @@ test('should get and set value from storage (with adapter factory)', async () =>
     },
   ]) // setFx result
 
-  assert.is(await getFx(), 1)
-  assert.is(area.get('test-get-set-2'), 1)
+  assert.strictEqual(await getFx(), 1)
+  assert.strictEqual(area.get('test-get-set-2'), 1)
 })
 
 test('should get and set value from async storage', async () => {
-  const watch = snoop(() => undefined)
+  const watch = mock.fn()
 
   const { getFx, setFx } = createStorage('test-get-set-3', {
     adapter: async(adapter),
   })
 
-  getFx.watch(watch.fn)
-  setFx.watch(watch.fn)
-  getFx.finally.watch(watch.fn)
-  setFx.finally.watch(watch.fn)
+  getFx.watch(watch)
+  setFx.watch(watch)
+  getFx.finally.watch(watch)
+  setFx.finally.watch(watch)
 
-  assert.is(watch.callCount, 0)
+  assert.strictEqual(watch.mock.callCount(), 0)
 
   await getFx()
 
-  assert.is(watch.callCount, 2)
-  assert.equal(watch.calls[0].arguments, [undefined]) // getFx trigger
-  assert.equal(watch.calls[1].arguments, [
+  assert.strictEqual(watch.mock.callCount(), 2)
+  assert.deepEqual(watch.mock.calls[0].arguments, [undefined]) // getFx trigger
+  assert.deepEqual(watch.mock.calls[1].arguments, [
     {
       status: 'done',
       params: undefined,
@@ -222,9 +221,9 @@ test('should get and set value from async storage', async () => {
 
   await setFx(1)
 
-  assert.is(watch.callCount, 4)
-  assert.equal(watch.calls[2].arguments, [1]) // setFx trigger
-  assert.equal(watch.calls[3].arguments, [
+  assert.strictEqual(watch.mock.callCount(), 4)
+  assert.deepEqual(watch.mock.calls[2].arguments, [1]) // setFx trigger
+  assert.deepEqual(watch.mock.calls[3].arguments, [
     {
       status: 'done',
       params: 1,
@@ -232,12 +231,12 @@ test('should get and set value from async storage', async () => {
     },
   ]) // setFx result
 
-  assert.is(await getFx(), 1)
+  assert.strictEqual(await getFx(), 1)
 })
 
 test('should sync effects for the same adapter-key', () => {
-  const watchSet = snoop(() => undefined)
-  const watchGet = snoop(() => undefined)
+  const watchSet = mock.fn()
+  const watchGet = mock.fn()
 
   const { setFx } = createStorage({
     adapter,
@@ -248,28 +247,28 @@ test('should sync effects for the same adapter-key', () => {
     key: 'test-sync-same-key-1',
   })
 
-  getFx.watch(watchGet.fn)
-  setFx.watch(watchSet.fn)
-  getFx.finally.watch(watchGet.fn)
-  setFx.finally.watch(watchSet.fn)
+  getFx.watch(watchGet)
+  setFx.watch(watchSet)
+  getFx.finally.watch(watchGet)
+  setFx.finally.watch(watchSet)
 
-  assert.is(watchSet.callCount, 0)
-  assert.is(watchGet.callCount, 0)
+  assert.strictEqual(watchSet.mock.callCount(), 0)
+  assert.strictEqual(watchGet.mock.callCount(), 0)
 
   setFx(1)
 
-  assert.is(watchSet.callCount, 2)
-  assert.is(watchGet.callCount, 2)
-  assert.equal(watchSet.calls[0].arguments, [1]) // setFx trigger
-  assert.equal(watchSet.calls[1].arguments, [
+  assert.strictEqual(watchSet.mock.callCount(), 2)
+  assert.strictEqual(watchGet.mock.callCount(), 2)
+  assert.deepEqual(watchSet.mock.calls[0].arguments, [1]) // setFx trigger
+  assert.deepEqual(watchSet.mock.calls[1].arguments, [
     {
       status: 'done',
       params: 1,
       result: undefined,
     },
   ]) // setFx result
-  assert.equal(watchGet.calls[0].arguments, [undefined]) // getFx trigger
-  assert.equal(watchGet.calls[1].arguments, [
+  assert.deepEqual(watchGet.mock.calls[0].arguments, [undefined]) // getFx trigger
+  assert.deepEqual(watchGet.mock.calls[1].arguments, [
     {
       status: 'done',
       params: undefined,
@@ -279,15 +278,15 @@ test('should sync effects for the same adapter-key', () => {
 })
 
 test('should sync with `persist` for the same adapter-key', async () => {
-  const watch = snoop(() => undefined)
-  const watchFx = snoop(() => undefined)
+  const watch = mock.fn()
+  const watchFx = mock.fn()
 
   const $store = createStore(11)
-  $store.watch(watch.fn)
+  $store.watch(watch)
 
-  assert.is($store.getState(), 11)
-  assert.is(watch.callCount, 1)
-  assert.equal(watch.calls[0].arguments, [11])
+  assert.strictEqual($store.getState(), 11)
+  assert.strictEqual(watch.mock.callCount(), 1)
+  assert.deepEqual(watch.mock.calls[0].arguments, [11])
 
   persist({
     store: $store,
@@ -295,26 +294,26 @@ test('should sync with `persist` for the same adapter-key', async () => {
     key: 'test-sync-same-key-2',
   })
 
-  assert.is($store.getState(), 11) // did not change
-  assert.is(watch.callCount, 1) // did not trigger
+  assert.strictEqual($store.getState(), 11) // did not change
+  assert.strictEqual(watch.mock.callCount(), 1) // did not trigger
 
   const { getFx, setFx } = createStorage({
     adapter,
     key: 'test-sync-same-key-2',
   })
 
-  getFx.watch(watchFx.fn)
-  setFx.watch(watchFx.fn)
-  getFx.finally.watch(watchFx.fn)
-  setFx.finally.watch(watchFx.fn)
+  getFx.watch(watchFx)
+  setFx.watch(watchFx)
+  getFx.finally.watch(watchFx)
+  setFx.finally.watch(watchFx)
 
-  assert.is(watchFx.callCount, 0) // did not trigger
+  assert.strictEqual(watchFx.mock.callCount(), 0) // did not trigger
 
   setFx(22)
 
-  assert.is(watchFx.callCount, 2)
-  assert.equal(watchFx.calls[0].arguments, [22]) // setFx trigger
-  assert.equal(watchFx.calls[1].arguments, [
+  assert.strictEqual(watchFx.mock.callCount(), 2)
+  assert.deepEqual(watchFx.mock.calls[0].arguments, [22]) // setFx trigger
+  assert.deepEqual(watchFx.mock.calls[1].arguments, [
     {
       status: 'done',
       params: 22,
@@ -322,20 +321,20 @@ test('should sync with `persist` for the same adapter-key', async () => {
     },
   ]) // setFx result
 
-  assert.is($store.getState(), 22) // <- changed
-  assert.is(watch.callCount, 2)
-  assert.equal(watch.calls[1].arguments, [22])
+  assert.strictEqual($store.getState(), 22) // <- changed
+  assert.strictEqual(watch.mock.callCount(), 2)
+  assert.deepEqual(watch.mock.calls[1].arguments, [22])
 
   //
   ;($store as any).setState(33)
 
-  assert.is($store.getState(), 33)
-  assert.is(watch.callCount, 3)
-  assert.equal(watch.calls[2].arguments, [33])
+  assert.strictEqual($store.getState(), 33)
+  assert.strictEqual(watch.mock.callCount(), 3)
+  assert.deepEqual(watch.mock.calls[2].arguments, [33])
 
-  assert.is(watchFx.callCount, 4)
-  assert.equal(watchFx.calls[2].arguments, [undefined]) // getFx trigger
-  assert.equal(watchFx.calls[3].arguments, [
+  assert.strictEqual(watchFx.mock.callCount(), 4)
+  assert.deepEqual(watchFx.mock.calls[2].arguments, [undefined]) // getFx trigger
+  assert.deepEqual(watchFx.mock.calls[3].arguments, [
     {
       status: 'done',
       params: undefined,
@@ -343,23 +342,23 @@ test('should sync with `persist` for the same adapter-key', async () => {
     },
   ]) // getFx result
 
-  assert.is(await getFx(), 33)
+  assert.strictEqual(await getFx(), 33)
 })
 
 test('should sync with `persist` for the same adapter-key when removing value', async () => {
-  const watch = snoop(() => undefined)
-  const watchFx = snoop(() => undefined)
+  const watch = mock.fn()
+  const watchFx = mock.fn()
 
   const storageArea = new Map<string, any>()
   const adapter = memory({ area: storageArea, def: 0 })
   storageArea.set('test-sync-same-key-3', -123)
 
   const $store = createStore(0)
-  $store.watch(watch.fn)
+  $store.watch(watch)
 
-  assert.is($store.getState(), 0)
-  assert.is(watch.callCount, 1)
-  assert.equal(watch.calls[0].arguments, [0])
+  assert.strictEqual($store.getState(), 0)
+  assert.strictEqual(watch.mock.callCount(), 1)
+  assert.deepEqual(watch.mock.calls[0].arguments, [0])
 
   persist({
     store: $store,
@@ -367,24 +366,24 @@ test('should sync with `persist` for the same adapter-key when removing value', 
     key: 'test-sync-same-key-3',
   })
 
-  assert.is($store.getState(), -123) // got from storage
-  assert.is(watch.callCount, 2) // store got updated from storage
+  assert.strictEqual($store.getState(), -123) // got from storage
+  assert.strictEqual(watch.mock.callCount(), 2) // store got updated from storage
 
   const { removeFx } = createStorage({
     adapter,
     key: 'test-sync-same-key-3',
   })
 
-  removeFx.watch(watchFx.fn)
-  removeFx.finally.watch(watchFx.fn)
+  removeFx.watch(watchFx)
+  removeFx.finally.watch(watchFx)
 
-  assert.is(watchFx.callCount, 0) // did not trigger
+  assert.strictEqual(watchFx.mock.callCount(), 0) // did not trigger
 
   removeFx()
 
-  assert.is(watchFx.callCount, 2)
-  assert.equal(watchFx.calls[0].arguments, [undefined]) // removeFx trigger
-  assert.equal(watchFx.calls[1].arguments, [
+  assert.strictEqual(watchFx.mock.callCount(), 2)
+  assert.deepEqual(watchFx.mock.calls[0].arguments, [undefined]) // removeFx trigger
+  assert.deepEqual(watchFx.mock.calls[1].arguments, [
     {
       status: 'done',
       params: undefined,
@@ -392,13 +391,13 @@ test('should sync with `persist` for the same adapter-key when removing value', 
     },
   ]) // removeFx result
 
-  assert.is($store.getState(), 0) // <- changed to default state
-  assert.is(watch.callCount, 3)
-  assert.equal(watch.calls[2].arguments, [0])
+  assert.strictEqual($store.getState(), 0) // <- changed to default state
+  assert.strictEqual(watch.mock.callCount(), 3)
+  assert.deepEqual(watch.mock.calls[2].arguments, [0])
 })
 
 test('should handle synchronous error in `get` and `set` effects', () => {
-  const watch = snoop(() => undefined)
+  const watch = mock.fn()
 
   const { getFx, setFx } = createStorage<number>('test-sync-throw', {
     adapter: () => ({
@@ -411,18 +410,18 @@ test('should handle synchronous error in `get` and `set` effects', () => {
     }),
   })
 
-  getFx.watch(watch.fn)
-  setFx.watch(watch.fn)
-  getFx.finally.watch(watch.fn)
-  setFx.finally.watch(watch.fn)
+  getFx.watch(watch)
+  setFx.watch(watch)
+  getFx.finally.watch(watch)
+  setFx.finally.watch(watch)
 
-  assert.is(watch.callCount, 0)
+  assert.strictEqual(watch.mock.callCount(), 0)
 
   getFx()
 
-  assert.is(watch.callCount, 2)
-  assert.equal(watch.calls[0].arguments, [undefined]) // getFx trigger
-  assert.equal(watch.calls[1].arguments, [
+  assert.strictEqual(watch.mock.callCount(), 2)
+  assert.deepEqual(watch.mock.calls[0].arguments, [undefined]) // getFx trigger
+  assert.deepEqual(watch.mock.calls[1].arguments, [
     {
       status: 'fail',
       params: undefined,
@@ -438,9 +437,9 @@ test('should handle synchronous error in `get` and `set` effects', () => {
 
   setFx(1)
 
-  assert.is(watch.callCount, 4)
-  assert.equal(watch.calls[2].arguments, [1]) // setFx trigger
-  assert.equal(watch.calls[3].arguments, [
+  assert.strictEqual(watch.mock.callCount(), 4)
+  assert.deepEqual(watch.mock.calls[2].arguments, [1]) // setFx trigger
+  assert.deepEqual(watch.mock.calls[3].arguments, [
     {
       status: 'fail',
       params: 1,
@@ -456,7 +455,7 @@ test('should handle synchronous error in `get` and `set` effects', () => {
 })
 
 test('should handle asynchronous error in `get` and `set` effects', async () => {
-  const watch = snoop(() => undefined)
+  const watch = mock.fn()
 
   const { getFx, setFx } = createStorage<number>('test-async-throw', {
     adapter: () => ({
@@ -465,23 +464,23 @@ test('should handle asynchronous error in `get` and `set` effects', async () => 
     }),
   })
 
-  getFx.watch(watch.fn)
-  setFx.watch(watch.fn)
-  getFx.finally.watch(watch.fn)
-  setFx.finally.watch(watch.fn)
+  getFx.watch(watch)
+  setFx.watch(watch)
+  getFx.finally.watch(watch)
+  setFx.finally.watch(watch)
 
-  assert.is(watch.callCount, 0)
+  assert.strictEqual(watch.mock.callCount(), 0)
 
   try {
     await getFx()
-    assert.unreachable('getFx should have thrown')
+    assert.fail('getFx should have thrown')
   } catch (e) {
     // ok
   }
 
-  assert.is(watch.callCount, 2)
-  assert.equal(watch.calls[0].arguments, [undefined]) // getFx trigger
-  assert.equal(watch.calls[1].arguments, [
+  assert.strictEqual(watch.mock.callCount(), 2)
+  assert.deepEqual(watch.mock.calls[0].arguments, [undefined]) // getFx trigger
+  assert.deepEqual(watch.mock.calls[1].arguments, [
     {
       status: 'fail',
       params: undefined,
@@ -497,14 +496,14 @@ test('should handle asynchronous error in `get` and `set` effects', async () => 
 
   try {
     await setFx(1)
-    assert.unreachable('setFx should have thrown')
+    assert.fail('setFx should have thrown')
   } catch (e) {
     // ok
   }
 
-  assert.is(watch.callCount, 4)
-  assert.equal(watch.calls[2].arguments, [1]) // setFx trigger
-  assert.equal(watch.calls[3].arguments, [
+  assert.strictEqual(watch.mock.callCount(), 4)
+  assert.deepEqual(watch.mock.calls[2].arguments, [1]) // setFx trigger
+  assert.deepEqual(watch.mock.calls[3].arguments, [
     {
       status: 'fail',
       params: 1,
@@ -520,8 +519,7 @@ test('should handle asynchronous error in `get` and `set` effects', async () => 
 })
 
 test('should hide internal <error in "box"> implementation with `get` effect', () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const watch = snoop((_) => undefined)
+  const watch = mock.fn()
   const fail = createEvent()
 
   const { getFx, setFx } = createStorage<number>('test-throw-box', {
@@ -541,23 +539,23 @@ test('should hide internal <error in "box"> implementation with `get` effect', (
     },
   })
 
-  getFx.watch(watch.fn)
-  setFx.watch(watch.fn)
-  getFx.finally.watch(watch.fn)
-  setFx.finally.watch(watch.fn)
+  getFx.watch(watch)
+  setFx.watch(watch)
+  getFx.finally.watch(watch)
+  setFx.finally.watch(watch)
 
-  assert.is(watch.callCount, 0)
+  assert.strictEqual(watch.mock.callCount(), 0)
 
   fail()
 
-  assert.is(watch.callCount, 2)
+  assert.strictEqual(watch.mock.callCount(), 2)
 
-  const arg1 = watch.calls[0].arguments[0]
-  assert.instance(arg1, Function) // getFx trigger - "box"ed error, don't know how to hide it here
+  const arg1 = watch.mock.calls[0].arguments[0]
+  assert.ok(arg1 instanceof Function) // getFx trigger - "box"ed error, don't know how to hide it here
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { params, ...arg2 } = watch.calls[1].arguments[0]
-  assert.equal(arg2, {
+  const { params, ...arg2 } = watch.mock.calls[1].arguments[0]
+  assert.deepEqual(arg2, {
     status: 'fail',
     // params: Function, // "box"ed error...
     error: {
@@ -569,9 +567,3 @@ test('should hide internal <error in "box"> implementation with `get` effect', (
     },
   }) // getFx fail
 })
-
-//
-// Launch tests
-//
-
-test.run()

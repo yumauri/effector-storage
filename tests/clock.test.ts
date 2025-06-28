@@ -1,5 +1,5 @@
-import { test } from 'uvu'
-import * as assert from 'uvu/assert'
+import { test } from 'node:test'
+import * as assert from 'node:assert/strict'
 import { createStore, createEvent } from 'effector'
 import { persist } from '../src/core'
 import { storage } from '../src/storage'
@@ -17,23 +17,17 @@ test('should set value to storage only on `clock` trigger', () => {
 
   const clock = createEvent()
   const $store = createStore(1, { name: '$store' })
-  assert.is($store.getState(), 1)
+  assert.deepEqual($store.getState(), 1)
 
   persist({ store: $store, clock, adapter })
-  assert.is($store.getState(), 0) // <- restore from storage
+  assert.deepEqual($store.getState(), 0) // <- restore from storage
 
   // change store value
   ;($store as any).setState(1)
-  assert.is(mockStorage.getItem('$store'), '0') // <- didn't changed
+  assert.deepEqual(mockStorage.getItem('$store'), '0') // <- didn't changed
   ;($store as any).setState(2)
-  assert.is(mockStorage.getItem('$store'), '0') // <- didn't changed
+  assert.deepEqual(mockStorage.getItem('$store'), '0') // <- didn't changed
 
   clock()
-  assert.is(mockStorage.getItem('$store'), '2') // <- actually set
+  assert.deepEqual(mockStorage.getItem('$store'), '2') // <- actually set
 })
-
-//
-// Launch tests
-//
-
-test.run()

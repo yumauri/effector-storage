@@ -1,6 +1,5 @@
-import { test } from 'uvu'
-import * as assert from 'uvu/assert'
-import { snoop } from 'snoop'
+import { test, before, after, mock } from 'node:test'
+import * as assert from 'node:assert/strict'
 import { createEffect, createStore } from 'effector'
 import { createStorageMock } from './mocks/storage.mock'
 import { type Events, createEventsMock } from './mocks/events.mock'
@@ -13,13 +12,13 @@ import { persist, createStorage } from '../src/local'
 declare let global: any
 let events: Events
 
-test.before(() => {
+before(() => {
   global.localStorage = createStorageMock()
   events = createEventsMock()
   global.addEventListener = events.addEventListener
 })
 
-test.after(() => {
+after(() => {
   global.localStorage = undefined
   global.addEventListener = undefined
 })
@@ -31,13 +30,13 @@ test.after(() => {
 test('should get and set values in localStorage', async () => {
   const storage = createStorage<number>('test-key-1')
 
-  assert.is(global.localStorage.getItem('test-key-1'), null)
-  assert.is(await storage.getFx(), undefined)
+  assert.strictEqual(global.localStorage.getItem('test-key-1'), null)
+  assert.strictEqual(await storage.getFx(), undefined)
 
   await storage.setFx(1)
 
-  assert.is(global.localStorage.getItem('test-key-1'), '1')
-  assert.is(await storage.getFx(), 1)
+  assert.strictEqual(global.localStorage.getItem('test-key-1'), '1')
+  assert.strictEqual(await storage.getFx(), 1)
 })
 
 test('should be in sync with persisted store', async () => {
@@ -47,32 +46,32 @@ test('should be in sync with persisted store', async () => {
   persist({ store: $value, key: 'test-key-2' })
 
   // this is expected, because store initial value is not written to localStorage
-  assert.is(await storage.getFx(), undefined)
+  assert.strictEqual(await storage.getFx(), undefined)
 
   // set value to localStorage using createStorage effect
   await storage.setFx(1)
 
   // storage and persisted store should be updated
-  assert.is(global.localStorage.getItem('test-key-2'), '1')
-  assert.is($value.getState(), 1)
+  assert.strictEqual(global.localStorage.getItem('test-key-2'), '1')
+  assert.strictEqual($value.getState(), 1)
 
-  const watch = snoop(() => undefined)
-  storage.getFx.doneData.watch(watch.fn)
+  const watch = mock.fn()
+  storage.getFx.doneData.watch(watch)
 
   // set value to persisted store
   ;($value as any).setState(2)
-  assert.is(global.localStorage.getItem('test-key-2'), '2')
+  assert.strictEqual(global.localStorage.getItem('test-key-2'), '2')
 
   // createStorage effect should be called once
-  assert.is(watch.callCount, 1)
-  assert.equal(watch.calls[0].arguments, [2])
+  assert.strictEqual(watch.mock.callCount(), 1)
+  assert.deepEqual(watch.mock.calls[0].arguments, [2])
 })
 
 test('createStorage get effect should be called on storage event', async () => {
   const storage = createStorage<number>('test-key-3')
 
-  const watch = snoop(() => undefined)
-  storage.getFx.doneData.watch(watch.fn)
+  const watch = mock.fn()
+  storage.getFx.doneData.watch(watch)
 
   global.localStorage.setItem('test-key-3', '3')
   await events.dispatchEvent('storage', {
@@ -83,8 +82,8 @@ test('createStorage get effect should be called on storage event', async () => {
   })
 
   // createStorage effect should be called once
-  assert.is(watch.callCount, 1)
-  assert.equal(watch.calls[0].arguments, [3])
+  assert.strictEqual(watch.mock.callCount(), 1)
+  assert.deepEqual(watch.mock.calls[0].arguments, [3])
 })
 
 test.only('persisted store should be restored to initial value on delete effect', async () => {
@@ -96,18 +95,12 @@ test.only('persisted store should be restored to initial value on delete effect'
     // def: 0,
     finally: createEffect((_: any) => console.log('🔵', _)),
   })
-  assert.is(global.localStorage.getItem('test-key-4'), null)
-  assert.is($value.getState(), 0)
+  assert.strictEqual(global.localStorage.getItem('test-key-4'), null)
+  assert.strictEqual($value.getState(), 0)
   await storage.setFx(1)
-  assert.is(global.localStorage.getItem('test-key-4'), '1')
-  assert.is($value.getState(), 1)
+  assert.strictEqual(global.localStorage.getItem('test-key-4'), '1')
+  assert.strictEqual($value.getState(), 1)
   await storage.removeFx()
-  assert.is(global.localStorage.getItem('test-key-4'), null)
-  assert.is($value.getState(), 0)
+  assert.strictEqual(global.localStorage.getItem('test-key-4'), null)
+  assert.strictEqual($value.getState(), 0)
 })
-
-//
-// Launch tests
-//
-
-test.run()

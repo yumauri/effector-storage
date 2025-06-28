@@ -1,7 +1,6 @@
 import type { StorageAdapter } from '../src'
-import { test } from 'uvu'
-import * as assert from 'uvu/assert'
-import { snoop } from 'snoop'
+import { test, before, after, mock } from 'node:test'
+import * as assert from 'node:assert/strict'
 import { createStore, createEvent } from 'effector'
 import * as s from 'superstruct'
 import { superstructContract } from '@farfetched/superstruct'
@@ -19,13 +18,13 @@ const mockStorage = createStorageMock()
 let storageAdapter: StorageAdapter
 let events: Events
 
-test.before(() => {
+before(() => {
   events = createEventsMock()
   global.addEventListener = events.addEventListener
   storageAdapter = storage({ storage: () => mockStorage, sync: true })
 })
 
-test.after(() => {
+after(() => {
   global.addEventListener = undefined
 })
 
@@ -34,7 +33,7 @@ test.after(() => {
 //
 
 test('shoult validate storage value on get', () => {
-  const watch = snoop(() => undefined)
+  const watch = mock.fn()
 
   mockStorage.setItem('number1', '42')
 
@@ -44,14 +43,14 @@ test('shoult validate storage value on get', () => {
     contract: (raw): raw is number => typeof raw === 'number',
   })
 
-  getFx.watch(watch.fn)
-  getFx.finally.watch(watch.fn)
+  getFx.watch(watch)
+  getFx.finally.watch(watch)
 
   getFx()
 
-  assert.is(watch.callCount, 2)
-  assert.equal(watch.calls[0].arguments, [undefined]) // getFx trigger
-  assert.equal(watch.calls[1].arguments, [
+  assert.strictEqual(watch.mock.callCount(), 2)
+  assert.deepEqual(watch.mock.calls[0].arguments, [undefined]) // getFx trigger
+  assert.deepEqual(watch.mock.calls[1].arguments, [
     {
       status: 'done',
       params: undefined,
@@ -59,11 +58,11 @@ test('shoult validate storage value on get', () => {
     },
   ]) // getFx result
 
-  assert.is(mockStorage.getItem('number1'), '42')
+  assert.strictEqual(mockStorage.getItem('number1'), '42')
 })
 
 test('shoult fail on invalid initial storage value with simple contract', () => {
-  const watch = snoop(() => undefined)
+  const watch = mock.fn()
 
   mockStorage.setItem('number2', '"invalid"') // valid JSON, but invalid number
 
@@ -73,14 +72,14 @@ test('shoult fail on invalid initial storage value with simple contract', () => 
     contract: (raw): raw is number => typeof raw === 'number',
   })
 
-  getFx.watch(watch.fn)
-  getFx.finally.watch(watch.fn)
+  getFx.watch(watch)
+  getFx.finally.watch(watch)
 
   getFx()
 
-  assert.is(watch.callCount, 2)
-  assert.equal(watch.calls[0].arguments, [undefined]) // getFx trigger
-  assert.equal(watch.calls[1].arguments, [
+  assert.strictEqual(watch.mock.callCount(), 2)
+  assert.deepEqual(watch.mock.calls[0].arguments, [undefined]) // getFx trigger
+  assert.deepEqual(watch.mock.calls[1].arguments, [
     {
       status: 'fail',
       params: undefined,
@@ -94,12 +93,12 @@ test('shoult fail on invalid initial storage value with simple contract', () => 
     },
   ]) // getFx result
 
-  assert.is(mockStorage.getItem('number2'), '"invalid"') // didn't change
+  assert.strictEqual(mockStorage.getItem('number2'), '"invalid"') // didn't change
 })
 
 test('should handle sync effects with same key and different validators', () => {
-  const watchPlain = snoop(() => undefined)
-  const watchBase64 = snoop(() => undefined)
+  const watchPlain = mock.fn()
+  const watchBase64 = mock.fn()
 
   const { getFx: getPlainFx, setFx: setPlainFx } = createStorage({
     adapter: storageAdapter,
@@ -113,25 +112,28 @@ test('should handle sync effects with same key and different validators', () => 
       global.Buffer.from(raw, 'base64').toString('base64') === raw,
   })
 
-  getPlainFx.watch(watchPlain.fn)
-  setPlainFx.watch(watchPlain.fn)
-  getPlainFx.finally.watch(watchPlain.fn)
-  setPlainFx.finally.watch(watchPlain.fn)
+  getPlainFx.watch(watchPlain)
+  setPlainFx.watch(watchPlain)
+  getPlainFx.finally.watch(watchPlain)
+  setPlainFx.finally.watch(watchPlain)
 
-  getBase64Fx.watch(watchBase64.fn)
-  setBase64Fx.watch(watchBase64.fn)
-  getBase64Fx.finally.watch(watchBase64.fn)
-  setBase64Fx.finally.watch(watchBase64.fn)
+  getBase64Fx.watch(watchBase64)
+  setBase64Fx.watch(watchBase64)
+  getBase64Fx.finally.watch(watchBase64)
+  setBase64Fx.finally.watch(watchBase64)
 
-  assert.is(watchPlain.callCount, 0)
-  assert.is(watchBase64.callCount, 0)
+  assert.strictEqual(watchPlain.mock.callCount(), 0)
+  assert.strictEqual(watchBase64.mock.callCount(), 0)
 
   setPlainFx('plain value')
-  assert.is(mockStorage.getItem('contract-same-key-1'), '"plain value"')
+  assert.strictEqual(
+    mockStorage.getItem('contract-same-key-1'),
+    '"plain value"'
+  )
 
-  assert.is(watchPlain.callCount, 2)
-  assert.equal(watchPlain.calls[0].arguments, ['plain value']) // setPlainFx trigger
-  assert.equal(watchPlain.calls[1].arguments, [
+  assert.strictEqual(watchPlain.mock.callCount(), 2)
+  assert.deepEqual(watchPlain.mock.calls[0].arguments, ['plain value']) // setPlainFx trigger
+  assert.deepEqual(watchPlain.mock.calls[1].arguments, [
     {
       status: 'done',
       params: 'plain value',
@@ -139,9 +141,9 @@ test('should handle sync effects with same key and different validators', () => 
     },
   ]) // setPlainFx result
 
-  assert.is(watchBase64.callCount, 2)
-  assert.equal(watchBase64.calls[0].arguments, [undefined]) // getBase64Fx trigger
-  assert.equal(watchBase64.calls[1].arguments, [
+  assert.strictEqual(watchBase64.mock.callCount(), 2)
+  assert.deepEqual(watchBase64.mock.calls[0].arguments, [undefined]) // getBase64Fx trigger
+  assert.deepEqual(watchBase64.mock.calls[1].arguments, [
     {
       status: 'fail',
       params: undefined,
@@ -156,11 +158,14 @@ test('should handle sync effects with same key and different validators', () => 
   ]) // getBase64Fx result
 
   setBase64Fx('YmFzZTY0IHZhbHVl')
-  assert.is(mockStorage.getItem('contract-same-key-1'), '"YmFzZTY0IHZhbHVl"')
+  assert.strictEqual(
+    mockStorage.getItem('contract-same-key-1'),
+    '"YmFzZTY0IHZhbHVl"'
+  )
 
-  assert.is(watchBase64.callCount, 4)
-  assert.equal(watchBase64.calls[2].arguments, ['YmFzZTY0IHZhbHVl']) // setBase64Fx trigger
-  assert.equal(watchBase64.calls[3].arguments, [
+  assert.strictEqual(watchBase64.mock.callCount(), 4)
+  assert.deepEqual(watchBase64.mock.calls[2].arguments, ['YmFzZTY0IHZhbHVl']) // setBase64Fx trigger
+  assert.deepEqual(watchBase64.mock.calls[3].arguments, [
     {
       status: 'done',
       params: 'YmFzZTY0IHZhbHVl',
@@ -168,9 +173,9 @@ test('should handle sync effects with same key and different validators', () => 
     },
   ]) // setBase64Fx result
 
-  assert.is(watchPlain.callCount, 4)
-  assert.equal(watchPlain.calls[2].arguments, [undefined]) // getPlainFx trigger
-  assert.equal(watchPlain.calls[3].arguments, [
+  assert.strictEqual(watchPlain.mock.callCount(), 4)
+  assert.deepEqual(watchPlain.mock.calls[2].arguments, [undefined]) // getPlainFx trigger
+  assert.deepEqual(watchPlain.mock.calls[3].arguments, [
     {
       status: 'done',
       params: undefined,
@@ -180,7 +185,7 @@ test('should handle sync effects with same key and different validators', () => 
 })
 
 test('should handle sync with `persist` with different validators, update from store', () => {
-  const watch = snoop(() => undefined)
+  const watch = mock.fn()
   const $string = createStore('')
 
   persist({
@@ -196,18 +201,21 @@ test('should handle sync with `persist` with different validators, update from s
       global.Buffer.from(raw, 'base64').toString('base64') === raw,
   })
 
-  getFx.watch(watch.fn)
-  setFx.watch(watch.fn)
-  getFx.finally.watch(watch.fn)
-  setFx.finally.watch(watch.fn)
+  getFx.watch(watch)
+  setFx.watch(watch)
+  getFx.finally.watch(watch)
+  setFx.finally.watch(watch)
 
   //
   ;($string as any).setState('plain value')
-  assert.is(mockStorage.getItem('contract-same-key-2'), '"plain value"')
+  assert.strictEqual(
+    mockStorage.getItem('contract-same-key-2'),
+    '"plain value"'
+  )
 
-  assert.is(watch.callCount, 2)
-  assert.equal(watch.calls[0].arguments, [undefined]) // getFx trigger
-  assert.equal(watch.calls[1].arguments, [
+  assert.strictEqual(watch.mock.callCount(), 2)
+  assert.deepEqual(watch.mock.calls[0].arguments, [undefined]) // getFx trigger
+  assert.deepEqual(watch.mock.calls[1].arguments, [
     {
       status: 'fail',
       params: undefined,
@@ -223,9 +231,9 @@ test('should handle sync with `persist` with different validators, update from s
 })
 
 test('should handle sync with `persist` with different validators, update from storage', () => {
-  const watch = snoop(() => undefined)
+  const watch = mock.fn()
   const fail = createEvent<any>()
-  fail.watch(watch.fn)
+  fail.watch(watch)
 
   const $base64 = createStore('')
 
@@ -246,12 +254,15 @@ test('should handle sync with `persist` with different validators, update from s
   })
 
   setFx('plain value')
-  assert.is(mockStorage.getItem('contract-same-key-3'), '"plain value"')
+  assert.strictEqual(
+    mockStorage.getItem('contract-same-key-3'),
+    '"plain value"'
+  )
 
-  assert.is($base64.getState(), '') // <- didn't change
+  assert.strictEqual($base64.getState(), '') // <- didn't change
 
-  assert.is(watch.callCount, 1)
-  assert.equal(watch.calls[0].arguments, [
+  assert.strictEqual(watch.mock.callCount(), 1)
+  assert.deepEqual(watch.mock.calls[0].arguments, [
     {
       key: 'contract-same-key-3',
       keyPrefix: '',
@@ -263,7 +274,7 @@ test('should handle sync with `persist` with different validators, update from s
 })
 
 test('shoult validate storage value on get with complex contract (valid)', () => {
-  const watch = snoop(() => undefined)
+  const watch = mock.fn()
 
   const Asteroid = s.type({
     type: s.literal('asteroid'),
@@ -278,14 +289,14 @@ test('shoult validate storage value on get with complex contract (valid)', () =>
     contract: superstructContract(Asteroid),
   })
 
-  getFx.watch(watch.fn)
-  getFx.finally.watch(watch.fn)
+  getFx.watch(watch)
+  getFx.finally.watch(watch)
 
   getFx()
 
-  assert.is(watch.callCount, 2)
-  assert.equal(watch.calls[0].arguments, [undefined]) // getFx trigger
-  assert.equal(watch.calls[1].arguments, [
+  assert.strictEqual(watch.mock.callCount(), 2)
+  assert.deepEqual(watch.mock.calls[0].arguments, [undefined]) // getFx trigger
+  assert.deepEqual(watch.mock.calls[1].arguments, [
     {
       status: 'done',
       params: undefined,
@@ -295,7 +306,7 @@ test('shoult validate storage value on get with complex contract (valid)', () =>
 })
 
 test('shoult validate storage value on get with complex contract (valid undefined)', () => {
-  const watch = snoop(() => undefined)
+  const watch = mock.fn()
 
   const Asteroid = s.optional(
     s.type({
@@ -310,14 +321,14 @@ test('shoult validate storage value on get with complex contract (valid undefine
     contract: superstructContract(Asteroid),
   })
 
-  getFx.watch(watch.fn)
-  getFx.finally.watch(watch.fn)
+  getFx.watch(watch)
+  getFx.finally.watch(watch)
 
   getFx()
 
-  assert.is(watch.callCount, 2)
-  assert.equal(watch.calls[0].arguments, [undefined]) // getFx trigger
-  assert.equal(watch.calls[1].arguments, [
+  assert.strictEqual(watch.mock.callCount(), 2)
+  assert.deepEqual(watch.mock.calls[0].arguments, [undefined]) // getFx trigger
+  assert.deepEqual(watch.mock.calls[1].arguments, [
     {
       status: 'done',
       params: undefined,
@@ -327,7 +338,7 @@ test('shoult validate storage value on get with complex contract (valid undefine
 })
 
 test('shoult validate storage value on get with complex contract (invalid undefined)', () => {
-  const watch = snoop(() => undefined)
+  const watch = mock.fn()
 
   const Asteroid = s.type({
     type: s.literal('asteroid'),
@@ -340,14 +351,14 @@ test('shoult validate storage value on get with complex contract (invalid undefi
     contract: superstructContract(Asteroid),
   })
 
-  getFx.watch(watch.fn)
-  getFx.finally.watch(watch.fn)
+  getFx.watch(watch)
+  getFx.finally.watch(watch)
 
   getFx()
 
-  assert.is(watch.callCount, 2)
-  assert.equal(watch.calls[0].arguments, [undefined]) // getFx trigger
-  assert.equal(watch.calls[1].arguments, [
+  assert.strictEqual(watch.mock.callCount(), 2)
+  assert.deepEqual(watch.mock.calls[0].arguments, [undefined]) // getFx trigger
+  assert.deepEqual(watch.mock.calls[1].arguments, [
     {
       status: 'fail',
       params: undefined,
@@ -363,7 +374,7 @@ test('shoult validate storage value on get with complex contract (invalid undefi
 })
 
 test('shoult validate storage value on get with complex contract (invalid)', () => {
-  const watch = snoop(() => undefined)
+  const watch = mock.fn()
 
   const Asteroid = s.type({
     type: s.literal('asteroid'),
@@ -378,14 +389,14 @@ test('shoult validate storage value on get with complex contract (invalid)', () 
     contract: superstructContract(Asteroid),
   })
 
-  getFx.watch(watch.fn)
-  getFx.finally.watch(watch.fn)
+  getFx.watch(watch)
+  getFx.finally.watch(watch)
 
   getFx()
 
-  assert.is(watch.callCount, 2)
-  assert.equal(watch.calls[0].arguments, [undefined]) // getFx trigger
-  assert.equal(watch.calls[1].arguments, [
+  assert.strictEqual(watch.mock.callCount(), 2)
+  assert.deepEqual(watch.mock.calls[0].arguments, [undefined]) // getFx trigger
+  assert.deepEqual(watch.mock.calls[1].arguments, [
     {
       status: 'fail',
       params: undefined,
@@ -399,11 +410,11 @@ test('shoult validate storage value on get with complex contract (invalid)', () 
     },
   ]) // getFx result
 
-  assert.is(mockStorage.getItem('asteroid2'), '42')
+  assert.strictEqual(mockStorage.getItem('asteroid2'), '42')
 })
 
 test('should validate value on storage external update', async () => {
-  const watch = snoop(() => undefined)
+  const watch = mock.fn()
 
   const { getFx } = createStorage({
     adapter: storageAdapter,
@@ -411,8 +422,8 @@ test('should validate value on storage external update', async () => {
     contract: superstructContract(s.number()),
   })
 
-  getFx.watch(watch.fn)
-  getFx.finally.watch(watch.fn)
+  getFx.watch(watch)
+  getFx.finally.watch(watch)
 
   mockStorage.setItem('storage-contract-counter-1', '1')
   await events.dispatchEvent('storage', {
@@ -422,9 +433,9 @@ test('should validate value on storage external update', async () => {
     newValue: '1',
   })
 
-  assert.is(watch.callCount, 2)
-  assert.equal(watch.calls[0].arguments, ['1']) // getFx trigger with raw value
-  assert.equal(watch.calls[1].arguments, [
+  assert.strictEqual(watch.mock.callCount(), 2)
+  assert.deepEqual(watch.mock.calls[0].arguments, ['1']) // getFx trigger with raw value
+  assert.deepEqual(watch.mock.calls[1].arguments, [
     {
       status: 'done',
       params: '1', // raw value from adapter
@@ -440,9 +451,9 @@ test('should validate value on storage external update', async () => {
     newValue: '"invalid"',
   })
 
-  assert.is(watch.callCount, 4)
-  assert.equal(watch.calls[2].arguments, ['"invalid"']) // getFx trigger with raw value
-  assert.equal(watch.calls[3].arguments, [
+  assert.strictEqual(watch.mock.callCount(), 4)
+  assert.deepEqual(watch.mock.calls[2].arguments, ['"invalid"']) // getFx trigger with raw value
+  assert.deepEqual(watch.mock.calls[3].arguments, [
     {
       status: 'fail',
       params: '"invalid"', // raw value from adapter
@@ -456,9 +467,3 @@ test('should validate value on storage external update', async () => {
     },
   ]) // getFx result
 })
-
-//
-// Launch tests
-//
-
-test.run()

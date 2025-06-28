@@ -1,7 +1,6 @@
 import type { StorageAdapter } from '../src/types'
-import { test } from 'uvu'
-import * as assert from 'uvu/assert'
-import { snoop } from 'snoop'
+import { test, mock } from 'node:test'
+import * as assert from 'node:assert/strict'
 import { createEvent, createStore } from 'effector'
 import { persist } from '../src/core'
 
@@ -24,12 +23,12 @@ const dumbAdapter: StorageAdapter = <T>() => {
 //
 
 test('should fire done and finally events', () => {
-  const watch = snoop(() => undefined)
+  const watch = mock.fn()
 
   const done = createEvent<any>()
   const anyway = createEvent<any>()
-  done.watch(watch.fn)
-  anyway.watch(watch.fn)
+  done.watch(watch)
+  anyway.watch(watch)
 
   const $store = createStore(1)
   persist({
@@ -40,10 +39,10 @@ test('should fire done and finally events', () => {
     finally: anyway,
   })
 
-  assert.is(watch.callCount, 2)
+  assert.strictEqual(watch.mock.callCount(), 2)
 
   // `finally`, get value from storage
-  assert.equal(watch.calls[0].arguments, [
+  assert.deepEqual(watch.mock.calls[0].arguments, [
     {
       key: 'test',
       keyPrefix: '',
@@ -54,7 +53,7 @@ test('should fire done and finally events', () => {
   ])
 
   // `done`, get value from storage
-  assert.equal(watch.calls[1].arguments, [
+  assert.deepEqual(watch.mock.calls[1].arguments, [
     {
       key: 'test',
       keyPrefix: '',
@@ -65,16 +64,16 @@ test('should fire done and finally events', () => {
 })
 
 test('should return value on successful `set` operation', () => {
-  const watch = snoop(() => undefined)
+  const watch = mock.fn()
 
   const done = createEvent<any>()
-  done.watch(watch.fn)
+  done.watch(watch)
 
   const $store = createStore(1)
   persist({ store: $store, adapter: dumbAdapter, key: 'test', done })
 
-  assert.is(watch.callCount, 1)
-  assert.equal(watch.calls[0].arguments, [
+  assert.strictEqual(watch.mock.callCount(), 1)
+  assert.deepEqual(watch.mock.calls[0].arguments, [
     {
       key: 'test',
       keyPrefix: '',
@@ -86,8 +85,8 @@ test('should return value on successful `set` operation', () => {
   // set new value to store
   ;($store as any).setState(2)
 
-  assert.is(watch.callCount, 2)
-  assert.equal(watch.calls[1].arguments, [
+  assert.strictEqual(watch.mock.callCount(), 2)
+  assert.deepEqual(watch.mock.calls[1].arguments, [
     {
       key: 'test',
       keyPrefix: '',
@@ -96,9 +95,3 @@ test('should return value on successful `set` operation', () => {
     },
   ])
 })
-
-//
-// Launch tests
-//
-
-test.run()

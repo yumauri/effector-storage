@@ -1,7 +1,6 @@
 import type { StorageAdapter } from '../src/types'
-import { test } from 'uvu'
-import * as assert from 'uvu/assert'
-import { snoop } from 'snoop'
+import { test, mock } from 'node:test'
+import * as assert from 'node:assert/strict'
 import { createStore, createEvent, fork, allSettled } from 'effector'
 import { createStorage } from '../src'
 
@@ -10,80 +9,80 @@ import { createStorage } from '../src'
 //
 
 test('context store value should be passed to adapter', async () => {
-  const watch = snoop(() => undefined as any)
+  const watch = mock.fn()
 
   const context = createEvent<number>()
 
   const { getFx, setFx } = createStorage('test-context-1', {
-    adapter: () => ({ get: watch.fn, set: watch.fn }),
+    adapter: () => ({ get: watch, set: watch }),
     context: createStore(42).on(context, (_, ctx) => ctx),
   })
 
   getFx()
 
-  assert.is(watch.callCount, 1)
-  assert.equal(watch.calls[0].arguments, [undefined, 42])
+  assert.strictEqual(watch.mock.callCount(), 1)
+  assert.deepEqual(watch.mock.calls[0].arguments, [undefined, 42])
 
   setFx(54)
 
-  assert.is(watch.callCount, 2)
-  assert.equal(watch.calls[1].arguments, [54, 42])
+  assert.strictEqual(watch.mock.callCount(), 2)
+  assert.deepEqual(watch.mock.calls[1].arguments, [54, 42])
 
   // update context
   context(72)
 
   getFx()
 
-  assert.is(watch.callCount, 3)
-  assert.equal(watch.calls[2].arguments, [undefined, 72])
+  assert.strictEqual(watch.mock.callCount(), 3)
+  assert.deepEqual(watch.mock.calls[2].arguments, [undefined, 72])
 
   setFx(27)
 
-  assert.is(watch.callCount, 4)
-  assert.equal(watch.calls[3].arguments, [27, 72])
+  assert.strictEqual(watch.mock.callCount(), 4)
+  assert.deepEqual(watch.mock.calls[3].arguments, [27, 72])
 })
 
 test('context event value should be passed to adapter', async () => {
-  const watch = snoop(() => undefined as any)
+  const watch = mock.fn()
 
   const context = createEvent<string>()
 
   const { getFx, setFx } = createStorage('test-context-2', {
-    adapter: () => ({ get: watch.fn, set: watch.fn }),
+    adapter: () => ({ get: watch, set: watch }),
     context,
   })
 
   getFx()
 
-  assert.is(watch.callCount, 1)
-  assert.equal(watch.calls[0].arguments, [undefined, undefined])
+  assert.strictEqual(watch.mock.callCount(), 1)
+  assert.deepEqual(watch.mock.calls[0].arguments, [undefined, undefined])
 
   setFx(54)
 
-  assert.is(watch.callCount, 2)
-  assert.equal(watch.calls[1].arguments, [54, undefined])
+  assert.strictEqual(watch.mock.callCount(), 2)
+  assert.deepEqual(watch.mock.calls[1].arguments, [54, undefined])
 
   // update context
   context('new context')
 
   getFx()
 
-  assert.is(watch.callCount, 3)
-  assert.equal(watch.calls[2].arguments, [undefined, 'new context'])
+  assert.strictEqual(watch.mock.callCount(), 3)
+  assert.deepEqual(watch.mock.calls[2].arguments, [undefined, 'new context'])
 
   setFx(27)
 
-  assert.is(watch.callCount, 4)
-  assert.equal(watch.calls[3].arguments, [27, 'new context'])
+  assert.strictEqual(watch.mock.callCount(), 4)
+  assert.deepEqual(watch.mock.calls[3].arguments, [27, 'new context'])
 })
 
 test('contexts in different scopes should be different', async () => {
-  const watch = snoop(() => undefined as any)
+  const watch = mock.fn()
 
   const context = createEvent<{ name: string }>()
 
   const { getFx, setFx } = createStorage('test-context-3', {
-    adapter: () => ({ get: watch.fn, set: watch.fn }),
+    adapter: () => ({ get: watch, set: watch }),
     context,
   })
 
@@ -96,20 +95,26 @@ test('contexts in different scopes should be different', async () => {
   await allSettled(getFx, { scope: scopeA })
   await allSettled(getFx, { scope: scopeB })
 
-  assert.is(watch.callCount, 2)
-  assert.equal(watch.calls[0].arguments, [undefined, { name: 'scopeA' }])
-  assert.equal(watch.calls[1].arguments, [undefined, { name: 'scopeB' }])
+  assert.strictEqual(watch.mock.callCount(), 2)
+  assert.deepEqual(watch.mock.calls[0].arguments, [
+    undefined,
+    { name: 'scopeA' },
+  ])
+  assert.deepEqual(watch.mock.calls[1].arguments, [
+    undefined,
+    { name: 'scopeB' },
+  ])
 
   await allSettled(setFx, { scope: scopeA, params: 'A' })
   await allSettled(setFx, { scope: scopeB, params: 'B' })
 
-  assert.is(watch.callCount, 4)
-  assert.equal(watch.calls[2].arguments, ['A', { name: 'scopeA' }])
-  assert.equal(watch.calls[3].arguments, ['B', { name: 'scopeB' }])
+  assert.strictEqual(watch.mock.callCount(), 4)
+  assert.deepEqual(watch.mock.calls[2].arguments, ['A', { name: 'scopeA' }])
+  assert.deepEqual(watch.mock.calls[3].arguments, ['B', { name: 'scopeB' }])
 })
 
 test('context should change scope for async adapter', async () => {
-  const watch = snoop((value) => value)
+  const watch = mock.fn((value) => value)
 
   const updated = createEvent<string>()
   const context = createEvent<string>()
@@ -118,14 +123,14 @@ test('context should change scope for async adapter', async () => {
     context,
     adapter: (_key, update) => {
       updated.watch(update)
-      return { get: watch.fn, set: watch.fn }
+      return { get: watch, set: watch }
     },
   })
 
   updated('out of scope') // <- imitate external storage update
 
-  assert.is(watch.callCount, 1)
-  assert.equal(watch.calls[0].arguments, ['out of scope', undefined])
+  assert.strictEqual(watch.mock.callCount(), 1)
+  assert.deepEqual(watch.mock.calls[0].arguments, ['out of scope', undefined])
 
   const scope = fork()
 
@@ -134,8 +139,8 @@ test('context should change scope for async adapter', async () => {
 
   updated('in scope') // <- pickup new value, within scope
 
-  assert.is(watch.callCount, 2)
-  assert.equal(watch.calls[1].arguments, ['in scope', 'in scope'])
+  assert.strictEqual(watch.mock.callCount(), 2)
+  assert.deepEqual(watch.mock.calls[1].arguments, ['in scope', 'in scope'])
 })
 
 test('contexts should update scope / also works with adapter factory', async () => {
@@ -171,19 +176,13 @@ test('contexts should update scope / also works with adapter factory', async () 
 
   queue.dispatchEvent(new Event('update'))
 
-  assert.is($store.getState(), 2) // <- changed
-  assert.is(scope.getState($store), 0) // <- default value
+  assert.strictEqual($store.getState(), 2) // <- changed
+  assert.strictEqual(scope.getState($store), 0) // <- default value
 
   await allSettled(context, { scope })
 
   queue.dispatchEvent(new Event('update'))
 
-  assert.is($store.getState(), 2)
-  assert.is(scope.getState($store), 2) // <- changed in scope
+  assert.strictEqual($store.getState(), 2)
+  assert.strictEqual(scope.getState($store), 2) // <- changed in scope
 })
-
-//
-// Launch tests
-//
-
-test.run()
