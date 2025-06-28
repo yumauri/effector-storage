@@ -43,10 +43,10 @@
     "size": "size-limit --highlight-less"
   },
   "devDependencies": {
-    "@babel/core": "^7.27.4",
+    "@babel/core": "^7.27.7",
     "@babel/plugin-transform-block-scoping": "^7.27.5",
     "@babel/preset-typescript": "^7.27.1",
-    "@biomejs/biome": "^2.0.4",
+    "@biomejs/biome": "^2.0.6",
     "@farfetched/core": "^0.13.2",
     "@farfetched/superstruct": "^0.13.2",
     "@playwright/test": "^1.53.1",
@@ -54,7 +54,7 @@
     "@rollup/plugin-node-resolve": "^16.0.1",
     "@rollup/plugin-terser": "^0.4.4",
     "@size-limit/preset-small-lib": "^11.2.0",
-    "@types/node": "^22.15.32",
+    "@types/node": "^22.15.34",
     "arktype": "^2.1.20",
     "c8": "^10.1.3",
     "effector": "^23.3.0",
@@ -62,7 +62,7 @@
     "esbuild-register": "^3.6.0",
     "patronum": "^2.3.0",
     "publint": "^0.3.12",
-    "rollup": "^4.44.0",
+    "rollup": "^4.44.1",
     "rollup-plugin-command": "^1.1.3",
     "rollup-plugin-dts": "^6.2.1",
     "rollup-plugin-generate-package-json": "^3.2.0",
@@ -71,9 +71,9 @@
     "ts-node": "^10.9.2",
     "tsd": "^0.32.0",
     "typescript": "^5.8.3",
-    "vite": "^6.3.5"
+    "vite": "^7.0.0"
   },
-  "packageManager": "pnpm@10.12.1",
+  "packageManager": "pnpm@10.12.4",
   "pnpm": {
     "overrides": {
       "is-core-module": "npm:@nolyfill/is-core-module@^1",
