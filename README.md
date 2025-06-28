@@ -174,7 +174,7 @@ In order to synchronize _something_, you need to specify effector units. Dependi
   - `keyPrefix` ([_string_]): Prefix, used in adapter, to be concatenated to `key`. By default = `''`.
   - `operation` (_`'set'`_ | _`'get'`_ | _`'validate'`_): Type of operation, read (get), write (set) or validation against contract (validate).
   - `error` ([_Error_]): Error instance
-  - `value`? (_any_): In case of _'set'_ operation — value from `store`. In case of _'get'_ operation could contain raw value from storage or could be empty.
+  - `value`? (_any_): In case of _'set'_ operation — value from `store`. In case of _'get'_ and _'validate'_ operations could contain raw value from storage or could be empty.
 - `finally`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which will be triggered either in case of success or error.<br>
   Payload structure:
   - `key` ([_string_]): Same `key` as above.
@@ -273,6 +273,57 @@ persist({
 ### Returns
 
 - Custom `persist` function, with predefined adapter options.
+
+## `createStorage` factory
+
+In rare cases you might want to get a granular control over a storage and manually set or get values from it. You can use `createStorage` factory for that.
+
+```javascript
+import { sample, createEvent } from 'effector'
+import { createStorage } from 'effector-storage/local'
+
+const persist = createStorage('my-storage')
+
+const userWantToSave = createEvent()
+const userWantToLoad = createEvent()
+
+// ---8<---
+
+sample({
+  clock: userWantToSave,
+  fn: () => 'some data'
+  target: persist.setFx,
+})
+
+sample({
+  source: userWantToLoad,
+  target: persist.getFx,
+})
+```
+
+### Options
+
+- `key`? ([_string_]): Key for local/session storage, to store value in. If omitted — `store` name is used. **Note!** If `key` is not specified, `store` _must_ have a `name`! You can use `'effector/babel-plugin'` to have those names automatically.
+- `keyPrefix`? ([_string_]): Prefix, used in adapter, to be concatenated to `key`. By default = `''`.
+- `context`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which can set a special context for adapter.
+- `contract`? ([_Contract_]): Rule to statically validate data from storage.
+
+### Returns
+
+An object with fields:
+
+- `getFx` (_Effect_): to get value from storage.
+- `setFx` (_Effect_): to set value to storage.
+- `removeFx` (_Effect_): to remove value from storage.
+
+All fields of returned object are _Effects_ units, so you can use them in `sample` as any other _Effects_. For example, you can add logging on failed storage operations:
+
+```javascript
+sample({
+  clock: getFx.fail,
+  target: sendLogToSentry,
+})
+```
 
 ## Advanced usage
 

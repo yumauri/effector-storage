@@ -3,7 +3,7 @@ import * as assert from 'node:assert/strict'
 import { BroadcastChannel, Worker } from 'node:worker_threads'
 import { createEffect, createStore, sample } from 'effector'
 import { createEventsMock } from './mocks/events.mock'
-import { broadcast, persist } from '../src/broadcast'
+import { broadcast, persist, createStorage } from '../src/broadcast'
 import { broadcast as broadcastIndex } from '../src'
 import { either } from '../src/tools'
 import { log } from '../src/log'
@@ -78,6 +78,7 @@ after(() => {
 test('should export adapter and `persist` function', () => {
   assert.ok(typeof broadcast === 'function')
   assert.ok(typeof persist === 'function')
+  assert.ok(typeof createStorage === 'function')
 })
 
 test('should be exported from package root', () => {
@@ -87,6 +88,8 @@ test('should be exported from package root', () => {
 test('should be ok on good parameters', () => {
   const $store = createStore(0, { name: 'broadcast' })
   assert.doesNotThrow(() => persist({ store: $store }))
+  assert.doesNotThrow(() => createStorage('broadcast'))
+  assert.doesNotThrow(() => createStorage({ key: 'broadcast' }))
 })
 
 test('should post message to broadcast channel on updates', async () => {

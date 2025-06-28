@@ -34,6 +34,24 @@ test('General `persist` should handle wrong arguments', async () => {
   persist({ adapter: fakeAdapter, target: store })
 })
 
+test('General `createStorage` should handle wrong arguments', async () => {
+  const { createStorage } = await import('../src')
+
+  const fakeAdapter: StorageAdapter = 0 as any
+
+  // @ts-expect-error missing arguments
+  createStorage()
+
+  // @ts-expect-error missing adapter
+  createStorage('key')
+
+  // @ts-expect-error missing adapter
+  createStrorage({ key: 'key' })
+
+  // @ts-expect-error missing key
+  createStorage({ adapter: fakeAdapter })
+})
+
 test('General `persist` should return Subscription', async () => {
   const { persist } = await import('../src')
 

@@ -3,7 +3,7 @@ import * as assert from 'node:assert/strict'
 import { createEvent, createStore } from 'effector'
 import { createStorageMock } from './mocks/storage.mock'
 import { type Events, createEventsMock } from './mocks/events.mock'
-import { session, persist } from '../src/session'
+import { session, persist, createStorage } from '../src/session'
 import { session as sessionIndex } from '../src'
 
 //
@@ -31,6 +31,7 @@ after(() => {
 test('should export adapter and `persist` function', () => {
   assert.ok(typeof session === 'function')
   assert.ok(typeof persist === 'function')
+  assert.ok(typeof createStorage === 'function')
 })
 
 test('should be exported from package root', () => {
@@ -40,6 +41,8 @@ test('should be exported from package root', () => {
 test('should be ok on good parameters', () => {
   const $store = createStore(0, { name: 'session::store' })
   assert.doesNotThrow(() => persist({ store: $store }))
+  assert.doesNotThrow(() => createStorage('session::store'))
+  assert.doesNotThrow(() => createStorage({ key: 'session::store' }))
 })
 
 test('persisted store should reset value on init to default', async () => {

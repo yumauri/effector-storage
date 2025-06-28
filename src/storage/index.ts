@@ -101,6 +101,13 @@ export function storage({
           schedule()
         }
       },
+
+      remove() {
+        console.log('🔴 remove', key)
+        postponed() // cancel postponed flush
+        storage().removeItem(key)
+        // update(null) // call update with null to clear the value
+      },
     })
   }
 

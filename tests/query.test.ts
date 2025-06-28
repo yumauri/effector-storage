@@ -7,6 +7,7 @@ import { type Events, createEventsMock } from './mocks/events.mock'
 import {
   persist,
   query,
+  createStorage,
   pushState,
   replaceState,
   locationAssign,
@@ -53,6 +54,7 @@ after(() => {
 test('should export adapter and `persist` function', () => {
   assert.ok(typeof query === 'function')
   assert.ok(typeof persist === 'function')
+  assert.ok(typeof createStorage === 'function')
   assert.ok(typeof pushState === 'function')
   assert.ok(typeof replaceState === 'function')
   assert.ok(typeof locationAssign === 'function')
@@ -66,6 +68,8 @@ test('should be exported from package root', () => {
 test('should be ok on good parameters', () => {
   const $store = createStore('0', { name: 'query::store' })
   assert.doesNotThrow(() => persist({ store: $store }))
+  assert.doesNotThrow(() => createStorage('query::store'))
+  assert.doesNotThrow(() => createStorage({ key: 'query::store' }))
 })
 
 test('store initial value should NOT be put in query string', () => {

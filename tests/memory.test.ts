@@ -1,7 +1,7 @@
 import { test, mock } from 'node:test'
 import * as assert from 'node:assert/strict'
 import { createStore } from 'effector'
-import { memory, persist } from '../src/memory'
+import { memory, persist, createStorage } from '../src/memory'
 import { memory as memoryIndex } from '../src'
 
 //
@@ -11,6 +11,7 @@ import { memory as memoryIndex } from '../src'
 test('should export adapter and `persist` function', () => {
   assert.ok(typeof memory === 'function')
   assert.ok(typeof persist === 'function')
+  assert.ok(typeof createStorage === 'function')
 })
 
 test('should be exported from package root', () => {
@@ -20,6 +21,8 @@ test('should be exported from package root', () => {
 test('should be ok on good parameters', () => {
   const $store = createStore(0, { name: 'memory::store' })
   assert.doesNotThrow(() => persist({ store: $store }))
+  assert.doesNotThrow(() => createStorage('memory::store'))
+  assert.doesNotThrow(() => createStorage({ key: 'memory::store' }))
 })
 
 test('should sync stores, persisted with memory adapter', () => {
