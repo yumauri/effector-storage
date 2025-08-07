@@ -49,7 +49,7 @@
     "@biomejs/biome": "^2.0.6",
     "@farfetched/core": "^0.13.2",
     "@farfetched/superstruct": "^0.13.2",
-    "@playwright/test": "^1.53.1",
+    "@playwright/test": "^1.54.2",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-node-resolve": "^16.0.1",
     "@rollup/plugin-terser": "^0.4.4",
