@@ -43,8 +43,8 @@
     "size": "size-limit --highlight-less"
   },
   "devDependencies": {
-    "@babel/core": "^7.27.7",
-    "@babel/plugin-transform-block-scoping": "^7.27.5",
+    "@babel/core": "^7.28.0",
+    "@babel/plugin-transform-block-scoping": "^7.28.0",
     "@babel/preset-typescript": "^7.27.1",
     "@biomejs/biome": "^2.0.6",
     "@farfetched/core": "^0.13.2",
