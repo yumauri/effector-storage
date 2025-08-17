@@ -7,7 +7,7 @@ on:
       effector:
         description: effector dependency
         required: false
-        default: "npm:effector@23.3.0"
+        default: "npm:effector@23.4.2"
         type: string
       effector-storage:
         description: effector-storage dependency
@@ -63,7 +63,7 @@ jobs:
       - name: 📦 Install pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 10.12.4
+          version: 10.14.0
           run_install: false
 
       - name: 🐧 Setup node ${{ matrix.node-version }}

@@ -1,9 +1,11 @@
 import * as effectorMod from 'effector'
 import * as libMod from '../../src'
 
+// biome-ignore lint/suspicious/noTsIgnore: there is no types for worker imports
 // @ts-ignore
 import MyWorker from './worker?worker'
 
+// biome-ignore lint/suspicious/noTsIgnore: there is no types for worker imports
 // @ts-ignore
 import MySharedWorker from './sharedworker?sharedworker'
 
