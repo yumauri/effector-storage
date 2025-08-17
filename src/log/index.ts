@@ -9,7 +9,6 @@ export interface LogConfig {
  * Log adapter
  * Does nothing, like `nil` adapter, but print messages
  */
-log.factory = true as const
 export function log({
   keyArea = '',
   logger = console.log,
@@ -27,4 +26,8 @@ export function log({
   adapter.keyArea = keyArea
   adapter.noop = true
   return adapter
+}
+
+export namespace log {
+  export const factory = true
 }

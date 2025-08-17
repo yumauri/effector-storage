@@ -12,7 +12,6 @@ export interface StorageConfig {
 /**
  * Creates generic `Storage` adapter
  */
-storage.factory = true as const
 export function storage({
   storage,
   sync = false,
@@ -111,4 +110,8 @@ export function storage({
   }
 
   return adapter
+}
+
+export namespace storage {
+  export const factory = true
 }

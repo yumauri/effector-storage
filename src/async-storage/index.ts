@@ -14,7 +14,6 @@ export interface AsyncStorageConfig {
 /**
  * Creates generic `AsyncStorage` adapter
  */
-asyncStorage.factory = true as const
 export function asyncStorage({
   storage,
   serialize = JSON.stringify,
@@ -38,4 +37,8 @@ export function asyncStorage({
   }
 
   return adapter
+}
+
+export namespace asyncStorage {
+  export const factory = true
 }

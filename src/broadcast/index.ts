@@ -47,13 +47,16 @@ function supports() {
 /**
  * Creates BroadcastChannel adapter
  */
-broadcast.factory = true as const
 export function broadcast(config?: BroadcastConfig): StorageAdapter {
   return supports()
     ? adapter({
         ...config,
       })
     : nil({ keyArea: 'broadcast' })
+}
+
+export namespace broadcast {
+  export const factory = true
 }
 
 /**
@@ -72,4 +75,4 @@ export function createPersist(defaults?: ConfigPersist): Persist {
 /**
  * Default partially applied `persist`
  */
-export const persist = /*#__PURE__*/ createPersist()
+export const persist: Persist = /*#__PURE__*/ createPersist()

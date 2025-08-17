@@ -7,7 +7,6 @@ export interface NilConfig {
 /**
  * Nil/Void adapter
  */
-nil.factory = true as const
 export function nil({ keyArea = '' }: NilConfig = {}): StorageAdapter {
   const adapter: StorageAdapter = () =>
     ({
@@ -18,4 +17,8 @@ export function nil({ keyArea = '' }: NilConfig = {}): StorageAdapter {
   adapter.keyArea = keyArea
   adapter.noop = true
   return adapter
+}
+
+export namespace nil {
+  export const factory = true
 }

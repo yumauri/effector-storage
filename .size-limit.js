@@ -11,7 +11,7 @@ module.exports = [
   {
     name: 'root persist, cjs module',
     path: 'build/index.cjs',
-    limit: '3370 B',
+    limit: '3412 B',
     // import: '{ persist }', // tree-shaking is not working with cjs
     ignore: ['effector'],
     gzip: true,
@@ -57,7 +57,7 @@ module.exports = [
   {
     name: 'nil adapter, es module',
     path: 'build/nil/index.js',
-    limit: '83 B',
+    limit: '88 B',
     import: '{ nil }',
     ignore: ['effector'],
     gzip: true,
@@ -65,7 +65,7 @@ module.exports = [
   {
     name: 'nil adapter, cjs module',
     path: 'build/nil/index.cjs',
-    limit: '139 B',
+    limit: '145 B',
     // import: '{ nil }', // tree-shaking is not working with cjs
     ignore: ['effector'],
     gzip: true,
@@ -75,7 +75,7 @@ module.exports = [
   {
     name: 'log adapter, es module',
     path: 'build/log/index.js',
-    limit: '139 B',
+    limit: '149 B',
     import: '{ log }',
     ignore: ['effector'],
     gzip: true,
@@ -83,7 +83,7 @@ module.exports = [
   {
     name: 'log adapter, cjs module',
     path: 'build/log/index.cjs',
-    limit: '203 B',
+    limit: '209 B',
     // import: '{ log }', // tree-shaking is not working with cjs
     ignore: ['effector'],
     gzip: true,
@@ -93,7 +93,7 @@ module.exports = [
   {
     name: 'storage adapter, es module',
     path: 'build/storage/index.js',
-    limit: '399 B',
+    limit: '406 B',
     import: '{ storage }',
     ignore: ['effector'],
     gzip: true,
@@ -101,7 +101,7 @@ module.exports = [
   {
     name: 'storage adapter, cjs module',
     path: 'build/storage/index.cjs',
-    limit: '460 B',
+    limit: '465 B',
     // import: '{ storage }', // tree-shaking is not working with cjs
     ignore: ['effector'],
     gzip: true,
@@ -111,7 +111,7 @@ module.exports = [
   {
     name: '`localStorage` persist, es module',
     path: 'build/local/index.js',
-    limit: '1575 B',
+    limit: '1591 B',
     import: '{ persist }',
     ignore: ['effector'],
     gzip: true,
@@ -119,7 +119,7 @@ module.exports = [
   {
     name: '`localStorage` persist, cjs module',
     path: 'build/local/index.cjs',
-    limit: '1857 B',
+    limit: '1872 B',
     // import: '{ persist }', // tree-shaking is not working with cjs
     ignore: ['effector'],
     gzip: true,
@@ -130,7 +130,7 @@ module.exports = [
   {
     name: 'core adapter, es module',
     path: 'build/index.js',
-    limit: '1555 B',
+    limit: '1571 B',
     import: '{ persist, local }',
     ignore: ['effector'],
     gzip: true,
@@ -138,7 +138,7 @@ module.exports = [
   {
     name: 'core adapter factory, es module',
     path: ['build/index.js', 'build/local/index.js'],
-    limit: '1557 B',
+    limit: '1573 B',
     import: {
       'build/index.js': '{ persist }',
       'build/local/index.js': '{ local }',
@@ -151,7 +151,7 @@ module.exports = [
   {
     name: '`sessionStorage` persist, es module',
     path: 'build/session/index.js',
-    limit: '1572 B',
+    limit: '1587 B',
     import: '{ persist }',
     ignore: ['effector'],
     gzip: true,
@@ -159,7 +159,7 @@ module.exports = [
   {
     name: '`sessionStorage` persist, cjs module',
     path: 'build/session/index.cjs',
-    limit: '1852 B',
+    limit: '1867 B',
     // import: '{ persist }', // tree-shaking is not working with cjs
     ignore: ['effector'],
     gzip: true,
@@ -169,7 +169,7 @@ module.exports = [
   {
     name: 'query string persist, es module',
     path: 'build/query/index.js',
-    limit: '1629 B',
+    limit: '1640 B',
     import: '{ persist }',
     ignore: ['effector'],
     gzip: true,
@@ -177,7 +177,7 @@ module.exports = [
   {
     name: 'query string persist, cjs module',
     path: 'build/query/index.cjs',
-    limit: '1924 B',
+    limit: '1934 B',
     // import: '{ persist }', // tree-shaking is not working with cjs
     ignore: ['effector'],
     gzip: true,
@@ -187,7 +187,7 @@ module.exports = [
   {
     name: 'memory adapter, es module',
     path: 'build/memory/index.js',
-    limit: '1193 B',
+    limit: '1200 B',
     import: '{ persist }',
     ignore: ['effector'],
     gzip: true,
@@ -195,7 +195,7 @@ module.exports = [
   {
     name: 'memory adapter, cjs module',
     path: 'build/memory/index.cjs',
-    limit: '1425 B',
+    limit: '1432 B',
     // import: '{ persist }', // tree-shaking is not working with cjs
     ignore: ['effector'],
     gzip: true,
@@ -205,7 +205,7 @@ module.exports = [
   {
     name: 'generic async storage adapter, es module',
     path: 'build/async-storage/index.js',
-    limit: '162 B',
+    limit: '169 B',
     import: '{ asyncStorage }',
     ignore: ['effector'],
     gzip: true,
@@ -213,7 +213,7 @@ module.exports = [
   {
     name: 'generic async storage adapter, cjs module',
     path: 'build/async-storage/index.cjs',
-    limit: '228 B',
+    limit: '234 B',
     // import: '{ asyncStorage }', // tree-shaking is not working with cjs
     ignore: ['effector'],
     gzip: true,
@@ -223,7 +223,7 @@ module.exports = [
   {
     name: 'broadcast channel adapter, es module',
     path: 'build/broadcast/index.js',
-    limit: '371 B',
+    limit: '383 B',
     import: '{ broadcast }',
     ignore: ['effector'],
     gzip: true,
@@ -231,7 +231,7 @@ module.exports = [
   {
     name: 'broadcast channel adapter, cjs module',
     path: 'build/broadcast/index.cjs',
-    limit: '1694 B',
+    limit: '1704 B',
     // import: '{ broadcast }', // tree-shaking is not working with cjs
     ignore: ['effector'],
     gzip: true,

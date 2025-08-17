@@ -9,7 +9,6 @@ export interface MemoryConfig {
 /**
  * Memory adapter
  */
-adapter.factory = true as const
 export function adapter({ area = data }: MemoryConfig = {}): StorageAdapter {
   const adapter: StorageAdapter = <State>(key: string) => ({
     get: () => area.get(key),
@@ -18,4 +17,8 @@ export function adapter({ area = data }: MemoryConfig = {}): StorageAdapter {
 
   adapter.keyArea = area
   return adapter
+}
+
+export namespace adapter {
+  export const factory = true
 }

@@ -62,7 +62,6 @@ function supports() {
 /**
  * Creates `localStorage` adapter
  */
-local.factory = true as const
 export function local(config?: LocalStorageConfig): StorageAdapter {
   return supports()
     ? storage({
@@ -71,6 +70,10 @@ export function local(config?: LocalStorageConfig): StorageAdapter {
         ...config,
       })
     : nil({ keyArea: 'local' })
+}
+
+export namespace local {
+  export const factory = true
 }
 
 /**
@@ -89,4 +92,4 @@ export function createPersist(defaults?: ConfigPersist): Persist {
 /**
  * Default partially applied `persist`
  */
-export const persist = /*#__PURE__*/ createPersist()
+export const persist: Persist = /*#__PURE__*/ createPersist()

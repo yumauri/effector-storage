@@ -57,13 +57,16 @@ function supports() {
 /**
  * Creates query string adapter
  */
-query.factory = true as const
 export function query(config?: QueryConfig): StorageAdapter {
   return supports()
     ? adapter({
         ...config,
       })
     : nil({ keyArea: 'query' })
+}
+
+export namespace query {
+  export const factory = true
 }
 
 /**
@@ -82,4 +85,4 @@ export function createPersist(defaults?: ConfigPersist): Persist {
 /**
  * Default partially applied `persist`
  */
-export const persist = /*#__PURE__*/ createPersist()
+export const persist: Persist = /*#__PURE__*/ createPersist()

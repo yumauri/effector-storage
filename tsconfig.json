@@ -10,7 +10,9 @@
     "noImplicitAny": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noEmit": true
+    "noEmit": true,
+    "declaration": true,
+    "isolatedDeclarations": true
   },
   "include": ["src", "tests", "./playwright.config.ts"],
   "exclude": ["**/node_modules", "**/.*/"]

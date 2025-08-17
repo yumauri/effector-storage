@@ -1,9 +1,10 @@
 /// <reference types="node" />
 
+import type { PlaywrightTestConfig } from '@playwright/test'
 import { defineConfig, devices } from '@playwright/test'
 
 // https://playwright.dev/docs/test-configuration
-export default defineConfig({
+const config: PlaywrightTestConfig = defineConfig({
   testDir: './e2e',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
@@ -37,3 +38,5 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
   },
 })
+
+export default config

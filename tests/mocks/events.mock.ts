@@ -7,7 +7,7 @@ export interface Events {
 }
 
 export class EventsMock implements Events {
-  public listeners = new Map<string, EventListener[]>()
+  public listeners: Map<string, EventListener[]> = new Map()
 
   public async dispatchEvent(
     name: string,
