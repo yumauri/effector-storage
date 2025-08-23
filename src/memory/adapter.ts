@@ -1,4 +1,4 @@
-import type { StorageAdapter } from '../types'
+import type { StorageAdapter, StorageAdapterFactory } from '../types'
 
 const data = new Map<string, any>()
 
@@ -9,7 +9,9 @@ export interface MemoryConfig {
 /**
  * Memory adapter
  */
-export function adapter({ area = data }: MemoryConfig = {}): StorageAdapter {
+export const adapter: StorageAdapterFactory<
+  MemoryConfig | undefined | void
+> = ({ area = data } = {}) => {
   const adapter: StorageAdapter = <State>(key: string) => ({
     get: () => area.get(key),
     set: (value: State) => void area.set(key, value),
@@ -19,6 +21,5 @@ export function adapter({ area = data }: MemoryConfig = {}): StorageAdapter {
   return adapter
 }
 
-export namespace adapter {
-  export const factory = true
-}
+// mark as factory
+adapter.factory = true

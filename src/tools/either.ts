@@ -45,18 +45,22 @@ export function either<
     : StorageAdapter
 
 export function either<T1, T2>(
-  one: StorageAdapter | StorageAdapterFactory<T1>,
-  another: StorageAdapter | StorageAdapterFactory<T2>
+  one: StorageAdapter | StorageAdapterFactory<T1 | undefined | void>,
+  another: StorageAdapter | StorageAdapterFactory<T2 | undefined | void>
 ): StorageAdapter | StorageAdapterFactory<T1 & T2> {
   const isFactory1 = 'factory' in one
   const isFactory2 = 'factory' in another
 
-  create.factory = true as const
-  function create(config?: T1 & T2) {
+  const create: StorageAdapterFactory<(T1 & T2) | undefined | void> = (
+    config
+  ) => {
     const adapter1 = isFactory1 ? one(config) : one
     const adapter2 = isFactory2 ? another(config) : another
     return adapter1.noop ? adapter2 : adapter1
   }
+
+  // mark as factory
+  create.factory = true
 
   return isFactory1 || isFactory2 ? create : create()
 }

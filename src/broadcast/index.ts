@@ -3,7 +3,7 @@ import type {
   ConfigPersist as BaseConfigPersist,
   ConfigStore as BaseConfigStore,
   ConfigSourceTarget as BaseConfigSourceTarget,
-  StorageAdapter,
+  StorageAdapterFactory,
 } from '../types'
 import type { BroadcastConfig } from './adapter'
 import { persist as base } from '../core'
@@ -47,7 +47,9 @@ function supports() {
 /**
  * Creates BroadcastChannel adapter
  */
-export function broadcast(config?: BroadcastConfig): StorageAdapter {
+export const broadcast: StorageAdapterFactory<
+  BroadcastConfig | undefined | void
+> = (config) => {
   return supports()
     ? adapter({
         ...config,
@@ -55,9 +57,8 @@ export function broadcast(config?: BroadcastConfig): StorageAdapter {
     : nil({ keyArea: 'broadcast' })
 }
 
-export namespace broadcast {
-  export const factory = true
-}
+// mark as factory
+broadcast.factory = true
 
 /**
  * Creates custom partially applied `persist`

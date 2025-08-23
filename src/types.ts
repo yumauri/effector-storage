@@ -29,7 +29,7 @@ export interface StorageAdapter {
 }
 
 export interface StorageAdapterFactory<AdapterConfig> {
-  (config?: AdapterConfig): StorageAdapter
+  (config: AdapterConfig): StorageAdapter
   factory: true
 }
 

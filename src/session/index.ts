@@ -3,7 +3,7 @@ import type {
   ConfigPersist as BaseConfigPersist,
   ConfigStore as BaseConfigStore,
   ConfigSourceTarget as BaseConfigSourceTarget,
-  StorageAdapter,
+  StorageAdapterFactory,
 } from '../types'
 import { persist as base } from '../core'
 import { nil } from '../nil'
@@ -62,7 +62,9 @@ function supports() {
 /**
  * Creates `sessionStorage` adapter
  */
-export function session(config?: SessionStorageConfig): StorageAdapter {
+export const session: StorageAdapterFactory<
+  SessionStorageConfig | undefined | void
+> = (config) => {
   return supports()
     ? storage({
         storage: () => sessionStorage,
@@ -71,9 +73,8 @@ export function session(config?: SessionStorageConfig): StorageAdapter {
     : nil({ keyArea: 'session' })
 }
 
-export namespace session {
-  export const factory = true
-}
+// mark as factory
+session.factory = true
 
 /**
  * Creates custom partially applied `persist`

@@ -1,4 +1,4 @@
-import type { StorageAdapter } from '../types'
+import type { StorageAdapter, StorageAdapterFactory } from '../types'
 
 export interface AsyncStorage {
   getItem: (key: string) => Promise<string | null>
@@ -14,11 +14,11 @@ export interface AsyncStorageConfig {
 /**
  * Creates generic `AsyncStorage` adapter
  */
-export function asyncStorage({
+export const asyncStorage: StorageAdapterFactory<AsyncStorageConfig> = ({
   storage,
   serialize = JSON.stringify,
   deserialize = JSON.parse,
-}: AsyncStorageConfig): StorageAdapter {
+}) => {
   const adapter: StorageAdapter = <State>(key: string) => ({
     async get() {
       const item = await storage().getItem(key)
@@ -39,6 +39,5 @@ export function asyncStorage({
   return adapter
 }
 
-export namespace asyncStorage {
-  export const factory = true
-}
+// mark as factory
+asyncStorage.factory = true

@@ -3,7 +3,7 @@ import type {
   ConfigPersist as BaseConfigPersist,
   ConfigStore as BaseConfigStore,
   ConfigSourceTarget as BaseConfigSourceTarget,
-  StorageAdapter,
+  StorageAdapterFactory,
 } from '../types'
 import { persist as base } from '../core'
 import { nil } from '../nil'
@@ -62,7 +62,9 @@ function supports() {
 /**
  * Creates `localStorage` adapter
  */
-export function local(config?: LocalStorageConfig): StorageAdapter {
+export const local: StorageAdapterFactory<
+  LocalStorageConfig | undefined | void
+> = (config) => {
   return supports()
     ? storage({
         storage: () => localStorage,
@@ -72,9 +74,8 @@ export function local(config?: LocalStorageConfig): StorageAdapter {
     : nil({ keyArea: 'local' })
 }
 
-export namespace local {
-  export const factory = true
-}
+// mark as factory
+local.factory = true
 
 /**
  * Creates custom partially applied `persist`

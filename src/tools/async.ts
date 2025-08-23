@@ -11,12 +11,11 @@ export function async<A extends StorageAdapter | StorageAdapterFactory<any>>(
   : StorageAdapter
 
 export function async<T>(
-  adapterOrFactory: StorageAdapter | StorageAdapterFactory<T>
+  adapterOrFactory: StorageAdapter | StorageAdapterFactory<T | undefined | void>
 ): StorageAdapter | StorageAdapterFactory<T> {
   const isFactory = 'factory' in adapterOrFactory
 
-  create.factory = true as const
-  function create(config?: T) {
+  const create: StorageAdapterFactory<T | undefined | void> = (config) => {
     const adapter = isFactory ? adapterOrFactory(config) : adapterOrFactory
 
     const asyncAdapter: StorageAdapter = <State>(
@@ -34,6 +33,9 @@ export function async<T>(
     asyncAdapter.noop = adapter.noop
     return asyncAdapter
   }
+
+  // mark as factory
+  create.factory = true
 
   return isFactory ? create : create()
 }

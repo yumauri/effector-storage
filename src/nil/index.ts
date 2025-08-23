@@ -1,4 +1,4 @@
-import type { StorageAdapter } from '../types'
+import type { StorageAdapter, StorageAdapterFactory } from '../types'
 
 export interface NilConfig {
   keyArea?: any
@@ -7,7 +7,9 @@ export interface NilConfig {
 /**
  * Nil/Void adapter
  */
-export function nil({ keyArea = '' }: NilConfig = {}): StorageAdapter {
+export const nil: StorageAdapterFactory<NilConfig | undefined | void> = ({
+  keyArea = '',
+} = {}) => {
   const adapter: StorageAdapter = () =>
     ({
       get() {},
@@ -19,6 +21,5 @@ export function nil({ keyArea = '' }: NilConfig = {}): StorageAdapter {
   return adapter
 }
 
-export namespace nil {
-  export const factory = true
-}
+// mark as factory
+nil.factory = true

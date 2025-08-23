@@ -3,7 +3,7 @@ import type {
   ConfigPersist as BaseConfigPersist,
   ConfigStore as BaseConfigStore,
   ConfigSourceTarget as BaseConfigSourceTarget,
-  StorageAdapter,
+  StorageAdapterFactory,
 } from '../types'
 import type { ChangeMethod, StateBehavior, QueryConfig } from './adapter'
 import { persist as base } from '../core'
@@ -57,7 +57,9 @@ function supports() {
 /**
  * Creates query string adapter
  */
-export function query(config?: QueryConfig): StorageAdapter {
+export const query: StorageAdapterFactory<QueryConfig | undefined | void> = (
+  config
+) => {
   return supports()
     ? adapter({
         ...config,
@@ -65,9 +67,8 @@ export function query(config?: QueryConfig): StorageAdapter {
     : nil({ keyArea: 'query' })
 }
 
-export namespace query {
-  export const factory = true
-}
+// mark as factory
+query.factory = true
 
 /**
  * Creates custom partially applied `persist`

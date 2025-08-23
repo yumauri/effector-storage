@@ -1,4 +1,4 @@
-import type { StorageAdapter } from '../types'
+import type { StorageAdapter, StorageAdapterFactory } from '../types'
 
 export interface LogConfig {
   keyArea?: any
@@ -9,10 +9,10 @@ export interface LogConfig {
  * Log adapter
  * Does nothing, like `nil` adapter, but print messages
  */
-export function log({
+export const log: StorageAdapterFactory<LogConfig | undefined | void> = ({
   keyArea = '',
   logger = console.log,
-}: LogConfig = {}): StorageAdapter {
+} = {}) => {
   const adapter: StorageAdapter = (key: string) =>
     ({
       set(value: any) {
@@ -28,6 +28,5 @@ export function log({
   return adapter
 }
 
-export namespace log {
-  export const factory = true
-}
+// mark as factory
+log.factory = true

@@ -1,4 +1,4 @@
-import type { StorageAdapter } from '../types'
+import type { StorageAdapter, StorageAdapterFactory } from '../types'
 
 export interface StorageConfig {
   storage: () => Storage
@@ -12,14 +12,14 @@ export interface StorageConfig {
 /**
  * Creates generic `Storage` adapter
  */
-export function storage({
+export const storage: StorageAdapterFactory<StorageConfig> = ({
   storage,
   sync = false,
   serialize = JSON.stringify,
   deserialize = JSON.parse,
   timeout,
   def,
-}: StorageConfig): StorageAdapter {
+}) => {
   const adapter: StorageAdapter = <State>(
     key: string,
     update: (raw?: any) => void
@@ -112,6 +112,5 @@ export function storage({
   return adapter
 }
 
-export namespace storage {
-  export const factory = true
-}
+// mark as factory
+storage.factory = true
