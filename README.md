@@ -156,6 +156,9 @@ In order to synchronize _something_, you need to specify effector units. Dependi
 
 ### Options
 
+> [!NOTE]
+> These are common options, valid for any adapter. However, individual storage adapters may define and use their own specific options. Please reference the documentation for your exact adapter for more information.
+
 - `key`? ([_string_]): Key for local/session storage, to store value in. If omitted — `store` name is used. **Note!** If `key` is not specified, `store` _must_ have a `name`! You can use `'effector/babel-plugin'` to have those names automatically.
 - `keyPrefix`? ([_string_]): Prefix, used in adapter, to be concatenated to `key`. By default = `''`.
 - `clock`? ([_Event_] | [_Effect_] | [_Store_]): Unit, if passed – then value from `store`/`source` will be stored in the storage only upon its trigger.
