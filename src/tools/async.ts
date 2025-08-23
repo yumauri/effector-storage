@@ -1,22 +1,23 @@
 import type { StorageAdapter, StorageAdapterFactory } from '../types'
 
-/**
- * Makes synchronous storage adapter asynchronous
- */
-
-export function async<A extends StorageAdapter | StorageAdapterFactory<any>>(
+type Async = <A extends StorageAdapter | StorageAdapterFactory<any>>(
   adapter: A
-): A extends StorageAdapterFactory<infer T>
+) => A extends StorageAdapterFactory<infer T>
   ? StorageAdapterFactory<T>
   : StorageAdapter
 
-export function async<T>(
-  adapterOrFactory: StorageAdapter | StorageAdapterFactory<T | undefined | void>
-): StorageAdapter | StorageAdapterFactory<T> {
+/**
+ * Makes synchronous storage adapter asynchronous
+ */
+export const async: Async = <T>(
+  adapterOrFactory: StorageAdapter | StorageAdapterFactory<T>
+): any => {
   const isFactory = 'factory' in adapterOrFactory
 
-  const create: StorageAdapterFactory<T | undefined | void> = (config) => {
-    const adapter = isFactory ? adapterOrFactory(config) : adapterOrFactory
+  const create: StorageAdapterFactory<T | void> = (config) => {
+    const adapter: StorageAdapter = isFactory
+      ? adapterOrFactory(config as T)
+      : adapterOrFactory
 
     const asyncAdapter: StorageAdapter = <State>(
       key: string,

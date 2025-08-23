@@ -12,9 +12,9 @@ const channels = new Map<string, BroadcastChannel>()
 /**
  * BroadcastChannel adapter factory
  */
-export function adapter({
+export const adapter = ({
   channel = 'effector-storage',
-}: BroadcastConfig): StorageAdapter {
+}: BroadcastConfig): StorageAdapter => {
   let created: BroadcastChannel | undefined
   const bus = channels.get(channel) ?? (created = new BroadcastChannel(channel))
   if (created) channels.set(channel, created)

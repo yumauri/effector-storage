@@ -9,10 +9,10 @@ const areas = new Map<any, Map<string, StoreWritable<any>>>()
 /**
  * Get store, responsible for the key in key area / namespace
  */
-export function getAreaStorage<State>(
+export const getAreaStorage = <State>(
   keyArea: any,
   key: string
-): StoreWritable<State> {
+): StoreWritable<State> => {
   let area = areas.get(keyArea)
   if (area === undefined) {
     area = new Map()

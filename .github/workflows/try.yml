@@ -93,6 +93,6 @@ jobs:
           find tests -type f -exec sed -i "s|'../src|'effector-storage|g" {} +
 
       - name: 🧪 Test
-        run: pnpm test-try
+        run: pnpm run test-try
         env:
           INPUT_EFFECTOR: ${{ inputs.effector }}

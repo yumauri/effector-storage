@@ -2,6 +2,8 @@ import type { StorageAdapter } from '../types'
 import type { CacheAdapter } from '@farfetched/core'
 import { attach } from 'effector'
 
+type Farcached = (adapter: CacheAdapter, keyArea?: any) => StorageAdapter
+
 /**
  * Wraps @farfetched/core cache adapter to be used as `persist` adapter :)
  * @see https://farfetched.pages.dev/api/operators/cache.html
@@ -26,11 +28,7 @@ import { attach } from 'effector'
  * cache adapters with `fork` using `cache.__.$instance` internal store.
  * @see https://farfetched.pages.dev/recipes/server_cache.html#inject-adapter
  */
-
-export function farcached(
-  adapter: CacheAdapter,
-  keyArea?: any
-): StorageAdapter {
+export const farcached: Farcached = (adapter, keyArea) => {
   const farfetchedAdapter: StorageAdapter = <State>(key: string) => {
     return {
       get: attach({

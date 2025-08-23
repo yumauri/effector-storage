@@ -49,7 +49,7 @@ export interface Persist {
 /**
  * Function, checking if `localStorage` exists
  */
-function supports() {
+const supports = () => {
   try {
     return typeof localStorage !== 'undefined'
   } catch (_error) {
@@ -81,14 +81,14 @@ local.factory = true
  * Creates custom partially applied `persist`
  * with predefined `localStorage` adapter
  */
-export function createPersist(defaults?: ConfigPersist): Persist {
-  return (config) =>
+export const createPersist =
+  (defaults?: ConfigPersist): Persist =>
+  (config) =>
     base({
       adapter: local,
       ...defaults,
       ...config,
     })
-}
 
 /**
  * Default partially applied `persist`

@@ -41,14 +41,14 @@ export { adapter as memory }
  * Creates custom partially applied `persist`
  * with predefined `memory` adapter
  */
-export function createPersist(defaults?: ConfigPersist): Persist {
-  return (config) =>
+export const createPersist =
+  (defaults?: ConfigPersist): Persist =>
+  (config) =>
     base({
       adapter: adapter(),
       ...defaults,
       ...config,
     })
-}
 
 /**
  * Default partially applied `persist`

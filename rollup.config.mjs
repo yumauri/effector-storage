@@ -44,6 +44,9 @@ const src = (name) => ({
     },
   ],
   external,
+  treeshake: {
+    annotations: false,
+  },
   plugins: [
     // resolve typescript files
     nodeResolve({

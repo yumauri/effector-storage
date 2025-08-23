@@ -40,9 +40,7 @@ export interface Persist {
 /**
  * Function, checking if `BroadcastChannel` exists and accessible
  */
-function supports() {
-  return typeof BroadcastChannel !== 'undefined'
-}
+const supports = () => typeof BroadcastChannel !== 'undefined'
 
 /**
  * Creates BroadcastChannel adapter
@@ -64,14 +62,14 @@ broadcast.factory = true
  * Creates custom partially applied `persist`
  * with predefined BroadcastChannel adapter
  */
-export function createPersist(defaults?: ConfigPersist): Persist {
-  return (config) =>
+export const createPersist =
+  (defaults?: ConfigPersist): Persist =>
+  (config) =>
     base({
       adapter: broadcast,
       ...defaults,
       ...config,
     })
-}
 
 /**
  * Default partially applied `persist`

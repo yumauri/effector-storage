@@ -35,14 +35,14 @@ sink.watch((payload) => console.error(payload.error))
 /**
  * Main `persist` function
  */
-export function persist<State, Err = Error>(
+export const persist = <State, Err = Error>(
   config: Partial<
     (ConfigAdapter | ConfigAdapterFactory<any>) &
       ConfigPersist &
       ConfigStore<State, Err> &
       ConfigSourceTarget<State, Err>
   >
-): Subscription {
+): Subscription => {
   const {
     adapter: adapterOrFactory,
     store,

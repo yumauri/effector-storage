@@ -49,7 +49,7 @@ export interface Persist {
 /**
  * Function, checking if `sessionStorage` exists
  */
-function supports() {
+const supports = () => {
   try {
     return typeof sessionStorage !== 'undefined'
   } catch (_error) {
@@ -80,14 +80,14 @@ session.factory = true
  * Creates custom partially applied `persist`
  * with predefined `sessionStorage` adapter
  */
-export function createPersist(defaults?: ConfigPersist): Persist {
-  return (config) =>
+export const createPersist =
+  (defaults?: ConfigPersist): Persist =>
+  (config) =>
     base({
       adapter: session,
       ...defaults,
       ...config,
     })
-}
 
 /**
  * Default partially applied `persist`

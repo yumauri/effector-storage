@@ -46,7 +46,7 @@ export const locationReplace: ChangeMethod = (params): void =>
 /**
  * Flush buffer to actual location search params
  */
-function flush(method: ChangeMethod, state?: StateBehavior) {
+const flush = (method: ChangeMethod, state?: StateBehavior) => {
   scheduled = undefined
   if (buffer.size) {
     const params = new URLSearchParams(location.search)
@@ -65,14 +65,14 @@ function flush(method: ChangeMethod, state?: StateBehavior) {
 /**
  * Query string adapter factory
  */
-export function adapter({
+export const adapter = ({
   method = pushState,
   state,
   serialize,
   deserialize,
   def = null,
   timeout,
-}: QueryConfig): StorageAdapter {
+}: QueryConfig): StorageAdapter => {
   const adapter: StorageAdapter = <State>(
     key: string,
     update: (raw?: any) => void

@@ -1,9 +1,9 @@
 import type { Contract } from '../types'
 
-export function validate<Data>(
+export const validate = <Data>(
   raw: unknown,
   contract?: Contract<Data>
-): Data | Promise<Data> {
+): Data | Promise<Data> => {
   // no contract -> data is valid
   if (!contract) {
     return raw as Data

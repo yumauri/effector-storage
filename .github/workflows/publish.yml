@@ -36,19 +36,19 @@ jobs:
         run: pnpm install --frozen-lockfile --ignore-scripts
 
       - name: 👮 Lint sources
-        run: pnpm lint
+        run: pnpm run lint
 
       - name: 🧪 Test
-        run: pnpm test
+        run: pnpm run test
 
       - name: 🔧 Build
-        run: pnpm build
+        run: pnpm run build
 
       - name: 👮 Lint package.json
-        run: pnpm publint
+        run: pnpm run publint
 
       - name: 🔬 Check size
-        run: pnpm size
+        run: pnpm run size
 
       - name: 📦 Publish
         run: pnpm publish --access public --provenance --no-git-checks

@@ -49,13 +49,13 @@ export { async, either, farcached } from './tools'
 /**
  * Creates custom `persist`
  */
-export function createPersist(defaults?: ConfigPersist): Persist {
-  return (config: any) =>
+export const createPersist =
+  (defaults?: ConfigPersist): Persist =>
+  (config: any) =>
     basePersist({
       ...defaults,
       ...config,
     })
-}
 
 /**
  * Default `persist`

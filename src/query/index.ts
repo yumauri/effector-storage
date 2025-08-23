@@ -50,9 +50,8 @@ export interface Persist {
 /**
  * Function, checking if `history` and `location` exists and accessible
  */
-function supports() {
-  return typeof history !== 'undefined' && typeof location !== 'undefined'
-}
+const supports = () =>
+  typeof history !== 'undefined' && typeof location !== 'undefined'
 
 /**
  * Creates query string adapter
@@ -74,14 +73,14 @@ query.factory = true
  * Creates custom partially applied `persist`
  * with predefined `query` adapter
  */
-export function createPersist(defaults?: ConfigPersist): Persist {
-  return (config) =>
+export const createPersist =
+  (defaults?: ConfigPersist): Persist =>
+  (config) =>
     base({
       adapter: query,
       ...defaults,
       ...config,
     })
-}
 
 /**
  * Default partially applied `persist`
