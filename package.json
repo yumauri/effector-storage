@@ -46,7 +46,7 @@
     "@babel/core": "^7.28.3",
     "@babel/plugin-transform-block-scoping": "^7.28.0",
     "@babel/preset-typescript": "^7.27.1",
-    "@biomejs/biome": "^2.2.0",
+    "@biomejs/biome": "^2.2.2",
     "@farfetched/core": "^0.13.2",
     "@farfetched/superstruct": "^0.13.2",
     "@playwright/test": "^1.55.0",
