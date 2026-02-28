@@ -1,4 +1,4 @@
-import type { Effect, Subscription } from 'effector'
+import type { Effect, Subscription, Unit } from 'effector'
 import type {
   ConfigAdapter,
   ConfigAdapterFactory,
@@ -246,8 +246,8 @@ export function persist<State, Err = Error>(
 
     if (pickup) {
       // pick up value from storage ONLY on `pickup` update
-      sample({ clock: pickup, fn: () => undefined, target: getFx })
-      ctx.on(pickup, ([ref], payload) => [
+      sample({ clock: pickup as Unit<any>, fn: () => undefined, target: getFx })
+      ctx.on(pickup as Unit<any>, ([ref], payload) => [
         payload === undefined ? ref : payload,
       ])
     } else {
