@@ -1,6 +1,6 @@
 /*
  * This file is a copy of the standard schema
- * https://standardschema.dev/
+ * https://standardschema.dev/schema
  * https://github.com/standard-schema/standard-schema
  */
 
@@ -19,7 +19,8 @@ export declare namespace StandardSchemaV1 {
     readonly vendor: string
     /** Validates unknown input values. */
     readonly validate: (
-      value: unknown
+      value: unknown,
+      options?: StandardSchemaV1.Options | undefined
     ) => Result<Output> | Promise<Result<Output>>
     /** Inferred types associated with the schema. */
     readonly types?: Types<Input, Output> | undefined
@@ -32,8 +33,13 @@ export declare namespace StandardSchemaV1 {
   export interface SuccessResult<Output> {
     /** The typed output value. */
     readonly value: Output
-    /** The non-existent issues. */
+    /** A falsy value for `issues` indicates success. */
     readonly issues?: undefined
+  }
+
+  export interface Options {
+    /** Explicit support for additional vendor-specific parameters, if needed. */
+    readonly libraryOptions?: Record<string, unknown> | undefined
   }
 
   /** The result interface if validation fails. */
