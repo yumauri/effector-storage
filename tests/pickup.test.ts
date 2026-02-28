@@ -40,6 +40,7 @@ test('should pickup new value on event', () => {
   const adapter = storage({ storage: () => mockStorage })
 
   const pickup = createEvent()
+  const unusedPickup = createEvent()
   const $store = createStore(1, { name: '$store' })
   $store.watch(watch)
 
@@ -47,7 +48,7 @@ test('should pickup new value on event', () => {
   assert.strictEqual(watch.mock.callCount(), 1)
   assert.deepEqual(watch.mock.calls[0].arguments, [1])
 
-  persist({ store: $store, adapter, pickup })
+  persist({ store: $store, adapter, pickup: [pickup, unusedPickup] })
   pickup() // <- pick up new value
 
   assert.strictEqual($store.getState(), 42)

@@ -58,7 +58,7 @@ export type FinallyFail<Err> = Fail<Err> & { status: 'fail' }
 export type Finally<State, Err> = FinallyDone<State> | FinallyFail<Err>
 
 export interface ConfigPersist {
-  pickup?: Unit<any>
+  pickup?: Unit<any> | Unit<any>[]
   context?: Unit<any>
   keyPrefix?: string
   contract?: Contract<any>
@@ -77,7 +77,7 @@ interface ConfigCommon<State, Err = Error> {
   done?: Unit<Done<State>>
   fail?: Unit<Fail<Err>>
   finally?: Unit<Finally<State, Err>>
-  pickup?: Unit<any>
+  pickup?: Unit<any> | Unit<any>[]
   context?: Unit<any>
   key?: string
   keyPrefix?: string
