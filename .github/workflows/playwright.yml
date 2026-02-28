@@ -21,13 +21,13 @@ jobs:
       - name: 📦 Install pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 10.15.0
+          version: 10.30.3
           run_install: false
 
       - name: 🐧 Setup node
         uses: actions/setup-node@v4
         with:
-          node-version: 22.18.0
+          node-version: 24.14.0
           registry-url: https://registry.npmjs.org/
           cache: pnpm
 
