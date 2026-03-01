@@ -1,5 +1,5 @@
 import type { StorageAdapter } from '../src/types'
-import { test } from 'node:test'
+import { it } from 'vitest'
 import {
   allSettled,
   createEffect,
@@ -24,7 +24,7 @@ const noopAdapter: StorageAdapter = () =>
 // Tests
 //
 
-test('(no scope) parallel persists should not stuck in dead lock', () => {
+it('(no scope) parallel persists should not stuck in dead lock', () => {
   const fx = createEffect((data: number) => data)
   const api = createEffect(fx)
   const $store = createStore<number>(0).on(fx, (_, value) => value)
@@ -46,7 +46,7 @@ test('(no scope) parallel persists should not stuck in dead lock', () => {
   // no need for extra assert checks
 })
 
-test('(scope) parallel persists should not stuck in dead lock', async () => {
+it('(scope) parallel persists should not stuck in dead lock', async () => {
   const fx = createEffect((data: number) => data)
   const api = createEffect(fx)
   const $store = createStore<number>(0).on(fx, (_, value) => value)

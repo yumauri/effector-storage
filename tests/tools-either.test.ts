@@ -1,6 +1,5 @@
 import type { StorageAdapter } from '../src/types'
-import { test, mock } from 'node:test'
-import * as assert from 'node:assert/strict'
+import { it, vi, expect } from 'vitest'
 import { createStore } from 'effector'
 import { createStorageMock } from './mocks/storage.mock'
 import { persist, local, nil, log, either } from '../src'
@@ -23,37 +22,37 @@ const dumbAdapter: StorageAdapter = <T>() => {
 // Tests
 //
 
-test('should return first adapter if first one is not noop', () => {
+it('should return first adapter if first one is not noop', () => {
   const one = dumbAdapter
   const another = nil()
-  assert.strictEqual(either(one, another), one)
+  expect(either(one, another)).toBe(one)
 })
 
-test('should return second adapter if first one is noop', () => {
+it('should return second adapter if first one is noop', () => {
   const one = nil()
   const another = dumbAdapter
-  assert.strictEqual(either(one, another), another)
+  expect(either(one, another)).toBe(another)
 })
 
-test('should return localStorage adapter if localStorage is supported', () => {
+it('should return localStorage adapter if localStorage is supported', () => {
   try {
     global.localStorage = createStorageMock()
     const one = local()
     const another = dumbAdapter
-    assert.strictEqual(either(one, another), one)
+    expect(either(one, another)).toBe(one)
   } finally {
     global.localStorage = undefined
   }
 })
 
-test('should return second adapter if localStorage is not supported', () => {
+it('should return second adapter if localStorage is not supported', () => {
   const one = local()
   const another = dumbAdapter
-  assert.strictEqual(either(one, another), another)
+  expect(either(one, another)).toBe(another)
 })
 
-test('should work with factories', () => {
-  const logger = mock.fn()
+it('should work with factories', () => {
+  const logger = vi.fn()
 
   const $counter1 = createStore(1, { name: 'counter1' })
 
@@ -63,8 +62,8 @@ test('should work with factories', () => {
     logger,
   })
 
-  assert.strictEqual(logger.mock.callCount(), 1)
-  assert.deepEqual(logger.mock.calls[0].arguments, [
+  expect(logger).toHaveBeenCalledTimes(1)
+  expect(logger.mock.calls[0]).toEqual([
     '[log adapter] get value for key "counter1"',
   ])
 })

@@ -1,12 +1,9 @@
-import { test, beforeEach, afterEach, mock, type Mock } from 'node:test'
-import * as assert from 'node:assert/strict'
+import type { Mock } from 'vitest'
+import type { Events, EventsMock } from './mocks/events.mock'
+import { it, beforeEach, afterEach, vi, expect } from 'vitest'
 import { createStore } from 'effector'
 import { createStorageMock } from './mocks/storage.mock'
-import {
-  type Events,
-  createEventsMock,
-  type EventsMock,
-} from './mocks/events.mock'
+import { createEventsMock } from './mocks/events.mock'
 import { persist } from '../src/local'
 
 //
@@ -22,10 +19,10 @@ beforeEach(() => {
   global.localStorage = createStorageMock()
   events = createEventsMock() as EventsMock
 
-  addListener = mock.fn(events.addEventListener)
+  addListener = vi.fn(events.addEventListener)
   global.addEventListener = addListener
 
-  removeListener = mock.fn(events.removeEventListener)
+  removeListener = vi.fn(events.removeEventListener)
   global.removeEventListener = removeListener
 })
 
@@ -39,7 +36,7 @@ afterEach(() => {
 // Tests
 //
 
-test('should stop persisting on desist', async () => {
+it('should stop persisting on desist', async () => {
   const $counter = createStore(0, { name: 'counter' })
   const desist = persist({ store: $counter })
 
@@ -51,18 +48,18 @@ test('should stop persisting on desist', async () => {
     oldValue: null,
     newValue: '1',
   })
-  assert.strictEqual($counter.getState(), 1)
+  expect($counter.getState()).toBe(1)
 
   // update storage via store change
   ;($counter as any).setState(2)
-  assert.strictEqual(global.localStorage.getItem('counter'), '2')
+  expect(global.localStorage.getItem('counter')).toBe('2')
 
   // stop persisting
   desist()
 
   // should not update storage via store change
   ;($counter as any).setState(3)
-  assert.strictEqual(global.localStorage.getItem('counter'), '2') // <- not updated
+  expect(global.localStorage.getItem('counter')).toBe('2') // <- not updated
 
   // should not update store via `storage` event
   global.localStorage.setItem('counter', '4')
@@ -72,76 +69,76 @@ test('should stop persisting on desist', async () => {
     oldValue: '2',
     newValue: '4',
   })
-  assert.strictEqual($counter.getState(), 3) // <- not updated
+  expect($counter.getState()).toBe(3) // <- not updated
 })
 
-test('should remove `storage` event listener on desist', async () => {
+it('should remove `storage` event listener on desist', async () => {
   const $counter = createStore(0, { name: 'counter' })
   const desist = persist({ store: $counter })
 
-  assert.strictEqual(addListener.mock.callCount(), 1)
-  assert.strictEqual(addListener.mock.calls[0].arguments[0], 'storage')
-  const listener = addListener.mock.calls[0].arguments[1]
+  expect(addListener).toHaveBeenCalledTimes(1)
+  expect(addListener.mock.calls[0][0]).toBe('storage')
+  const listener = addListener.mock.calls[0][1]
 
-  assert.strictEqual(events.listeners.size, 1)
-  assert.strictEqual(events.listeners.get('storage')?.length, 1)
+  expect(events.listeners.size).toBe(1)
+  expect(events.listeners.get('storage')?.length).toBe(1)
 
   // stop persisting
   desist()
 
-  assert.strictEqual(removeListener.mock.callCount(), 1)
-  assert.strictEqual(removeListener.mock.calls[0].arguments[0], 'storage')
-  assert.strictEqual(removeListener.mock.calls[0].arguments[1], listener)
+  expect(removeListener).toHaveBeenCalledTimes(1)
+  expect(removeListener.mock.calls[0][0]).toBe('storage')
+  expect(removeListener.mock.calls[0][1]).toBe(listener)
 
-  assert.strictEqual(events.listeners.size, 1)
-  assert.strictEqual(events.listeners.get('storage')?.length, 0)
+  expect(events.listeners.size).toBe(1)
+  expect(events.listeners.get('storage')?.length).toBe(0)
 })
 
-test('should not remove other store `storage` event listener on desist', async () => {
+it('should not remove other store `storage` event listener on desist', async () => {
   const $counter1 = createStore(0, { name: 'counter' })
   const desist1 = persist({ store: $counter1 })
 
-  assert.strictEqual(addListener.mock.callCount(), 1)
-  assert.strictEqual(addListener.mock.calls[0].arguments[0], 'storage')
-  const listener1 = addListener.mock.calls[0].arguments[1]
+  expect(addListener).toHaveBeenCalledTimes(1)
+  expect(addListener.mock.calls[0][0]).toBe('storage')
+  const listener1 = addListener.mock.calls[0][1]
 
   const $counter2 = createStore(0, { name: 'counter' })
   persist({ store: $counter2 })
 
-  assert.strictEqual(addListener.mock.callCount(), 2)
-  assert.strictEqual(addListener.mock.calls[1].arguments[0], 'storage')
-  const listener2 = addListener.mock.calls[1].arguments[1]
+  expect(addListener).toHaveBeenCalledTimes(2)
+  expect(addListener.mock.calls[1][0]).toBe('storage')
+  const listener2 = addListener.mock.calls[1][1]
 
-  assert.notStrictEqual(listener1, listener2)
+  expect(listener1).not.toBe(listener2)
 
-  assert.strictEqual(events.listeners.size, 1)
-  assert.strictEqual(events.listeners.get('storage')?.length, 2)
-  assert.strictEqual(events.listeners.get('storage')?.[0], listener1)
-  assert.strictEqual(events.listeners.get('storage')?.[1], listener2)
+  expect(events.listeners.size).toBe(1)
+  expect(events.listeners.get('storage')?.length).toBe(2)
+  expect(events.listeners.get('storage')?.[0]).toBe(listener1)
+  expect(events.listeners.get('storage')?.[1]).toBe(listener2)
 
   // stop persisting
   desist1()
 
-  assert.strictEqual(removeListener.mock.callCount(), 1)
-  assert.strictEqual(removeListener.mock.calls[0].arguments[0], 'storage')
-  assert.strictEqual(removeListener.mock.calls[0].arguments[1], listener1)
+  expect(removeListener).toHaveBeenCalledTimes(1)
+  expect(removeListener.mock.calls[0][0]).toBe('storage')
+  expect(removeListener.mock.calls[0][1]).toBe(listener1)
 
-  assert.strictEqual(events.listeners.size, 1)
-  assert.strictEqual(events.listeners.get('storage')?.length, 1)
-  assert.strictEqual(events.listeners.get('storage')?.[0], listener2)
+  expect(events.listeners.size).toBe(1)
+  expect(events.listeners.get('storage')?.length).toBe(1)
+  expect(events.listeners.get('storage')?.[0]).toBe(listener2)
 })
 
-test('should flush unsaved changes on desist', async () => {
+it('should flush unsaved changes on desist', async () => {
   const $counter = createStore(0, { name: 'counter' })
   const desist = persist({ store: $counter, timeout: 100 })
 
   //
   ;($counter as any).setState(1)
-  assert.strictEqual($counter.getState(), 1)
-  assert.strictEqual(global.localStorage.getItem('counter'), null) // <- not changed yet
+  expect($counter.getState()).toBe(1)
+  expect(global.localStorage.getItem('counter')).toBe(null) // <- not changed yet
 
   // stop persisting
   desist()
 
-  assert.strictEqual(global.localStorage.getItem('counter'), '1') // changed immediately
+  expect(global.localStorage.getItem('counter')).toBe('1') // changed immediately
 })

@@ -1,8 +1,8 @@
 import type { StorageAdapter } from '../src'
-import { test, mock } from 'node:test'
-import * as assert from 'node:assert/strict'
+import { it, vi, expect } from 'vitest'
 import { createEvent, createStore } from 'effector'
 import * as s from 'superstruct'
+import * as v from 'valibot'
 import { type } from 'arktype'
 import { superstructContract } from '@farfetched/superstruct'
 import { persist } from '../src/core'
@@ -25,8 +25,8 @@ const dumbAdapter = (initial: any): StorageAdapter => {
 // Tests
 //
 
-test('should allow undefined schema for validation (valid)', () => {
-  const watch = mock.fn()
+it('should allow undefined schema for validation (valid)', () => {
+  const watch = vi.fn()
   const $data = createStore(null)
   const fail = createEvent<any>()
   fail.watch(watch)
@@ -38,13 +38,13 @@ test('should allow undefined schema for validation (valid)', () => {
     fail,
   })
 
-  assert.deepEqual($data.getState(), { any: 'data' })
+  expect($data.getState()).toEqual({ any: 'data' })
 
-  assert.strictEqual(watch.mock.callCount(), 0)
+  expect(watch).toHaveBeenCalledTimes(0)
 })
 
-test('should fail on invalid schema (string)', () => {
-  const watch = mock.fn()
+it('should fail on invalid schema (string)', () => {
+  const watch = vi.fn()
   const $data = createStore(null)
   const fail = createEvent<any>()
   fail.watch(watch)
@@ -57,10 +57,10 @@ test('should fail on invalid schema (string)', () => {
     fail,
   })
 
-  assert.strictEqual($data.getState(), null)
+  expect($data.getState()).toBe(null)
 
-  assert.strictEqual(watch.mock.callCount(), 1)
-  assert.deepEqual(watch.mock.calls[0].arguments, [
+  expect(watch).toHaveBeenCalledTimes(1)
+  expect(watch.mock.calls[0]).toEqual([
     {
       key: 'data',
       keyPrefix: '',
@@ -71,8 +71,8 @@ test('should fail on invalid schema (string)', () => {
   ])
 })
 
-test('should fail on invalid schema (object)', () => {
-  const watch = mock.fn()
+it('should fail on invalid schema (object)', () => {
+  const watch = vi.fn()
   const $data = createStore(null)
   const fail = createEvent<any>()
   fail.watch(watch)
@@ -85,10 +85,10 @@ test('should fail on invalid schema (object)', () => {
     fail,
   })
 
-  assert.strictEqual($data.getState(), null)
+  expect($data.getState()).toBe(null)
 
-  assert.strictEqual(watch.mock.callCount(), 1)
-  assert.deepEqual(watch.mock.calls[0].arguments, [
+  expect(watch).toHaveBeenCalledTimes(1)
+  expect(watch.mock.calls[0]).toEqual([
     {
       key: 'data',
       keyPrefix: '',
@@ -99,8 +99,8 @@ test('should fail on invalid schema (object)', () => {
   ])
 })
 
-test('should validate with function (valid)', () => {
-  const watch = mock.fn()
+it('should validate with function (valid)', () => {
+  const watch = vi.fn()
   const $data = createStore<string | null>(null)
   const fail = createEvent<any>()
   fail.watch(watch)
@@ -113,13 +113,13 @@ test('should validate with function (valid)', () => {
     fail,
   })
 
-  assert.strictEqual($data.getState(), 'any data')
+  expect($data.getState()).toBe('any data')
 
-  assert.strictEqual(watch.mock.callCount(), 0)
+  expect(watch).toHaveBeenCalledTimes(0)
 })
 
-test('should validate with function (invalid)', () => {
-  const watch = mock.fn()
+it('should validate with function (invalid)', () => {
+  const watch = vi.fn()
   const $data = createStore<number | null>(null)
   const fail = createEvent<any>()
   fail.watch(watch)
@@ -132,10 +132,10 @@ test('should validate with function (invalid)', () => {
     fail,
   })
 
-  assert.strictEqual($data.getState(), null)
+  expect($data.getState()).toBe(null)
 
-  assert.strictEqual(watch.mock.callCount(), 1)
-  assert.deepEqual(watch.mock.calls[0].arguments, [
+  expect(watch).toHaveBeenCalledTimes(1)
+  expect(watch.mock.calls[0]).toEqual([
     {
       key: 'data',
       keyPrefix: '',
@@ -146,8 +146,8 @@ test('should validate with function (invalid)', () => {
   ])
 })
 
-test('should validate against contract protocol (simple, valid)', () => {
-  const watch = mock.fn()
+it('should validate against contract protocol (simple, valid)', () => {
+  const watch = vi.fn()
   const $data = createStore<string | null>(null)
   const fail = createEvent<any>()
   fail.watch(watch)
@@ -160,13 +160,13 @@ test('should validate against contract protocol (simple, valid)', () => {
     fail,
   })
 
-  assert.strictEqual($data.getState(), 'any data')
+  expect($data.getState()).toBe('any data')
 
-  assert.strictEqual(watch.mock.callCount(), 0)
+  expect(watch).toHaveBeenCalledTimes(0)
 })
 
-test('should validate against contract protocol (complex, valid)', () => {
-  const watch = mock.fn()
+it('should validate against contract protocol (complex, valid)', () => {
+  const watch = vi.fn()
   const $data = createStore<{ type: 'asteroid'; mass: number } | null>(null)
   const fail = createEvent<any>()
   fail.watch(watch)
@@ -184,13 +184,13 @@ test('should validate against contract protocol (complex, valid)', () => {
     fail,
   })
 
-  assert.deepEqual($data.getState(), { type: 'asteroid', mass: 42 })
+  expect($data.getState()).toEqual({ type: 'asteroid', mass: 42 })
 
-  assert.strictEqual(watch.mock.callCount(), 0)
+  expect(watch).toHaveBeenCalledTimes(0)
 })
 
-test('should validate against contract protocol (invalid)', () => {
-  const watch = mock.fn()
+it('should validate against contract protocol (invalid)', () => {
+  const watch = vi.fn()
   const $data = createStore<{ type: 'asteroid'; mass: number } | null>(null)
   const fail = createEvent<any>()
   fail.watch(watch)
@@ -211,10 +211,10 @@ test('should validate against contract protocol (invalid)', () => {
     fail,
   })
 
-  assert.strictEqual($data.getState(), null)
+  expect($data.getState()).toBe(null)
 
-  assert.strictEqual(watch.mock.callCount(), 1)
-  assert.deepEqual(watch.mock.calls[0].arguments, [
+  expect(watch).toHaveBeenCalledTimes(1)
+  expect(watch.mock.calls[0]).toEqual([
     {
       key: 'data',
       keyPrefix: '',
@@ -227,8 +227,8 @@ test('should validate against contract protocol (invalid)', () => {
   ])
 })
 
-test('should validate against standard schema (simple, valid)', () => {
-  const watch = mock.fn()
+it('should validate against standard schema (simple, valid)', () => {
+  const watch = vi.fn()
   const $data = createStore<string | null>(null)
   const fail = createEvent<any>()
   fail.watch(watch)
@@ -241,13 +241,13 @@ test('should validate against standard schema (simple, valid)', () => {
     fail,
   })
 
-  assert.strictEqual($data.getState(), 'any data')
+  expect($data.getState()).toBe('any data')
 
-  assert.strictEqual(watch.mock.callCount(), 0)
+  expect(watch).toHaveBeenCalledTimes(0)
 })
 
-test('should validate against standard schema (complex, valid)', () => {
-  const watch = mock.fn()
+it('should validate against standard schema (complex, valid)', () => {
+  const watch = vi.fn()
   const $data = createStore<{ type: string; mass: number } | null>(null)
   const fail = createEvent<any>()
   fail.watch(watch)
@@ -265,13 +265,13 @@ test('should validate against standard schema (complex, valid)', () => {
     fail,
   })
 
-  assert.deepEqual($data.getState(), { type: 'asteroid', mass: 42 })
+  expect($data.getState()).toEqual({ type: 'asteroid', mass: 42 })
 
-  assert.strictEqual(watch.mock.callCount(), 0)
+  expect(watch).toHaveBeenCalledTimes(0)
 })
 
-test('should validate against standard schema (invalid)', () => {
-  const watch = mock.fn()
+it('should validate against standard schema (invalid)', () => {
+  const watch = vi.fn()
   const $data = createStore<string | null>(null)
   const fail = createEvent<any>()
   fail.watch(watch)
@@ -286,16 +286,72 @@ test('should validate against standard schema (invalid)', () => {
     fail,
   })
 
-  assert.strictEqual($data.getState(), null)
+  expect($data.getState()).toBe(null)
 
-  assert.strictEqual(watch.mock.callCount(), 1)
+  expect(watch).toHaveBeenCalledTimes(1)
 
   // do not compare full equality, because error is a complex ArkErrors object
   // so we just check if the summary
-  const args = watch.mock.calls[0]?.arguments as any[]
-  assert.deepEqual(args?.[0]?.error?.summary, 'must be a string (was a number)')
+  const args = watch.mock.calls[0]
+  expect(args[0].error.summary).toEqual('must be a string (was a number)')
 })
 
-test.skip('should validate against async schema (valid)', () => {
-  // TODO: after valibot 1.0.0 is released
+it('should validate against async standard schema (valid)', async () => {
+  const watch = vi.fn()
+  const $data = createStore<{ type: string; mass: number } | null>(null)
+  const fail = createEvent<any>()
+  fail.watch(watch)
+
+  const schema = v.objectAsync({
+    type: v.pipeAsync(
+      v.string(),
+      v.checkAsync(async (value) => value === 'asteroid')
+    ),
+    mass: v.number(),
+  })
+
+  persist({
+    adapter: dumbAdapter({ type: 'asteroid', mass: 42 }),
+    store: $data,
+    key: 'data',
+    contract: schema,
+    fail,
+  })
+
+  await new Promise((resolve) => setTimeout(resolve, 0))
+
+  expect($data.getState()).toEqual({ type: 'asteroid', mass: 42 })
+  expect(watch).toHaveBeenCalledTimes(0)
+})
+
+it('should validate against async standard schema (invalid)', async () => {
+  const watch = vi.fn()
+  const $data = createStore<string | null>(null)
+  const fail = createEvent<any>()
+  fail.watch(watch)
+
+  const schema = v.pipeAsync(
+    v.string(),
+    v.checkAsync(async (value) => value === 'asteroid')
+  )
+
+  persist({
+    adapter: dumbAdapter(42),
+    store: $data,
+    key: 'data',
+    contract: schema,
+    fail,
+  })
+
+  await new Promise((resolve) => setTimeout(resolve, 0))
+
+  expect($data.getState()).toBe(null)
+  expect(watch).toHaveBeenCalledTimes(1)
+
+  // do not compare full equality, because error is a complex Valibot object
+  // so we just check if the message
+  const args = watch.mock.calls[0]
+  expect(args[0].error[0].message).toEqual(
+    'Invalid type: Expected string but received 42'
+  )
 })

@@ -1,5 +1,4 @@
-import { test, mock } from 'node:test'
-import * as assert from 'node:assert/strict'
+import { it, vi, expect } from 'vitest'
 import { createStore, createEvent, fork, allSettled, launch } from 'effector'
 import { persist } from '../src/core'
 
@@ -7,8 +6,8 @@ import { persist } from '../src/core'
 // Tests
 //
 
-test('context from pickup should be passed to adapter', async () => {
-  const watch = mock.fn()
+it('context from pickup should be passed to adapter', async () => {
+  const watch = vi.fn()
 
   const pickup = createEvent<number>()
   const $store = createStore(0)
@@ -22,18 +21,18 @@ test('context from pickup should be passed to adapter', async () => {
 
   pickup(42) // <- pick up new value with context `42`
 
-  assert.strictEqual(watch.mock.callCount(), 1)
-  assert.deepEqual(watch.mock.calls[0].arguments, [undefined, 42])
+  expect(watch).toHaveBeenCalledTimes(1)
+  expect(watch.mock.calls[0]).toEqual([undefined, 42])
 
   //
   ;($store as any).setState(54) // <- update store to trigger `set`
 
-  assert.strictEqual(watch.mock.callCount(), 2)
-  assert.deepEqual(watch.mock.calls[1].arguments, [54, 42])
+  expect(watch).toHaveBeenCalledTimes(2)
+  expect(watch.mock.calls[1]).toEqual([54, 42])
 })
 
-test('context from store should be passed to adapter', async () => {
-  const watch = mock.fn()
+it('context from store should be passed to adapter', async () => {
+  const watch = vi.fn()
 
   const $store = createStore(0)
 
@@ -44,18 +43,18 @@ test('context from store should be passed to adapter', async () => {
     context: createStore(42),
   })
 
-  assert.strictEqual(watch.mock.callCount(), 1)
-  assert.deepEqual(watch.mock.calls[0].arguments, [undefined, 42])
+  expect(watch).toHaveBeenCalledTimes(1)
+  expect(watch.mock.calls[0]).toEqual([undefined, 42])
 
   //
   ;($store as any).setState(54) // <- update store to trigger `set`
 
-  assert.strictEqual(watch.mock.callCount(), 2)
-  assert.deepEqual(watch.mock.calls[1].arguments, [54, 42])
+  expect(watch).toHaveBeenCalledTimes(2)
+  expect(watch.mock.calls[1]).toEqual([54, 42])
 })
 
-test('context from context should be passed to adapter', async () => {
-  const watch = mock.fn()
+it('context from context should be passed to adapter', async () => {
+  const watch = vi.fn()
 
   const context = createEvent<string>()
   const $store = createStore(0)
@@ -67,28 +66,28 @@ test('context from context should be passed to adapter', async () => {
     key: 'store',
   })
 
-  assert.strictEqual(watch.mock.callCount(), 1)
-  assert.deepEqual(watch.mock.calls[0].arguments, [undefined, undefined])
+  expect(watch).toHaveBeenCalledTimes(1)
+  expect(watch.mock.calls[0]).toEqual([undefined, undefined])
 
   //
   ;($store as any).setState(72) // <- update store to trigger `set`
 
-  assert.strictEqual(watch.mock.callCount(), 2)
-  assert.deepEqual(watch.mock.calls[1].arguments, [72, undefined])
+  expect(watch).toHaveBeenCalledTimes(2)
+  expect(watch.mock.calls[1]).toEqual([72, undefined])
 
   context('new context')
 
-  assert.strictEqual(watch.mock.callCount(), 2) // setting context does not call any adapter methods
+  expect(watch).toHaveBeenCalledTimes(2) // setting context does not call any adapter methods
 
   //
   ;($store as any).setState(27) // <- update store to trigger `set`
 
-  assert.strictEqual(watch.mock.callCount(), 3)
-  assert.deepEqual(watch.mock.calls[2].arguments, [27, 'new context'])
+  expect(watch).toHaveBeenCalledTimes(3)
+  expect(watch.mock.calls[2]).toEqual([27, 'new context'])
 })
 
-test('pickup should set different contexts in different scopes', async () => {
-  const watch = mock.fn()
+it('pickup should set different contexts in different scopes', async () => {
+  const watch = vi.fn()
 
   const pickup = createEvent<{ name: string }>()
   const $store = createStore('')
@@ -106,15 +105,9 @@ test('pickup should set different contexts in different scopes', async () => {
   await allSettled(pickup, { scope: scopeA, params: { name: 'scopeA' } })
   await allSettled(pickup, { scope: scopeB, params: { name: 'scopeB' } })
 
-  assert.strictEqual(watch.mock.callCount(), 2)
-  assert.deepEqual(watch.mock.calls[0].arguments, [
-    undefined,
-    { name: 'scopeA' },
-  ])
-  assert.deepEqual(watch.mock.calls[1].arguments, [
-    undefined,
-    { name: 'scopeB' },
-  ])
+  expect(watch).toHaveBeenCalledTimes(2)
+  expect(watch.mock.calls[0]).toEqual([undefined, { name: 'scopeA' }])
+  expect(watch.mock.calls[1]).toEqual([undefined, { name: 'scopeB' }])
 
   //
   launch({
@@ -130,13 +123,13 @@ test('pickup should set different contexts in different scopes', async () => {
     scope: scopeB,
   })
 
-  assert.strictEqual(watch.mock.callCount(), 4)
-  assert.deepEqual(watch.mock.calls[2].arguments, ['A', { name: 'scopeA' }])
-  assert.deepEqual(watch.mock.calls[3].arguments, ['B', { name: 'scopeB' }])
+  expect(watch).toHaveBeenCalledTimes(4)
+  expect(watch.mock.calls[2]).toEqual(['A', { name: 'scopeA' }])
+  expect(watch.mock.calls[3]).toEqual(['B', { name: 'scopeB' }])
 })
 
-test('context should change scope for async adapter', async () => {
-  const watch = mock.fn((value) => value)
+it('context should change scope for async adapter', async () => {
+  const watch = vi.fn((value) => value)
 
   const pickup = createEvent<string>()
   const context = createEvent()
@@ -152,28 +145,28 @@ test('context should change scope for async adapter', async () => {
     key: 'store',
   })
 
-  assert.strictEqual(watch.mock.callCount(), 1)
-  assert.deepEqual(watch.mock.calls[0].arguments, [undefined, undefined])
+  expect(watch).toHaveBeenCalledTimes(1)
+  expect(watch.mock.calls[0]).toEqual([undefined, undefined])
 
   const scope = fork()
 
-  assert.strictEqual($store.getState(), '')
-  assert.strictEqual(scope.getState($store), '')
+  expect($store.getState()).toBe('')
+  expect(scope.getState($store)).toBe('')
 
   pickup('out of scope') // <- pickup new value, without scope
 
-  assert.strictEqual(watch.mock.callCount(), 2)
-  assert.deepEqual(watch.mock.calls[1].arguments, ['out of scope', undefined])
-  assert.strictEqual($store.getState(), 'out of scope')
-  assert.strictEqual(scope.getState($store), '')
+  expect(watch).toHaveBeenCalledTimes(2)
+  expect(watch.mock.calls[1]).toEqual(['out of scope', undefined])
+  expect($store.getState()).toBe('out of scope')
+  expect(scope.getState($store)).toBe('')
 
   // set context, which should bind given scope
   await allSettled(context, { scope })
 
   pickup('in scope') // <- pickup new value, within scope
 
-  assert.strictEqual(watch.mock.callCount(), 3)
-  assert.deepEqual(watch.mock.calls[2].arguments, ['in scope', undefined])
-  assert.strictEqual($store.getState(), 'out of scope')
-  assert.strictEqual(scope.getState($store), 'in scope')
+  expect(watch).toHaveBeenCalledTimes(3)
+  expect(watch.mock.calls[2]).toEqual(['in scope', undefined])
+  expect($store.getState()).toBe('out of scope')
+  expect(scope.getState($store)).toBe('in scope')
 })

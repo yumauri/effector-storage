@@ -1,5 +1,4 @@
-import { test, before, after } from 'node:test'
-import * as assert from 'node:assert/strict'
+import { it, beforeAll, afterAll, expect } from 'vitest'
 import { createStore } from 'effector'
 import { createStorageMock } from './mocks/storage.mock'
 import { type Events, createEventsMock } from './mocks/events.mock'
@@ -12,13 +11,13 @@ import { createPersist } from '../src/local'
 declare let global: any
 let events: Events
 
-before(() => {
+beforeAll(() => {
   global.localStorage = createStorageMock()
   events = createEventsMock()
   global.addEventListener = events.addEventListener
 })
 
-after(() => {
+afterAll(() => {
   global.localStorage = undefined
   global.addEventListener = undefined
 })
@@ -27,19 +26,19 @@ after(() => {
 // Tests
 //
 
-test('key should be prefixed with keyPrefix', async () => {
+it('key should be prefixed with keyPrefix', async () => {
   const persist = createPersist({
     keyPrefix: 'app/',
   })
 
   const $counter = createStore(0, { name: 'counter' })
   persist({ store: $counter })
-  assert.strictEqual($counter.getState(), 0)
+  expect($counter.getState()).toBe(0)
 
   //
   ;($counter as any).setState(1)
-  assert.strictEqual(global.localStorage.getItem('counter'), null)
-  assert.strictEqual(global.localStorage.getItem('app/counter'), '1')
+  expect(global.localStorage.getItem('counter')).toBe(null)
+  expect(global.localStorage.getItem('app/counter')).toBe('1')
 
   global.localStorage.setItem('app/counter', '2')
   await events.dispatchEvent('storage', {
@@ -49,5 +48,5 @@ test('key should be prefixed with keyPrefix', async () => {
     newValue: '2',
   })
 
-  assert.strictEqual($counter.getState(), 2)
+  expect($counter.getState()).toBe(2)
 })

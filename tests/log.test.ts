@@ -1,5 +1,4 @@
-import { test, mock } from 'node:test'
-import * as assert from 'node:assert/strict'
+import { it, vi, expect } from 'vitest'
 import { createStore } from 'effector'
 import { persist, log } from '../src'
 import { log as logNested } from '../src/log'
@@ -8,41 +7,41 @@ import { log as logNested } from '../src/log'
 // Tests
 //
 
-test('should be exported from package root', () => {
-  assert.strictEqual(log, logNested)
+it('should be exported from package root', () => {
+  expect(log).toBe(logNested)
 })
 
-test('store should ignore initial `undefined` from storage value', () => {
-  const logger = mock.fn()
+it('store should ignore initial `undefined` from storage value', () => {
+  const logger = vi.fn()
 
   const $counter0 = createStore(42, { name: 'log::counter0' })
 
   persist({ store: $counter0, adapter: log({ logger }) })
 
-  assert.strictEqual($counter0.getState(), 42)
-  assert.strictEqual(logger.mock.callCount(), 1)
-  assert.deepEqual(logger.mock.calls[0].arguments, [
+  expect($counter0.getState()).toBe(42)
+  expect(logger).toHaveBeenCalledTimes(1)
+  expect(logger.mock.calls[0]).toEqual([
     '[log adapter] get value for key "log::counter0"',
   ])
 })
 
-test('store new value should be ignored by storage', () => {
-  const logger = mock.fn()
+it('store new value should be ignored by storage', () => {
+  const logger = vi.fn()
 
   const $counter1 = createStore(0, { name: 'log::counter1' })
 
   persist({ store: $counter1, adapter: log({ logger }) })
   ;($counter1 as any).setState(42)
 
-  assert.strictEqual($counter1.getState(), 42)
-  assert.strictEqual(logger.mock.callCount(), 2)
-  assert.deepEqual(logger.mock.calls[1].arguments, [
+  expect($counter1.getState()).toBe(42)
+  expect(logger).toHaveBeenCalledTimes(2)
+  expect(logger.mock.calls[1]).toEqual([
     '[log adapter] set value "42" with key "log::counter1"',
   ])
 })
 
-test('stores in with different key area should not be synced', () => {
-  const logger = mock.fn()
+it('stores in with different key area should not be synced', () => {
+  const logger = vi.fn()
 
   const $store1 = createStore(0)
   const $store2 = createStore(0)
@@ -66,12 +65,12 @@ test('stores in with different key area should not be synced', () => {
   // update one of two stores
   ;($store1 as any).setState(42)
 
-  assert.strictEqual($store1.getState(), 42)
-  assert.strictEqual($store2.getState(), 0) // <- should not change
+  expect($store1.getState()).toBe(42)
+  expect($store2.getState()).toBe(0) // <- should not change
 })
 
-test('should use console.log by default', () => {
-  const logger = mock.fn()
+it('should use console.log by default', () => {
+  const logger = vi.fn()
 
   const $counter3 = createStore(42, { name: 'log::counter3' })
 
@@ -83,8 +82,8 @@ test('should use console.log by default', () => {
     console.log = consoleLog // restore default console.log
   }
 
-  assert.strictEqual(logger.mock.callCount(), 1)
-  assert.deepEqual(logger.mock.calls[0].arguments, [
+  expect(logger).toHaveBeenCalledTimes(1)
+  expect(logger.mock.calls[0]).toEqual([
     '[log adapter] get value for key "log::counter3"',
   ])
 })

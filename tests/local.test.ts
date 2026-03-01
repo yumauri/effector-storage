@@ -1,5 +1,4 @@
-import { test, before, after, mock } from 'node:test'
-import * as assert from 'node:assert/strict'
+import { it, beforeAll, afterAll, vi, expect } from 'vitest'
 import { createEvent, createStore } from 'effector'
 import { createStorageMock } from './mocks/storage.mock'
 import { type Events, createEventsMock } from './mocks/events.mock'
@@ -13,13 +12,13 @@ import { local as localIndex } from '../src'
 declare let global: any
 let events: Events
 
-before(() => {
+beforeAll(() => {
   global.localStorage = createStorageMock()
   events = createEventsMock()
   global.addEventListener = events.addEventListener
 })
 
-after(() => {
+afterAll(() => {
   global.localStorage = undefined
   global.addEventListener = undefined
 })
@@ -28,37 +27,37 @@ after(() => {
 // Tests
 //
 
-test('should export adapter and `persist` function', () => {
-  assert.ok(typeof local === 'function')
-  assert.ok(typeof persist === 'function')
+it('should export adapter and `persist` function', () => {
+  expect(typeof local === 'function').toBeTruthy()
+  expect(typeof persist === 'function').toBeTruthy()
 })
 
-test('should be exported from package root', () => {
-  assert.strictEqual(local, localIndex)
+it('should be exported from package root', () => {
+  expect(local).toBe(localIndex)
 })
 
-test('should be ok on good parameters', () => {
+it('should be ok on good parameters', () => {
   const $store = createStore(0, { name: 'local::store' })
-  assert.doesNotThrow(() => persist({ store: $store }))
+  expect(() => persist({ store: $store })).not.toThrow()
 })
 
-test('persisted store should reset value on init to default', async () => {
+it('persisted store should reset value on init to default', async () => {
   const $counter00 = createStore(0, { name: 'counter00' })
   persist({ store: $counter00, def: 42 })
-  assert.strictEqual($counter00.getState(), 42)
+  expect($counter00.getState()).toBe(42)
 })
 
-test('persisted store should get storage value on init', async () => {
+it('persisted store should get storage value on init', async () => {
   const $counter01 = createStore(0, { name: 'counter01' })
   global.localStorage.setItem('counter01', '1')
   persist({ store: $counter01, def: 42 })
-  assert.strictEqual($counter01.getState(), 1)
+  expect($counter01.getState()).toBe(1)
 })
 
-test('persisted with localStorage store should be synced', async () => {
+it('persisted with localStorage store should be synced', async () => {
   const $counter = createStore(0, { name: 'counter' })
   persist({ store: $counter })
-  assert.strictEqual($counter.getState(), 0)
+  expect($counter.getState()).toBe(0)
 
   global.localStorage.setItem('counter', '1')
   await events.dispatchEvent('storage', {
@@ -68,15 +67,15 @@ test('persisted with localStorage store should be synced', async () => {
     newValue: '1',
   })
 
-  assert.strictEqual($counter.getState(), 1)
+  expect($counter.getState()).toBe(1)
 })
 
-test('persisted store should be restored on key removal', async () => {
+it('persisted store should be restored on key removal', async () => {
   const $counter1 = createStore(0, { name: 'counter1' })
   persist({ store: $counter1 })
-  assert.strictEqual($counter1.getState(), 0)
+  expect($counter1.getState()).toBe(0)
   ;($counter1 as any).setState(1)
-  assert.strictEqual(global.localStorage.getItem('counter1'), '1')
+  expect(global.localStorage.getItem('counter1')).toBe('1')
 
   global.localStorage.removeItem('counter1')
   await events.dispatchEvent('storage', {
@@ -86,15 +85,15 @@ test('persisted store should be restored on key removal', async () => {
     newValue: null,
   })
 
-  assert.strictEqual($counter1.getState(), 0) // <- store.defaultState
+  expect($counter1.getState()).toBe(0) // <- store.defaultState
 })
 
-test('persisted store should be restored on storage.clear()', async () => {
+it('persisted store should be restored on storage.clear()', async () => {
   const $counter2 = createStore(0, { name: 'counter2' })
   persist({ store: $counter2 })
-  assert.strictEqual($counter2.getState(), 0)
+  expect($counter2.getState()).toBe(0)
   ;($counter2 as any).setState(2)
-  assert.strictEqual(global.localStorage.getItem('counter2'), '2')
+  expect(global.localStorage.getItem('counter2')).toBe('2')
 
   global.localStorage.clear()
   await events.dispatchEvent('storage', {
@@ -102,15 +101,15 @@ test('persisted store should be restored on storage.clear()', async () => {
     key: null,
   })
 
-  assert.strictEqual($counter2.getState(), 0) // <- store.defaultState
+  expect($counter2.getState()).toBe(0) // <- store.defaultState
 })
 
-test('persisted store should be restored to default value on storage.clear()', async () => {
+it('persisted store should be restored to default value on storage.clear()', async () => {
   const $counter3 = createStore(0, { name: 'counter3' })
   persist({ store: $counter3, def: 42 })
-  assert.strictEqual($counter3.getState(), 42)
+  expect($counter3.getState()).toBe(42)
   ;($counter3 as any).setState(2)
-  assert.strictEqual(global.localStorage.getItem('counter3'), '2')
+  expect(global.localStorage.getItem('counter3')).toBe('2')
 
   global.localStorage.clear()
   await events.dispatchEvent('storage', {
@@ -118,11 +117,11 @@ test('persisted store should be restored to default value on storage.clear()', a
     key: null,
   })
 
-  assert.strictEqual($counter3.getState(), 42) // <- adapter's default value
+  expect($counter3.getState()).toBe(42) // <- adapter's default value
 })
 
-test('target event should be called with default value on storage.clear()', async () => {
-  const watch = mock.fn()
+it('target event should be called with default value on storage.clear()', async () => {
+  const watch = vi.fn()
 
   const source = createEvent<number | null>()
   const target = createEvent<number | null>()
@@ -130,12 +129,12 @@ test('target event should be called with default value on storage.clear()', asyn
 
   persist({ source, target, key: 'counter4', def: 42 })
 
-  assert.strictEqual(watch.mock.callCount(), 1)
-  assert.deepEqual(watch.mock.calls[0].arguments, [42])
+  expect(watch).toHaveBeenCalledTimes(1)
+  expect(watch.mock.calls[0]).toEqual([42])
 
   source(21)
-  assert.strictEqual(watch.mock.callCount(), 2)
-  assert.deepEqual(watch.mock.calls[1].arguments, [21])
+  expect(watch).toHaveBeenCalledTimes(2)
+  expect(watch.mock.calls[1]).toEqual([21])
 
   global.localStorage.clear()
   await events.dispatchEvent('storage', {
@@ -143,12 +142,12 @@ test('target event should be called with default value on storage.clear()', asyn
     key: null,
   })
 
-  assert.strictEqual(watch.mock.callCount(), 3)
-  assert.deepEqual(watch.mock.calls[2].arguments, [42])
+  expect(watch).toHaveBeenCalledTimes(3)
+  expect(watch.mock.calls[2]).toEqual([42])
 })
 
-test('target event should be called with null on storage.clear()', async () => {
-  const watch = mock.fn()
+it('target event should be called with null on storage.clear()', async () => {
+  const watch = vi.fn()
 
   const source = createEvent<number | null>()
   const target = createEvent<number | null>()
@@ -156,11 +155,11 @@ test('target event should be called with null on storage.clear()', async () => {
 
   persist({ source, target, key: 'counter5' })
 
-  assert.strictEqual(watch.mock.callCount(), 0) // target is not triggered
+  expect(watch).toHaveBeenCalledTimes(0) // target is not triggered
 
   source(21)
-  assert.strictEqual(watch.mock.callCount(), 1)
-  assert.deepEqual(watch.mock.calls[0].arguments, [21])
+  expect(watch).toHaveBeenCalledTimes(1)
+  expect(watch.mock.calls[0]).toEqual([21])
 
   global.localStorage.clear()
   await events.dispatchEvent('storage', {
@@ -168,6 +167,6 @@ test('target event should be called with null on storage.clear()', async () => {
     key: null,
   })
 
-  assert.strictEqual(watch.mock.callCount(), 2)
-  assert.deepEqual(watch.mock.calls[1].arguments, [null])
+  expect(watch).toHaveBeenCalledTimes(2)
+  expect(watch.mock.calls[1]).toEqual([null])
 })

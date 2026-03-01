@@ -1,5 +1,4 @@
-import { test, before, beforeEach, after, mock } from 'node:test'
-import * as assert from 'node:assert/strict'
+import { it, beforeAll, beforeEach, afterAll, vi, expect } from 'vitest'
 import {
   createEvent,
   createEffect,
@@ -26,8 +25,8 @@ const NOW = 1_000_000_000_000 // 2001-09-09T01:46:40.000Z
 declare let global: any
 let events: Events
 
-before(() => {
-  mock.timers.enable()
+beforeAll(() => {
+  vi.useFakeTimers()
   global.localStorage = createStorageMock()
   global.sessionStorage = createStorageMock()
   events = createEventsMock()
@@ -35,21 +34,21 @@ before(() => {
 })
 
 beforeEach(() => {
-  mock.timers.setTime(NOW)
+  vi.setSystemTime(NOW)
 })
 
-after(() => {
+afterAll(() => {
   global.addEventListener = undefined
   global.sessionStorage = undefined
   global.localStorage = undefined
-  mock.timers.reset()
+  vi.useRealTimers()
 })
 
 //
 // Tests
 //
 
-test('store should be initialized from storage value', async () => {
+it('store should be initialized from storage value', async () => {
   const $counter1 = createStore(1, { name: 'counter1' })
   global.localStorage.setItem(
     'counter1',
@@ -63,10 +62,10 @@ test('store should be initialized from storage value', async () => {
 
   for (let i = 0; i < 100; i++) await Promise.resolve() // dunno how to do it nicely ._.
 
-  assert.strictEqual($counter1.getState(), 42)
+  expect($counter1.getState()).toBe(42)
 })
 
-test('store new value should be saved to storage', async () => {
+it('store new value should be saved to storage', async () => {
   const $counter2 = createStore(0, { name: 'counter2' })
   persist({
     store: $counter2,
@@ -78,13 +77,12 @@ test('store new value should be saved to storage', async () => {
 
   for (let i = 0; i < 100; i++) await Promise.resolve() // dunno how to do it nicely ._.
 
-  assert.strictEqual(
-    global.localStorage.getItem('counter2'),
+  expect(global.localStorage.getItem('counter2')).toBe(
     `{"value":22,"timestamp":${NOW}}`
   )
 })
 
-test('should invalidate cache (built-in farfetched feature) right away', async () => {
+it('should invalidate cache (built-in farfetched feature) right away', async () => {
   const $counter3 = createStore(1, { name: 'counter3' })
   global.localStorage.setItem(
     'counter3',
@@ -98,11 +96,11 @@ test('should invalidate cache (built-in farfetched feature) right away', async (
 
   for (let i = 0; i < 100; i++) await Promise.resolve() // dunno how to do it nicely ._.
 
-  assert.strictEqual($counter3.getState(), 1) // should not be restored
-  assert.strictEqual(global.localStorage.getItem('counter3'), null) // should erase
+  expect($counter3.getState()).toBe(1) // should not be restored
+  expect(global.localStorage.getItem('counter3')).toBe(null) // should erase
 })
 
-test('should be possible to inject different cache adapter (no initial value)', async () => {
+it('should be possible to inject different cache adapter (no initial value)', async () => {
   const $counter4 = createStore(1, { name: 'counter4' })
 
   const pickup = createEvent<[number, number]>()
@@ -131,33 +129,31 @@ test('should be possible to inject different cache adapter (no initial value)', 
     allSettled(pickup, { scope: scopeB, params: [3, 2000] }),
   ])
 
-  mock.timers.tick(1000)
+  vi.advanceTimersByTime(1000)
   for (let i = 0; i < 100; i++) await Promise.resolve() // dunno how to do it nicely ._.
 
-  mock.timers.tick(1000)
+  vi.advanceTimersByTime(1000)
   for (let i = 0; i < 100; i++) await Promise.resolve() // dunno how to do it nicely ._.
 
   await waitSettled // wait for both allSettled to finish
 
   // store values in different scopes should be different
-  assert.strictEqual($counter4.getState(), 1)
-  assert.strictEqual(scopeA.getState($counter4), 2)
-  assert.strictEqual(scopeB.getState($counter4), 3)
+  expect($counter4.getState()).toBe(1)
+  expect(scopeA.getState($counter4)).toBe(2)
+  expect(scopeB.getState($counter4)).toBe(3)
 
   // localStorage should contain value from scopeA
-  assert.strictEqual(
-    global.localStorage.getItem('counter4'),
-    '{"value":2,"timestamp":1000000001000}' // timestamp is 1000
+  expect(global.localStorage.getItem('counter4')).toBe(
+    '{"value":2,"timestamp":1000000001000}'
   )
 
   // sessionStorage should contain value from scopeB
-  assert.strictEqual(
-    global.sessionStorage.getItem('counter4'),
-    '{"value":3,"timestamp":1000000002000}' // timestamp is 2000
+  expect(global.sessionStorage.getItem('counter4')).toBe(
+    '{"value":3,"timestamp":1000000002000}'
   )
 })
 
-test('should be possible to inject different cache adapter (with initial value)', async () => {
+it('should be possible to inject different cache adapter (with initial value)', async () => {
   const $counter5 = createStore(1, { name: 'counter5' })
 
   global.localStorage.setItem(
@@ -184,22 +180,22 @@ test('should be possible to inject different cache adapter (with initial value)'
     allSettled(pickup, { scope: scopeA }),
     allSettled(pickup, { scope: scopeB }),
   ])
-  mock.timers.runAll()
+  vi.runAllTimers()
   await waitSettled // wait for both allSettled to finish
 
   // store values in different scopes should be restored to different values
-  assert.strictEqual($counter5.getState(), 1)
-  assert.strictEqual(scopeA.getState($counter5), 2)
-  assert.strictEqual(scopeB.getState($counter5), 3)
+  expect($counter5.getState()).toBe(1)
+  expect(scopeA.getState($counter5)).toBe(2)
+  expect(scopeB.getState($counter5)).toBe(3)
 })
 
 // FIXME: don't know how to fix this behavior without specifying `keyArea`...
-test('should NOT sync stores without defining `keyArea`', async () => {
+it('should NOT sync stores without defining `keyArea`', async () => {
   const $store0 = createStore(1)
   const $store1 = createStore(2)
 
-  assert.strictEqual($store0.getState(), 1)
-  assert.strictEqual($store1.getState(), 2)
+  expect($store0.getState()).toBe(1)
+  expect($store1.getState()).toBe(2)
 
   persist({
     store: $store0,
@@ -217,16 +213,16 @@ test('should NOT sync stores without defining `keyArea`', async () => {
 
   for (let i = 0; i < 100; i++) await Promise.resolve() // dunno how to do it nicely ._.
 
-  assert.strictEqual($store0.getState(), 3)
-  assert.strictEqual($store1.getState(), 2) // <- did not change
+  expect($store0.getState()).toBe(3)
+  expect($store1.getState()).toBe(2) // <- did not change
 })
 
-test('should sync stores with same `keyArea`', async () => {
+it('should sync stores with same `keyArea`', async () => {
   const $store2 = createStore(1)
   const $store3 = createStore(2)
 
-  assert.strictEqual($store2.getState(), 1)
-  assert.strictEqual($store3.getState(), 2)
+  expect($store2.getState()).toBe(1)
+  expect($store3.getState()).toBe(2)
 
   persist({
     store: $store2,
@@ -244,6 +240,6 @@ test('should sync stores with same `keyArea`', async () => {
 
   for (let i = 0; i < 100; i++) await Promise.resolve() // dunno how to do it nicely ._.
 
-  assert.strictEqual($store2.getState(), 3)
-  assert.strictEqual($store3.getState(), 3) // <- also changed
+  expect($store2.getState()).toBe(3)
+  expect($store3.getState()).toBe(3) // <- also changed
 })

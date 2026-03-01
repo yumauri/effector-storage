@@ -1,5 +1,4 @@
-import { test, before, after } from 'node:test'
-import * as assert from 'node:assert/strict'
+import { it, beforeEach, afterEach, expect } from 'vitest'
 import { createStore } from 'effector'
 import { createStorageMock } from './mocks/storage.mock'
 import { type Events, createEventsMock } from './mocks/events.mock'
@@ -17,7 +16,7 @@ import { query } from '../src/query'
 declare let global: any
 let events: Events
 
-before(() => {
+beforeEach(() => {
   global.localStorage = createStorageMock()
   global.sessionStorage = createStorageMock()
   events = createEventsMock()
@@ -28,7 +27,7 @@ before(() => {
   global.location._history(global.history)
 })
 
-after(() => {
+afterEach(() => {
   global.localStorage = undefined
   global.sessionStorage = undefined
   global.addEventListener = undefined
@@ -40,12 +39,12 @@ after(() => {
 // Tests
 //
 
-test('should be possible to use different adapters', async () => {
+it('should be possible to use different adapters', async () => {
   const $counter = createStore(0, { name: 'counter' })
   persist({ adapter: local(), store: $counter })
   persist({ adapter: session(), store: $counter })
   persist({ adapter: query({ def: 0 }), store: $counter })
-  assert.strictEqual($counter.getState(), 0)
+  expect($counter.getState()).toBe(0)
 
   global.localStorage.setItem('counter', '1')
   await events.dispatchEvent('storage', {
@@ -55,12 +54,12 @@ test('should be possible to use different adapters', async () => {
     newValue: '1',
   })
 
-  assert.strictEqual($counter.getState(), 1)
+  expect($counter.getState()).toBe(1)
 
   // should update `sessionStorage`
   // because store got updated from `localStorage`
-  assert.strictEqual(global.sessionStorage.getItem('counter'), '1')
+  expect(global.sessionStorage.getItem('counter')).toBe('1')
 
   // should update query string as well
-  assert.strictEqual(global.location.search, '?counter=1')
+  expect(global.location.search).toBe('?counter=1')
 })

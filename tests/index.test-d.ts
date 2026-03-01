@@ -5,19 +5,16 @@ import type {
   StoreWritable,
   Subscription,
 } from 'effector'
+import { it } from 'vitest'
 import { createStore, createEvent } from 'effector'
-import { expectType } from 'tsd'
 
-// fake `test` function which will not be runned
-// TypeScript will do the job for us, by checking the syntax
-// without actual execution
-function test(_name: string, _test: () => any) {}
+function expectType<T>(_value: T): void {}
 
 //
 // Tests
 //
 
-test('General `persist` should handle wrong arguments', async () => {
+it('General `persist` should handle wrong arguments', async () => {
   const { persist } = await import('../src')
 
   const fakeAdapter: StorageAdapter = 0 as any
@@ -39,7 +36,7 @@ test('General `persist` should handle wrong arguments', async () => {
   persist({ adapter: fakeAdapter, target: store })
 })
 
-test('General `persist` should return Subscription', async () => {
+it('General `persist` should return Subscription', async () => {
   const { persist } = await import('../src')
 
   const fakeAdapter: StorageAdapter = 0 as any
@@ -100,7 +97,7 @@ test('General `persist` should return Subscription', async () => {
   )
 })
 
-test('Local `persist` should return Subscription', async () => {
+it('Local `persist` should return Subscription', async () => {
   const { persist } = await import('../src/local')
 
   const store: StoreWritable<number> = 0 as any
@@ -131,7 +128,7 @@ test('Local `persist` should return Subscription', async () => {
   )
 })
 
-test('Session `persist` should return Subscription', async () => {
+it('Session `persist` should return Subscription', async () => {
   const { persist } = await import('../src/session')
 
   const store: StoreWritable<number> = 0 as any
@@ -160,7 +157,7 @@ test('Session `persist` should return Subscription', async () => {
   )
 })
 
-test("Should be possible to pass adapter's arguments in core persist with adapter factory", async () => {
+it("Should be possible to pass adapter's arguments in core persist with adapter factory", async () => {
   const { persist, local } = await import('../src')
 
   const store: StoreWritable<number> = 0 as any
@@ -179,7 +176,7 @@ test("Should be possible to pass adapter's arguments in core persist with adapte
   )
 })
 
-test('Should not accept any arbitrary argument in core persist with adapter factory', async () => {
+it('Should not accept any arbitrary argument in core persist with adapter factory', async () => {
   const { persist, local } = await import('../src')
 
   const store: Store<number> = 0 as any
@@ -188,7 +185,7 @@ test('Should not accept any arbitrary argument in core persist with adapter fact
   persist({ store, adapter: local, blablabla: 0 })
 })
 
-test('Should accept targetables', async () => {
+it('Should accept targetables', async () => {
   const { persist } = await import('../src/local')
   const store = createStore(0)
   const source1 = createEvent()
@@ -199,7 +196,7 @@ test('Should accept targetables', async () => {
   persist({ source: source2, target })
 })
 
-test('Should not accept non targetables', async () => {
+it('Should not accept non targetables', async () => {
   const { persist } = await import('../src/local')
   const store = createStore(0).map((_) => _)
   const source = createEvent()

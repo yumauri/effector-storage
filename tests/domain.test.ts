@@ -1,6 +1,5 @@
 import type { StorageAdapter } from '../src/types'
-import { test, mock } from 'node:test'
-import * as assert from 'node:assert/strict'
+import { it, vi, expect } from 'vitest'
 import { createStore, createDomain } from 'effector'
 import { persist } from '../src/core'
 
@@ -20,25 +19,25 @@ const dumbAdapter: StorageAdapter = <T>() => {
 // Tests
 //
 
-test('should call watcher twice', () => {
-  const watch = mock.fn()
+it('should call watcher twice', () => {
+  const watch = vi.fn()
 
   const $store = createStore(1)
   $store.watch(watch)
 
   persist({ store: $store, adapter: dumbAdapter, key: 'domain::store0' })
 
-  assert.strictEqual($store.getState(), 0)
-  assert.strictEqual($store.defaultState, 1)
+  expect($store.getState()).toBe(0)
+  expect($store.defaultState).toBe(1)
 
   // call watcher twice
-  assert.strictEqual(watch.mock.callCount(), 2)
-  assert.deepEqual(watch.mock.calls[0].arguments, [1])
-  assert.deepEqual(watch.mock.calls[1].arguments, [0])
+  expect(watch).toHaveBeenCalledTimes(2)
+  expect(watch.mock.calls[0]).toEqual([1])
+  expect(watch.mock.calls[1]).toEqual([0])
 })
 
-test('should call watcher once if persisted in domain hook', () => {
-  const watch = mock.fn()
+it('should call watcher once if persisted in domain hook', () => {
+  const watch = vi.fn()
   const root = createDomain()
 
   root.onCreateStore((store) => {
@@ -48,15 +47,15 @@ test('should call watcher once if persisted in domain hook', () => {
   const $store = root.createStore(1, { name: 'domain::store1' })
   $store.watch(watch)
 
-  assert.strictEqual($store.getState(), 0)
-  assert.strictEqual($store.defaultState, 1)
+  expect($store.getState()).toBe(0)
+  expect($store.defaultState).toBe(1)
 
   // call watcher once
-  assert.strictEqual(watch.mock.callCount(), 1)
-  assert.deepEqual(watch.mock.calls[0].arguments, [0])
+  expect(watch).toHaveBeenCalledTimes(1)
+  expect(watch.mock.calls[0]).toEqual([0])
 })
 
-test('should throw error in case of missing name in named domain', async () => {
+it('should throw error in case of missing name in named domain', async () => {
   const root = createDomain('root')
 
   let rs: any
@@ -79,9 +78,9 @@ test('should throw error in case of missing name in named domain', async () => {
 
   try {
     await defer
-    assert.fail()
+    expect.unreachable()
   } catch (err) {
-    assert.ok(err instanceof Error)
-    assert.match(err.message, /Key or name is not defined/)
+    expect(err).toBeInstanceOf(Error)
+    expect((err as Error).message).toMatch(/Key or name is not defined/)
   }
 })
