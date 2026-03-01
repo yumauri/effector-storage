@@ -1,7 +1,7 @@
 import type { StorageAdapter } from '../src/types'
-import { it, vi, expect } from 'vitest'
 import { createEvent, createStore } from 'effector'
-import { persist, createPersist } from '../src'
+import { expect, it, vi } from 'vitest'
+import { createPersist, persist } from '../src'
 
 //
 // Dumb fake adapter

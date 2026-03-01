@@ -2,16 +2,16 @@ import type { ConfigPersist, Persist } from './types'
 import { persist as basePersist } from './core'
 
 export type {
+  Adapter,
   ConfigPersist,
   ConfigSourceTarget,
   ConfigStore,
   Contract,
+  DisposableAdapter,
   Done,
   Fail,
   Finally,
   Persist,
-  Adapter,
-  DisposableAdapter,
   StorageAdapter,
   StorageAdapterFactory,
 } from './types'
@@ -29,7 +29,6 @@ export type { NilConfig } from './nil'
 export type { QueryConfig } from './query'
 export type { SessionStorageConfig } from './session'
 export type { StorageConfig } from './storage'
-
 export { asyncStorage } from './async-storage'
 export { broadcast } from './broadcast'
 export { local } from './local'

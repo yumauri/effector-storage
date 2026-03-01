@@ -1,26 +1,26 @@
 import type { Subscription } from 'effector'
 import type {
   ConfigPersist as BaseConfigPersist,
-  ConfigStore as BaseConfigStore,
   ConfigSourceTarget as BaseConfigSourceTarget,
+  ConfigStore as BaseConfigStore,
   StorageAdapterFactory,
 } from '../types'
-import type { ChangeMethod, StateBehavior, QueryConfig } from './adapter'
+import type { ChangeMethod, QueryConfig, StateBehavior } from './adapter'
 import { persist as base } from '../core'
 import { nil } from '../nil'
 import { adapter } from './adapter'
 
 export type {
+  Adapter,
   Contract,
+  DisposableAdapter,
   Done,
   Fail,
   Finally,
-  Adapter,
-  DisposableAdapter,
   StorageAdapter,
   StorageAdapterFactory,
 } from '../types'
-export type { ChangeMethod, StateBehavior, QueryConfig } from './adapter'
+export type { ChangeMethod, QueryConfig, StateBehavior } from './adapter'
 export {
   locationAssign,
   locationReplace,

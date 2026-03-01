@@ -1,20 +1,21 @@
-import { it, beforeAll, beforeEach, afterAll, vi, expect } from 'vitest'
+import type { Events } from './mocks/events.mock'
 import {
-  createEvent,
+  inMemoryCache,
+  localStorageCache,
+  sessionStorageCache,
+} from '@farfetched/core'
+import {
+  allSettled,
   createEffect,
+  createEvent,
   createStore,
   fork,
   sample,
-  allSettled,
 } from 'effector'
-import {
-  localStorageCache,
-  sessionStorageCache,
-  inMemoryCache,
-} from '@farfetched/core'
+import { afterAll, beforeAll, beforeEach, expect, it, vi } from 'vitest'
+import { farcached, persist } from '../src'
+import { createEventsMock } from './mocks/events.mock'
 import { createStorageMock } from './mocks/storage.mock'
-import { type Events, createEventsMock } from './mocks/events.mock'
-import { persist, farcached } from '../src'
 
 //
 // Mock `localStorage`, `sessionStorage`, events and system clock

@@ -1,25 +1,26 @@
+import type { Events } from './mocks/events.mock'
+import { createEvent, createStore } from 'effector'
 import {
-  it,
-  beforeAll,
-  beforeEach,
   afterAll,
   afterEach,
-  vi,
+  beforeAll,
+  beforeEach,
   expect,
+  it,
+  vi,
 } from 'vitest'
-import { createStore, createEvent } from 'effector'
-import { createHistoryMock } from './mocks/history.mock'
-import { createLocationMock } from './mocks/location.mock'
-import { type Events, createEventsMock } from './mocks/events.mock'
+import { query as queryIndex } from '../src'
 import {
-  persist,
-  query,
-  pushState,
-  replaceState,
   locationAssign,
   locationReplace,
+  persist,
+  pushState,
+  query,
+  replaceState,
 } from '../src/query'
-import { query as queryIndex } from '../src'
+import { createEventsMock } from './mocks/events.mock'
+import { createHistoryMock } from './mocks/history.mock'
+import { createLocationMock } from './mocks/location.mock'
 
 //
 // Mock history, location and events

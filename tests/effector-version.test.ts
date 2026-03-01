@@ -1,5 +1,5 @@
-import { it, expect } from 'vitest'
 import { version } from 'effector'
+import { expect, it } from 'vitest'
 
 const tryDependency: string | undefined = process.env.INPUT_EFFECTOR
 

@@ -1,6 +1,6 @@
 import type { StorageAdapter } from '../src/types'
-import { it, vi, expect } from 'vitest'
 import { createEvent, createStore } from 'effector'
+import { expect, it, vi } from 'vitest'
 import { persist } from '../src/core'
 
 //

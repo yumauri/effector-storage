@@ -16,9 +16,15 @@
     "lineWidth": 80
   },
   "assist": {
+    "enabled": true,
     "actions": {
       "source": {
-        "organizeImports": "off"
+        "organizeImports": {
+          "level": "on",
+          "options": {
+            "groups": [{ "type": true }, { "type": false }]
+          }
+        }
       }
     }
   },

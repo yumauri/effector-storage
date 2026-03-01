@@ -1,13 +1,14 @@
-import { it, beforeEach, afterEach, expect } from 'vitest'
+import type { Events } from './mocks/events.mock'
 import { createStore } from 'effector'
-import { createStorageMock } from './mocks/storage.mock'
-import { type Events, createEventsMock } from './mocks/events.mock'
-import { createHistoryMock } from './mocks/history.mock'
-import { createLocationMock } from './mocks/location.mock'
+import { afterEach, beforeEach, expect, it } from 'vitest'
 import { persist } from '../src/core'
 import { local } from '../src/local'
-import { session } from '../src/session'
 import { query } from '../src/query'
+import { session } from '../src/session'
+import { createEventsMock } from './mocks/events.mock'
+import { createHistoryMock } from './mocks/history.mock'
+import { createLocationMock } from './mocks/location.mock'
+import { createStorageMock } from './mocks/storage.mock'
 
 //
 // Mock `localStorage` and events

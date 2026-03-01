@@ -1,11 +1,11 @@
-import { it, beforeAll, afterAll, vi, expect } from 'vitest'
 import { BroadcastChannel, Worker } from 'node:worker_threads'
 import { createEffect, createStore, sample } from 'effector'
-import { createEventsMock } from './mocks/events.mock'
-import { broadcast, persist } from '../src/broadcast'
+import { afterAll, beforeAll, expect, it, vi } from 'vitest'
 import { broadcast as broadcastIndex } from '../src'
-import { either } from '../src/tools'
+import { broadcast, persist } from '../src/broadcast'
 import { log } from '../src/log'
+import { either } from '../src/tools'
+import { createEventsMock } from './mocks/events.mock'
 
 //
 // Helper to load scripts in worker

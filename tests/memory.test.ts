@@ -1,7 +1,7 @@
-import { it, vi, expect } from 'vitest'
 import { createStore } from 'effector'
-import { memory, persist } from '../src/memory'
+import { expect, it, vi } from 'vitest'
 import { memory as memoryIndex } from '../src'
+import { memory, persist } from '../src/memory'
 
 //
 // Tests

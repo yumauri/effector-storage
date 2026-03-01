@@ -1,10 +1,11 @@
 import type { StorageAdapter } from '../src'
-import { it, beforeAll, afterAll, vi, expect } from 'vitest'
-import { createStore, createEvent } from 'effector'
-import { createStorageMock } from './mocks/storage.mock'
-import { type Events, createEventsMock } from './mocks/events.mock'
+import type { Events } from './mocks/events.mock'
+import { createEvent, createStore } from 'effector'
+import { afterAll, beforeAll, expect, it, vi } from 'vitest'
 import { persist } from '../src/core'
 import { storage } from '../src/storage'
+import { createEventsMock } from './mocks/events.mock'
+import { createStorageMock } from './mocks/storage.mock'
 
 //
 // Mock abstract Storage and events

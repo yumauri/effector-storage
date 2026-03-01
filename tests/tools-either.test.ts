@@ -1,8 +1,8 @@
 import type { StorageAdapter } from '../src/types'
-import { it, vi, expect } from 'vitest'
 import { createStore } from 'effector'
+import { expect, it, vi } from 'vitest'
+import { either, local, log, nil, persist } from '../src'
 import { createStorageMock } from './mocks/storage.mock'
-import { persist, local, nil, log, either } from '../src'
 
 declare let global: any
 

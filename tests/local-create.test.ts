@@ -1,8 +1,9 @@
-import { it, beforeAll, afterAll, expect } from 'vitest'
+import type { Events } from './mocks/events.mock'
 import { createStore } from 'effector'
-import { createStorageMock } from './mocks/storage.mock'
-import { type Events, createEventsMock } from './mocks/events.mock'
+import { afterAll, beforeAll, expect, it } from 'vitest'
 import { createPersist } from '../src/local'
+import { createEventsMock } from './mocks/events.mock'
+import { createStorageMock } from './mocks/storage.mock'
 
 //
 // Mock `localStorage` and events

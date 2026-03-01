@@ -1,7 +1,7 @@
-import { it, vi, expect } from 'vitest'
 import { createEffect, createStore } from 'effector'
-import { createEventsMock } from './mocks/events.mock'
+import { expect, it, vi } from 'vitest'
 import { persist } from '../src/broadcast'
+import { createEventsMock } from './mocks/events.mock'
 
 //
 // Mock events

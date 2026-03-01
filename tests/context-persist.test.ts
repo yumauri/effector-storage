@@ -1,5 +1,5 @@
-import { it, vi, expect } from 'vitest'
-import { createStore, createEvent, fork, allSettled, launch } from 'effector'
+import { allSettled, createEvent, createStore, fork, launch } from 'effector'
+import { expect, it, vi } from 'vitest'
 import { persist } from '../src/core'
 
 //

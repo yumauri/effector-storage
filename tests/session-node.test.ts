@@ -1,5 +1,5 @@
-import { it, beforeAll, afterAll, expect } from 'vitest'
 import { createStore } from 'effector'
+import { afterAll, beforeAll, expect, it } from 'vitest'
 import { persist } from '../src/session'
 
 //

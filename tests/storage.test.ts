@@ -1,8 +1,8 @@
-import { it, vi, expect } from 'vitest'
-import { createStore, createEvent } from 'effector'
+import { createEvent, createStore } from 'effector'
+import { expect, it, vi } from 'vitest'
+import { storage as storageIndex } from '../src'
 import { persist } from '../src/core'
 import { storage } from '../src/storage'
-import { storage as storageIndex } from '../src'
 import { createStorageMock } from './mocks/storage.mock'
 
 //

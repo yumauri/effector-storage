@@ -1,5 +1,5 @@
-import type { StandardSchemaV1 } from '../types-standard-schema'
 import type { Contract } from '../types'
+import type { StandardSchemaV1 } from '../types-standard-schema'
 
 export const validate = <Data>(
   raw: unknown,

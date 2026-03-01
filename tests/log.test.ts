@@ -1,6 +1,6 @@
-import { it, vi, expect } from 'vitest'
 import { createStore } from 'effector'
-import { persist, log } from '../src'
+import { expect, it, vi } from 'vitest'
+import { log, persist } from '../src'
 import { log as logNested } from '../src/log'
 
 //

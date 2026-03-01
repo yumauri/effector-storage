@@ -1,12 +1,13 @@
 import type { StorageAdapter } from '../src'
-import { it, beforeAll, afterAll, vi, expect } from 'vitest'
+import type { Events } from './mocks/events.mock'
+import { superstructContract } from '@farfetched/superstruct'
 import { createEvent, createStore } from 'effector'
 import * as s from 'superstruct'
-import { superstructContract } from '@farfetched/superstruct'
+import { afterAll, beforeAll, expect, it, vi } from 'vitest'
 import { persist } from '../src/core'
 import { storage } from '../src/storage'
+import { createEventsMock } from './mocks/events.mock'
 import { createStorageMock } from './mocks/storage.mock'
-import { type Events, createEventsMock } from './mocks/events.mock'
 
 //
 // Mock abstract Storage adapter

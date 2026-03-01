@@ -1,11 +1,11 @@
-import { it, expect } from 'vitest'
 import { createStore } from 'effector'
-import { createStorageMock } from './mocks/storage.mock'
-import { persist } from '../src/core'
-import { nil } from '../src/nil'
+import { expect, it } from 'vitest'
 import { nil as nilIndex } from '../src'
+import { persist } from '../src/core'
 import { persist as local } from '../src/local'
+import { nil } from '../src/nil'
 import { persist as session } from '../src/session'
+import { createStorageMock } from './mocks/storage.mock'
 
 declare let global: any
 

@@ -1,8 +1,8 @@
-import { it, beforeEach, afterEach, expect } from 'vitest'
 import { createStore } from 'effector'
+import { afterEach, beforeEach, expect, it } from 'vitest'
+import { persist } from '../src/query'
 import { createHistoryMock } from './mocks/history.mock'
 import { createLocationMock } from './mocks/location.mock'
-import { persist } from '../src/query'
 
 //
 // Mock history, location and events

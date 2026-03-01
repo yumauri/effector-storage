@@ -1,5 +1,4 @@
 import type { StorageAdapter } from '../src/types'
-import { it } from 'vitest'
 import {
   allSettled,
   createEffect,
@@ -8,6 +7,7 @@ import {
   fork,
   sample,
 } from 'effector'
+import { it } from 'vitest'
 import { persist } from '../src'
 
 //

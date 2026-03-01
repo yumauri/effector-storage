@@ -1,10 +1,10 @@
 import type {
+  LocalStorageConfig,
   StorageAdapter,
   StorageAdapterFactory,
-  LocalStorageConfig,
 } from '../src'
 import { it } from 'vitest'
-import { local, async } from '../src'
+import { async, local } from '../src'
 
 function expectType<T>(_value: T): void {}
 

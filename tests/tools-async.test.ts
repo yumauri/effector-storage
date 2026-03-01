@@ -1,9 +1,10 @@
 import type { StorageAdapter } from '../src'
-import { it, beforeAll, afterAll, vi, expect } from 'vitest'
+import type { Events } from './mocks/events.mock'
 import { createEvent, createStore } from 'effector'
+import { afterAll, beforeAll, expect, it, vi } from 'vitest'
+import { async, local, persist } from '../src'
+import { createEventsMock } from './mocks/events.mock'
 import { createStorageMock } from './mocks/storage.mock'
-import { type Events, createEventsMock } from './mocks/events.mock'
-import { persist, local, async } from '../src'
 
 //
 // Mock `localStorage` and events

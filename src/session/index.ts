@@ -1,8 +1,8 @@
 import type { Subscription } from 'effector'
 import type {
   ConfigPersist as BaseConfigPersist,
-  ConfigStore as BaseConfigStore,
   ConfigSourceTarget as BaseConfigSourceTarget,
+  ConfigStore as BaseConfigStore,
   StorageAdapterFactory,
 } from '../types'
 import { persist as base } from '../core'
@@ -10,12 +10,12 @@ import { nil } from '../nil'
 import { storage } from '../storage'
 
 export type {
+  Adapter,
   Contract,
+  DisposableAdapter,
   Done,
   Fail,
   Finally,
-  Adapter,
-  DisposableAdapter,
   StorageAdapter,
   StorageAdapterFactory,
 } from '../types'

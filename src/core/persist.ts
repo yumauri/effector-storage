@@ -1,4 +1,4 @@
-import type { Event, Effect, Subscription, Unit } from 'effector'
+import type { Effect, Event, Subscription, Unit } from 'effector'
 import type {
   ConfigAdapter,
   ConfigAdapterFactory,
@@ -14,8 +14,8 @@ import type {
 import {
   attach,
   clearNode,
-  createEvent,
   createEffect,
+  createEvent,
   createNode,
   createStore,
   is,

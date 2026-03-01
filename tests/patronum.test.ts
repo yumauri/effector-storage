@@ -1,7 +1,7 @@
 import type { StorageAdapter } from '../src/types'
-import { it, vi, expect } from 'vitest'
 import { createEvent, createStore, sample } from 'effector'
 import { debounce } from 'patronum/debounce'
+import { expect, it, vi } from 'vitest'
 import { persist } from '../src/core'
 
 //

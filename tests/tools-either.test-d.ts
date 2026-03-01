@@ -1,11 +1,11 @@
 import type {
-  StorageAdapter,
-  StorageAdapterFactory,
   LocalStorageConfig,
   LogConfig,
+  StorageAdapter,
+  StorageAdapterFactory,
 } from '../src'
 import { it } from 'vitest'
-import { local, log, either } from '../src'
+import { either, local, log } from '../src'
 
 function expectType<T>(_value: T): void {}
 

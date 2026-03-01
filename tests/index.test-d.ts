@@ -1,12 +1,12 @@
-import type { StorageAdapter } from '../src/types'
 import type {
   EventCallable,
   Store,
   StoreWritable,
   Subscription,
 } from 'effector'
+import type { StorageAdapter } from '../src/types'
+import { createEvent, createStore } from 'effector'
 import { it } from 'vitest'
-import { createStore, createEvent } from 'effector'
 
 function expectType<T>(_value: T): void {}
 

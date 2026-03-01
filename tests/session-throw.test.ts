@@ -1,5 +1,5 @@
-import { it, beforeAll, afterAll, vi, expect } from 'vitest'
-import { createStore, createEvent } from 'effector'
+import { createEvent, createStore } from 'effector'
+import { afterAll, beforeAll, expect, it, vi } from 'vitest'
 import { persist } from '../src/session'
 
 //

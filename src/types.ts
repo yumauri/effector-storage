@@ -1,15 +1,15 @@
 import type {
+  Effect,
   Event,
   EventCallable,
-  Effect,
   Store,
   StoreWritable,
+  Subscription,
   Unit,
   UnitTargetable,
-  Subscription,
 } from 'effector'
-import type { StandardSchemaV1 } from './types-standard-schema'
 import type { Contract as ContractProtocol } from './types-contract'
+import type { StandardSchemaV1 } from './types-standard-schema'
 
 export interface Adapter<State> {
   get(

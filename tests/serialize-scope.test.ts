@@ -1,6 +1,6 @@
 import type { StorageAdapter } from '../src/types'
-import { it, beforeEach, afterEach, vi, expect } from 'vitest'
-import { createStore, createEvent, fork, allSettled, serialize } from 'effector'
+import { allSettled, createEvent, createStore, fork, serialize } from 'effector'
+import { afterEach, beforeEach, expect, it, vi } from 'vitest'
 import { persist } from '../src/core'
 
 //

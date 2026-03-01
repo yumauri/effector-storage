@@ -1,8 +1,8 @@
-import { it, vi, expect } from 'vitest'
-import { createStore, createEvent } from 'effector'
-import { persist } from '../src/core'
-import { asyncStorage } from '../src/async-storage'
+import { createEvent, createStore } from 'effector'
+import { expect, it, vi } from 'vitest'
 import { asyncStorage as asyncStorageIndex } from '../src'
+import { asyncStorage } from '../src/async-storage'
+import { persist } from '../src/core'
 import { createAsyncStorageMock } from './mocks/async-storage.mock'
 
 //

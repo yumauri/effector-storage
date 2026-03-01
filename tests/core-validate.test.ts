@@ -1,10 +1,10 @@
 import type { StorageAdapter } from '../src'
-import { it, vi, expect } from 'vitest'
+import { superstructContract } from '@farfetched/superstruct'
+import { type } from 'arktype'
 import { createEvent, createStore } from 'effector'
 import * as s from 'superstruct'
 import * as v from 'valibot'
-import { type } from 'arktype'
-import { superstructContract } from '@farfetched/superstruct'
+import { expect, it, vi } from 'vitest'
 import { persist } from '../src/core'
 
 //
