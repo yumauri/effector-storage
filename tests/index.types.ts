@@ -1,5 +1,10 @@
 import type { StorageAdapter } from '../src/types'
-import type { Event, Store, Subscription } from 'effector'
+import type {
+  EventCallable,
+  Store,
+  StoreWritable,
+  Subscription,
+} from 'effector'
 import { createStore, createEvent } from 'effector'
 import { expectType } from 'tsd'
 
@@ -38,10 +43,10 @@ test('General `persist` should return Subscription', async () => {
   const { persist } = await import('../src')
 
   const fakeAdapter: StorageAdapter = 0 as any
-  const store: Store<number> = 0 as any
-  const ev1: Event<number> = 0 as any
-  const ev2: Event<number> = 0 as any
-  const handler: Event<any> = 0 as any
+  const store: StoreWritable<number> = 0 as any
+  const ev1: EventCallable<number> = 0 as any
+  const ev2: EventCallable<number> = 0 as any
+  const handler: EventCallable<any> = 0 as any
   const key = ''
 
   expectType<Subscription>(persist({ adapter: fakeAdapter, store }))
@@ -98,10 +103,10 @@ test('General `persist` should return Subscription', async () => {
 test('Local `persist` should return Subscription', async () => {
   const { persist } = await import('../src/local')
 
-  const store: Store<number> = 0 as any
-  const ev1: Event<number> = 0 as any
-  const ev2: Event<number> = 0 as any
-  const handler: Event<any> = 0 as any
+  const store: StoreWritable<number> = 0 as any
+  const ev1: EventCallable<number> = 0 as any
+  const ev2: EventCallable<number> = 0 as any
+  const handler: EventCallable<any> = 0 as any
   const key = ''
   const keyPrefix = ''
 
@@ -129,10 +134,10 @@ test('Local `persist` should return Subscription', async () => {
 test('Session `persist` should return Subscription', async () => {
   const { persist } = await import('../src/session')
 
-  const store: Store<number> = 0 as any
-  const ev1: Event<number> = 0 as any
-  const ev2: Event<number> = 0 as any
-  const handler: Event<any> = 0 as any
+  const store: StoreWritable<number> = 0 as any
+  const ev1: EventCallable<number> = 0 as any
+  const ev2: EventCallable<number> = 0 as any
+  const handler: EventCallable<any> = 0 as any
   const key = ''
 
   expectType<Subscription>(persist({ store }))
@@ -158,7 +163,7 @@ test('Session `persist` should return Subscription', async () => {
 test("Should be possible to pass adapter's arguments in core persist with adapter factory", async () => {
   const { persist, local } = await import('../src')
 
-  const store: Store<number> = 0 as any
+  const store: StoreWritable<number> = 0 as any
 
   expectType<Subscription>(persist({ store, adapter: local() }))
   expectType<Subscription>(persist({ store, adapter: local }))
@@ -194,14 +199,15 @@ test('Should accept targetables', async () => {
   persist({ source: source2, target })
 })
 
-test('Should accept non targetables (should be fixed after drop version 22)', async () => {
+test('Should not accept non targetables', async () => {
   const { persist } = await import('../src/local')
   const store = createStore(0).map((_) => _)
   const source = createEvent()
   const target = createEvent().map((_) => _)
 
-  // both following persist will fail in runtime,
-  // and should be failing by types also
+  /* @ts-expect-error */
   persist({ store })
+
+  /* @ts-expect-error */
   persist({ source, target })
 })

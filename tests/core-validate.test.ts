@@ -101,7 +101,7 @@ test('should fail on invalid schema (object)', () => {
 
 test('should validate with function (valid)', () => {
   const watch = mock.fn()
-  const $data = createStore(null)
+  const $data = createStore<string | null>(null)
   const fail = createEvent<any>()
   fail.watch(watch)
 
@@ -120,7 +120,7 @@ test('should validate with function (valid)', () => {
 
 test('should validate with function (invalid)', () => {
   const watch = mock.fn()
-  const $data = createStore(null)
+  const $data = createStore<number | null>(null)
   const fail = createEvent<any>()
   fail.watch(watch)
 
@@ -148,7 +148,7 @@ test('should validate with function (invalid)', () => {
 
 test('should validate against contract protocol (simple, valid)', () => {
   const watch = mock.fn()
-  const $data = createStore(null)
+  const $data = createStore<string | null>(null)
   const fail = createEvent<any>()
   fail.watch(watch)
 
@@ -167,7 +167,7 @@ test('should validate against contract protocol (simple, valid)', () => {
 
 test('should validate against contract protocol (complex, valid)', () => {
   const watch = mock.fn()
-  const $data = createStore(null)
+  const $data = createStore<{ type: 'asteroid'; mass: number } | null>(null)
   const fail = createEvent<any>()
   fail.watch(watch)
 
@@ -191,7 +191,7 @@ test('should validate against contract protocol (complex, valid)', () => {
 
 test('should validate against contract protocol (invalid)', () => {
   const watch = mock.fn()
-  const $data = createStore(null)
+  const $data = createStore<{ type: 'asteroid'; mass: number } | null>(null)
   const fail = createEvent<any>()
   fail.watch(watch)
 
@@ -229,7 +229,7 @@ test('should validate against contract protocol (invalid)', () => {
 
 test('should validate against standard schema (simple, valid)', () => {
   const watch = mock.fn()
-  const $data = createStore(null)
+  const $data = createStore<string | null>(null)
   const fail = createEvent<any>()
   fail.watch(watch)
 
@@ -248,7 +248,7 @@ test('should validate against standard schema (simple, valid)', () => {
 
 test('should validate against standard schema (complex, valid)', () => {
   const watch = mock.fn()
-  const $data = createStore(null)
+  const $data = createStore<{ type: string; mass: number } | null>(null)
   const fail = createEvent<any>()
   fail.watch(watch)
 
@@ -272,7 +272,7 @@ test('should validate against standard schema (complex, valid)', () => {
 
 test('should validate against standard schema (invalid)', () => {
   const watch = mock.fn()
-  const $data = createStore(null)
+  const $data = createStore<string | null>(null)
   const fail = createEvent<any>()
   fail.watch(watch)
 

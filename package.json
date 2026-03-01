@@ -42,12 +42,15 @@
     "clean": "rm -rf build coverage",
     "size": "size-limit --highlight-less"
   },
+  "dependencies": {
+    "@farfetched/core": "^0.15.0",
+    "effector": "23.0.0"
+  },
   "devDependencies": {
     "@babel/core": "^7.29.0",
     "@babel/plugin-transform-block-scoping": "^7.28.6",
     "@babel/preset-typescript": "^7.28.5",
     "@biomejs/biome": "^2.4.4",
-    "@farfetched/core": "^0.15.0",
     "@farfetched/superstruct": "^0.15.0",
     "@playwright/test": "^1.58.2",
     "@rollup/plugin-babel": "^6.1.0",
@@ -57,7 +60,6 @@
     "@types/node": "^24.11.0",
     "arktype": "^2.1.29",
     "c8": "^11.0.0",
-    "effector": "^23.4.4",
     "esbuild": "^0.27.3",
     "esbuild-register": "^3.6.0",
     "patronum": "^2.3.0",

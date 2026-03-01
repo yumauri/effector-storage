@@ -11,6 +11,13 @@ overrides:
 importers:
 
   .:
+    dependencies:
+      '@farfetched/core':
+        specifier: ^0.15.0
+        version: 0.15.0(effector@23.0.0)
+      effector:
+        specifier: 23.0.0
+        version: 23.0.0
     devDependencies:
       '@babel/core':
         specifier: ^7.29.0
@@ -24,12 +31,9 @@ importers:
       '@biomejs/biome':
         specifier: ^2.4.4
         version: 2.4.4
-      '@farfetched/core':
-        specifier: ^0.15.0
-        version: 0.15.0(effector@23.4.4)
       '@farfetched/superstruct':
         specifier: ^0.15.0
-        version: 0.15.0(@farfetched/core@0.15.0(effector@23.4.4))(superstruct@2.0.2)
+        version: 0.15.0(@farfetched/core@0.15.0(effector@23.0.0))(superstruct@2.0.2)
       '@playwright/test':
         specifier: ^1.58.2
         version: 1.58.2
@@ -54,9 +58,6 @@ importers:
       c8:
         specifier: ^11.0.0
         version: 11.0.0
-      effector:
-        specifier: ^23.4.4
-        version: 23.4.4
       esbuild:
         specifier: ^0.27.3
         version: 0.27.3
@@ -65,7 +66,7 @@ importers:
         version: 3.6.0(esbuild@0.27.3)
       patronum:
         specifier: ^2.3.0
-        version: 2.3.0(effector@23.4.4)
+        version: 2.3.0(effector@23.0.0)
       publint:
         specifier: ^0.3.17
         version: 0.3.17
@@ -861,8 +862,8 @@ packages:
     resolution: {integrity: sha512-L28STB170nwWS63UjtlEOE3dldQApaJXZkOI1uMFfzf3rRuPegHaHesyee+YxQ+W6SvRDQV6UrdOdRiR153wJg==}
     engines: {node: '>=6'}
 
-  caniuse-lite@1.0.30001774:
-    resolution: {integrity: sha512-DDdwPGz99nmIEv216hKSgLD+D4ikHQHjBC/seF98N9CPqRX4M5mSxT9eTV6oyisnJcuzxtZy4n17yKKQYmYQOA==}
+  caniuse-lite@1.0.30001775:
+    resolution: {integrity: sha512-s3Qv7Lht9zbVKE9XoTyRG6wVDCKdtOFIjBGg3+Yhn6JaytuNKPIjBMTMIY1AnOH3seL5mvF+x33oGAyK3hVt3A==}
 
   chalk@4.1.2:
     resolution: {integrity: sha512-oKnbhFyRIXpUuez8iBMmyEa4nbj4IOQyuhc/wy9kY7/WVPcwIO9VA668Pu8RkO7+0G76SLROeyw9CpQ061i4mA==}
@@ -929,8 +930,8 @@ packages:
     resolution: {integrity: sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA==}
     engines: {node: '>=8'}
 
-  effector@23.4.4:
-    resolution: {integrity: sha512-QkZboRN28K/iwxigDhlJcI3ux3aNbt8kYGGH/GkqWG0OlGeyuBhb7PdM89Iu+ogV8Lmz16xIlwnXR2UNWI6psg==}
+  effector@23.0.0:
+    resolution: {integrity: sha512-8lT1iX8ivWRUnJL4XG2OhCZPRZku1XVc7AwbJCChxZhhB6ii/hZgs0GOTeE3BJfvc1BKf97q2hU3Yzp323sCiA==}
     engines: {node: '>=11.0.0'}
 
   electron-to-chromium@1.5.302:
@@ -2003,13 +2004,13 @@ snapshots:
   '@esbuild/win32-x64@0.27.3':
     optional: true
 
-  '@farfetched/core@0.15.0(effector@23.4.4)':
+  '@farfetched/core@0.15.0(effector@23.0.0)':
     dependencies:
-      effector: 23.4.4
+      effector: 23.0.0
 
-  '@farfetched/superstruct@0.15.0(@farfetched/core@0.15.0(effector@23.4.4))(superstruct@2.0.2)':
+  '@farfetched/superstruct@0.15.0(@farfetched/core@0.15.0(effector@23.0.0))(superstruct@2.0.2)':
     dependencies:
-      '@farfetched/core': 0.15.0(effector@23.4.4)
+      '@farfetched/core': 0.15.0(effector@23.0.0)
       superstruct: 2.0.2
 
   '@istanbuljs/schema@0.1.3': {}
@@ -2278,7 +2279,7 @@ snapshots:
   browserslist@4.28.1:
     dependencies:
       baseline-browser-mapping: 2.10.0
-      caniuse-lite: 1.0.30001774
+      caniuse-lite: 1.0.30001775
       electron-to-chromium: 1.5.302
       node-releases: 2.0.27
       update-browserslist-db: 1.2.3(browserslist@4.28.1)
@@ -2309,7 +2310,7 @@ snapshots:
 
   camelcase@5.3.1: {}
 
-  caniuse-lite@1.0.30001774: {}
+  caniuse-lite@1.0.30001775: {}
 
   chalk@4.1.2:
     dependencies:
@@ -2363,7 +2364,7 @@ snapshots:
     dependencies:
       path-type: 4.0.0
 
-  effector@23.4.4: {}
+  effector@23.0.0: {}
 
   electron-to-chromium@1.5.302: {}
 
@@ -2714,9 +2715,9 @@ snapshots:
 
   path-type@4.0.0: {}
 
-  patronum@2.3.0(effector@23.4.4):
+  patronum@2.3.0(effector@23.0.0):
     dependencies:
-      effector: 23.4.4
+      effector: 23.0.0
 
   picocolors@1.1.1: {}
 
