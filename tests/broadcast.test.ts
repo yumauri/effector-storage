@@ -90,7 +90,7 @@ it('should be ok on good parameters', () => {
 
 it('should post message to broadcast channel on updates', async () => {
   const channel = new BroadcastChannel('shared_counter')
-  const recieve = new Promise((resolve) => {
+  const receive = new Promise((resolve) => {
     channel.onmessage = ({ data }: any) => resolve(data)
   })
 
@@ -104,7 +104,7 @@ it('should post message to broadcast channel on updates', async () => {
   //
   ;($counter as any).setState(42)
 
-  const got = await recieve
+  const got = await receive
   channel.close()
 
   expect(got).toEqual({ key: 'counter', value: 42 })
@@ -113,7 +113,7 @@ it('should post message to broadcast channel on updates', async () => {
 // this is REAL test in node environment
 // which spawns worker and checks communication between worker and main thread
 // via BroadcastChannel adapter
-it('should syncronize store state with worker', async () => {
+it('should synchronize store state with worker', async () => {
   const watchFinally = vi.fn()
   const watchTarget = vi.fn()
 
