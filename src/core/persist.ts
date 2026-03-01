@@ -1,4 +1,4 @@
-import type { Event, Effect, Subscription, Unit } from 'effector'
+import type { Effect, Event, Subscription, Unit } from 'effector'
 import type {
   ConfigAdapter,
   ConfigAdapterFactory,
@@ -14,8 +14,8 @@ import type {
 import {
   attach,
   clearNode,
-  createEvent,
   createEffect,
+  createEvent,
   createNode,
   createStore,
   is,
@@ -194,13 +194,10 @@ export const persist = <State, Err = Error>(
       target: complete,
     })
 
-    // effector 23 introduced "targetable" types - UnitTargetable, StoreWritable, EventCallable
-    // so, targeting non-targetable unit is not allowed anymore.
-    // soothe typescript by casting to any for a while, until we drop support for effector 22 branch
     if (anyway) {
       sample({
         clock: complete,
-        target: anyway as any,
+        target: anyway,
       })
     }
 
@@ -215,7 +212,7 @@ export const persist = <State, Err = Error>(
           operation,
           value,
         }),
-        target: done as any,
+        target: done,
       })
     }
 
@@ -230,7 +227,7 @@ export const persist = <State, Err = Error>(
         error,
         value,
       }),
-      target: fail as any,
+      target: fail,
     })
 
     if (context) {

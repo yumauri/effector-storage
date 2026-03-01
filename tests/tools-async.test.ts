@@ -1,10 +1,10 @@
 import type { StorageAdapter } from '../src'
-import { test, before, after, mock } from 'node:test'
-import * as assert from 'node:assert/strict'
+import type { Events } from './mocks/events.mock'
 import { createEvent, createStore } from 'effector'
+import { afterAll, beforeAll, expect, it, vi } from 'vitest'
+import { async, local, persist } from '../src'
+import { createEventsMock } from './mocks/events.mock'
 import { createStorageMock } from './mocks/storage.mock'
-import { type Events, createEventsMock } from './mocks/events.mock'
-import { persist, local, async } from '../src'
 
 //
 // Mock `localStorage` and events
@@ -13,13 +13,13 @@ import { persist, local, async } from '../src'
 declare let global: any
 let events: Events
 
-before(() => {
+beforeAll(() => {
   global.localStorage = createStorageMock()
   events = createEventsMock()
   global.addEventListener = events.addEventListener
 })
 
-after(() => {
+afterAll(() => {
   global.localStorage = undefined
   global.addEventListener = undefined
 })
@@ -30,7 +30,7 @@ const timeout = (t: number) => new Promise((resolve) => setTimeout(resolve, t))
 // Tests
 //
 
-test('store should be asynchronously initialized from storage value', async () => {
+it('store should be asynchronously initialized from storage value', async () => {
   const $counter1 = createStore(1, { name: 'counter1' })
   global.localStorage.setItem('counter1', '42')
 
@@ -39,12 +39,12 @@ test('store should be asynchronously initialized from storage value', async () =
     store: $counter1,
   })
 
-  assert.strictEqual($counter1.getState(), 1)
+  expect($counter1.getState()).toBe(1)
   await timeout(0)
-  assert.strictEqual($counter1.getState(), 42)
+  expect($counter1.getState()).toBe(42)
 })
 
-test('store should be asynchronously initialized from storage value, using adapter factory', async () => {
+it('store should be asynchronously initialized from storage value, using adapter factory', async () => {
   const $counter1 = createStore(1, { name: 'counter11' })
   global.localStorage.setItem('counter11', '54')
 
@@ -53,12 +53,12 @@ test('store should be asynchronously initialized from storage value, using adapt
     store: $counter1,
   })
 
-  assert.strictEqual($counter1.getState(), 1)
+  expect($counter1.getState()).toBe(1)
   await timeout(0)
-  assert.strictEqual($counter1.getState(), 54)
+  expect($counter1.getState()).toBe(54)
 })
 
-test('store new value should be asynchronously saved to storage', async () => {
+it('store new value should be asynchronously saved to storage', async () => {
   const $counter2 = createStore(0, { name: 'counter2' })
 
   persist({
@@ -68,13 +68,13 @@ test('store new value should be asynchronously saved to storage', async () => {
 
   //
   ;($counter2 as any).setState(22)
-  assert.strictEqual(global.localStorage.getItem('counter2'), null) // <- not saved yet
+  expect(global.localStorage.getItem('counter2')).toBe(null) // <- not saved yet
 
   await timeout(0)
-  assert.strictEqual(global.localStorage.getItem('counter2'), '22') // <- saved
+  expect(global.localStorage.getItem('counter2')).toBe('22') // <- saved
 })
 
-test('store new value should be asynchronously saved to storage, using adapter factory', async () => {
+it('store new value should be asynchronously saved to storage, using adapter factory', async () => {
   const $counter2 = createStore(0, { name: 'counter22' })
 
   persist({
@@ -84,14 +84,14 @@ test('store new value should be asynchronously saved to storage, using adapter f
 
   //
   ;($counter2 as any).setState(222)
-  assert.strictEqual(global.localStorage.getItem('counter22'), null) // <- not saved yet
+  expect(global.localStorage.getItem('counter22')).toBe(null) // <- not saved yet
 
   await timeout(0)
-  assert.strictEqual(global.localStorage.getItem('counter22'), '222') // <- saved
+  expect(global.localStorage.getItem('counter22')).toBe('222') // <- saved
 })
 
-test('all synchronous operations should be done before `done` event', async () => {
-  const watch = mock.fn()
+it('all synchronous operations should be done before `done` event', async () => {
+  const watch = vi.fn()
 
   const done = createEvent<any>()
 
@@ -106,13 +106,13 @@ test('all synchronous operations should be done before `done` event', async () =
 
   // add watcher AFTER persist
   done.watch(watch)
-  assert.strictEqual(watch.mock.callCount(), 0)
-  assert.strictEqual($data.getState(), 'initial')
+  expect(watch).toHaveBeenCalledTimes(0)
+  expect($data.getState()).toBe('initial')
 
   // awaits for next tick
   await timeout(0)
-  assert.strictEqual(watch.mock.callCount(), 1)
-  assert.deepEqual(watch.mock.calls[0].arguments, [
+  expect(watch).toHaveBeenCalledTimes(1)
+  expect(watch.mock.calls[0]).toEqual([
     {
       key: 'data',
       keyPrefix: '',
@@ -120,10 +120,10 @@ test('all synchronous operations should be done before `done` event', async () =
       value: 'changed',
     },
   ])
-  assert.strictEqual($data.getState(), 'changed')
+  expect($data.getState()).toBe('changed')
 })
 
-test("should accept adapter's arguments in core persist", async () => {
+it("should accept adapter's arguments in core persist", async () => {
   const $counter3 = createStore(0, { name: 'counter33' })
 
   persist({
@@ -132,18 +132,18 @@ test("should accept adapter's arguments in core persist", async () => {
     def: 42,
   })
 
-  assert.strictEqual($counter3.getState(), 0) // <- still default 0
+  expect($counter3.getState()).toBe(0) // <- still default 0
   await timeout(0)
-  assert.strictEqual($counter3.getState(), 42) // <- restored 42 from default value
+  expect($counter3.getState()).toBe(42) // <- restored 42 from default value
 
   //
   ;($counter3 as any).setState(54)
-  assert.strictEqual($counter3.getState(), 54) // <- updated already
-  assert.strictEqual(global.localStorage.getItem('counter33'), null) // <- not saved yet
+  expect($counter3.getState()).toBe(54) // <- updated already
+  expect(global.localStorage.getItem('counter33')).toBe(null) // <- not saved yet
 
   await timeout(0)
-  assert.strictEqual($counter3.getState(), 54) // <- still 54
-  assert.strictEqual(global.localStorage.getItem('counter33'), '54') // <- saved
+  expect($counter3.getState()).toBe(54) // <- still 54
+  expect(global.localStorage.getItem('counter33')).toBe('54') // <- saved
 
   global.localStorage.removeItem('counter33')
   events.dispatchEvent('storage', {
@@ -151,15 +151,15 @@ test("should accept adapter's arguments in core persist", async () => {
     key: 'counter33',
     value: null,
   })
-  assert.strictEqual($counter3.getState(), 54) // <- old value yet
+  expect($counter3.getState()).toBe(54) // <- old value yet
 
   await timeout(0)
-  assert.strictEqual($counter3.getState(), 42) // <- restored default value from `def`
+  expect($counter3.getState()).toBe(42) // <- restored default value from `def`
 })
 
-test('should preserve context', async () => {
-  const get = mock.fn((_value, _ctx) => undefined as any)
-  const set = mock.fn((_value, _ctx) => undefined as any)
+it('should preserve context', async () => {
+  const get = vi.fn((_value, _ctx) => undefined as any)
+  const set = vi.fn((_value, _ctx) => undefined as any)
 
   const update = createEvent<number>()
   const pickup = createEvent<string>()
@@ -181,40 +181,40 @@ test('should preserve context', async () => {
   })
 
   // doesn't call adapter before pickup
-  assert.strictEqual(get.mock.callCount(), 0)
-  assert.strictEqual(set.mock.callCount(), 0)
+  expect(get).toHaveBeenCalledTimes(0)
+  expect(set).toHaveBeenCalledTimes(0)
 
   pickup('context payload') // <- pick up new value with context
 
   // doesn't call adapter yet, because of `async` tool wrapper
-  assert.strictEqual(get.mock.callCount(), 0)
-  assert.strictEqual(set.mock.callCount(), 0)
+  expect(get).toHaveBeenCalledTimes(0)
+  expect(set).toHaveBeenCalledTimes(0)
 
   await timeout(0)
-  assert.strictEqual(get.mock.callCount(), 1)
-  assert.strictEqual(set.mock.callCount(), 0) // <- `set` is not called
-  assert.deepEqual(get.mock.calls[0].arguments, [undefined, 'context payload'])
+  expect(get).toHaveBeenCalledTimes(1)
+  expect(set).toHaveBeenCalledTimes(0) // <- `set` is not called
+  expect(get.mock.calls[0]).toEqual([undefined, 'context payload'])
 
   //
   ;($store as any).setState(42) // <- update store to trigger `set`
 
   // doesn't call adapter yet, because of `async` tool wrapper
-  assert.strictEqual(get.mock.callCount(), 1)
-  assert.strictEqual(set.mock.callCount(), 0)
+  expect(get).toHaveBeenCalledTimes(1)
+  expect(set).toHaveBeenCalledTimes(0)
 
   await timeout(0)
-  assert.strictEqual(get.mock.callCount(), 1) // <- `get` is not called
-  assert.strictEqual(set.mock.callCount(), 1)
-  assert.deepEqual(set.mock.calls[0].arguments, [42, 'context payload'])
+  expect(get).toHaveBeenCalledTimes(1) // <- `get` is not called
+  expect(set).toHaveBeenCalledTimes(1)
+  expect(set.mock.calls[0]).toEqual([42, 'context payload'])
 
   update(54) // <- emulate external adapter update
 
   // doesn't call adapter yet, because of `async` tool wrapper
-  assert.strictEqual(get.mock.callCount(), 1)
-  assert.strictEqual(set.mock.callCount(), 1)
+  expect(get).toHaveBeenCalledTimes(1)
+  expect(set).toHaveBeenCalledTimes(1)
 
   await timeout(0)
-  assert.strictEqual(get.mock.callCount(), 2)
-  assert.strictEqual(set.mock.callCount(), 1) // <- `set` is not called
-  assert.deepEqual(get.mock.calls[1].arguments, [54, 'context payload'])
+  expect(get).toHaveBeenCalledTimes(2)
+  expect(set).toHaveBeenCalledTimes(1) // <- `set` is not called
+  expect(get.mock.calls[1]).toEqual([54, 'context payload'])
 })

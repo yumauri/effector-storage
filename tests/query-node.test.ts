@@ -1,9 +1,8 @@
-import { test, beforeEach, afterEach } from 'node:test'
-import * as assert from 'node:assert/strict'
 import { createStore } from 'effector'
+import { afterEach, beforeEach, expect, it } from 'vitest'
+import { persist } from '../src/query'
 import { createHistoryMock } from './mocks/history.mock'
 import { createLocationMock } from './mocks/location.mock'
-import { persist } from '../src/query'
 
 //
 // Mock history, location and events
@@ -27,29 +26,29 @@ afterEach(() => {
 // Tests
 //
 
-test('should not fail if there is no `addEventListener`', () => {
+it('should not fail if there is no `addEventListener`', () => {
   const $id = createStore('0', { name: 'id' })
   persist({ store: $id })
-  assert.strictEqual(global.location.search, '')
+  expect(global.location.search).toBe('')
   ;($id as any).setState('9876')
-  assert.strictEqual(global.location.search, '?id=9876')
+  expect(global.location.search).toBe('?id=9876')
 })
 
-test('should not fail if there is no `location`', () => {
+it('should not fail if there is no `location`', () => {
   global.location = undefined
   const $id = createStore('0', { name: 'id' })
   persist({ store: $id })
   ;($id as any).setState('9876')
 })
 
-test('should not fail if there is no `history`', () => {
+it('should not fail if there is no `history`', () => {
   global.history = undefined
   const $id = createStore('0', { name: 'id' })
   persist({ store: $id })
   ;($id as any).setState('9876')
 })
 
-test('should not fail if there is no `history` and `location`', () => {
+it('should not fail if there is no `history` and `location`', () => {
   global.history = undefined
   global.location = undefined
   const $id = createStore('0', { name: 'id' })

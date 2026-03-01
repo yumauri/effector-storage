@@ -1,12 +1,11 @@
-import { test, before, after, mock } from 'node:test'
-import * as assert from 'node:assert/strict'
 import { BroadcastChannel, Worker } from 'node:worker_threads'
 import { createEffect, createStore, sample } from 'effector'
-import { createEventsMock } from './mocks/events.mock'
-import { broadcast, persist } from '../src/broadcast'
+import { afterAll, beforeAll, expect, it, vi } from 'vitest'
 import { broadcast as broadcastIndex } from '../src'
-import { either } from '../src/tools'
+import { broadcast, persist } from '../src/broadcast'
 import { log } from '../src/log'
+import { either } from '../src/tools'
+import { createEventsMock } from './mocks/events.mock'
 
 //
 // Helper to load scripts in worker
@@ -53,7 +52,7 @@ function createWorker(script: string): Worker {
 declare let global: any
 const channels: BroadcastChannel[] = []
 
-before(() => {
+beforeAll(() => {
   // mock BroadcastChannel in order to save all created instances of BroadcastChannel
   class BroadcastChannelMock extends BroadcastChannel {
     constructor(name: string) {
@@ -64,7 +63,7 @@ before(() => {
   global.BroadcastChannel = BroadcastChannelMock
 })
 
-after(() => {
+afterAll(() => {
   // close all channels after tests, so node will not hang
   for (const channel of channels) {
     channel.close()
@@ -75,23 +74,23 @@ after(() => {
 // Tests
 //
 
-test('should export adapter and `persist` function', () => {
-  assert.ok(typeof broadcast === 'function')
-  assert.ok(typeof persist === 'function')
+it('should export adapter and `persist` function', () => {
+  expect(typeof broadcast === 'function').toBeTruthy()
+  expect(typeof persist === 'function').toBeTruthy()
 })
 
-test('should be exported from package root', () => {
-  assert.strictEqual(broadcast, broadcastIndex)
+it('should be exported from package root', () => {
+  expect(broadcast).toBe(broadcastIndex)
 })
 
-test('should be ok on good parameters', () => {
+it('should be ok on good parameters', () => {
   const $store = createStore(0, { name: 'broadcast' })
-  assert.doesNotThrow(() => persist({ store: $store }))
+  expect(() => persist({ store: $store })).not.toThrow()
 })
 
-test('should post message to broadcast channel on updates', async () => {
+it('should post message to broadcast channel on updates', async () => {
   const channel = new BroadcastChannel('shared_counter')
-  const recieve = new Promise((resolve) => {
+  const receive = new Promise((resolve) => {
     channel.onmessage = ({ data }: any) => resolve(data)
   })
 
@@ -105,29 +104,29 @@ test('should post message to broadcast channel on updates', async () => {
   //
   ;($counter as any).setState(42)
 
-  const got = await recieve
+  const got = await receive
   channel.close()
 
-  assert.deepEqual(got, { key: 'counter', value: 42 })
+  expect(got).toEqual({ key: 'counter', value: 42 })
 })
 
 // this is REAL test in node environment
 // which spawns worker and checks communication between worker and main thread
 // via BroadcastChannel adapter
-test('should syncronize store state with worker', async () => {
-  const watchFinally = mock.fn()
-  const watchTarget = mock.fn()
+it('should synchronize store state with worker', async () => {
+  const watchFinally = vi.fn()
+  const watchTarget = vi.fn()
 
   // create store in main thread
   const $token = createStore('old_token')
   persist({
     store: $token,
     key: 'token',
-    finally: createEffect<any, any>(watchFinally),
+    finally: createEffect(watchFinally),
   })
   sample({
     clock: $token,
-    target: createEffect<any, any>(watchTarget),
+    target: createEffect(watchTarget),
   })
 
   const worker = createWorker(
@@ -145,10 +144,10 @@ test('should syncronize store state with worker', async () => {
     worker.once('exit', resolve)
   })
 
-  assert.strictEqual(watchTarget.mock.callCount(), 1)
-  assert.deepEqual(watchTarget.mock.calls[0].arguments, ['new_token'])
-  assert.strictEqual(watchFinally.mock.callCount(), 2)
-  assert.deepEqual(watchFinally.mock.calls[0].arguments, [
+  expect(watchTarget).toHaveBeenCalledTimes(1)
+  expect(watchTarget.mock.calls[0]).toEqual(['new_token'])
+  expect(watchFinally).toHaveBeenCalledTimes(2)
+  expect(watchFinally.mock.calls[0]).toEqual([
     {
       key: 'token',
       keyPrefix: '',
@@ -157,7 +156,7 @@ test('should syncronize store state with worker', async () => {
       value: undefined,
     },
   ])
-  assert.deepEqual(watchFinally.mock.calls[1].arguments, [
+  expect(watchFinally.mock.calls[1]).toEqual([
     {
       key: 'token',
       keyPrefix: '',
@@ -174,7 +173,7 @@ test('should syncronize store state with worker', async () => {
 // https://github.com/nodejs/node/pull/36780/files
 // in browser it is possible to trigger `messageerror` event by sending `SharedArrayBuffer`
 // but I will test it in new browser e2e tests, in node it is not possible
-test('should fail on `messageerror`', async () => {
+it('should fail on `messageerror`', async () => {
   const _BroadcastChannel = global.BroadcastChannel
   const events = createEventsMock()
 
@@ -191,31 +190,29 @@ test('should fail on `messageerror`', async () => {
   }
 
   try {
-    const watchFail = mock.fn()
+    const watchFail = vi.fn()
 
     const $test = createStore('')
     persist({
       store: $test,
       key: 'test',
       channel: 'test',
-      fail: createEffect<any, any>(watchFail),
+      fail: createEffect(watchFail),
     })
 
     {
       await events.dispatchEvent('messageerror', { data: null })
 
-      assert.strictEqual(watchFail.mock.callCount(), 1)
-      const { error, ...rest } = watchFail.mock.calls[0].arguments[
-        0 as any
-      ] as any
-      assert.deepEqual(rest, {
+      expect(watchFail).toHaveBeenCalledTimes(1)
+      const { error, ...rest } = watchFail.mock.calls[0][0]
+      expect(rest).toEqual({
         key: 'test',
         keyPrefix: '',
         operation: 'get',
         value: undefined,
       })
-      assert.ok(error instanceof Error)
-      assert.match(error.message, /Unable to deserialize message/)
+      expect(error).toBeInstanceOf(Error)
+      expect(error.message).toMatch(/Unable to deserialize message/)
     }
 
     {
@@ -223,34 +220,32 @@ test('should fail on `messageerror`', async () => {
       // so, cover this case too
       await events.dispatchEvent('message', { data: null })
 
-      assert.strictEqual(watchFail.mock.callCount(), 2)
-      const { error, ...rest } = watchFail.mock.calls[1].arguments[
-        0 as any
-      ] as any
-      assert.deepEqual(rest, {
+      expect(watchFail).toHaveBeenCalledTimes(2)
+      const { error, ...rest } = watchFail.mock.calls[1][0]
+      expect(rest).toEqual({
         key: 'test',
         keyPrefix: '',
         operation: 'get',
         value: undefined,
       })
-      assert.ok(error instanceof Error)
-      assert.match(error.message, /Unable to deserialize message/)
+      expect(error).toBeInstanceOf(Error)
+      expect(error.message).toMatch(/Unable to deserialize message/)
     }
   } finally {
     global.BroadcastChannel = _BroadcastChannel
   }
 })
 
-test('should be nil adapter in unsupported environment', async () => {
+it('should be nil adapter in unsupported environment', async () => {
   const _BroadcastChannel = global.BroadcastChannel
   global.BroadcastChannel = undefined
   try {
-    const logger = mock.fn()
+    const logger = vi.fn()
 
     const adapter = either(broadcast, log({ logger }))()
     adapter('unsupported', () => undefined).get()
 
-    assert.deepEqual(logger.mock.calls[0].arguments, [
+    expect(logger.mock.calls[0]).toEqual([
       '[log adapter] get value for key "unsupported"',
     ])
   } finally {

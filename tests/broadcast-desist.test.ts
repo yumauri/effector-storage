@@ -1,8 +1,7 @@
-import { test, mock } from 'node:test'
-import * as assert from 'node:assert/strict'
 import { createEffect, createStore } from 'effector'
-import { createEventsMock } from './mocks/events.mock'
+import { expect, it, vi } from 'vitest'
 import { persist } from '../src/broadcast'
+import { createEventsMock } from './mocks/events.mock'
 
 //
 // Mock events
@@ -14,11 +13,11 @@ declare let global: any
 // Tests
 //
 
-test('should stop react on `message` and `messageerror` after desist', async () => {
+it('should stop react on `message` and `messageerror` after desist', async () => {
   const _BroadcastChannel = global.BroadcastChannel
   const events = createEventsMock()
-  const addListener = mock.fn(events.addEventListener)
-  const removeListener = mock.fn(events.removeEventListener)
+  const addListener = vi.fn(events.addEventListener)
+  const removeListener = vi.fn(events.removeEventListener)
 
   global.BroadcastChannel = class BroadcastChannelMock {
     public name: string
@@ -37,48 +36,42 @@ test('should stop react on `message` and `messageerror` after desist', async () 
   }
 
   try {
-    const watch = mock.fn()
+    const watch = vi.fn()
 
     const $test = createStore('')
     const desist = persist({
       store: $test,
       key: 'test-desist',
       channel: 'test-desist',
-      done: createEffect<any, any>(watch),
-      fail: createEffect<any, any>(watch),
+      done: createEffect(watch),
+      fail: createEffect(watch),
     })
 
-    assert.strictEqual(addListener.mock.callCount(), 2)
-    assert.strictEqual(addListener.mock.calls[0].arguments[0], 'message')
-    assert.strictEqual(addListener.mock.calls[1].arguments[0], 'messageerror')
+    expect(addListener).toHaveBeenCalledTimes(2)
+    expect(addListener.mock.calls[0][0]).toBe('message')
+    expect(addListener.mock.calls[1][0]).toBe('messageerror')
 
-    const messageListener = addListener.mock.calls[0].arguments[1]
-    const messageerrorListener = addListener.mock.calls[1].arguments[1]
+    const messageListener = addListener.mock.calls[0][1]
+    const messageerrorListener = addListener.mock.calls[1][1]
 
-    assert.strictEqual(watch.mock.callCount(), 1) // <- initial get call
+    expect(watch).toHaveBeenCalledTimes(1) // <- initial get call
 
     // stop persisting
     desist()
 
-    assert.strictEqual(addListener.mock.callCount(), 2) // <- not changed
-    assert.strictEqual(removeListener.mock.callCount(), 2)
-    assert.strictEqual(removeListener.mock.calls[0].arguments[0], 'message')
-    assert.strictEqual(
-      removeListener.mock.calls[1].arguments[0],
-      'messageerror'
-    )
+    expect(addListener).toHaveBeenCalledTimes(2) // <- not changed
+    expect(removeListener).toHaveBeenCalledTimes(2)
+    expect(removeListener.mock.calls[0][0]).toBe('message')
+    expect(removeListener.mock.calls[1][0]).toBe('messageerror')
 
-    assert.strictEqual(addListener.mock.calls[0].arguments[1], messageListener)
-    assert.strictEqual(
-      addListener.mock.calls[1].arguments[1],
-      messageerrorListener
-    )
+    expect(addListener.mock.calls[0][1]).toBe(messageListener)
+    expect(addListener.mock.calls[1][1]).toBe(messageerrorListener)
 
     await events.dispatchEvent('message', { data: null })
-    assert.strictEqual(watch.mock.callCount(), 1) // <- not changed
+    expect(watch).toHaveBeenCalledTimes(1) // <- not changed
 
     await events.dispatchEvent('messageerror', { data: null })
-    assert.strictEqual(watch.mock.callCount(), 1) // <- not changed
+    expect(watch).toHaveBeenCalledTimes(1) // <- not changed
   } finally {
     global.BroadcastChannel = _BroadcastChannel
   }

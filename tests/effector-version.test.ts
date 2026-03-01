@@ -1,6 +1,5 @@
-import { test } from 'node:test'
-import * as assert from 'node:assert/strict'
 import { version } from 'effector'
+import { expect, it } from 'vitest'
 
 const tryDependency: string | undefined = process.env.INPUT_EFFECTOR
 
@@ -8,10 +7,10 @@ const tryDependency: string | undefined = process.env.INPUT_EFFECTOR
 // Tests
 //
 
-test('effector should be mocked', () => {
+it('effector should be mocked', () => {
   const tryVersion = tryDependency?.match(/(\d+\.\d+\.\d+).*$/)?.[0]
   if (tryVersion) {
-    assert.strictEqual(version, tryVersion)
+    expect(version).toBe(tryVersion)
   } else {
     console.log('unknown try version:', tryDependency)
     console.log('effector version:', version)

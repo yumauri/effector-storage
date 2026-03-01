@@ -1,5 +1,5 @@
-import type { StorageAdapter } from '../types'
 import type { CacheAdapter } from '@farfetched/core'
+import type { StorageAdapter } from '../types'
 import { attach } from 'effector'
 
 type Farcached = (adapter: CacheAdapter, keyArea?: any) => StorageAdapter

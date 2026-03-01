@@ -1,6 +1,5 @@
-import { test, mock } from 'node:test'
-import * as assert from 'node:assert/strict'
-import { createStore, createEvent } from 'effector'
+import { createEvent, createStore } from 'effector'
+import { expect, it, vi } from 'vitest'
 import { persist } from '../src/core'
 import { storage } from '../src/storage'
 import { createStorageMock } from './mocks/storage.mock'
@@ -9,8 +8,8 @@ import { createStorageMock } from './mocks/storage.mock'
 // Tests
 //
 
-test('should NOT pickup new initial value', () => {
-  const watch = mock.fn()
+it('should NOT pickup new initial value', () => {
+  const watch = vi.fn()
 
   const mockStorage = createStorageMock()
   mockStorage.setItem('$store', '0')
@@ -21,18 +20,18 @@ test('should NOT pickup new initial value', () => {
   const $store = createStore(1, { name: '$store' })
   $store.watch(watch)
 
-  assert.strictEqual($store.getState(), 1)
-  assert.strictEqual(watch.mock.callCount(), 1)
-  assert.deepEqual(watch.mock.calls[0].arguments, [1])
+  expect($store.getState()).toBe(1)
+  expect(watch).toHaveBeenCalledTimes(1)
+  expect(watch.mock.calls[0]).toEqual([1])
 
   persist({ store: $store, adapter, pickup })
 
-  assert.strictEqual($store.getState(), 1) // <- original store value
-  assert.strictEqual(watch.mock.callCount(), 1)
+  expect($store.getState()).toBe(1) // <- original store value
+  expect(watch).toHaveBeenCalledTimes(1)
 })
 
-test('should pickup new value on event', () => {
-  const watch = mock.fn()
+it('should pickup new value on event', () => {
+  const watch = vi.fn()
 
   const mockStorage = createStorageMock()
   mockStorage.setItem('$store', '42')
@@ -44,14 +43,14 @@ test('should pickup new value on event', () => {
   const $store = createStore(1, { name: '$store' })
   $store.watch(watch)
 
-  assert.strictEqual($store.getState(), 1)
-  assert.strictEqual(watch.mock.callCount(), 1)
-  assert.deepEqual(watch.mock.calls[0].arguments, [1])
+  expect($store.getState()).toBe(1)
+  expect(watch).toHaveBeenCalledTimes(1)
+  expect(watch.mock.calls[0]).toEqual([1])
 
   persist({ store: $store, adapter, pickup: [pickup, unusedPickup] })
   pickup() // <- pick up new value
 
-  assert.strictEqual($store.getState(), 42)
-  assert.strictEqual(watch.mock.callCount(), 2)
-  assert.deepEqual(watch.mock.calls[1].arguments, [42])
+  expect($store.getState()).toBe(42)
+  expect(watch).toHaveBeenCalledTimes(2)
+  expect(watch.mock.calls[1]).toEqual([42])
 })

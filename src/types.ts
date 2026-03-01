@@ -1,6 +1,15 @@
-import type { Event, Effect, Store, Unit, Subscription } from 'effector'
-import type { StandardSchemaV1 } from './types-standard-schema'
+import type {
+  Effect,
+  Event,
+  EventCallable,
+  Store,
+  StoreWritable,
+  Subscription,
+  Unit,
+  UnitTargetable,
+} from 'effector'
 import type { Contract as ContractProtocol } from './types-contract'
+import type { StandardSchemaV1 } from './types-standard-schema'
 
 export interface Adapter<State> {
   get(
@@ -74,9 +83,9 @@ export interface ConfigAdapterFactory<AdapterConfig> {
 
 interface ConfigCommon<State, Err = Error> {
   clock?: Unit<any>
-  done?: Unit<Done<State>>
-  fail?: Unit<Fail<Err>>
-  finally?: Unit<Finally<State, Err>>
+  done?: UnitTargetable<Done<State>>
+  fail?: UnitTargetable<Fail<Err>>
+  finally?: UnitTargetable<Finally<State, Err>>
   pickup?: Unit<any> | Unit<any>[]
   context?: Unit<any>
   key?: string
@@ -85,12 +94,12 @@ interface ConfigCommon<State, Err = Error> {
 }
 
 interface ConfigJustStore<State> {
-  store: Store<State>
+  store: StoreWritable<State>
 }
 
 interface ConfigJustSourceTarget<State> {
   source: Store<State> | Event<State> | Effect<State, any, any>
-  target: Store<State> | Event<State> | Effect<State, any, any>
+  target: StoreWritable<State> | EventCallable<State> | Effect<State, any, any>
 }
 
 export interface ConfigStore<State, Err = Error>

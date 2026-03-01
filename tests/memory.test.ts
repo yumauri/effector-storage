@@ -1,54 +1,53 @@
-import { test, mock } from 'node:test'
-import * as assert from 'node:assert/strict'
 import { createStore } from 'effector'
-import { memory, persist } from '../src/memory'
+import { expect, it, vi } from 'vitest'
 import { memory as memoryIndex } from '../src'
+import { memory, persist } from '../src/memory'
 
 //
 // Tests
 //
 
-test('should export adapter and `persist` function', () => {
-  assert.ok(typeof memory === 'function')
-  assert.ok(typeof persist === 'function')
+it('should export adapter and `persist` function', () => {
+  expect(typeof memory === 'function').toBeTruthy()
+  expect(typeof persist === 'function').toBeTruthy()
 })
 
-test('should be exported from package root', () => {
-  assert.strictEqual(memory, memoryIndex)
+it('should be exported from package root', () => {
+  expect(memory).toBe(memoryIndex)
 })
 
-test('should be ok on good parameters', () => {
+it('should be ok on good parameters', () => {
   const $store = createStore(0, { name: 'memory::store' })
-  assert.doesNotThrow(() => persist({ store: $store }))
+  expect(() => persist({ store: $store })).not.toThrow()
 })
 
-test('should sync stores, persisted with memory adapter', () => {
-  const watch = mock.fn()
+it('should sync stores, persisted with memory adapter', () => {
+  const watch = vi.fn()
 
   const $store0 = createStore(1)
   const $store1 = createStore(2)
   $store0.watch(watch)
   $store1.watch(watch)
 
-  assert.strictEqual($store0.getState(), 1)
-  assert.strictEqual($store1.getState(), 2)
-  assert.strictEqual(watch.mock.callCount(), 2)
-  assert.deepEqual(watch.mock.calls[0].arguments, [1])
-  assert.deepEqual(watch.mock.calls[1].arguments, [2])
+  expect($store0.getState()).toBe(1)
+  expect($store1.getState()).toBe(2)
+  expect(watch).toHaveBeenCalledTimes(2)
+  expect(watch.mock.calls[0]).toEqual([1])
+  expect(watch.mock.calls[1]).toEqual([2])
 
   persist({ store: $store0, key: 'same-key-1' })
   persist({ store: $store1, key: 'same-key-1' })
 
-  assert.strictEqual($store0.getState(), 1)
-  assert.strictEqual($store1.getState(), 2)
-  assert.strictEqual(watch.mock.callCount(), 2)
+  expect($store0.getState()).toBe(1)
+  expect($store1.getState()).toBe(2)
+  expect(watch).toHaveBeenCalledTimes(2)
 
   //
   ;($store0 as any).setState(3)
 
-  assert.strictEqual($store0.getState(), 3)
-  assert.strictEqual($store1.getState(), 3) // <- also changes
-  assert.strictEqual(watch.mock.callCount(), 4)
-  assert.deepEqual(watch.mock.calls[2].arguments, [3])
-  assert.deepEqual(watch.mock.calls[3].arguments, [3])
+  expect($store0.getState()).toBe(3)
+  expect($store1.getState()).toBe(3) // <- also changes
+  expect(watch).toHaveBeenCalledTimes(4)
+  expect(watch.mock.calls[2]).toEqual([3])
+  expect(watch.mock.calls[3]).toEqual([3])
 })

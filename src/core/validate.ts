@@ -1,4 +1,5 @@
 import type { Contract } from '../types'
+import type { StandardSchemaV1 } from '../types-standard-schema'
 
 export const validate = <Data>(
   raw: unknown,
@@ -25,10 +26,15 @@ export const validate = <Data>(
   // contract is a Standard Schema
   if ('~standard' in contract) {
     const result = contract['~standard'].validate(raw)
-    const check = (result: any) => {
+
+    const check = (result: StandardSchemaV1.Result<Data>) => {
       if (result.issues) throw result.issues
-      return result.value as Data
+
+      // return original raw value, same by reference, if validation passed
+      // this means that transformations are not supported!
+      return raw as Data // not `result.value`
     }
+
     return 'then' in result
       ? Promise.resolve(result).then(check)
       : check(result)

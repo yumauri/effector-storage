@@ -1,7 +1,6 @@
 import type { StorageAdapter } from '../src/types'
-import { test, mock } from 'node:test'
-import * as assert from 'node:assert/strict'
 import { createEvent, createStore } from 'effector'
+import { expect, it, vi } from 'vitest'
 import { persist } from '../src/core'
 
 //
@@ -29,8 +28,8 @@ const asyncErrorAdapter: StorageAdapter = (_, update) => {
 // Tests
 //
 
-test('should fire error handler on sync errors', () => {
-  const watch = mock.fn()
+it('should fire error handler on sync errors', () => {
+  const watch = vi.fn()
 
   const error = createEvent<any>()
   error.watch(watch)
@@ -43,8 +42,8 @@ test('should fire error handler on sync errors', () => {
     fail: error,
   })
 
-  assert.strictEqual(watch.mock.callCount(), 1)
-  assert.deepEqual(watch.mock.calls[0].arguments, [
+  expect(watch).toHaveBeenCalledTimes(1)
+  expect(watch.mock.calls[0]).toEqual([
     {
       key: 'key-1',
       keyPrefix: '',
@@ -56,8 +55,8 @@ test('should fire error handler on sync errors', () => {
 
   //
   ;($store as any).setState(1)
-  assert.strictEqual(watch.mock.callCount(), 2)
-  assert.deepEqual(watch.mock.calls[1].arguments, [
+  expect(watch).toHaveBeenCalledTimes(2)
+  expect(watch.mock.calls[1]).toEqual([
     {
       key: 'key-1',
       keyPrefix: '',
@@ -68,12 +67,12 @@ test('should fire error handler on sync errors', () => {
   ])
 })
 
-test('should fire finally handler on sync errors', () => {
+it('should fire finally handler on sync errors', () => {
   const consoleError = console.error
   console.error = () => undefined
 
   try {
-    const watch = mock.fn()
+    const watch = vi.fn()
 
     const anyway = createEvent<any>()
     anyway.watch(watch)
@@ -86,8 +85,8 @@ test('should fire finally handler on sync errors', () => {
       finally: anyway,
     })
 
-    assert.strictEqual(watch.mock.callCount(), 1)
-    assert.deepEqual(watch.mock.calls[0].arguments, [
+    expect(watch).toHaveBeenCalledTimes(1)
+    expect(watch.mock.calls[0]).toEqual([
       {
         status: 'fail',
         key: 'new-key-1',
@@ -100,8 +99,8 @@ test('should fire finally handler on sync errors', () => {
 
     //
     ;($store as any).setState(2)
-    assert.strictEqual(watch.mock.callCount(), 2)
-    assert.deepEqual(watch.mock.calls[1].arguments, [
+    expect(watch).toHaveBeenCalledTimes(2)
+    expect(watch.mock.calls[1]).toEqual([
       {
         status: 'fail',
         key: 'new-key-1',
@@ -116,8 +115,8 @@ test('should fire finally handler on sync errors', () => {
   }
 })
 
-test('should fire error handler on async errors', async () => {
-  const watch = mock.fn()
+it('should fire error handler on async errors', async () => {
+  const watch = vi.fn()
 
   const error = createEvent<any>()
   error.watch(watch)
@@ -129,11 +128,11 @@ test('should fire error handler on async errors', async () => {
     key: 'key-2',
     fail: error,
   })
-  assert.strictEqual(watch.mock.callCount(), 0)
+  expect(watch).toHaveBeenCalledTimes(0)
 
   await Promise.resolve()
-  assert.strictEqual(watch.mock.callCount(), 1)
-  assert.deepEqual(watch.mock.calls[0].arguments, [
+  expect(watch).toHaveBeenCalledTimes(1)
+  expect(watch.mock.calls[0]).toEqual([
     {
       key: 'key-2',
       keyPrefix: '',
@@ -145,12 +144,12 @@ test('should fire error handler on async errors', async () => {
 
   //
   ;($store as any).setState(3)
-  assert.strictEqual(watch.mock.callCount(), 1)
+  expect(watch).toHaveBeenCalledTimes(1)
 
   await Promise.resolve()
 
-  assert.strictEqual(watch.mock.callCount(), 2)
-  assert.deepEqual(watch.mock.calls[1].arguments, [
+  expect(watch).toHaveBeenCalledTimes(2)
+  expect(watch.mock.calls[1]).toEqual([
     {
       key: 'key-2',
       keyPrefix: '',
@@ -161,8 +160,8 @@ test('should fire error handler on async errors', async () => {
   ])
 
   await new Promise((resolve) => setTimeout(resolve, 20))
-  assert.strictEqual(watch.mock.callCount(), 3)
-  assert.deepEqual(watch.mock.calls[2].arguments, [
+  expect(watch).toHaveBeenCalledTimes(3)
+  expect(watch.mock.calls[2]).toEqual([
     {
       key: 'key-2',
       keyPrefix: '',
@@ -173,12 +172,12 @@ test('should fire error handler on async errors', async () => {
   ])
 })
 
-test('should fire finally handler on async errors', async () => {
+it('should fire finally handler on async errors', async () => {
   const consoleError = console.error
   console.error = () => undefined
 
   try {
-    const watch = mock.fn()
+    const watch = vi.fn()
 
     const anyway = createEvent<any>()
     anyway.watch(watch)
@@ -190,11 +189,11 @@ test('should fire finally handler on async errors', async () => {
       key: 'new-key-2',
       finally: anyway,
     })
-    assert.strictEqual(watch.mock.callCount(), 0)
+    expect(watch).toHaveBeenCalledTimes(0)
 
     await Promise.resolve()
-    assert.strictEqual(watch.mock.callCount(), 1)
-    assert.deepEqual(watch.mock.calls[0].arguments, [
+    expect(watch).toHaveBeenCalledTimes(1)
+    expect(watch.mock.calls[0]).toEqual([
       {
         status: 'fail',
         key: 'new-key-2',
@@ -207,12 +206,12 @@ test('should fire finally handler on async errors', async () => {
 
     //
     ;($store as any).setState(4)
-    assert.strictEqual(watch.mock.callCount(), 1)
+    expect(watch).toHaveBeenCalledTimes(1)
 
     await Promise.resolve()
 
-    assert.strictEqual(watch.mock.callCount(), 2)
-    assert.deepEqual(watch.mock.calls[1].arguments, [
+    expect(watch).toHaveBeenCalledTimes(2)
+    expect(watch.mock.calls[1]).toEqual([
       {
         status: 'fail',
         key: 'new-key-2',
@@ -224,8 +223,8 @@ test('should fire finally handler on async errors', async () => {
     ])
 
     await new Promise((resolve) => setTimeout(resolve, 20))
-    assert.strictEqual(watch.mock.callCount(), 3)
-    assert.deepEqual(watch.mock.calls[2].arguments, [
+    expect(watch).toHaveBeenCalledTimes(3)
+    expect(watch.mock.calls[2]).toEqual([
       {
         status: 'fail',
         key: 'new-key-2',
@@ -240,8 +239,8 @@ test('should fire finally handler on async errors', async () => {
   }
 })
 
-test('should not fire error handler on unsubscribed store', async () => {
-  const watch = mock.fn()
+it('should not fire error handler on unsubscribed store', async () => {
+  const watch = vi.fn()
 
   const error = createEvent<any>()
   error.watch(watch)
@@ -253,16 +252,16 @@ test('should not fire error handler on unsubscribed store', async () => {
     key: 'key-3',
     fail: error,
   })
-  assert.strictEqual(watch.mock.callCount(), 0)
+  expect(watch).toHaveBeenCalledTimes(0)
 
   unsubscribe()
 
   await new Promise((resolve) => setTimeout(resolve, 20))
-  assert.strictEqual(watch.mock.callCount(), 0) // <- still zero
+  expect(watch).toHaveBeenCalledTimes(0) // <- still zero
 })
 
-test('unhandled error should be printed to console.error', () => {
-  const error = mock.fn()
+it('unhandled error should be printed to console.error', () => {
+  const error = vi.fn()
   const consoleError = console.error
   console.error = error
 
@@ -270,13 +269,13 @@ test('unhandled error should be printed to console.error', () => {
     const $store = createStore(0)
     persist({ store: $store, adapter: syncErrorAdapter, key: 'key-1' })
 
-    assert.strictEqual(error.mock.callCount(), 1)
-    assert.deepEqual(error.mock.calls[0].arguments, ['get'])
+    expect(error).toHaveBeenCalledTimes(1)
+    expect(error.mock.calls[0]).toEqual(['get'])
 
     //
     ;($store as any).setState(5)
-    assert.strictEqual(error.mock.callCount(), 2)
-    assert.deepEqual(error.mock.calls[1].arguments, ['set'])
+    expect(error).toHaveBeenCalledTimes(2)
+    expect(error.mock.calls[1]).toEqual(['set'])
   } finally {
     console.error = consoleError
   }

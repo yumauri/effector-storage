@@ -1,7 +1,7 @@
-import { test, expect } from '@playwright/test'
-import { mock } from 'node:test'
 import type * as effectorMod from 'effector'
 import type * as libMod from '../src'
+import { mock } from 'node:test'
+import { expect, test } from '@playwright/test'
 
 // this variables available globally in e2e/empty-app
 // I just declare them here to make TS happy

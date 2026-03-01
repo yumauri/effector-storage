@@ -1,10 +1,10 @@
-import { test, before, after, mock } from 'node:test'
-import * as assert from 'node:assert/strict'
+import type { Events } from './mocks/events.mock'
 import { createStore } from 'effector'
-import { createStorageMock } from './mocks/storage.mock'
-import { type Events, createEventsMock } from './mocks/events.mock'
+import { afterAll, beforeAll, expect, it, vi } from 'vitest'
 import { persist } from '../src/core'
 import { storage } from '../src/storage'
+import { createEventsMock } from './mocks/events.mock'
+import { createStorageMock } from './mocks/storage.mock'
 
 //
 // Mock abstract Storage and events
@@ -15,24 +15,24 @@ declare let global: any
 const mockStorage = createStorageMock()
 let events: Events
 
-before(() => {
-  mock.timers.enable()
+beforeAll(() => {
+  vi.useFakeTimers()
   events = createEventsMock()
   global.addEventListener = events.addEventListener
   global.removeEventListener = events.removeEventListener
 })
 
-after(() => {
+afterAll(() => {
   global.removeEventListener = undefined
   global.addEventListener = undefined
-  mock.timers.reset()
+  vi.useRealTimers()
 })
 
 //
 // Tests
 //
 
-test('value should be stored to storage after timeout', async () => {
+it('value should be stored to storage after timeout', async () => {
   const $counter1 = createStore(0, { name: 'counter1' })
   persist({
     store: $counter1,
@@ -41,22 +41,22 @@ test('value should be stored to storage after timeout', async () => {
       timeout: 100,
     }),
   })
-  assert.strictEqual($counter1.getState(), 0)
+  expect($counter1.getState()).toBe(0)
 
   //
   ;($counter1 as any).setState(1)
-  assert.strictEqual($counter1.getState(), 1)
-  assert.strictEqual(mockStorage.getItem('counter1'), null) // not changed yet
+  expect($counter1.getState()).toBe(1)
+  expect(mockStorage.getItem('counter1')).toBe(null) // not changed yet
 
-  mock.timers.tick(60)
-  assert.strictEqual(mockStorage.getItem('counter1'), null) // not changed yet
+  vi.advanceTimersByTime(60)
+  expect(mockStorage.getItem('counter1')).toBe(null) // not changed yet
 
-  mock.timers.tick(60)
-  assert.strictEqual(mockStorage.getItem('counter1'), '1')
+  vi.advanceTimersByTime(60)
+  expect(mockStorage.getItem('counter1')).toBe('1')
 })
 
-test('multiple store updates without timeout should call multiple storage update', () => {
-  const setItem = mock.fn()
+it('multiple store updates without timeout should call multiple storage update', () => {
+  const setItem = vi.fn()
   const mockStorage = createStorageMock()
   mockStorage._callbacks({ setItem })
 
@@ -69,21 +69,18 @@ test('multiple store updates without timeout should call multiple storage update
   for (let i = 1; i <= 10; i++) {
     ;($counter2 as any).setState(i)
   }
-  assert.strictEqual($counter2.getState(), 10)
-  assert.strictEqual(mockStorage.getItem('counter2'), '10')
+  expect($counter2.getState()).toBe(10)
+  expect(mockStorage.getItem('counter2')).toBe('10')
 
-  assert.strictEqual(setItem.mock.callCount(), 10)
+  expect(setItem).toHaveBeenCalledTimes(10)
   for (let i = 1; i <= 10; i++) {
-    assert.strictEqual(
-      setItem.mock.calls[i - 1].arguments[0 as any],
-      'counter2'
-    )
-    assert.strictEqual(setItem.mock.calls[i - 1].arguments[1 as any], String(i))
+    expect(setItem.mock.calls[i - 1][0]).toBe('counter2')
+    expect(setItem.mock.calls[i - 1][1]).toBe(String(i))
   }
 })
 
-test('multiple store updates with timeout should call single storage update', async () => {
-  const setItem = mock.fn()
+it('multiple store updates with timeout should call single storage update', async () => {
+  const setItem = vi.fn()
   const mockStorage = createStorageMock()
   mockStorage._callbacks({ setItem })
 
@@ -99,18 +96,18 @@ test('multiple store updates with timeout should call single storage update', as
   for (let i = 1; i <= 10; i++) {
     ;($counter3 as any).setState(i)
   }
-  assert.strictEqual($counter3.getState(), 10)
+  expect($counter3.getState()).toBe(10)
 
-  assert.strictEqual(mockStorage.getItem('counter3'), null) // not changed yet
-  assert.strictEqual(setItem.mock.callCount(), 0) // not called yet
+  expect(mockStorage.getItem('counter3')).toBe(null) // not changed yet
+  expect(setItem).toHaveBeenCalledTimes(0) // not called yet
 
-  mock.timers.tick(0)
-  assert.strictEqual(mockStorage.getItem('counter3'), '10')
-  assert.strictEqual(setItem.mock.callCount(), 1) // called once
-  assert.deepEqual(setItem.mock.calls[0].arguments, ['counter3', '10'])
+  vi.advanceTimersByTime(0)
+  expect(mockStorage.getItem('counter3')).toBe('10')
+  expect(setItem).toHaveBeenCalledTimes(1) // called once
+  expect(setItem.mock.calls[0]).toEqual(['counter3', '10'])
 })
 
-test('should flush earlier on tab close', async () => {
+it('should flush earlier on tab close', async () => {
   const $counter4 = createStore(0, { name: 'counter4' })
   persist({
     store: $counter4,
@@ -122,15 +119,15 @@ test('should flush earlier on tab close', async () => {
 
   //
   ;($counter4 as any).setState(1)
-  assert.strictEqual($counter4.getState(), 1)
-  assert.strictEqual(mockStorage.getItem('counter4'), null) // not changed yet
+  expect($counter4.getState()).toBe(1)
+  expect(mockStorage.getItem('counter4')).toBe(null) // not changed yet
 
   events.dispatchEvent('beforeunload', {})
-  mock.timers.tick(0)
-  assert.strictEqual(mockStorage.getItem('counter4'), '1') // changed immediately
+  vi.advanceTimersByTime(0)
+  expect(mockStorage.getItem('counter4')).toBe('1') // changed immediately
 })
 
-test('should not override value in case it came from other tab', async () => {
+it('should not override value in case it came from other tab', async () => {
   const $counter5 = createStore(0, { name: 'counter5' })
   persist({
     store: $counter5,
@@ -143,8 +140,8 @@ test('should not override value in case it came from other tab', async () => {
 
   //
   ;($counter5 as any).setState(1)
-  assert.strictEqual($counter5.getState(), 1)
-  assert.strictEqual(mockStorage.getItem('counter5'), null) // not changed yet
+  expect($counter5.getState()).toBe(1)
+  expect(mockStorage.getItem('counter5')).toBe(null) // not changed yet
 
   mockStorage.setItem('counter5', '2')
   events.dispatchEvent('storage', {
@@ -153,12 +150,12 @@ test('should not override value in case it came from other tab', async () => {
     oldValue: null,
     newValue: '2',
   })
-  mock.timers.tick(0)
+  vi.advanceTimersByTime(0)
 
-  assert.strictEqual($counter5.getState(), 2) // updated from storage
-  assert.strictEqual(mockStorage.getItem('counter5'), '2')
+  expect($counter5.getState()).toBe(2) // updated from storage
+  expect(mockStorage.getItem('counter5')).toBe('2')
 
   // await for 150 ms
-  mock.timers.tick(150)
-  assert.strictEqual(mockStorage.getItem('counter5'), '2') // should not be changed
+  vi.advanceTimersByTime(150)
+  expect(mockStorage.getItem('counter5')).toBe('2') // should not be changed
 })
