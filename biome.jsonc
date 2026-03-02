@@ -48,7 +48,11 @@
         "useNumberNamespace": "error",
         "useSelfClosingElements": "error",
         "useSingleVarDeclarator": "error",
-        "useTemplate": "off"
+        "useTemplate": "off",
+        "useImportType": {
+          "level": "on",
+          "options": { "style": "separatedType" }
+        }
       },
       "complexity": {
         "noCommaOperator": "off"
