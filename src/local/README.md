@@ -22,7 +22,7 @@ Two (or more) different stores, persisted with the same key, will be synchronize
 
 Also, by default, stores, persisted in `localStorage`, are automatically synchronized between two (or more) windows/tabs (meaning they are updated on [`'storage'`] event).
 
-ℹ️ If you need just basic bare minimum functionality, you can take a look at [`effector-localstorage`](https://github.com/ilyalesik/effector-localstorage) library. It has similar API, it much simpler and tinier.
+ℹ️ If you need just basic bare-minimum functionality, you can take a look at the [`effector-localstorage`](https://github.com/ilyalesik/effector-localstorage) library. It has a similar API, and it is much simpler and smaller.
 
 ## Formulae
 
@@ -68,7 +68,7 @@ import { local } from 'effector-storage/local'
 
 ### How do I use custom serialization / deserialization?
 
-Options `serialize` and `deserialize` are got you covered. But make sure, that serialization is stable, meaning, that `deserialize(serialize(object))` is equal to `object` (or `serialize(deserialize(serialize(object))) === serialize(object)`):
+Options `serialize` and `deserialize` cover this. But make sure that serialization is stable, meaning that `deserialize(serialize(object))` is equal to `object` (or `serialize(deserialize(serialize(object))) === serialize(object)`):
 
 ```javascript
 import { persist } from 'effector-storage/local'
@@ -86,7 +86,7 @@ persist({
 
 Since version **6.0.0** there is a `timeout` option, which will throttle writes to `localStorage`, so you can specify it. Or you can use older approach, which is described below.
 
-Since version **4.3.0**, you can use `clock` option and `debounce` from [patronum](https://github.com/effector/patronum/tree/main/debounce), to reach that goal:
+Since version **4.3.0**, you can use the `clock` option and `debounce` from [patronum](https://github.com/effector/patronum/tree/main/debounce) to reach that goal:
 
 ```javascript
 import { debounce } from 'patronum/debounce'

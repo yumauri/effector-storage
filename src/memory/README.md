@@ -49,7 +49,7 @@ import { memory } from 'effector-storage/memory'
 
 ### Options
 
-- `area`? ([_Map_]_<string, any>_): Map to store values. Default = common global map.
+- `area`? ([_Map_]_<string, any>_): Map to store values. Default = shared global map.
 
 [_subscription_]: https://effector.dev/docs/glossary#subscription
 [_store_]: https://effector.dev/docs/api/effector/store

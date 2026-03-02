@@ -2,7 +2,7 @@
 
 [![bundlejs](https://deno.bundlejs.com/badge?q=effector-storage/query&treeshake=[{persist}]&config={%22esbuild%22:{%22external%22:[%22effector%22]}})](https://bundlejs.com/?q=effector-storage%2Fquery&treeshake=%5B%7Bpersist%7D%5D&config=%7B%22esbuild%22%3A%7B%22external%22%3A%5B%22effector%22%5D%7D%7D)
 
-Adapter to persist [_store_] in [location.search](https://developer.mozilla.org/en-US/docs/Web/API/Location/search)'s query string.
+Adapter to persist [_store_] in the [location.search](https://developer.mozilla.org/en-US/docs/Web/API/Location/search) query string.
 
 ## Usage
 
@@ -11,7 +11,7 @@ To use this adapter, import `persist` function from `'effector-storage/query'` m
 ```javascript
 import { persist } from 'effector-storage/query'
 
-// persist store `$id` in query string with param name 'id'
+// persist store `$id` in query string with parameter name 'id'
 persist({ store: $id, key: 'id' })
 
 // if your storage has a name, you can omit `key` field
@@ -22,7 +22,7 @@ Two (or more) different stores, persisted with the same key, will be synchronize
 
 ## URL change method
 
-There are few ways to change URL query string in modern world, you can use one of these four:
+There are a few ways to change a URL query string; you can use one of these four:
 
 - `pushState` — uses [history.pushState](https://developer.mozilla.org/en-US/docs/Web/API/History/pushState) call, it doesn't reload page, and adds new history item.
 - `replaceState` — uses [history.replaceState](https://developer.mozilla.org/en-US/docs/Web/API/History/replaceState) call, it doesn't reload page, and _doesn't_ add new history item.
@@ -40,9 +40,9 @@ persist({ store: $id, key: 'id', method: replaceState })
 
 ## ⚠️ Updates batching
 
-By default, updates are applied immediately and synchronously, so, several states, persisted in the query string, will cause several history updates, even if updates were happen (almost) simultaneously.<br>
-If you have two stores, persisted in query string, and they both updates — you will have two history records (when using default `pushState` method). Thus if you want to go back using "⬅️Back" button — you will have to click it twice, to revert both stores in the original state.<br>
-Sometimes it can lead to nasty cyclic updates, if two stores are dependant from each other.
+By default, updates are applied immediately and synchronously, so several states persisted in the query string will cause several history updates, even if the updates happened (almost) simultaneously.<br>
+If you have two stores persisted in query string, and they both update, you will get two history records (when using default `pushState` method). So if you want to go back using the "⬅️Back" button, you will have to click it twice to revert both stores to the original state.<br>
+Sometimes it can lead to nasty cyclic updates, if two stores are dependent on each other.
 
 To avoid this, you can use `timeout` option, which will throttle updates, and will apply them only after some time:
 
@@ -53,7 +53,7 @@ persist({ store: $count, key: 'count', timeout: 10 })
 
 If those two stores will be updated simultaneously (within 10 milliseconds), only one history record will be created, and "⬅️Back" button will revert both stores to the original state.
 
-Note though, _all_ updates are collected in single buffer, regardless of URL change method, and are flushed after _shortest_ given timeout. This is because, event with different URL change methods, you still have only single _medium_ — location query string.
+Note that _all_ updates are collected in a single buffer, regardless of URL change method, and are flushed after the _shortest_ given timeout. This is because even with different URL change methods, you still have only one _medium_ — the location query string.
 
 ## Formulae
 
@@ -101,7 +101,7 @@ import { query } from 'effector-storage/query'
 
 ### How do I use custom serialization / deserialization?
 
-There are `serialize` and `deserialize` options for that. By default, they are _undefined_, meaning, that you should use plain string store `Store<string | null>`. But in some cases is is useful to use custom serialization, for example, to serialize number identifiers:
+There are `serialize` and `deserialize` options for that. By default, they are _undefined_, meaning that you should use a plain string store `Store<string | null>`. But in some cases it is useful to use custom serialization, for example, to serialize numeric identifiers:
 
 ```typescript
 import { persist } from 'effector-storage/query'
@@ -116,7 +116,7 @@ persist({
 })
 ```
 
-Also, if you need some sort of serialization — you can use `.map` method for that. For deserialization you can use some snippets with `sample`, for example:
+If you need custom serialization or want to persist only part of an object, you can use `.map` together with the `source`/`target` form of `persist`:
 
 ```javascript
 import { persist } from 'effector-storage/query'

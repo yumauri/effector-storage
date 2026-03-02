@@ -2,11 +2,11 @@
 
 [![bundlejs](https://deno.bundlejs.com/badge?q=effector-storage&treeshake=[{persist,asyncStorage}]&config={%22esbuild%22:{%22external%22:[%22effector%22]}})](https://bundlejs.com/?q=effector-storage&treeshake=%5B%7Bpersist%2CasyncStorage%7D%5D&config=%7B%22esbuild%22%3A%7B%22external%22%3A%5B%22effector%22%5D%7D%7D)
 
-Adapter to persist [_store_] in compatible asynchronous storage.
+Adapter to persist [_store_] in a compatible asynchronous storage.
 
 ## Usage
 
-Note, that this is just an example. If you need to use React Native Async Storage, try [@effector-storage/react-native-async-storage](https://github.com/yumauri/effector-storage-extras/tree/main/packages/react-native-async-storage)) adapter instead.
+Note that this is just an example. If you need to use React Native Async Storage, try the [@effector-storage/react-native-async-storage](https://github.com/yumauri/effector-storage-extras/tree/main/packages/react-native-async-storage) adapter instead.
 
 ```javascript
 import { persist, asyncStorage } from 'effector-storage'

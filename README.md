@@ -5,7 +5,7 @@
 [![NPM](https://img.shields.io/npm/v/effector-storage.svg)](https://www.npmjs.com/package/effector-storage)
 ![Made with Love](https://img.shields.io/badge/made%20with-❤-red.svg)
 
-Small module for [Effector](https://github.com/effector/effector) ☄️ to sync stores with different storages (local storage, session storage, async storage, IndexedDB, cookies, server side storage, etc).
+Small module for [Effector](https://github.com/effector/effector) ☄️ to sync stores with different storage backends (local storage, session storage, async storage, IndexedDB, cookies, server-side storage, etc).
 
 ## Table of Contents
 
@@ -77,7 +77,7 @@ persist({ store: $counter })
 
 Stores, persisted in `localStorage`, are automatically synced between two (or more) windows/tabs. Also, they are synced between instances, so if you will persist two stores with the same key — each store will receive updates from another one.
 
-ℹ️ If you need just basic bare minimum functionality, you can take a look at [`effector-localstorage`](https://github.com/ilyalesik/effector-localstorage) library. It has similar API, it much simpler and tinier.
+ℹ️ If you need just basic bare-minimum functionality, you can take a look at [`effector-localstorage`](https://github.com/ilyalesik/effector-localstorage) library. It has a similar API, and it is much simpler and smaller.
 
 ### with `sessionStorage`
 
@@ -95,7 +95,7 @@ Stores, persisted in `sessionStorage`, are synced between instances, but not bet
 
 Docs: [effector-storage/query](https://github.com/yumauri/effector-storage/tree/main/src/query/README.md)
 
-You can _reflect_ plain string store value in query string parameter, using this adapter. Think of it like about synchronizing store value and query string parameter.
+You can _reflect_ a plain string store value in a query string parameter using this adapter. Think of it as synchronizing a store value with a query string parameter.
 
 ```javascript
 import { persist } from 'effector-storage/query'
@@ -118,7 +118,7 @@ import { persist } from 'effector-storage/broadcast'
 
 ### extra adapters
 
-You can find a collection of useful adapters in [effector-storage-extras](https://github.com/yumauri/effector-storage-extras). That side repository was created in order to not bloat `effector-storage` with dependencies and adapters, which depends on other libraries.
+You can find a collection of useful adapters in [effector-storage-extras](https://github.com/yumauri/effector-storage-extras). That side repository was created to avoid bloating `effector-storage` with dependencies and adapters that depend on other libraries.
 
 ## Usage with domains
 
@@ -148,7 +148,7 @@ import { persist } from 'effector-storage/<adapter>'
 
 ### Units
 
-In order to synchronize _something_, you need to specify effector units. Depending on a requirements, you may want to use `store` parameter, or `source` and `target` parameters:
+In order to synchronize _something_, you need to specify Effector units. Depending on requirements, you may want to use the `store` parameter, or `source` and `target` parameters:
 
 - `store` ([_Store_]): Store to synchronize with local/session storage.
 - `source` ([_Event_] | [_Effect_] | [_Store_]): Source unit, which updates will be sent to local/session storage.
@@ -165,7 +165,7 @@ In order to synchronize _something_, you need to specify effector units. Dependi
 - `pickup`? ([_Event_] | [_Effect_] | [_Store_], or array of these units): Unit (or array of units), which you can specify to update `store` value from storage. This unit can also set a special context for adapter. **Note!** When you add `pickup`, `persist` _will not_ get initial value from storage automatically!
 - `context`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which can set a special context for adapter.
 - `contract`? ([_Contract_]): Rule to statically validate data from storage.
-- `done`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which will be triggered on each successful read or write from/to storage.<br>
+- `done`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which will be triggered on each successful read or write to/from storage.<br>
   Payload structure:
   - `key` ([_string_]): Same `key` as above.
   - `keyPrefix` ([_string_]): Prefix, used in adapter, to be concatenated to `key`. By default = `''`.
@@ -185,7 +185,7 @@ In order to synchronize _something_, you need to specify effector units. Dependi
   - `operation` (_`'set'`_ | _`'get'`_ | _`'validate'`_): Type of operation, read (get), write (set) or validation against contract (validate).
   - `status` (_`'done'`_ | _`'fail'`_): Operation status.
   - `error`? ([_Error_]): Error instance, in case of error.
-  - `value`? (_any_): Value, in case it is exists (look above).
+  - `value`? (_any_): Value, if it exists (see above).
 
 ### Returns
 
@@ -235,12 +235,12 @@ persist({
 
 There are two gotchas with contracts:
 
-1. From `effector-storage` point of view it is absolutely normal, when there is no persisted value in the storage yet. So, `undefined` value is _always valid_, even if contract does not explicitly allow it.
+1. From `effector-storage` point of view, it is absolutely normal when there is no persisted value in storage yet. So, `undefined` is _always valid_, even if a contract does not explicitly allow it.
 2. `effector-storage` does not prevent persisting invalid data to the storage, but it will validate it nonetheless, after persisting, so, if you write invalid data to the storage, `fail` will be triggered, but data will be persisted.
 
 ### Notes
 
-Without specifying `pickup` property, calling `persist` will immediately call adapter to get initial value. In case of synchronous storage (like `localStorage` or `sessionStorage`) this action will synchronously set store value, and call `done`/`fail`/`finally` right away. You should take that into account, if you adds some logic on `done`, for example — place `persist` after that logic (see issue [#38](https://github.com/yumauri/effector-storage/issues/38) for more details).
+Without specifying the `pickup` property, calling `persist` will immediately call the adapter to get the initial value. In case of synchronous storage (like `localStorage` or `sessionStorage`), this action will synchronously set store value and call `done`/`fail`/`finally` right away. You should take that into account if you add logic based on `done`; for example, place `persist` after that logic (see issue [#38](https://github.com/yumauri/effector-storage/issues/38) for more details).
 
 You can modify adapter to be asynchronous to mitigate this behavior with [`async`](https://github.com/yumauri/effector-storage/tree/main/src/tools/README.md#async) function.
 
@@ -282,7 +282,7 @@ persist({
 
 `effector-storage` consists of a _core_ module and _adapter_ modules.
 
-The core module itself does nothing with actual storage, it just connects effector units to the storage adapter, using couple of _Effects_ and bunch of connections.
+The core module itself does nothing with actual storage; it just connects Effector units to the storage adapter using a couple of _Effects_ and a bunch of connections.
 
 The storage adapter _gets_ and _sets_ values, and also can asynchronously emit values on storage updates.
 
@@ -296,7 +296,7 @@ Core function `persist` accepts all **common** options, as `persist` functions f
 
 ## Storage adapters
 
-Adapter is a function, which is called by the core `persist` function, and has following interface:
+Adapter is a function that is called by the core `persist` function and has the following interface:
 
 ```typescript
 interface StorageAdapter {
@@ -315,18 +315,18 @@ interface StorageAdapter {
 #### Arguments
 
 - `key` ([_string_]): Unique key to distinguish values in storage.
-- `update` ([_Function_]): Function, which could be called to get value from storage. In fact this is `Effect` with `get` function as a handler. In other words, any argument, passed to `update` function, will end up as argument in `get` function.
+- `update` ([_Function_]): Function that can be called to get a value from storage. In fact, this is an `Effect` with the `get` function as a handler. In other words, any argument passed to `update` will end up as an argument in `get`.
 
 #### Returns
 
-- `{ get, set }` (_{ Function, Function }_): Getter from and setter to storage. These functions are used as Effects handlers, and could be sync or async. Also, you don't have to catch exceptions and errors inside those functions — Effects will do that for you.<br>
-  As mentioned above, call of `update` function will trigger `get` function with the same argument. So you can handle cases, when `get` function is called during initial `persist` execution (without arguments), or after external update. Check out [example below](#storage-with-external-updates-example).<br>
-  Also getter and setter both accepts optional _context_ as a second argument — it can be any value. This context could be useful, if adapter depends on some external environment, for example, it can contain _Request_ and _Response_ from Express middleware, to get/set cookies from/to. (TODO: isomorphic cookies adapter example).
+- `{ get, set }` (_{ Function, Function }_): Getter from and setter to storage. These functions are used as Effect handlers and can be sync or async. Also, you do not have to catch exceptions and errors inside those functions; Effects will do that for you.<br>
+  As mentioned above, calling `update` triggers `get` with the same argument. So you can handle cases when `get` is called during initial `persist` execution (without arguments), or after an external update. Check out [example below](#storage-with-external-updates-example).<br>
+  Also, getter and setter both accept an optional _context_ as a second argument; it can be any value. This context can be useful if an adapter depends on some external environment; for example, it can contain _Request_ and _Response_ from Express middleware to get/set cookies from/to. (TODO: isomorphic cookies adapter example).
 
 #### keyArea
 
-Adapter function can have static field `keyArea` — this could be any value of any type, which should be unique for _keys namespace_. For example, two local storage adapters could have different settings, but both of them uses same _storage area_ — `localStorage`. So, different stores, persisted in local storage with the same key (but possibly with different adapters), should be synced. That is what `keyArea` is responsible for. Value of that field is used as a key in cache `Map`.<br>
-In case it is omitted — adapter instances is used instead.
+Adapter function can have static field `keyArea`; this can be any value of any type, but it should be unique for the _keys namespace_. For example, two local storage adapters can have different settings, but both of them use the same _storage area_ — `localStorage`. So, different stores persisted in local storage with the same key (but possibly with different adapters) should be synced. That is what `keyArea` is responsible for. Value of that field is used as a key in the cache `Map`.<br>
+If it is omitted, the adapter instance is used instead.
 
 #### noop
 
@@ -334,7 +334,7 @@ Marks adapter as "no-op" for [`either`](https://github.com/yumauri/effector-stor
 
 ### Synchronous storage adapter example
 
-For example, simplified _localStorage_ adapter might looks like this. This is over-simplified example, don't do that in real code, there are no serialization and deserialization, no checks for edge cases. This is just to show an idea.
+For example, a simplified _localStorage_ adapter might look like this. This is an over-simplified example; do not do that in real code. There is no serialization or deserialization, and no checks for edge cases. This is just to show the idea.
 
 ```javascript
 import { createStore } from 'effector'
@@ -351,7 +351,7 @@ persist({ store, adapter }) // <- use adapter
 
 ### Asynchronous storage adapter example
 
-Using asynchronous storage is just as simple. Once again, this is just a bare simple idea, without serialization and edge cases checks. If you need to use React Native Async Storage, try [@effector-storage/react-native-async-storage](https://github.com/yumauri/effector-storage-extras/tree/main/packages/react-native-async-storage)) adapter instead.
+Using asynchronous storage is just as simple. Once again, this is just a bare example, without serialization or edge-case checks. If you need to use React Native Async Storage, try the [@effector-storage/react-native-async-storage](https://github.com/yumauri/effector-storage-extras/tree/main/packages/react-native-async-storage) adapter instead.
 
 ```javascript
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -369,7 +369,7 @@ persist({ store, adapter }) // <- use adapter
 
 ### Storage with external updates example
 
-If your storage can be updated from an _external source_, then adapter needs a way to inform/update connected store. That is where you will need second `update` argument.
+If your storage can be updated from an _external source_, then the adapter needs a way to inform/update the connected store. That is where you will need a second `update` argument.
 
 ```javascript
 import { createStore } from 'effector'
@@ -399,7 +399,7 @@ persist({ store, adapter }) // <- use adapter
 
 ### Update from non-reactive storage
 
-If your storage can be updated from _external source_, and doesn't have any events to react to, but you are able to know about it somehow.
+If your storage can be updated from an _external source_ and does not have any events to react to, but you are still able to know about updates somehow.
 
 You can use optional `pickup` parameter to specify unit to trigger update (keep in mind, that when you add `pickup`, `persist` _will not_ get initial value from storage automatically):
 
@@ -452,7 +452,7 @@ pickup()
 
 ### Local storage adapter with values expiration
 
-> I want sync my store with `localStorage`, but I need smart synchronization, not dumb. Each storage update should contain last write timestamp. And on read value I need to check if value has been expired, and fill store with default value in that case.
+> I want to sync my store with `localStorage`, but I need smart synchronization, not a dumb one. Each storage update should contain the last write timestamp. And when reading the value, I need to check if it has expired and fill the store with the default value in that case.
 
 You can implement it with custom adapter, something like this:
 
@@ -482,7 +482,7 @@ persist({ store, adapter: adapter(3600) })
 
 ### Custom `Storage` adapter
 
-Both `'effector-storage/local'` and `'effector-storage/session'` are using common `storage` adapter factory. If you want to use _other storage_, which implements [`Storage`](https://developer.mozilla.org/en-US/docs/Web/API/Storage) interface (in fact, synchronous `getItem` and `setItem` methods are enough) — you can use this factory.
+Both `'effector-storage/local'` and `'effector-storage/session'` use a common `storage` adapter factory. If you want to use _other storage_ that implements the [`Storage`](https://developer.mozilla.org/en-US/docs/Web/API/Storage) interface (in fact, synchronous `getItem` and `setItem` methods are enough), you can use this factory.
 
 ```javascript
 import { storage } from 'effector-storage/storage'
@@ -507,7 +507,7 @@ adapter = storage(options)
 
 ### Can I persist part of the store?
 
-The issue here is that it is hardly possible to create universal mapping to/from storage to the part of the store within the library implementation. But with `persist` form with `source`/`target`, and little help of Effector API you can make it:
+The issue here is that it is hardly possible to create a universal mapping to/from storage for only part of a store within the library implementation. But with the `persist` form that uses `source`/`target`, and a little help from the Effector API, you can do it:
 
 ```javascript
 import { persist } from 'effector-storage/local'
@@ -546,7 +546,7 @@ Use this approach with caution, beware of infinite circular updates. To avoid th
 - [x] [EncryptedStorage] support (extras: [@effector-storage/react-native-encrypted-storage](https://github.com/yumauri/effector-storage-extras/tree/main/packages/react-native-encrypted-storage))
 - [x] [IndexedDB] support (extras: [@effector-storage/idb-keyval](https://github.com/yumauri/effector-storage-extras/tree/main/packages/idb-keyval))
 - [ ] [Cookies] support
-- [ ] you name it support
+- [ ] you-name-it support
 
 ## Sponsored
 
