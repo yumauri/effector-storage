@@ -116,27 +116,6 @@ persist({
 })
 ```
 
-Also, if you need some sort of serialization — you can use `.map` method for that. For deserialization you can use some snippets with `sample`, for example:
-
-```javascript
-import { persist } from 'effector-storage/query'
-
-const $entity = createStore(null).on(
-  fetchEntityFx.doneData,
-  (_, entity) => entity
-)
-
-// ~ serialization down to plain `id`
-const $id = $entity.map((entity) => `${entity.id}`)
-persist({ store: $id, key: 'id' })
-
-// in case of query string change -> fetch new entity by new id
-sample({
-  source: $id,
-  target: fetchEntityFx,
-})
-```
-
 [_store_]: https://effector.dev/docs/api/effector/store
 [_function_]: https://developer.mozilla.org/en-US/docs/Glossary/Function
 [_number_]: https://developer.mozilla.org/en-US/docs/Glossary/Number
