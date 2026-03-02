@@ -126,14 +126,10 @@ const $entity = createStore(null).on(
   (_, entity) => entity
 )
 
-// ~ serialization down to plain `id`
-const $id = $entity.map((entity) => `${entity.id}`)
-persist({ store: $id, key: 'id' })
-
-// in case of query string change -> fetch new entity by new id
-sample({
-  source: $id,
-  target: fetchEntityFx,
+persist({
+  source: $entity.map((entity) => `${entity.id}`), // use plain `id` as a source
+  target: fetchEntityFx, // in case of query string change -> fetch new entity by new id
+  key: 'id',
 })
 ```
 

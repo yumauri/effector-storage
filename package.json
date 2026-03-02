@@ -33,7 +33,7 @@
     "test-try": "node -e \"console.log('Installed effector version:', require('effector').version)\" && vitest run",
     "e2e": "playwright test",
     "e2e:server": "vite build -c e2e/empty-app/vite.config.mts && vite preview -c e2e/empty-app/vite.config.mts",
-    "doc:update-readme": "npx doctoc --maxlevel 3 README.md",
+    "doc:update-readme": "pnpm dlx doctoc --maxlevel 3 README.md",
     "clean": "rm -rf build coverage",
     "size": "size-limit --highlight-less"
   },

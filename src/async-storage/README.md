@@ -12,7 +12,7 @@ Note, that this is just an example. If you need to use React Native Async Storag
 import { persist, asyncStorage } from 'effector-storage'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
-// persist store `$counter` in `localStorage` with key 'counter'
+// persist store `$counter` in async storage with key 'counter'
 persist({
   adapter: asyncStorage({ storage: () => AsyncStorage }),
   store: $counter,
@@ -34,7 +34,7 @@ or
 import { asyncStorage } from 'effector-storage/async-storage'
 ```
 
-- `storage(options): StorageAdapter`
+- `asyncStorage(options): StorageAdapter`
 
 ### Options
 

@@ -162,7 +162,7 @@ In order to synchronize _something_, you need to specify effector units. Dependi
 - `key`? ([_string_]): Key for local/session storage, to store value in. If omitted — `store` name is used. **Note!** If `key` is not specified, `store` _must_ have a `name`! You can use `'effector/babel-plugin'` to have those names automatically.
 - `keyPrefix`? ([_string_]): Prefix, used in adapter, to be concatenated to `key`. By default = `''`.
 - `clock`? ([_Event_] | [_Effect_] | [_Store_]): Unit, if passed – then value from `store`/`source` will be stored in the storage only upon its trigger.
-- `pickup`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which you can specify to update `store` value from storage. This unit can also set a special context for adapter. **Note!** When you add `pickup`, `persist` _will not_ get initial value from storage automatically!
+- `pickup`? ([_Event_] | [_Effect_] | [_Store_], or array of these units): Unit (or array of units), which you can specify to update `store` value from storage. This unit can also set a special context for adapter. **Note!** When you add `pickup`, `persist` _will not_ get initial value from storage automatically!
 - `context`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which can set a special context for adapter.
 - `contract`? ([_Contract_]): Rule to statically validate data from storage.
 - `done`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which will be triggered on each successful read or write from/to storage.<br>
@@ -198,13 +198,14 @@ You can use `contract` option to validate data from storage. Contract has the fo
 ```typescript
 export type Contract<Data> =
   | ((raw: unknown) => raw is Data)
+  | StandardSchemaV1<unknown, Data>
   | {
       isData: (raw: unknown) => raw is Data
       getErrorMessages: (raw: unknown) => string[]
     }
 ```
 
-So, it could be simple type guard function in trivial use cases, or more complex object with `isData` type guard and `getErrorMessages` function, which returns array of error messages. This format is fully compatible with [Farfetched contracts](https://withease.effector.dev/protocols/contract.html), so you can use any adapter from Farfetched ([runtypes](https://ff.effector.dev/api/contracts/runtypes.html), [zod](https://ff.effector.dev/api/contracts/zod.html), [io-ts](https://ff.effector.dev/api/contracts/io-ts.html), [superstruct](https://ff.effector.dev/api/contracts/superstruct.html), [typed-contracts](https://ff.effector.dev/api/contracts/typed-contracts.html), [valibot](https://ff.effector.dev/api/contracts/valibot.html)) with `persist` and `contract` option:
+So, it could be simple type guard function in trivial use cases, a [Standard Schema](https://standardschema.dev/schema) compatible validator, or more complex object with `isData` type guard and `getErrorMessages` function, which returns array of error messages. This format is fully compatible with [Farfetched contracts](https://withease.effector.dev/protocols/contract.html), so you can use any adapter from Farfetched ([runtypes](https://ff.effector.dev/api/contracts/runtypes.html), [zod](https://ff.effector.dev/api/contracts/zod.html), [io-ts](https://ff.effector.dev/api/contracts/io-ts.html), [superstruct](https://ff.effector.dev/api/contracts/superstruct.html), [typed-contracts](https://ff.effector.dev/api/contracts/typed-contracts.html), [valibot](https://ff.effector.dev/api/contracts/valibot.html)) with `persist` and `contract` option:
 
 ```typescript
 // simple type guard
@@ -268,7 +269,7 @@ persist({
 
 ### Options
 
-- `pickup`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which you can specify to update `store` value from storage. This unit can also set a special context for adapter. **Note!** When you add `pickup`, `persist` _will not_ get initial value from storage automatically!
+- `pickup`? ([_Event_] | [_Effect_] | [_Store_], or array of these units): Unit (or array of units), which you can specify to update `store` value from storage. This unit can also set a special context for adapter. **Note!** When you add `pickup`, `persist` _will not_ get initial value from storage automatically!
 - `context`? ([_Event_] | [_Effect_] | [_Store_]): Unit, which can set a special context for adapter.
 - `keyPrefix`? ([_string_]): Key prefix for adapter. It will be concatenated with any `key`, given to returned `persist` function.
 - `contract`? ([_Contract_]): Rule to statically validate data from storage.
@@ -291,7 +292,7 @@ import { persist } from 'effector-storage'
 
 Core function `persist` accepts all **common** options, as `persist` functions from sub-modules, plus additional one:
 
-- `adapter` (_StorageAdapter_): Storage adapter to use.
+- `adapter` (_StorageAdapter_ | _StorageAdapterFactory_): Storage adapter or storage adapter factory to use.
 
 ## Storage adapters
 
@@ -549,7 +550,7 @@ Use this approach with caution, beware of infinite circular updates. To avoid th
 
 ## Sponsored
 
-[<img src="https://setplex.com/img/logo.png" alt="Setplex OTT Platform" width="236">](https://setplex.com/en/)
+[<img src="https://setplex.com/wp-content/uploads/2025/03/logo.svg" alt="Setplex OTT Platform" width="236">](https://setplex.com/en/)
 
 [Setplex OTT Platform](https://setplex.com/en/)
 
