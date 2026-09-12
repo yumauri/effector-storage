@@ -5,5 +5,10 @@ overrides:
 autoInstallPeers: false
 strictPeerDependencies: true
 
+peerDependencyRules:
+  allowedVersions:
+    # The adapter works with Superstruct 2, but its published peer range only declares 1.x.
+    '@farfetched/superstruct>superstruct': ^2.0.2
+
 allowBuilds:
   esbuild: true
