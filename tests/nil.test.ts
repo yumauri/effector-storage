@@ -1,5 +1,5 @@
 import { createStore } from 'effector'
-import { expect, it } from 'vitest'
+import { afterAll, beforeAll, expect, it, vi } from 'vitest'
 import { nil as nilIndex } from '../src'
 import { persist } from '../src/core'
 import { persist as local } from '../src/local'
@@ -7,7 +7,14 @@ import { nil } from '../src/nil'
 import { persist as session } from '../src/session'
 import { createStorageMock } from './mocks/storage.mock'
 
-declare let global: any
+beforeAll(() => {
+  vi.stubGlobal('localStorage', undefined)
+  vi.stubGlobal('sessionStorage', undefined)
+})
+
+afterAll(() => {
+  vi.unstubAllGlobals()
+})
 
 //
 // Tests
@@ -33,8 +40,8 @@ it('store new value should be ignored by storage', () => {
 it('stores in browser environment should not be synced', () => {
   // add fake `localStorage` and `sessionStorage`
   // like this is browser environment
-  global.localStorage = createStorageMock()
-  global.sessionStorage = createStorageMock()
+  vi.stubGlobal('localStorage', createStorageMock())
+  vi.stubGlobal('sessionStorage', createStorageMock())
 
   try {
     const $store1 = createStore(0)
@@ -50,8 +57,8 @@ it('stores in browser environment should not be synced', () => {
     expect($store2.getState()).toBe(0) // <- should not change
   } finally {
     // remove fake `localStorage` and `sessionStorage`
-    global.localStorage = undefined
-    global.sessionStorage = undefined
+    vi.stubGlobal('localStorage', undefined)
+    vi.stubGlobal('sessionStorage', undefined)
   }
 })
 

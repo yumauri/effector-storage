@@ -20,14 +20,12 @@ import { persist } from '../src/local'
 // Mock `localStorage` as null
 //
 
-declare let global: any
-
 beforeAll(() => {
-  global.localStorage = null
+  vi.stubGlobal('localStorage', null)
 })
 
 afterAll(() => {
-  global.localStorage = undefined
+  vi.unstubAllGlobals()
 })
 
 //

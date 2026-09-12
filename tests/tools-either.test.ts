@@ -1,10 +1,16 @@
 import type { StorageAdapter } from '../src/types'
 import { createStore } from 'effector'
-import { expect, it, vi } from 'vitest'
+import { afterAll, beforeAll, expect, it, vi } from 'vitest'
 import { either, local, log, nil, persist } from '../src'
 import { createStorageMock } from './mocks/storage.mock'
 
-declare let global: any
+beforeAll(() => {
+  vi.stubGlobal('localStorage', undefined)
+})
+
+afterAll(() => {
+  vi.unstubAllGlobals()
+})
 
 //
 // Dumb fake adapter
@@ -36,12 +42,12 @@ it('should return second adapter if first one is noop', () => {
 
 it('should return localStorage adapter if localStorage is supported', () => {
   try {
-    global.localStorage = createStorageMock()
+    vi.stubGlobal('localStorage', createStorageMock())
     const one = local()
     const another = dumbAdapter
     expect(either(one, another)).toBe(one)
   } finally {
-    global.localStorage = undefined
+    vi.stubGlobal('localStorage', undefined)
   }
 })
 

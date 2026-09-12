@@ -1,22 +1,17 @@
 import { createStore } from 'effector'
-import { afterAll, beforeAll, expect, it } from 'vitest'
+import { afterAll, beforeAll, expect, it, vi } from 'vitest'
 import { persist } from '../src/local'
 
 //
 // Mock `localStorage`
 //
 
-declare let global: any
-
-let storage: Storage
-
 beforeAll(() => {
-  storage = global.localStorage
-  global.localStorage = undefined
+  vi.stubGlobal('localStorage', undefined)
 })
 
 afterAll(() => {
-  global.localStorage = storage
+  vi.unstubAllGlobals()
 })
 
 //
