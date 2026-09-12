@@ -96,7 +96,6 @@ const src = (name) => ({
               repository: pkg.repository,
               bugs: pkg.bugs,
               homepage: pkg.homepage,
-              engines: pkg.engines,
               keywords: pkg.keywords,
               peerDependencies: {
                 effector: '^23.0.0',

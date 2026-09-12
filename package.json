@@ -12,9 +12,6 @@
     "url": "https://github.com/yumauri/effector-storage/issues"
   },
   "homepage": "https://github.com/yumauri/effector-storage#readme",
-  "engines": {
-    "node": ">=20"
-  },
   "keywords": [
     "effector",
     "persist",
@@ -30,7 +27,7 @@
     "check:types": "tsc --noEmit",
     "check:biome": "biome check",
     "lint": "pnpm run /^check:/",
-    "publint": "publint build",
+    "publint": "publint --level warning build",
     "format": "biome format --verbose --write .",
     "test": "pnpm run check:types && vitest run --coverage",
     "test-try": "node -e \"console.log('Installed effector version:', require('effector').version)\" && pnpm run check:types && vitest run",
