@@ -96,6 +96,7 @@ const src = (name) => ({
               repository: pkg.repository,
               bugs: pkg.bugs,
               homepage: pkg.homepage,
+              engines: pkg.engines,
               keywords: pkg.keywords,
               peerDependencies: {
                 effector: '^23.0.0',
@@ -253,19 +254,6 @@ const src = (name) => ({
               module: 'index.js',
               main: 'index.cjs',
               'react-native': 'index.js',
-              exports: {
-                './package.json': './package.json',
-                '.': {
-                  import: {
-                    types: './index.d.ts',
-                    default: './index.js',
-                  },
-                  require: {
-                    types: './index.d.cts',
-                    default: './index.cjs',
-                  },
-                },
-              },
             },
           }
     ),

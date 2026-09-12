@@ -3,7 +3,7 @@
     "strict": true,
     "target": "es2020",
     "module": "commonjs",
-    "moduleResolution": "node",
+    "resolvePackageJsonExports": false,
     "lib": ["es2020", "dom"],
     "types": [],
     "skipLibCheck": true,
