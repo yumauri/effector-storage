@@ -76,9 +76,21 @@ jobs:
         run: pnpm install --frozen-lockfile --ignore-scripts
 
       - name: ☄️ Install required effector and effector-storage dependencies
-        run: >
-          npm config set //npm.pkg.github.com/:_authToken "$GITHUB_TOKEN" &&
-          npm pkg delete dependencies.effector &&
+        shell: bash
+        run: |
+          npm config set //npm.pkg.github.com/:_authToken "$GITHUB_TOKEN"
+          npm pkg delete dependencies.effector
+
+          # Test our freshly published GitHub package without relaxing cooldown for other versions.
+          package="${INPUT_EFFECTOR_STORAGE#npm:}"
+          version="${package##*@}"
+          if [[ "$INPUT_EFFECTOR_STORAGE" == "npm:@$GITHUB_REPOSITORY_OWNER/effector-storage@"* &&
+                "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+            exclusions="$(pnpm config get --json minimumReleaseAgeExclude)"
+            exclusions="$(node -p 'JSON.stringify([...new Set([...(JSON.parse(process.argv[1]) ?? []), process.argv[2]])])' "$exclusions" "$package")"
+            export PNPM_CONFIG_MINIMUM_RELEASE_AGE_EXCLUDE="$exclusions"
+          fi
+
           pnpm add --save-exact --save-dev "effector@$INPUT_EFFECTOR" "effector-storage@$INPUT_EFFECTOR_STORAGE"
         env:
           INPUT_EFFECTOR: ${{ inputs.effector }}
