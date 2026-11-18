@@ -70,7 +70,6 @@ jobs:
         uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node-version }}
-          registry-url: https://registry.npmjs.org/
           cache: pnpm
 
       - name: 🔍 Install dependencies
@@ -78,9 +77,9 @@ jobs:
 
       - name: ☄️ Install required effector and effector-storage dependencies
         run: >
-          npm config set //npm.pkg.github.com/:_authToken $GITHUB_TOKEN &&
-          pnpm remove effector &&
-          pnpm add --save-exact --save-dev effector@$INPUT_EFFECTOR effector-storage@$INPUT_EFFECTOR_STORAGE
+          npm config set //npm.pkg.github.com/:_authToken "$GITHUB_TOKEN" &&
+          npm pkg delete dependencies.effector &&
+          pnpm add --save-exact --save-dev "effector@$INPUT_EFFECTOR" "effector-storage@$INPUT_EFFECTOR_STORAGE"
         env:
           INPUT_EFFECTOR: ${{ inputs.effector }}
           INPUT_EFFECTOR_STORAGE: ${{ steps.use_effector_storage.outputs.pkg }}
