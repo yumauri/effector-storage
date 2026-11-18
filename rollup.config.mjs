@@ -1,3 +1,4 @@
+import { extname } from 'node:path'
 import babel from '@rollup/plugin-babel'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import terser from '@rollup/plugin-terser'
@@ -265,31 +266,29 @@ const src = (name) => ({
   ],
 })
 
-const dts = (name) => ({
+const dts = (name, declarationExtension, runtimeExtension) => ({
   input: `${SRC}/${name}index.ts`,
+  // Preserve the relative specifiers for output.paths.
+  makeAbsoluteExternalsRelative: false,
   output: [
     {
-      file: `${BUILD}/${name}index.d.ts`,
+      file: `${BUILD}/${name}index.${declarationExtension}`,
       format: 'es',
+      paths: (id) =>
+        /^\.\.?\//.test(id) && !extname(id)
+          ? `${id}/index.${runtimeExtension}`
+          : id,
     },
   ],
   external,
   plugins: [generateDts({ respectExternal: true })],
 })
 
-const cjsdts = (name) => ({
-  input: `${SRC}/${name}index.ts`,
-  output: [
-    {
-      file: `${BUILD}/${name}index.d.cts`,
-      format: 'es',
-    },
-  ],
-  external,
-  plugins: [generateDts({ respectExternal: true })],
-})
-
-const entry = (name) => [src(name), dts(name), cjsdts(name)]
+const entry = (name) => [
+  src(name),
+  dts(name, 'd.ts', 'js'),
+  dts(name, 'd.cts', 'cjs'),
+]
 
 export default [
   ...entry(''),

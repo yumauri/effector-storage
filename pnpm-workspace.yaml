@@ -12,3 +12,5 @@ peerDependencyRules:
 
 allowBuilds:
   esbuild: true
+
+minimumReleaseAgeStrict: true

@@ -47,6 +47,9 @@ jobs:
       - name: 👮 Lint package.json
         run: pnpm run publint
 
+      - name: 🔍 Check package type resolution
+        run: pnpm run attw
+
       - name: 🔬 Check size
         run: pnpm run size
 

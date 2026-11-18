@@ -28,6 +28,7 @@
     "check:biome": "biome check",
     "lint": "pnpm run /^check:/",
     "publint": "publint --level warning build",
+    "attw": "attw --pack build",
     "format": "biome format --verbose --write .",
     "test": "pnpm run check:types && vitest run --coverage",
     "test-try": "node -e \"console.log('Installed effector version:', require('effector').version)\" && pnpm run check:types && vitest run",
@@ -42,6 +43,7 @@
     "effector": "23.4.4"
   },
   "devDependencies": {
+    "@arethetypeswrong/cli": "0.18.5",
     "@babel/core": "^7.29.13",
     "@babel/plugin-transform-block-scoping": "^7.29.13",
     "@babel/preset-typescript": "^7.29.7",
