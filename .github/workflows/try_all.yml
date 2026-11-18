@@ -15,7 +15,7 @@ jobs:
           - npm:effector@23.0.0
           - npm:effector@23.4.4
 
-    name: ${{ matrix.effector-version }}
+    name: ${{ matrix.effector }}
 
     uses: ./.github/workflows/try.yml
     with:

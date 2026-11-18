@@ -41,7 +41,7 @@ jobs:
       - name: 📦 Get effector-storage latest package version
         id: get_latest_version
         if: inputs.effector-storage == ''
-        uses: octokit/request-action@v2.x
+        uses: octokit/request-action@v3.x
         with:
           route: GET /users/{username}/packages/npm/effector-storage/versions
         env:
@@ -63,7 +63,7 @@ jobs:
       - name: 📦 Install pnpm
         uses: pnpm/action-setup@v6
         with:
-          version: 11.26.0
+          version: 12.21.0
           run_install: false
 
       - name: 🐧 Setup node ${{ matrix.node-version }}
